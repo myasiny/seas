@@ -1,0 +1,21 @@
+<PgSplash>:
+    RelativeLayout:
+        Label:
+            id: txt_developer
+            text: "BugBear"
+            pos: self.pos
+            font_size: root.width / 10
+            font_name: "font/Ghost.ttf"
+
+        Label:
+            id: txt_shortname
+            text: "SEAS"
+            pos: self.pos
+            font_size: root.width / 5
+            font_name: "font/Hargita.ttf"
+
+        Label:
+            id: txt_longname
+            text: "Smart Exam Administration System"
+            pos_hint: {"center_x": .5, "center_y": .4}
+            font_size: root.width / 50
