@@ -1,20 +1,23 @@
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.lang import Builder
 from kivy.core.window import Window
 from kivy.animation import Animation
-from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-with open("design/pgSplash.txt", "r") as css:
-    Builder.load_string(css.read())
+from login import *
+
+with open("design/main.txt", "r") as pgSplash:
+    Builder.load_string(pgSplash.read())
+
+class PgLogin(Screen):
+    loadString()
 
 class PgSplash(Screen):
     def skip(self, dt):
-        # TODO: Skip to "Log In" page!
-        pass
+        screen.switch_to(pages[1])
 
     def anim(self, dt):
-        Clock.schedule_once(self.skip, 2)
+        Clock.schedule_once(self.skip, 2.5)
 
         anim_shortname = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
         anim_shortname.start(self.txt_shortname)
@@ -23,7 +26,7 @@ class PgSplash(Screen):
         anim_longname.start(self.txt_longname)
 
     def on_enter(self, *args):
-        Clock.schedule_once(self.anim, 2)
+        Clock.schedule_once(self.anim, 2.5)
 
         self.txt_shortname = self.ids["txt_shortname"]
         self.txt_shortname.opacity = 0
@@ -36,8 +39,11 @@ class PgSplash(Screen):
         anim_developer = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
         anim_developer.start(txt_developer)
 
-screen = ScreenManager()
+screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(PgSplash(name="PgSplash"))
+
+pages = [PgSplash(name="PgSplash"),
+         PgLogin(name="PgLogin")]
 
 class SeasApp(App):
     def build(self):
@@ -45,5 +51,5 @@ class SeasApp(App):
         return screen
 
 if __name__ == "__main__":
-    Window.fullscreen = True
+    Window.fullscreen = "auto"
     SeasApp().run()

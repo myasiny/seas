@@ -1,0 +1,63 @@
+<PgLogin>:
+    FloatLayout:
+        canvas:
+            Rectangle:
+                id: img_bg
+                source: "img/bg.png"
+                pos: self.pos
+                size: self.size
+
+        Image:
+            id: img_box
+            source: "img/bg_box.png"
+            allow_stretch: True
+            keep_ratio: False
+            pos_hint: {"center_x": .5, "center_y": .5}
+            size_hint: .5, .5
+
+        GridLayout:
+            rows: 3
+            cols: 2
+            spacing: root.width / 75
+            padding: [root.width / 4, root.height / 3, root.width / 4, root.height / 3]
+
+            Label:
+                id: txt_username
+                text: "Username:"
+                font_size: root.width / 75
+                size_hint_x: None
+                width: root.width / 8
+
+            TextInput:
+                id: input_username
+                multiline: False
+                font_size: root.width / 75
+                size_hint_x: None
+                width: root.width / 3
+
+            Label:
+                id: txt_password
+                text: "Password:"
+                font_size: root.width / 75
+                size_hint_x: None
+                width: root.width / 8
+
+            TextInput:
+                id: input_password
+                multiline: False
+                password: True
+                font_size: root.width / 75
+                size_hint_x: None
+                width: root.width / 3
+
+            Image:
+                source: "img/ico_loading.png"
+                size_hint_x: None
+                width: root.width / 8
+
+            Button:
+                id: btn_login
+                text: "Log In"
+                font_size: root.width / 75
+                size_hint_x: None
+                width: root.width / 3
