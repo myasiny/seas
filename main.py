@@ -10,7 +10,10 @@ with open("design/main.txt", "r") as pgSplash:
     Builder.load_string(pgSplash.read())
 
 class PgLogin(Screen):
-    loadString()
+    design()
+
+    def on_login(self):
+        login()
 
 class PgSplash(Screen):
     def skip(self, dt):

@@ -4,16 +4,70 @@
             Rectangle:
                 id: img_bg
                 source: "img/bg.png"
-                pos: self.pos
                 size: self.size
+                pos: self.pos
 
         Image:
-            id: img_box
-            source: "img/bg_box.png"
+            id: img_box_header
+            source: "img/bg_box_small_1.png"
             allow_stretch: True
             keep_ratio: False
-            pos_hint: {"center_x": .5, "center_y": .5}
+            opacity: .5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .5, "center_y": .8}
+
+        Image:
+            id: img_box_body
+            source: "img/bg_box_large.png"
+            allow_stretch: True
+            keep_ratio: False
             size_hint: .5, .5
+            pos_hint: {"center_x": .5, "center_y": .5}
+
+        Image:
+            id: img_box_footer
+            source: "img/bg_box_small_2.png"
+            allow_stretch: True
+            keep_ratio: False
+            opacity: .5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .5, "center_y": .2}
+
+        Image:
+            id: img_logo
+            source: "img/img_logo.png"
+            allow_stretch: True
+            size_hint: .15, .15
+            pos_hint: {"center_x": .5, "center_y": .8}
+
+        Label:
+            id: txt_description
+            text: "By logging in, you agree to the use of your information and data gathered during your exams for the purposes determined by Istanbul Sehir University"
+            font_size: root.width / 150
+            text_size: root.width / 5, None
+            halign: "center"
+            pos_hint: {"center_x": .4, "center_y": .2}
+
+        Image:
+            id: img_icon
+            source: "img/img_icon.png"
+            allow_stretch: True
+            size_hint: .1, .1
+            pos_hint: {"center_x": .57, "center_y": .2}
+
+        Image:
+            id: img_partner
+            source: "img/img_partner.png"
+            allow_stretch: True
+            size_hint: .1, .1
+            pos_hint: {"center_x": .62, "center_y": .2}
+
+        Image:
+            id: img_customer
+            source: "img/img_customer.png"
+            allow_stretch: True
+            size_hint: .1, .1
+            pos_hint: {"center_x": .67, "center_y": .2}
 
         GridLayout:
             rows: 3
@@ -30,10 +84,11 @@
 
             TextInput:
                 id: input_username
-                multiline: False
                 font_size: root.width / 75
                 size_hint_x: None
                 width: root.width / 3
+                multiline: False
+                padding_y: [self.height / 3, 0]
 
             Label:
                 id: txt_password
@@ -44,20 +99,25 @@
 
             TextInput:
                 id: input_password
-                multiline: False
-                password: True
                 font_size: root.width / 75
                 size_hint_x: None
                 width: root.width / 3
+                password: True
+                multiline: False
+                padding_y: [self.height / 3, 0]
 
             Image:
-                source: "img/ico_loading.png"
+                id: img_status
+                source: "img/ico_loading.gif"
+                allow_stretch: True
+                opacity: 0
                 size_hint_x: None
                 width: root.width / 8
 
             Button:
                 id: btn_login
-                text: "Log In"
+                text: "LOGIN"
                 font_size: root.width / 75
                 size_hint_x: None
                 width: root.width / 3
+                on_press: root.on_login()
