@@ -1,46 +1,40 @@
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.core.window import Window
 from kivy.animation import Animation
+from kivy.core.window import Window
+from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from login import *
+from pg import pgLogin
 
-with open("design/main.txt", "r") as pgSplash:
+with open("css/main.seas", "r") as pgSplash:
     Builder.load_string(pgSplash.read())
 
 class PgLogin(Screen):
-    design()
+    pgLogin.load_string()
+
+    def on_quit(self):
+        pgLogin.on_quit(self)
 
     def on_login(self):
-        login()
+        pgLogin.on_login(self)
 
 class PgSplash(Screen):
     def skip(self, dt):
         screen.switch_to(pages[1])
 
-    def anim(self, dt):
-        Clock.schedule_once(self.skip, 2.5)
-
-        anim_shortname = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
-        anim_shortname.start(self.txt_shortname)
-
-        anim_longname = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
-        anim_longname.start(self.txt_longname)
-
     def on_enter(self, *args):
-        Clock.schedule_once(self.anim, 2.5)
+        Clock.schedule_once(self.skip, 2)
 
-        self.txt_shortname = self.ids["txt_shortname"]
-        self.txt_shortname.opacity = 0
+        txt_shortname = self.ids["txt_shortname"]
+        txt_shortname.opacity = 0
+        anim_shortname = Animation(y=self.y+25, opacity=1, duration=1) + Animation(y=self.y-25, opacity=0, duration=1)
+        anim_shortname.start(txt_shortname)
 
-        self.txt_longname = self.ids["txt_longname"]
-        self.txt_longname.opacity = 0
-
-        txt_developer = self.ids["txt_developer"]
-        txt_developer.opacity = 0
-        anim_developer = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
-        anim_developer.start(txt_developer)
+        txt_longname = self.ids["txt_longname"]
+        txt_longname.opacity = 0
+        anim_longname = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
+        anim_longname.start(txt_longname)
 
 screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(PgSplash(name="PgSplash"))
