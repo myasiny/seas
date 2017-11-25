@@ -1,0 +1,8 @@
+<PgEducator>:
+    FloatLayout:
+        canvas:
+            Rectangle:
+                id: img_bg
+                source: "img/bg.png"
+                size: self.size
+                pos: self.pos

@@ -5,19 +5,25 @@ from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin
+from pg import pgLogin, pgEducator
 
-with open("css/main.seas", "r") as pgSplash:
-    Builder.load_string(pgSplash.read())
+with open("css/main.seas", "r") as design:
+    Builder.load_string(design.read())
+
+class PgEducator(Screen):
+    pgEducator.load_string()
 
 class PgLogin(Screen):
     pgLogin.load_string()
 
     def on_quit(self):
-        pgLogin.on_quit(self)
+        pgLogin.on_quit()
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
 
     def on_login(self):
-        pgLogin.on_login(self)
+        pgLogin.on_login(self, pages, screen)
 
 class PgSplash(Screen):
     def skip(self, dt):
@@ -28,19 +34,20 @@ class PgSplash(Screen):
 
         txt_shortname = self.ids["txt_shortname"]
         txt_shortname.opacity = 0
-        anim_shortname = Animation(y=self.y+25, opacity=1, duration=1) + Animation(y=self.y-25, opacity=0, duration=1)
-        anim_shortname.start(txt_shortname)
 
         txt_longname = self.ids["txt_longname"]
         txt_longname.opacity = 0
-        anim_longname = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
-        anim_longname.start(txt_longname)
+
+        anim_fade = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
+        anim_fade.start(txt_shortname)
+        anim_fade.start(txt_longname)
 
 screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(PgSplash(name="PgSplash"))
 
 pages = [PgSplash(name="PgSplash"),
-         PgLogin(name="PgLogin")]
+         PgLogin(name="PgLogin"),
+         PgEducator(name="PgEducator")]
 
 class SeasApp(App):
     def build(self):

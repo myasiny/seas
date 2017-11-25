@@ -1,5 +1,6 @@
 <ImageButton@Button>:
     source: None
+    opacity: .7
 
     Image:
         source: root.source
@@ -18,10 +19,16 @@
         ImageButton:
             id: btn_quit
             source: "img/ico_quit.png"
-            opacity: .2
             size_hint: .05, .05
             pos_hint: {"center_x": .95, "center_y": .95}
             on_press: root.on_quit()
+
+        Image:
+            id: img_connection
+            source: "img/ico_connection_fail.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"center_x": .9, "center_y": .95}
 
         Image:
             id: img_box_body
@@ -49,11 +56,11 @@
             size_hint: .4, .1
             pos_hint: {"center_x": .5, "center_y": .2}
 
-        Image:
-            id: img_logo
-            source: "img/img_logo.png"
-            allow_stretch: True
-            size_hint: .15, .15
+        Label:
+            id: txt_longname
+            text: "Smart Exam Administration System"
+            font_size: root.width / 35
+            font_name: "font/LibelSuit.ttf"
             pos_hint: {"center_x": .5, "center_y": .8}
 
         Image:
@@ -78,9 +85,9 @@
             pos_hint: {"center_x": .65, "center_y": .2}
 
         Label:
-            id: txt_description
-            text: "Description or something like that will be written here"
-            text_size: root.width / 5, None
+            id: txt_info
+            text: "Please make sure that you closed all programs running in the background before logging in"
+            text_size: root.width / 7, None
             font_size: root.width / 150
             halign: "center"
             pos_hint: {"center_x": .4, "center_y": .2}

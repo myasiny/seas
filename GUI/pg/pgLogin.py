@@ -1,25 +1,64 @@
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.clock import Clock
 from kivy.animation import Animation
+#from kivy.uix.screenmanager import Screen, ScreenManager
+
+import socket
+from functools import partial
 
 def load_string():
-    with open("css/login.seas", "r") as pgLogin:
-        Builder.load_string(pgLogin.read())
+    with open("css/login.seas", "r") as design:
+        Builder.load_string(design.read())
 
-def on_quit(self):
+def on_quit():
     App.get_running_app().stop()
 
-def on_login(self): #TODO: Complete Login Stuff
+def on_enter(self):
+    def check_connection(s, dt):
+        connected = False
+        try:
+            socket.create_connection((socket.gethostbyname("www.google.com"), 80), 2)
+            connected = True
+        except:
+            pass
+        finally:
+            img_connection = s.ids["img_connection"]
+            if connected:
+                img_connection.source = "img/ico_connection_success.png"
+            else:
+                img_connection.source = "img/ico_connection_fail.png"
+            img_connection.reload()
+
+    Clock.schedule_interval(partial(check_connection, self), 1.0/60.0)
+
+def on_login(self, pages, screen):
+    btn_login = self.ids["btn_login"]
+    btn_login.disabled = True
+
     img_status = self.ids["img_status"]
-    anim_status = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
+    img_status.source = "img/ico_connect.png"
+    img_status.reload()
+
+    anim_status = Animation(x=img_status.x+5, opacity=1, duration=1) + Animation(x=img_status.x-5, opacity=0, duration=1)
     anim_status.repeat = True
     anim_status.start(img_status)
 
     input_username = self.ids["input_username"].text
     input_password = self.ids["input_password"].text
     if input_username == "" or input_password == "":
-        pass
+        anim_status.stop(img_status)
+
+        img_status.source = "img/ico_warning.png"
+        img_status.reload()
+
+        btn_login.disabled = False
     elif input_username == "admin" and input_password == "123":
-        pass
+        anim_status.stop(img_status)
+
+        img_status.source = "img/ico_success.png"
+        img_status.reload()
+
+        screen.switch_to(pages[2])
     else:
-        pass
+        pass # TODO: Add User Login Through Server
