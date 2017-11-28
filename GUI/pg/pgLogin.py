@@ -2,10 +2,9 @@ from kivy.app import App
 from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.animation import Animation
-#from kivy.uix.screenmanager import Screen, ScreenManager
 
-import socket
 from functools import partial
+from GUI.func.check_connection import check_connection
 
 def load_string():
     with open("css/login.seas", "r") as design:
@@ -15,22 +14,7 @@ def on_quit():
     App.get_running_app().stop()
 
 def on_enter(self):
-    def check_connection(s, dt):
-        connected = False
-        try:
-            socket.create_connection((socket.gethostbyname("www.google.com"), 80), 2)
-            connected = True
-        except:
-            pass
-        finally:
-            img_connection = s.ids["img_connection"]
-            if connected:
-                img_connection.source = "img/ico_connection_success.png"
-            else:
-                img_connection.source = "img/ico_connection_fail.png"
-            img_connection.reload()
-
-    Clock.schedule_interval(partial(check_connection, self), 1.0/60.0)
+    Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 1.0/60.0)
 
 def on_login(self, pages, screen):
     btn_login = self.ids["btn_login"]

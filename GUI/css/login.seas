@@ -25,7 +25,7 @@
 
         Image:
             id: img_connection
-            source: "img/ico_connection_fail.png"
+            source: "img/ico_connection_wait.png"
             allow_stretch: True
             size_hint: .05, .05
             pos_hint: {"center_x": .9, "center_y": .95}
@@ -67,65 +67,65 @@
             id: img_icon
             source: "img/img_icon.png"
             allow_stretch: True
-            size_hint: .1, .1
+            size_hint: .05, .05
             pos_hint: {"center_x": .55, "center_y": .2}
 
         Image:
             id: img_partner
             source: "img/img_partner.png"
             allow_stretch: True
-            size_hint: .1, .1
+            size_hint: .05, .05
             pos_hint: {"center_x": .6, "center_y": .2}
 
         Image:
             id: img_customer
             source: "img/img_customer.png"
             allow_stretch: True
-            size_hint: .1, .1
+            size_hint: .05, .05
             pos_hint: {"center_x": .65, "center_y": .2}
 
         Label:
             id: txt_info
             text: "Please make sure that you closed all programs running in the background before logging in"
-            text_size: root.width / 7, None
-            font_size: root.width / 150
+            text_size: root.width / 5, None
+            font_size: root.width / 140
             halign: "center"
             pos_hint: {"center_x": .4, "center_y": .2}
 
         GridLayout:
             rows: 3
             cols: 2
-            spacing: root.width / 75
+            spacing: root.width / 100
             padding: [root.width / 4, root.height / 3, root.width / 4, root.height / 3]
 
             Label:
                 id: txt_username
                 text: "Username:"
-                font_size: root.width / 75
+                font_size: root.width / 70
                 size_hint_x: None
-                width: root.width / 8
+                width: root.width / 7
 
             TextInput:
                 id: input_username
                 multiline: False
                 padding_y: [self.height / 3, 0]
-                font_size: root.width / 75
+                font_size: root.width / 70
                 size_hint_x: None
                 width: root.width / 3
 
             Label:
                 id: txt_password
                 text: "Password:"
-                font_size: root.width / 75
+                font_size: root.width / 70
                 size_hint_x: None
-                width: root.width / 8
+                width: root.width / 7
 
             TextInput:
                 id: input_password
                 password: True
                 multiline: False
                 padding_y: [self.height / 3, 0]
-                font_size: root.width / 75
+                font_size: root.width / 70
                 size_hint_x: None
                 width: root.width / 3
 
@@ -135,12 +135,12 @@
                 opacity: 0
                 allow_stretch: True
                 size_hint_x: None
-                width: root.width / 8
+                width: root.width / 7
 
             Button:
                 id: btn_login
                 text: "LOGIN"
-                font_size: root.width / 75
+                font_size: root.width / 70
                 size_hint_x: None
                 width: root.width / 3
                 on_press: root.on_login()

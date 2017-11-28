@@ -1,3 +1,12 @@
+<ImageButton@Button>:
+    source: None
+    opacity: .7
+
+    Image:
+        source: root.source
+        size: root.size
+        pos: root.pos
+
 <PgEducator>:
     FloatLayout:
         canvas:
@@ -6,3 +15,17 @@
                 source: "img/bg.png"
                 size: self.size
                 pos: self.pos
+
+        ImageButton:
+            id: btn_quit
+            source: "img/ico_quit.png"
+            size_hint: .05, .05
+            pos_hint: {"center_x": .95, "center_y": .95}
+            on_press: root.on_quit()
+
+        Image:
+            id: img_connection
+            source: "img/ico_connection_wait.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"center_x": .9, "center_y": .95}

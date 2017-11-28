@@ -7,11 +7,14 @@ from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 from pg import pgLogin, pgEducator
 
-with open("css/main.seas", "r") as design:
-    Builder.load_string(design.read())
-
 class PgEducator(Screen):
     pgEducator.load_string()
+
+    def on_quit(self):
+        pgLogin.on_quit()
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
 
 class PgLogin(Screen):
     pgLogin.load_string()
@@ -24,6 +27,9 @@ class PgLogin(Screen):
 
     def on_login(self):
         pgLogin.on_login(self, pages, screen)
+
+with open("css/splash.seas", "r") as design:
+    Builder.load_string(design.read())
 
 class PgSplash(Screen):
     def skip(self, dt):
