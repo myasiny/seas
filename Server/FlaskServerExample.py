@@ -1,11 +1,9 @@
-from __future__ import print_function, division
+#from __future__ import print_function, division
 
 from flask import Flask, request
 from flask_restful import Resource, Api
 
 from Models import DataBase
-
-
 from random import random
 
 app = Flask(__name__)
@@ -22,30 +20,26 @@ class getRandomNumbers(Resource):
         a = []
         for i in range(50):
             a.append(int(random()*10))
-
         return a
 
 class mainPage(Resource):
     def get(self):
         return "WELCOME"
 
-todos={}
-
-class putExample(Resource):
+class itemGetPutFromDB(Resource):
     def get(self, id):
-        return {id : todos[id]}
+        return db.execute("select * from TODOS where ID = ?", id)
 
     def put(self, id):
-        todos[id] = request.form["data"]
-        db.execute("Insert into TODOS(ID, Name) values(?,?)", (id, todos[id]))
-        return {id: todos[id]}
+        db.execute("Insert into TODOS(ID, Name) values(?,?)", (id, request.form["data"]))
+        return (id, request.form["data"])
 
 class getTodos(Resource):
     def get(self):
-        return todos
+        return db.execute("select * from TODOS")
 
 api.add_resource(getTodos, "/todos")
-api.add_resource(putExample, "/todos/<string:id>")
+api.add_resource(itemGetPutFromDB, "/todos/<string:id>")
 api.add_resource(printHello,"/hello")
 api.add_resource(getRandomNumbers, "/random")
 api.add_resource(mainPage,"/")

@@ -1,5 +1,5 @@
 # Abstract of DataBase operations
-
+import json
 import sqlite3
 
 class DataBase:
@@ -22,11 +22,12 @@ class DataBase:
     def deleteTable(self, tableName):
         command = "Drop table if exists %s" %(tableName)
         self.cursor.execute(command)
-        self.__commit
 
-    def execute(self, command, values):
-        self.cursor.execute(command, values)
+    def execute(self, command, *values):
+        rtn = self.cursor.execute(command, tuple(values)).fetchall()
         self.__commit()
+        print rtn
+        return rtn
 
     def __commit(self):
         self.db.commit()
