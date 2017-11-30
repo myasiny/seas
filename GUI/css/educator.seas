@@ -29,3 +29,47 @@
             allow_stretch: True
             size_hint: .05, .05
             pos_hint: {"center_x": .9, "center_y": .95}
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: .5, .1
+            pos_hint: {"center_x": .5, "center_y": .95}
+
+            Button:
+                text: "Button 1"
+                size_hint_x: .1
+                on_release: screen.current = "tab_one"
+
+            Button:
+                text: "Button 2"
+                size_hint_x: .1
+                on_release: screen.current = "tab_two"
+
+            Button:
+                text: "Button 3"
+                size_hint_x: .1
+
+            Button:
+                text: "Button 4"
+                size_hint_x: .1
+
+            Button:
+                text: "Button 5"
+                size_hint_x: .1
+
+        ScreenManager:
+            id: screen
+            Tab_One:
+            Tab_Two:
+
+<Tab_One>
+    name: "tab_one"
+
+    Label:
+        text: "Tab One"
+
+<Tab_Two>
+    name: "tab_two"
+
+    Label:
+        text: "Tab Two"

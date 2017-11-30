@@ -37,12 +37,13 @@ def on_login(self, pages, screen):
         img_status.reload()
 
         btn_login.disabled = False
-    elif input_username == "admin" and input_password == "123":
-        anim_status.stop(img_status)
-
-        img_status.source = "img/ico_success.png"
-        img_status.reload()
-
-        screen.switch_to(pages[2])
     else:
-        pass # TODO: Add User Login Through Server
+        if input_username == "admin" and input_password == "123":
+            anim_status.stop(img_status)
+
+            img_status.source = "img/ico_success.png"
+            img_status.reload()
+
+            screen.switch_to(pages[2])
+
+            # TODO: Add User Login Through Server

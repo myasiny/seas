@@ -7,6 +7,12 @@ from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 from pg import pgLogin, pgEducator
 
+class Tab_Two(Screen):
+    pass
+
+class Tab_One(Screen):
+    pass
+
 class PgEducator(Screen):
     pgEducator.load_string()
 
@@ -36,7 +42,7 @@ class PgSplash(Screen):
         screen.switch_to(pages[1])
 
     def on_enter(self, *args):
-        Clock.schedule_once(self.skip, 2)
+        Clock.schedule_once(self.skip, 1)
 
         txt_shortname = self.ids["txt_shortname"]
         txt_shortname.opacity = 0
@@ -44,7 +50,7 @@ class PgSplash(Screen):
         txt_longname = self.ids["txt_longname"]
         txt_longname.opacity = 0
 
-        anim_fade = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
+        anim_fade = Animation(opacity=1, duration=0.5) + Animation(opacity=0, duration=0.5)
         anim_fade.start(txt_shortname)
         anim_fade.start(txt_longname)
 
