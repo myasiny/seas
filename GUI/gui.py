@@ -7,20 +7,29 @@ from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 from pg import pgLogin, pgEducator
 
-class Tab_Two(Screen):
+class Tab_Exams(Screen):
     pass
 
-class Tab_One(Screen):
+class Tab_Stats(Screen):
+    pass
+
+class Tab_Lects(Screen):
+    pass
+
+class Tab_Profile(Screen):
     pass
 
 class PgEducator(Screen):
     pgEducator.load_string()
 
     def on_quit(self):
-        pgLogin.on_quit()
+        pgEducator.on_quit()
+
+    def on_logout(self):
+        pgEducator.on_logout(pages, screen)
 
     def on_enter(self, *args):
-        pgLogin.on_enter(self)
+        pgEducator.on_enter(self)
 
 class PgLogin(Screen):
     pgLogin.load_string()
@@ -46,13 +55,8 @@ class PgSplash(Screen):
 
         txt_shortname = self.ids["txt_shortname"]
         txt_shortname.opacity = 0
-
-        txt_longname = self.ids["txt_longname"]
-        txt_longname.opacity = 0
-
         anim_fade = Animation(opacity=1, duration=0.5) + Animation(opacity=0, duration=0.5)
         anim_fade.start(txt_shortname)
-        anim_fade.start(txt_longname)
 
 screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(PgSplash(name="PgSplash"))

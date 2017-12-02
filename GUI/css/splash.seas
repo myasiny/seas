@@ -1,14 +1,6 @@
 <PgSplash>:
-    FloatLayout:
-        Label:
-            id: txt_shortname
-            text: "SEAS"
-            font_size: root.width / 5
-            font_name: "font/LibelSuit.ttf"
-            pos_hint: {"center_x": .5, "center_y": .5}
-
-        Label:
-            id: txt_longname
-            text: "Smart Exam Administration System"
-            font_size: root.width / 50
-            pos_hint: {"center_x": .5, "center_y": .3}
+    Label:
+        id: txt_shortname
+        text: "SEAS"
+        font_size: root.width / 10
+        font_name: "font/LibelSuit.ttf"

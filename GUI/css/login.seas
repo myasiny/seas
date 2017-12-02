@@ -21,7 +21,7 @@
             source: "img/ico_quit.png"
             size_hint: .05, .05
             pos_hint: {"center_x": .95, "center_y": .95}
-            on_press: root.on_quit()
+            on_release: root.on_quit()
 
         Image:
             id: img_connection
