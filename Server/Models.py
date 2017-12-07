@@ -15,6 +15,7 @@ class DataBase:
         for i in columnNames:
             columns += "%s %s, " %(i, columnNames[i])
         columns = columns[0:len(columns)-2]
+        tableName = tableName.replace(" ", "_")
         command = "create table if not exists %s (%s)" %(tableName, columns)
         self.cursor.execute(command)
         self.__commit()
@@ -24,9 +25,8 @@ class DataBase:
         self.cursor.execute(command)
 
     def execute(self, command, *values):
-        rtn = self.cursor.execute(command, tuple(values)).fetchall()
+        rtn = self.cursor.execute(command, values).fetchall()
         self.__commit()
-        print rtn
         return rtn
 
     def __commit(self):
