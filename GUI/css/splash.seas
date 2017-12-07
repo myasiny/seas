@@ -1,6 +1,7 @@
 <PgSplash>:
-    Label:
-        id: txt_shortname
-        text: "SEAS"
-        font_size: root.width / 10
-        font_name: "font/LibelSuit.ttf"
+    Image:
+        id: img_wivern
+        source: "img/img_wivern.png"
+        allow_stretch: True
+        size_hint: .1, .1
+        pos_hint: {"center_x": .5, "center_y": .5}

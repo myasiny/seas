@@ -1,12 +1,3 @@
-<ImageButton@Button>:
-    source: None
-    opacity: .7
-
-    Image:
-        source: root.source
-        size: root.size
-        pos: root.pos
-
 <PgLogin>:
     FloatLayout:
         canvas:
@@ -16,131 +7,220 @@
                 size: self.size
                 pos: self.pos
 
-        ImageButton:
-            id: btn_quit
-            source: "img/ico_quit.png"
-            size_hint: .05, .05
-            pos_hint: {"center_x": .95, "center_y": .95}
-            on_release: root.on_quit()
+        Image:
+            id: img_box_topmid
+            source: "img/bg_box_small.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .3, .125
+            pos_hint: {"center_x": .5, "y": .875}
 
         Image:
-            id: img_connection
+            id: img_box_topleft
+            source: "img/bg_box_small.png"
+            opacity: .8
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .1
+            pos_hint: {"x": .2, "center_y": .95}
+
+        Image:
+            id: img_box_topright
+            source: "img/bg_box_small.png"
+            opacity: .8
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .1
+            pos_hint: {"x": .65, "center_y": .95}
+
+        Label:
+            id: txt_pagename
+            text: "LOGIN"
+            halign: "center"
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: root.width * 5 / 100
+            size_hint: .3, .125
+            pos_hint: {"center_x": .5, "y": .875}
+
+        Image:
+            id: img_shade_1_left
+            source: "img/bg_box_small.png"
+            opacity: .25
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .05, .1
+            pos_hint: {"x": .0, "center_y": .95}
+
+        Image:
+            id: img_shade_2_left
+            source: "img/bg_box_small.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .05, .1
+            pos_hint: {"x": .05, "center_y": .95}
+
+        Image:
+            id: img_box_seas
+            source: "img/bg_box_small.png"
+            opacity: .75
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .1, .1
+            pos_hint: {"x": .1, "center_y": .95}
+
+        Image:
+            id: img_seas
+            source: "img/img_seas.png"
+            allow_stretch: True
+            size_hint: .08, .08
+            pos_hint: {"x": .11, "center_y": .95}
+
+        Image:
+            id: img_shade_1_right
+            source: "img/bg_box_small.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .05, .1
+            pos_hint: {"x": .9, "center_y": .95}
+
+        Image:
+            id: img_shade_2_right
+            source: "img/bg_box_small.png"
+            opacity: .25
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .05, .1
+            pos_hint: {"x": .95, "center_y": .95}
+
+        Image:
+            id: img_box_clock
+            opacity: .75
+            source: "img/bg_box_small.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .1, .1
+            pos_hint: {"x": .8, "center_y": .95}
+
+        Label:
+            id: txt_clock
+            text: "  :  :  "
+            halign: "center"
+            multiline: False
+            font_name: "font/GetDigital.ttf"
+            font_size: root.width * 3 / 100
+            size_hint: .1, .1
+            pos_hint: {"x": .8, "center_y": .95}
+
+        Image:
+            id: pic_connection
             source: "img/ico_connection_wait.png"
             allow_stretch: True
             size_hint: .05, .05
-            pos_hint: {"center_x": .9, "center_y": .95}
+            pos_hint: {"x": .9, "center_y": .95}
+
+        Button:
+            text: "btn_quit"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .95, "center_y": .95}
+            on_release: root.on_quit()
 
         Image:
-            id: img_box_body
-            source: "img/bg_box_large.png"
-            keep_ratio: False
-            allow_stretch: True
-            size_hint: .5, .5
-            pos_hint: {"center_x": .5, "center_y": .5}
-
-        Image:
-            id: img_box_header
-            source: "img/bg_box_small_1.png"
-            opacity: .5
-            keep_ratio: False
-            allow_stretch: True
-            size_hint: .4, .1
-            pos_hint: {"center_x": .5, "center_y": .8}
-
-        Image:
-            id: img_box_footer
-            source: "img/bg_box_small_2.png"
-            opacity: .5
-            keep_ratio: False
-            allow_stretch: True
-            size_hint: .4, .1
-            pos_hint: {"center_x": .5, "center_y": .2}
-
-        Label:
-            id: txt_longname
-            text: "Smart Exam Administration System"
-            font_size: root.width / 35
-            font_name: "font/LibelSuit.ttf"
-            pos_hint: {"center_x": .5, "center_y": .8}
-
-        Image:
-            id: img_icon
-            source: "img/img_icon.png"
+            id: btn_quit
+            source: "img/ico_quit.png"
             allow_stretch: True
             size_hint: .05, .05
-            pos_hint: {"center_x": .55, "center_y": .2}
+            pos_hint: {"x": .95, "center_y": .95}
 
         Image:
             id: img_partner
             source: "img/img_partner.png"
             allow_stretch: True
             size_hint: .05, .05
-            pos_hint: {"center_x": .6, "center_y": .2}
+            pos_hint: {"center_x": .425, "y": .025}
+
+        Image:
+            id: img_developer
+            source: "img/img_developer.png"
+            allow_stretch: True
+            size_hint: .075, .075
+            pos_hint: {"center_x": .5, "y": .025}
 
         Image:
             id: img_customer
             source: "img/img_customer.png"
             allow_stretch: True
             size_hint: .05, .05
-            pos_hint: {"center_x": .65, "center_y": .2}
+            pos_hint: {"center_x": .575, "y": .025}
+
+        Image:
+            id: img_box_login
+            source: "img/bg_box_large.png"
+            opacity: .8
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .305, .505
+            pos_hint: {"center_x": .5, "center_y": .5}
+
+    GridLayout:
+        rows: 3
+        cols: 2
+        spacing: root.width / 100
+        size_hint: .3, .5
+        pos_hint: {"center_x": .5, "center_y": .5}
 
         Label:
-            id: txt_info
-            text: "Please make sure that you closed all programs running in the background before logging in"
-            text_size: root.width / 5, None
-            font_size: root.width / 140
-            halign: "center"
-            pos_hint: {"center_x": .4, "center_y": .2}
+            id: txt_username
+            text: "Username:"
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: root.width / 50
+            size_hint_x: None
+            width: root.width / 10
 
-        GridLayout:
-            rows: 3
-            cols: 2
-            spacing: root.width / 100
-            padding: [root.width / 4, root.height / 3, root.width / 4, root.height / 3]
+        TextInput:
+            id: input_username
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: root.width / 50
+            padding_y: [self.height / 3, 0]
+            size_hint_x: None
+            width: root.width * 1.9 / 10
 
-            Label:
-                id: txt_username
-                text: "Username:"
-                font_size: root.width / 70
-                size_hint_x: None
-                width: root.width / 7
+        Label:
+            id: txt_password
+            text: "Password:"
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: root.width / 50
+            size_hint_x: None
+            width: root.width / 10
 
-            TextInput:
-                id: input_username
-                multiline: False
-                padding_y: [self.height / 3, 0]
-                font_size: root.width / 70
-                size_hint_x: None
-                width: root.width / 3
+        TextInput:
+            id: input_password
+            password: True
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: root.width / 50
+            padding_y: [self.height / 3, 0]
+            size_hint_x: None
+            width: root.width * 1.9 / 10
 
-            Label:
-                id: txt_password
-                text: "Password:"
-                font_size: root.width / 70
-                size_hint_x: None
-                width: root.width / 7
+        Image:
+            id: img_status
+            source: "img/ico_connect.png"
+            opacity: 0
 
-            TextInput:
-                id: input_password
-                password: True
-                multiline: False
-                padding_y: [self.height / 3, 0]
-                font_size: root.width / 70
-                size_hint_x: None
-                width: root.width / 3
-
-            Image:
-                id: img_status
-                source: "img/ico_connect.png"
-                opacity: 0
-                allow_stretch: True
-                size_hint_x: None
-                width: root.width / 7
-
-            Button:
-                id: btn_login
-                text: "LOGIN"
-                font_size: root.width / 70
-                size_hint_x: None
-                width: root.width / 3
-                on_press: root.on_login()
+        Button:
+            id: btn_login
+            text: "ENTER"
+            font_name: "font/LibelSuit.ttf"
+            font_size: root.width / 50
+            background_normal: "img/bg_box_large.png"
+            background_down: "img/bg_box_large_down.png"
+            size_hint_x: None
+            width: root.width * 1.9 / 10
+            on_release: root.on_login()

@@ -1,14 +1,11 @@
 from kivy.app import App
+from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.animation import Animation
 from kivy.core.window import Window
-from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 from pg import pgLogin, pgEducator
-
-class Tab_Exams(Screen):
-    pass
 
 class Tab_Stats(Screen):
     pass
@@ -25,11 +22,11 @@ class PgEducator(Screen):
     def on_quit(self):
         pgEducator.on_quit()
 
-    def on_logout(self):
-        pgEducator.on_logout(pages, screen)
-
     def on_enter(self, *args):
         pgEducator.on_enter(self)
+
+    def on_logout(self):
+        pgEducator.on_logout(pages, screen)
 
 class PgLogin(Screen):
     pgLogin.load_string()
@@ -53,10 +50,10 @@ class PgSplash(Screen):
     def on_enter(self, *args):
         Clock.schedule_once(self.skip, 1)
 
-        txt_shortname = self.ids["txt_shortname"]
-        txt_shortname.opacity = 0
+        img_wivern = self.ids["img_wivern"]
+        img_wivern.opacity = 0
         anim_fade = Animation(opacity=1, duration=0.5) + Animation(opacity=0, duration=0.5)
-        anim_fade.start(txt_shortname)
+        anim_fade.start(img_wivern)
 
 screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(PgSplash(name="PgSplash"))

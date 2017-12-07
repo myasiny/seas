@@ -1,4 +1,4 @@
-import time
+from time import gmtime, strftime
 
 def date_time(clock, dt):
-    clock.text = time.asctime()
+    clock.text = strftime("%H:%M:%S", gmtime())
