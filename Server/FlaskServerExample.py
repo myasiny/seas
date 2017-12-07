@@ -2,7 +2,6 @@
 
 from flask import Flask, request
 from flask_restful import Resource, Api
-import datetime
 from Models import DataBase
 from sqlite3 import IntegrityError as ie
 
@@ -11,7 +10,7 @@ api = Api(app)
 db = DataBase("TestDB.db")
 db.createTable("TODOS", ID="Char(10)", Name="Char(50)")
 
-
+# Adds Organization to Database
 class signUpOrganization(Resource):
     def get(self):
         return db.execute("select * from Organizations")
@@ -32,6 +31,7 @@ class signUpOrganization(Resource):
             print "Integrity Error"
             pass
 
+# Adds new users to Database of organization
 class signUpUser(Resource):
     def get(self, organization):
         org = db.execute("select Name from Organizations where Name = (?)", organization).pop(0)[0].replace(" ", "_").lower()
@@ -52,6 +52,7 @@ class signUpUser(Resource):
         except ie:
             print "Integrity Error"
 
+# Checks user credentials.
 class signInUser(Resource):
     def get(self, organization, user):
         org = db.execute("select Name from Organizations where Name = (?)", organization).pop(0)[0].replace(" ",
