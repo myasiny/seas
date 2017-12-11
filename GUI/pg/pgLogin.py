@@ -16,7 +16,7 @@ def on_quit():
 
 def on_enter(self):
     Clock.schedule_interval(partial(date_time, self.ids["txt_clock"]), 1.0)
-    Clock.schedule_interval(partial(check_connection, self.ids["pic_connection"]), 1.0/60.0)
+    Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 1.0/60.0)
 
 def on_login(self, pages, screen):
     btn_login = self.ids["btn_login"]
@@ -24,6 +24,7 @@ def on_login(self, pages, screen):
 
     img_status = self.ids["img_status"]
     img_status.source = "img/ico_connect.png"
+    img_status.opacity = 0
     img_status.reload()
 
     anim_status = Animation(x=img_status.x+5, opacity=1, duration=1) + Animation(x=img_status.x-5, opacity=0, duration=1)
@@ -36,6 +37,7 @@ def on_login(self, pages, screen):
         anim_status.stop(img_status)
 
         img_status.source = "img/ico_warning.png"
+        img_status.opacity = 1
         img_status.reload()
 
         btn_login.disabled = False
@@ -44,8 +46,15 @@ def on_login(self, pages, screen):
             anim_status.stop(img_status)
 
             img_status.source = "img/ico_success.png"
+            img_status.opacity = 1
             img_status.reload()
 
-            screen.switch_to(pages[2])
+            btn_login.disabled = False
 
+            try:
+                screen.switch_to(pages[2])
+            except:
+                screen.current = pages[2].name
+        else:
+            pass
             # TODO: Add User Login Through Server

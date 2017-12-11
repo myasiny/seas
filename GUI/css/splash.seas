@@ -2,6 +2,7 @@
     Image:
         id: img_wivern
         source: "img/img_wivern.png"
+        opacity: 0
         allow_stretch: True
         size_hint: .1, .1
         pos_hint: {"center_x": .5, "center_y": .5}

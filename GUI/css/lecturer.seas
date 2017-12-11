@@ -1,0 +1,452 @@
+<PgLecturer>:
+    FloatLayout:
+        canvas:
+            Rectangle:
+                id: img_bg
+                source: "img/bg.png"
+                size: self.size
+                pos: self.pos
+
+        Image:
+            id: img_box_topmid
+            source: "img/bg_box_small.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .3, .125
+            pos_hint: {"center_x": .5, "y": .875}
+
+        Image:
+            id: img_box_topleft
+            source: "img/bg_box_small.png"
+            opacity: .8
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .1
+            pos_hint: {"x": .2, "center_y": .95}
+
+        Image:
+            id: img_box_topright
+            source: "img/bg_box_small.png"
+            opacity: .8
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .1
+            pos_hint: {"x": .65, "center_y": .95}
+
+        Image:
+            id: pic_user
+            source: "img/pic_user.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"center_x": .5, "center_y": .965}
+
+        Label:
+            id: txt_username
+            text: "..."
+            halign: "center"
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: root.width * 2 / 100
+            size_hint: .3, .09
+            pos_hint: {"center_x": .5, "y": .875}
+
+        Button:
+            id: btn_start
+            text: ""
+            opacity: 0
+            size_hint: .1, .1
+            pos_hint: {"x": .1, "center_y": .95}
+            on_release: screen.current = "tab_start"
+
+        Button:
+            id: btn_profile
+            text: ""
+            opacity: 0
+            size_hint: .3, .125
+            pos_hint: {"center_x": .5, "y": .875}
+            on_release: screen.current = "tab_profile"
+
+        Button:
+            id: btn_lects
+            text: "Lectures"
+            font_name: "font/LibelSuit.ttf"
+            font_size: root.width / 50
+            background_normal: "img/bg_box_small.png"
+            background_down: "img/bg_box_small_down.png"
+            size_hint: .15, .1
+            pos_hint: {"x": .2, "center_y": .95}
+            on_release: screen.current = "tab_lects"
+
+        Button:
+            id: btn_stats
+            text: "Statistics"
+            font_name: "font/LibelSuit.ttf"
+            font_size: root.width / 50
+            background_normal: "img/bg_box_small.png"
+            background_down: "img/bg_box_small_down.png"
+            size_hint: .15, .1
+            pos_hint: {"x": .65, "center_y": .95}
+            on_release: screen.current = "tab_stats"
+
+        Image:
+            id: img_shade_1_left
+            source: "img/bg_box_small.png"
+            opacity: .25
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .05, .1
+            pos_hint: {"x": .0, "center_y": .95}
+
+        Image:
+            id: img_shade_2_left
+            source: "img/bg_box_small.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .05, .1
+            pos_hint: {"x": .05, "center_y": .95}
+
+        Image:
+            id: img_box_seas
+            source: "img/bg_box_small.png"
+            opacity: .75
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .1, .1
+            pos_hint: {"x": .1, "center_y": .95}
+
+        Image:
+            id: img_seas
+            source: "img/img_seas.png"
+            allow_stretch: True
+            size_hint: .08, .08
+            pos_hint: {"x": .11, "center_y": .95}
+
+        Button:
+            text: "btn_logout"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .0, "center_y": .95}
+            on_release: root.on_logout()
+
+        Image:
+            id: btn_logout
+            source: "img/ico_logout.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .0, "center_y": .95}
+
+        Image:
+            id: img_shade_1_right
+            source: "img/bg_box_small.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .05, .1
+            pos_hint: {"x": .9, "center_y": .95}
+
+        Image:
+            id: img_shade_2_right
+            source: "img/bg_box_small.png"
+            opacity: .25
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .05, .1
+            pos_hint: {"x": .95, "center_y": .95}
+
+        Image:
+            id: img_box_clock
+            opacity: .75
+            source: "img/bg_box_small.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .1, .1
+            pos_hint: {"x": .8, "center_y": .95}
+
+        Label:
+            id: txt_clock
+            text: "  :  :  "
+            halign: "center"
+            multiline: False
+            font_name: "font/GetDigital.ttf"
+            font_size: root.width * 3 / 100
+            size_hint: .1, .1
+            pos_hint: {"x": .8, "center_y": .95}
+
+        Image:
+            id: img_connection
+            source: "img/ico_connection_wait.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .9, "center_y": .95}
+
+        Button:
+            text: "btn_quit"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .95, "center_y": .95}
+            on_release: root.on_quit()
+
+        Image:
+            id: btn_quit
+            source: "img/ico_quit.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .95, "center_y": .95}
+
+    ScreenManager:
+        id: screen
+        Tab_Start:
+        Tab_Profile:
+        Tab_Lects:
+        Tab_Stats:
+
+<Tab_Start>
+    name: "tab_start"
+
+    Label:
+        id: txt_welcome_title
+        text: "Welcome"
+        color: 0,0,0,0.5
+        halign: "center"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 5 / 100
+        size_hint: .4, .1
+        pos_hint: {"center_x": .25, "center_y": .75}
+
+    Label:
+        id: txt_welcome_body
+        text: "Wivern Software is a startup company located at Incubation Centre of Istanbul Sehir University. The company is currently focused on its forthcoming project called Smart Exam Administration System, also known as SEAS which aims to develop a computer-based examination system for avoiding paper usage, providing fast & reliable evaluation process, preventing cheating issues and many more!"
+        color: 0,0,0,0.75
+        halign: "center"
+        multiline: True
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.width * 4 / 10, None
+        size_hint_y: None
+        height: self.texture_size[1]
+        pos_hint: {"center_x": .25, "center_y": .45}
+
+    Image:
+        id: img_twitter
+        source: "img/ico_twitter.png"
+        allow_stretch: True
+        size_hint: .05, .05
+        pos_hint: {"center_x": .2, "center_y": .1}
+
+    Button:
+        text: "btn_twitter"
+        opacity: 0
+        size_hint: .05, .05
+        pos_hint: {"center_x": .2, "center_y": .1}
+        on_release: root.follow("twitter")
+
+    Image:
+        id: img_instagram
+        source: "img/ico_instagram.png"
+        allow_stretch: True
+        size_hint: .05, .05
+        pos_hint: {"center_x": .25, "center_y": .1}
+
+    Button:
+        text: "btn_instagram"
+        opacity: 0
+        size_hint: .05, .05
+        pos_hint: {"center_x": .25, "center_y": .1}
+        on_release: root.follow("instagram")
+
+    Image:
+        id: img_linkedin
+        source: "img/ico_linkedin.png"
+        allow_stretch: True
+        size_hint: .05, .05
+        pos_hint: {"center_x": .3, "center_y": .1}
+
+    Button:
+        text: "btn_linkedin"
+        opacity: 0
+        size_hint: .05, .05
+        pos_hint: {"center_x": .3, "center_y": .1}
+        on_release: root.follow("linkedin")
+
+    Image:
+        id: img_divider
+        source: "img/bg_box_small.png"
+        opacity: .2
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .001, .7
+        pos_hint: {"center_x": .5, "center_y": .5}
+
+    Label:
+        id: txt_help_title
+        text: "Help"
+        color: 0,0,0,0.5
+        halign: "center"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 5 / 100
+        size_hint: .4, .1
+        pos_hint: {"center_x": .75, "center_y": .75}
+
+    Image:
+        id: bg_faq_1
+        source: "img/bg_box_small_down.png"
+        opacity: .5
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .4, .075
+        pos_hint: {"center_x": .75, "center_y": .6}
+
+    Label:
+        id: bg_faq_1_click
+        text: "+"
+        color: 0,0,0,0.5
+        font_size: root.width * 2 / 100
+        size_hint: .05, .05
+        pos_hint: {"x": .9, "center_y": .6}
+
+    Button:
+        id: btn_faq_1
+        text: "btn_faq_1"
+        opacity: 0
+        size_hint: .4, .075
+        pos_hint: {"center_x": .75, "center_y": .6}
+        on_release: root.faq(1)
+
+    Label:
+        id: txt_faq_1
+        text: "How to bla bla bla bla?"
+        color: 0,0,0,0.75
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.width * 4 / 10, None
+        size_hint_y: None
+        height: self.texture_size[1]
+        pos_hint: {"center_x": .77, "center_y": .6}
+
+    Image:
+        id: bg_faq_2
+        source: "img/bg_box_small_down.png"
+        opacity: .5
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .4, .075
+        pos_hint: {"center_x": .75, "center_y": .5}
+
+    Label:
+        id: bg_faq_2_click
+        text: "+"
+        color: 0,0,0,0.5
+        font_size: root.width * 2 / 100
+        size_hint: .05, .05
+        pos_hint: {"x": .9, "center_y": .5}
+
+    Button:
+        id: btn_faq_2
+        text: "btn_faq_2"
+        opacity: 0
+        size_hint: .4, .075
+        pos_hint: {"center_x": .75, "center_y": .5}
+        on_release: root.faq(2)
+
+    Label:
+        id: txt_faq_2
+        text: "How to bla bla bla bla?"
+        color: 0,0,0,0.75
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.width * 4 / 10, None
+        size_hint_y: None
+        height: self.texture_size[1]
+        pos_hint: {"center_x": .77, "center_y": .5}
+
+    Image:
+        id: bg_faq_3
+        source: "img/bg_box_small_down.png"
+        opacity: .5
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .4, .075
+        pos_hint: {"center_x": .75, "center_y": .4}
+
+    Label:
+        id: bg_faq_3_click
+        text: "+"
+        color: 0,0,0,0.5
+        font_size: root.width * 2 / 100
+        size_hint: .05, .05
+        pos_hint: {"x": .9, "center_y": .4}
+
+    Button:
+        id: btn_faq_3
+        text: "btn_faq_3"
+        opacity: 0
+        size_hint: .4, .075
+        pos_hint: {"center_x": .75, "center_y": .4}
+        on_release: root.faq(3)
+
+    Label:
+        id: txt_faq_3
+        text: "How to bla bla bla bla?"
+        color: 0,0,0,0.75
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.width * 4 / 10, None
+        size_hint_y: None
+        height: self.texture_size[1]
+        pos_hint: {"center_x": .77, "center_y": .4}
+
+    Image:
+        id: bg_faq_4
+        source: "img/bg_box_small_down.png"
+        opacity: .5
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .4, .075
+        pos_hint: {"center_x": .75, "center_y": .3}
+
+    Label:
+        id: bg_faq_4_click
+        text: "+"
+        color: 0,0,0,0.5
+        font_size: root.width * 2 / 100
+        size_hint: .05, .05
+        pos_hint: {"x": .9, "center_y": .3}
+
+    Button:
+        id: btn_faq_4
+        text: "btn_faq_4"
+        opacity: 0
+        size_hint: .4, .075
+        pos_hint: {"center_x": .75, "center_y": .3}
+        on_release: root.faq(4)
+
+    Label:
+        id: txt_faq_4
+        text: "How to bla bla bla bla?"
+        color: 0,0,0,0.75
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.width * 4 / 10, None
+        size_hint_y: None
+        height: self.texture_size[1]
+        pos_hint: {"center_x": .77, "center_y": .3}
+
+<Tab_Profile>
+    name: "tab_profile"
+
+<Tab_Lects>
+    name: "tab_lects"
+
+<Tab_Stats>
+    name: "tab_stats"

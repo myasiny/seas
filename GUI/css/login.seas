@@ -115,7 +115,7 @@
             pos_hint: {"x": .8, "center_y": .95}
 
         Image:
-            id: pic_connection
+            id: img_connection
             source: "img/ico_connection_wait.png"
             allow_stretch: True
             size_hint: .05, .05

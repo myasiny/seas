@@ -5,7 +5,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, pgEducator
+from pg import pgLogin, pgLecturer, tabStart
 
 class Tab_Stats(Screen):
     pass
@@ -16,17 +16,24 @@ class Tab_Lects(Screen):
 class Tab_Profile(Screen):
     pass
 
-class PgEducator(Screen):
-    pgEducator.load_string()
+class Tab_Start(Screen):
+    def faq(self, no):
+        tabStart.faq(self, no)
+
+    def follow(self, on):
+        tabStart.follow(on)
+
+class PgLecturer(Screen):
+    pgLecturer.load_string()
 
     def on_quit(self):
-        pgEducator.on_quit()
+        pgLecturer.on_quit()
 
     def on_enter(self, *args):
-        pgEducator.on_enter(self)
+        pgLecturer.on_enter(self)
 
     def on_logout(self):
-        pgEducator.on_logout(pages, screen)
+        pgLecturer.on_logout(pages, screen)
 
 class PgLogin(Screen):
     pgLogin.load_string()
@@ -40,27 +47,32 @@ class PgLogin(Screen):
     def on_login(self):
         pgLogin.on_login(self, pages, screen)
 
-with open("css/splash.seas", "r") as design:
-    Builder.load_string(design.read())
-
 class PgSplash(Screen):
+    with open("css/splash.seas", "r") as design:
+        Builder.load_string(design.read())
+
     def skip(self, dt):
         screen.switch_to(pages[1])
 
     def on_enter(self, *args):
         Clock.schedule_once(self.skip, 1)
 
-        img_wivern = self.ids["img_wivern"]
-        img_wivern.opacity = 0
         anim_fade = Animation(opacity=1, duration=0.5) + Animation(opacity=0, duration=0.5)
-        anim_fade.start(img_wivern)
+        anim_fade.start(self.ids["img_wivern"])
 
-screen = ScreenManager(transition=FadeTransition())
-screen.add_widget(PgSplash(name="PgSplash"))
+'''
+    SMART EXAM ADMINISTRATION SYSTEM
+    --- -- --- -- --- -- --- -- ---
+    PAGE DESIGNS & RELATED FUNCTIONS    => ABOVE
+    APP AND GENERAL SETTINGS            => BELOW
+'''
 
 pages = [PgSplash(name="PgSplash"),
          PgLogin(name="PgLogin"),
-         PgEducator(name="PgEducator")]
+         PgLecturer(name="PgLecturer")]
+
+screen = ScreenManager(transition=FadeTransition())
+screen.add_widget(PgSplash(name="PgSplash"))
 
 class SeasApp(App):
     def build(self):
