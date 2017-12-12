@@ -17,7 +17,7 @@ def faq(self, no):
 
     popup_content = GridLayout(cols=1)
     popup = Popup(title=self.ids["txt_faq_%s" % no].text,
-                  content=popup_content, separator_color=[255/255.,165/255.,0/255.,1.],
+                  content=popup_content, separator_color=[211/255.,211/255.,211/255.,1.],
                   size_hint=(None, None), size=(self.width/2, self.height/2))
     if no == 1:
         popup_content.add_widget(Label(text="Hello World 1", font_name="font/LibelSuit.ttf", font_size=self.width/50))
@@ -31,7 +31,7 @@ def faq(self, no):
                                     font_name="font/LibelSuit.ttf",
                                     font_size=self.width/100,
                                     background_normal="img/bg_box_small.png",
-                                    background_down="img/bg_box_popup_down.png",
+                                    background_down="img/bg_box_small_popup.png",
                                     size_hint_y=None, height=self.height/20,
                                     on_release=popup.dismiss))
     popup.bind(on_dismiss=partial(faq_status, self.ids["bg_faq_%s_click" % no]))

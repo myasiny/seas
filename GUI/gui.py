@@ -29,6 +29,9 @@ class PgLecturer(Screen):
     def on_quit(self):
         pgLecturer.on_quit()
 
+    def on_pre_enter(self, *args):
+        pgLecturer.on_pre_enter(self)
+
     def on_enter(self, *args):
         pgLecturer.on_enter(self)
 
@@ -55,11 +58,11 @@ class PgLogin(Screen):
     def on_quit(self):
         pgLogin.on_quit()
 
-    def on_login(self):
-        pgLogin.on_login(self, pages, screen)
-
     def on_enter(self, *args):
         pgLogin.on_enter(self)
+
+    def on_login(self):
+        pgLogin.on_login(self, pages, screen)
 
 class PgSplash(Screen):
     with open("css/splash.seas", "r") as design:

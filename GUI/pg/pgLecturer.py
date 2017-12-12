@@ -4,6 +4,7 @@ from kivy.clock import Clock
 
 from functools import partial
 from GUI.func.date_time import date_time
+from GUI.func.round_image import round_image
 from GUI.func.check_connection import check_connection
 
 def load_string():
@@ -15,6 +16,10 @@ def on_quit():
 
 def on_logout(pages, screen):
     screen.current = pages[1].name
+
+def on_pre_enter(self):
+    round_image()
+    self.ids["pic_user"].reload()
 
 def on_enter(self):
     Clock.schedule_interval(partial(date_time, self.ids["txt_clock"]), 1.0)

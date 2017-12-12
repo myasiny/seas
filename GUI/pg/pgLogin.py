@@ -6,8 +6,8 @@ from kivy.animation import Animation
 import sys
 sys.path.append("../../..")
 
-from functools import partial
 from Server import DatabaseAPI
+from functools import partial
 from GUI.func.date_time import date_time
 from GUI.func.check_connection import check_connection
 
@@ -60,4 +60,10 @@ def on_login(self, pages, screen):
             except:
                 screen.current = pages[2].name
         else:
-            pass
+            anim_status.stop(img_status)
+
+            img_status.source = "img/ico_fail.png"
+            img_status.opacity = 1
+            img_status.reload()
+
+            btn_login.disabled = False
