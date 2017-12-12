@@ -38,14 +38,28 @@ class PgLecturer(Screen):
 class PgLogin(Screen):
     pgLogin.load_string()
 
+    def __init__(self, **kwargs):
+        super(PgLogin, self).__init__(**kwargs)
+        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self._on_keyboard_down)
+
+    def _keyboard_closed(self):
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard = None
+
+    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        if keycode[1] == 'enter':
+            pgLogin.on_login(self, pages, screen)
+        return True
+
     def on_quit(self):
         pgLogin.on_quit()
 
-    def on_enter(self, *args):
-        pgLogin.on_enter(self)
-
     def on_login(self):
         pgLogin.on_login(self, pages, screen)
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
 
 class PgSplash(Screen):
     with open("css/splash.seas", "r") as design:

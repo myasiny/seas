@@ -1,9 +1,8 @@
+import pyHook
 import win32gui
 import win32con
-import pyHook
 
 def OnKeyboardEvent(event):
-
     if event.Key.lower() in ["lwin","escape","f4","lmenu","rmenu"]:
         return False
     else:
@@ -19,6 +18,6 @@ def on():
             win32gui.ShowWindow(window, win32con.SW_MAXIMIZE)
             win32gui.SetWindowPos(window, win32con.HWND_TOPMOST, 0, 0, 0, 0, (win32con.SWP_NOMOVE | win32con.SWP_NOSIZE))
     except:
-        print "Program closed."
+        print "SEAS [ERROR]: onTop > Except > Program Closed"
 
 on()

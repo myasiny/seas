@@ -61,4 +61,3 @@ def on_login(self, pages, screen):
                 screen.current = pages[2].name
         else:
             pass
-            # TODO: Add User Login Through Server

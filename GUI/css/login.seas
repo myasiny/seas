@@ -183,6 +183,7 @@
 
         TextInput:
             id: input_username
+            write_tab: False
             multiline: False
             font_name: "font/LibelSuit.ttf"
             font_size: root.width / 50
@@ -202,6 +203,7 @@
         TextInput:
             id: input_password
             password: True
+            write_tab: False
             multiline: False
             font_name: "font/LibelSuit.ttf"
             font_size: root.width / 50

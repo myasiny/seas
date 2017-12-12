@@ -1,6 +1,5 @@
 # Abstract of DataBase operations
 import sqlite3
-from flaskext.mysql import MySQL
 
 class SqlLiteDB:
     def __init__(self, dbName):
@@ -31,12 +30,3 @@ class SqlLiteDB:
 
     def __commit(self):
         self.db.commit()
-
-
-class MySQLdb:
-    def __init__(self, dbName):
-        if ".db" not in dbName:
-            self.db = MySQL.connect(dbName+".db")
-        else:
-            self.db = MySQL.connect(dbName)
-        self.cursor = self.db.cursor()
