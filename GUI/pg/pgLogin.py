@@ -3,7 +3,11 @@ from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.animation import Animation
 
+import sys
+sys.path.append("../../..")
+
 from functools import partial
+from Server import DatabaseAPI
 from GUI.func.date_time import date_time
 from GUI.func.check_connection import check_connection
 
@@ -42,7 +46,7 @@ def on_login(self, pages, screen):
 
         btn_login.disabled = False
     else:
-        if input_username == "admin" and input_password == "123":
+        if DatabaseAPI.signIn("http://localhost:8888", "istanbul sehir university", input_username, input_password) is not None:
             anim_status.stop(img_status)
 
             img_status.source = "img/ico_success.png"
