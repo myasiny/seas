@@ -57,15 +57,13 @@ class signInUser(Resource):
     def get(self, organization, user):
         org = db.execute("select Name from Organizations where Name = (?)", organization).pop(0)[0].replace(" ",
                                                                                                         "_").lower()
-        try:
-            passwd = db.execute("select Password from %s where Username = (?)" %org, user).pop(0)[0]
-        except IndexError:
-            return None
+        passwd = db.execute("select Password from %s where Username = (?)" %org, user).pop(0)[0]
         command = "select Username, Name, Surname, ID, Role from %s where Username=(?)" %org
         if passwd == request.form["Password"]:
-            return db.execute(command, request.form["Username"])
+            #return db.execute(command, request.form["Username"])
+            return True
         else:
-            return None
+            return False
 
 
 

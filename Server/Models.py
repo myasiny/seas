@@ -1,5 +1,7 @@
 # Abstract of DataBase operations
 import sqlite3
+from flaskext.mysql import MySQL
+
 
 class SqlLiteDB:
     def __init__(self, dbName):
@@ -25,6 +27,32 @@ class SqlLiteDB:
 
     def execute(self, command, *values):
         rtn = self.cursor.execute(command, values).fetchall()
+        self.__commit()
+        return rtn
+
+    def __commit(self):
+        self.db.commit()
+
+
+class MySQLdb:
+    def __init__(self, dbName, app):
+        mysql = MySQL()
+        app.config['MYSQL_DATABASE_USER'] = "admin"
+        app.config['MYSQL_DATABASE_PASSWORD'] = '1234'
+        app.config['MYSQL_DATABASE_DB'] = dbName
+        app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+        app.config['MYSQL_DATABASE_PORT'] = 8000
+        self.name = dbName
+
+        mysql.init_app(app)
+
+        self.db = mysql.connect()
+        self.cursor = self.db.cursor()
+
+
+
+    def execute(self, command):
+        rtn = self.cursor.execute(command)
         self.__commit()
         return rtn
 
