@@ -9,5 +9,5 @@ from DatabaseAPI import *
 #addUser("http://localhost:8888", "Istanbul Sehir University", "213944444", "Ali Emre", "Oz", "alioz", "12345", role="student")
 #addUser("http://localhost:8888", "Istanbul Sehir University", "000000000", "Admin", "Admin", "admin", "12345", role="Admin")
 
-#print signIn("http://localhost:8888", "Istanbul Sehir University", "admin", "1234")
+print signIn("http://localhost:8888", "Istanbul Sehir University", "aliozz", "12345")
 #print signIn("http://localhost:8888", "Istanbul Sehir University", "admin", "12345")

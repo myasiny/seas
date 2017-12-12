@@ -2,12 +2,12 @@
 
 from flask import Flask, request
 from flask_restful import Resource, Api
-from Models import DataBase
+from Models import SqlLiteDB
 from sqlite3 import IntegrityError as ie
 
 app = Flask(__name__)
 api = Api(app)
-db = DataBase("TestDB.db")
+db = SqlLiteDB("TestDB.db")
 db.createTable("TODOS", ID="Char(10)", Name="Char(50)")
 
 # Adds Organization to Database
@@ -57,12 +57,15 @@ class signInUser(Resource):
     def get(self, organization, user):
         org = db.execute("select Name from Organizations where Name = (?)", organization).pop(0)[0].replace(" ",
                                                                                                         "_").lower()
-        passwd = db.execute("select Password from %s where Username = (?)" %org, user).pop(0)[0]
+        try:
+            passwd = db.execute("select Password from %s where Username = (?)" %org, user).pop(0)[0]
+        except IndexError:
+            return None
         command = "select Username, Name, Surname, ID, Role from %s where Username=(?)" %org
         if passwd == request.form["Password"]:
             return db.execute(command, request.form["Username"])
         else:
-            return "Wrong Password"
+            return None
 
 
 
