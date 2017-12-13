@@ -1,6 +1,6 @@
 # Abstract of DataBase operations
 import sqlite3
-from flaskext.mysql import MySQL
+#from flaskext.mysql import MySQL
 
 
 class SqlLiteDB:
@@ -33,7 +33,7 @@ class SqlLiteDB:
     def __commit(self):
         self.db.commit()
 
-
+"""
 class MySQLdb:
     def __init__(self, dbName, app):
         mysql = MySQL()
@@ -80,3 +80,4 @@ class MySQLdb:
 
     def __commit(self):
         self.db.commit()
+"""
