@@ -5,7 +5,7 @@ def addOrganization(URL, Organization):
     url = URL+"/organizations"
     return put(url, data={"data": Organization}).json()
 
-def addUser(URL, organization, id, name, surname, username, password, role="student"):
+def addUser(URL, organization, id, name, surname, username, password, Email, Department ,role="student"):
     url = URL+"/organizations/%s" %organization.replace(" ", "_").lower()
     return put(url,data={
                         "ID": id,
@@ -13,7 +13,9 @@ def addUser(URL, organization, id, name, surname, username, password, role="stud
                         "Surname": surname,
                         "Role": role,
                         "Username": username,
-                        "Password": password
+                        "Password": password,
+                        "Email": Email,
+                        "Department": Department
                         }).json()
 
 def signIn(URL, organization, username, password):

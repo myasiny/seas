@@ -71,7 +71,7 @@ class MySQLdb:
 
 
     def execute(self, command):
-        print command
+        # print command
         self.cursor.execute(command)
 
         rtn = self.cursor.fetchone()

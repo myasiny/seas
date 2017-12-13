@@ -26,7 +26,8 @@ class signUpOrganization(Resource):
                    "Surname CHAR(20) NOT NULL,"
                    "Username CHAR(25) NOT NULL,"
                    "Password CHAR(25) NOT NULL,"
-                   "Email CHAR(25) ,"
+                   "Email CHAR(60) ,"
+                   "Department Char(60)"
                    "PRIMARY KEY (ID),"
                    "FOREIGN KEY (Domain) REFERENCES Organizations (ID) "
                    ")" %org)
@@ -78,16 +79,19 @@ class signUpUser(Resource):
     def put(self, organization):
 
         domain = db.execute("SELECT ID FROM Organizations WHERE Name = ('"+ organization.replace(" ", "_").lower() +"')")[0]
-        print domain
-        command = "Insert into %s_members(Domain, ID, Role, Name, Surname, Username, Password) values('%d', %s, '%s', '%s', '%s', '%s', '%s')" \
+        command = "Insert into %s_members(Domain, ID, Role, Name, Surname, Username, Password, Email, Department) " \
+                  "values('%d', %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s')" \
                   %(organization.replace(" ", "_").lower(),
-                   domain ,
-                   request.form["ID"],
-                   request.form["Role"],
-                   request.form["Name"],
-                   request.form["Surname"],
-                   request.form["Username"],
-                   request.form["Password"])
+                    domain ,
+                    request.form["ID"],
+                    request.form["Role"],
+                    request.form["Name"],
+                    request.form["Surname"],
+                    request.form["Username"],
+                    request.form["Password"],
+                    request.form["Email"],
+                    request.form["Department"]
+                    )
         db.execute(command)
 
 
@@ -103,7 +107,10 @@ class signInUser(Resource):
         except TypeError:
             return "Wrong Username!"
         if passwd == request.form["Password"]:
-            return db.execute("select Username, Name, Surname, ID, Role from %s_members where Username=('%s')" %(org, request.form["Username"]))
+            rtn = list(db.execute("select Username, Name, Surname, ID, Role, Email, Department "
+                              "from %s_members where Username=('%s')" %(org, request.form["Username"])))
+            rtn.append(org)
+            return rtn
         else:
             return "Wrong Password"
 
