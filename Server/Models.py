@@ -1,4 +1,3 @@
-# Abstract of DataBase operations
 import sqlite3
 #from flaskext.mysql import MySQL
 
