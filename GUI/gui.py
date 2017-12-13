@@ -5,7 +5,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, pgLecturer, tabStart
+from pg import pgLogin, pgLecturer, tabStart, tabProfile
 
 class Tab_Stats(Screen):
     pass
@@ -14,7 +14,8 @@ class Tab_Lects(Screen):
     pass
 
 class Tab_Profile(Screen):
-    pass
+    def on_pre_enter(self, *args):
+        tabProfile.on_pre_enter(self)
 
 class Tab_Start(Screen):
     def faq(self, no):
@@ -26,9 +27,6 @@ class Tab_Start(Screen):
 class PgLecturer(Screen):
     pgLecturer.load_string()
 
-    def on_quit(self):
-        pgLecturer.on_quit()
-
     def on_pre_enter(self, *args):
         pgLecturer.on_pre_enter(self)
 
@@ -37,6 +35,9 @@ class PgLecturer(Screen):
 
     def on_logout(self):
         pgLecturer.on_logout(pages, screen)
+
+    def on_quit(self):
+        pgLecturer.on_quit()
 
 class PgLogin(Screen):
     pgLogin.load_string()
@@ -55,14 +56,14 @@ class PgLogin(Screen):
             pgLogin.on_login(self, pages, screen)
         return True
 
-    def on_quit(self):
-        pgLogin.on_quit()
-
     def on_enter(self, *args):
         pgLogin.on_enter(self)
 
     def on_login(self):
         pgLogin.on_login(self, pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit()
 
 class PgSplash(Screen):
     with open("css/splash.seas", "r") as design:

@@ -1,9 +1,10 @@
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 def pie():
     colors = ['yellowgreen', 'gold', 'lightskyblue', 'lightcoral']
@@ -18,7 +19,6 @@ def pie():
     return plt
 
 class MyApp(App):
-
     def build(self):
         box = BoxLayout()
         box.add_widget(FigureCanvasKivyAgg(pie().gcf()))

@@ -1,11 +1,8 @@
-import sys
-sys.path.append("..")
-
 from PIL import Image, ImageOps, ImageDraw
 
 def round_image():
     try:
-        size = (128, 128)
+        size = (512, 512)
         mask = Image.new('L', size, 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((0, 0) + size, fill=255)
@@ -14,4 +11,4 @@ def round_image():
         output.putalpha(mask)
         output.save("img/pic_user.png")
     except:
-        print ("SEAS [ERROR]: round_image > Except > Program Closed")
+        print ("SEAS [ERROR]: round_image > Except > Image Shaping Failed")

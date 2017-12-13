@@ -46,7 +46,13 @@ def on_login(self, pages, screen):
 
         btn_login.disabled = False
     else:
-        if DatabaseAPI.signIn("http://localhost:8888", "istanbul sehir university", input_username, input_password) is not None:
+        try:
+            data = DatabaseAPI.signIn("http://10.50.81.24:8888", "istanbul sehir university", input_username, input_password)
+        except:
+            data = None
+            print ("SEAS [ERROR]: pgLogin > Except > Server Communication Failed")
+
+        if isinstance(data, list):
             anim_status.stop(img_status)
 
             img_status.source = "img/ico_success.png"
@@ -54,6 +60,17 @@ def on_login(self, pages, screen):
             img_status.reload()
 
             btn_login.disabled = False
+
+            temp_data = open("data/temp_data.txt", "w+")
+            temp_data.write(data[0] + "\n") # nick
+            temp_data.write(data[1] + "\n") # name
+            temp_data.write(data[2] + "\n") # surname
+            temp_data.write(data[3] + "\n") # id
+            temp_data.write(data[4] + "\n") # role
+            temp_data.write(data[5] + "\n") # email
+            temp_data.write(data[6] + "\n") # department
+            temp_data.write(data[7] + "\n") # university
+            temp_data.close()
 
             try:
                 screen.switch_to(pages[2])

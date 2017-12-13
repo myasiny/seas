@@ -34,11 +34,18 @@
             pos_hint: {"x": .65, "center_y": .95}
 
         Image:
+            id: pic_user_border
+            source: "img/pic_round_border.png"
+            allow_stretch: True
+            size_hint: .0675, .0675
+            pos_hint: {"center_x": .5, "center_y": .96}
+
+        Image:
             id: pic_user
             source: "img/pic_user.png"
             allow_stretch: True
-            size_hint: .05, .05
-            pos_hint: {"center_x": .5, "center_y": .965}
+            size_hint: .065, .065
+            pos_hint: {"center_x": .5, "center_y": .96}
 
         Label:
             id: txt_username
@@ -48,7 +55,7 @@
             font_name: "font/LibelSuit.ttf"
             font_size: root.width * 2 / 100
             size_hint: .3, .09
-            pos_hint: {"center_x": .5, "y": .875}
+            pos_hint: {"center_x": .5, "y": .855}
 
         Button:
             id: btn_start
@@ -444,6 +451,40 @@
 
 <Tab_Profile>
     name: "tab_profile"
+
+    Image:
+        id: bg_user
+        source: "img/bg_box_large.png"
+        opacity: .5
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .4, .25
+        pos_hint: {"center_x": .5, "center_y": .7}
+
+    Image:
+        id: pic_user_border
+        source: "img/pic_round_border.png"
+        allow_stretch: True
+        size_hint: .21, .21
+        pos_hint: {"center_x": .625, "center_y": .7}
+
+    Image:
+        id: pic_user
+        source: "img/pic_user.png"
+        allow_stretch: True
+        size_hint: .2, .2
+        pos_hint: {"center_x": .625, "center_y": .7}
+
+    Label:
+        id: txt_username
+        text: "..."
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.size
+        size_hint: .19, .05
+        pos_hint: {"x": .31, "center_y": .8}
 
 <Tab_Lects>
     name: "tab_lects"
