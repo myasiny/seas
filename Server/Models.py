@@ -49,10 +49,32 @@ class MySQLdb:
         self.db = mysql.connect()
         self.cursor = self.db.cursor()
 
+        self.execute("CREATE TABLE IF NOT EXISTS Organizations "
+                   "( "
+                   "Name CHAR(40) NOT NULL, "
+                   "ID INT NOT NULL AUTO_INCREMENT, "
+                   "PRIMARY KEY (ID),"
+                   "UNIQUE (Name) )")
+
+        self.execute("CREATE TABLE IF NOT EXISTS Roles "
+                        "( "
+                        "Name CHAR(40) NOT NULL, "
+                        "ID INT NOT NULL AUTO_INCREMENT, "
+                        "PRIMARY KEY (ID),"
+                        "UNIQUE (Name) "
+                        ")")
+        try:
+            for i in ["admin", "student", "lecturer"]:
+                self.execute("INSERT INTO Roles ( Name ) values ('%s')" %i)
+        except:
+            pass
 
 
     def execute(self, command):
-        rtn = self.cursor.execute(command)
+        print command
+        self.cursor.execute(command)
+
+        rtn = self.cursor.fetchone()
         self.__commit()
         return rtn
 
