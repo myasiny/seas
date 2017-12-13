@@ -1,9 +1,9 @@
-from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 def pie():
     colors = ['yellowgreen', 'gold', 'lightskyblue', 'lightcoral']
