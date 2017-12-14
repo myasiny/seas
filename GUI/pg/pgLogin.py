@@ -4,15 +4,15 @@ from kivy.clock import Clock
 from kivy.animation import Animation
 
 import sys
-sys.path.append("../../..")
+sys.path.append("../..")
 
 from Server import DatabaseAPI
 from functools import partial
 from GUI.func.date_time import date_time
 from GUI.func.check_connection import check_connection
 
-def load_string():
-    with open("css/login.seas", "r") as design:
+def load_string(name):
+    with open("css/" + name + ".seas", "r") as design:
         Builder.load_string(design.read())
 
 def on_quit():
@@ -20,7 +20,7 @@ def on_quit():
 
 def on_enter(self):
     Clock.schedule_interval(partial(date_time, self.ids["txt_clock"]), 1.0)
-    Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 1.0/60.0)
+    Clock.schedule_once(partial(check_connection, self.ids["img_connection"]))
 
 def on_login(self, pages, screen):
     btn_login = self.ids["btn_login"]
@@ -61,16 +61,10 @@ def on_login(self, pages, screen):
 
             btn_login.disabled = False
 
-            temp_data = open("data/temp_data.txt", "w+")
-            temp_data.write(data[0] + "\n") # nick
-            temp_data.write(data[1] + "\n") # name
-            temp_data.write(data[2] + "\n") # surname
-            temp_data.write(data[3] + "\n") # id
-            temp_data.write(data[4] + "\n") # role
-            temp_data.write(data[5] + "\n") # email
-            temp_data.write(data[6] + "\n") # department
-            temp_data.write(data[7] + "\n") # university
-            temp_data.close()
+            with open("data/temp_login.txt", "w+") as temp_login:
+                for d in data:
+                    temp_login.write(str(d) + "\n")
+                temp_login.close()
 
             try:
                 screen.switch_to(pages[2])
@@ -84,3 +78,6 @@ def on_login(self, pages, screen):
             img_status.reload()
 
             btn_login.disabled = False
+
+def on_check_connection(self):
+    Clock.schedule_once(partial(check_connection, self.ids["img_connection"]))

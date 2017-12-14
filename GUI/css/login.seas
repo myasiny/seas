@@ -114,6 +114,13 @@
             size_hint: .1, .1
             pos_hint: {"x": .8, "center_y": .95}
 
+        Button:
+            text: "btn_connection"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .9, "center_y": .95}
+            on_release: root.on_check_connection()
+
         Image:
             id: img_connection
             source: "img/ico_connection_wait.png"

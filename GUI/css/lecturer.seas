@@ -180,6 +180,13 @@
             size_hint: .1, .1
             pos_hint: {"x": .8, "center_y": .95}
 
+        Button:
+            text: "btn_connection"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .9, "center_y": .95}
+            on_release: root.on_check_connection()
+
         Image:
             id: img_connection
             source: "img/ico_connection_wait.png"
@@ -485,6 +492,50 @@
         text_size: self.size
         size_hint: .19, .05
         pos_hint: {"x": .31, "center_y": .8}
+
+    Label:
+        id: txt_usermail
+        text: "..."
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.size
+        size_hint: .19, .05
+        pos_hint: {"x": .31, "center_y": .75}
+
+    Label:
+        id: txt_userdept
+        text: "..."
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.size
+        size_hint: .19, .05
+        pos_hint: {"x": .31, "center_y": .7}
+
+    Label:
+        id: txt_useruniv
+        text: "..."
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.size
+        size_hint: .19, .05
+        pos_hint: {"x": .31, "center_y": .65}
+
+    Label:
+        id: txt_userrole
+        text: "..."
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.size
+        size_hint: .19, .05
+        pos_hint: {"x": .31, "center_y": .6}
 
 <Tab_Lects>
     name: "tab_lects"
