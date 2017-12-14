@@ -1,17 +1,22 @@
-from requests import put, get, ConnectionError
-from multiprocessing import Process
+from requests import put, get, ConnectionError, Timeout
+
 def testConnection(URL):
-    try:
-        p = Process(target=get(URL))
-        p.start()
-        p.join(10)
-        if p.is_alive():
-            p.terminate()
-            p.join()
-            return False
-        return True
-    except ConnectionError:
+    import threading
+    class check(threading.Thread):
+        def run(self):
+            try:
+                return True
+            except ConnectionError:
+                return False
+
+    Check = check()
+    Check.start()
+    Check.join(5)
+    if Check.is_alive:
         return False
+    else:
+        return Check
+
 
 
 def addOrganization(URL, Organization):
