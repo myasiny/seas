@@ -1,21 +1,11 @@
 from requests import put, get, ConnectionError, Timeout
 
 def testConnection(URL):
-    import threading
-    class check(threading.Thread):
-        def run(self):
-            try:
-                return True
-            except ConnectionError:
-                return False
-
-    Check = check()
-    Check.start()
-    Check.join(5)
-    if Check.is_alive:
+    try:
+        get(URL)
+        return True
+    except:
         return False
-    else:
-        return Check
 
 
 
