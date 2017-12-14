@@ -1,8 +1,8 @@
-fatihgulmez
-Fatih
-gulmez
-213962062
+alioz
+Ali Emre
+Oz
+213944444
 student
-fatihgulmez@std.sehir.edu.tr
+alioz@std.sehir.edu.tr
 Computer Science
 istanbul_sehir_university

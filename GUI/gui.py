@@ -5,7 +5,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, pgLecturer, tabStart, tabProfile
+from pg import pgLogin, pgLecturer, tabStart, tabProfile, tabLects, tabStats
 
 class Tab_Stats(Screen):
     pass
@@ -17,11 +17,14 @@ class Tab_Profile(Screen):
     def on_pre_enter(self, *args):
         tabProfile.on_pre_enter(self)
 
+    def on_change(self):
+        tabProfile.on_change(self)
+
 class Tab_Start(Screen):
-    def faq(self, no):
+    def on_faq(self, no):
         tabStart.faq(self, no)
 
-    def follow(self, on):
+    def on_follow(self, on):
         tabStart.follow(on)
 
 class PgLecturer(Screen):
@@ -63,6 +66,7 @@ class PgLogin(Screen):
         pgLogin.on_enter(self)
 
     def on_login(self):
+        #pages.append(PgLecturer(name="PgLecturer"))
         pgLogin.on_login(self, pages, screen)
 
     def on_quit(self):
