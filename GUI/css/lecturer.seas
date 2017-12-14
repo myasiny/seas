@@ -1,3 +1,5 @@
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+
 <PgLecturer>:
     FloatLayout:
         canvas:
@@ -668,7 +670,6 @@
 
     TextInput:
         id: input_new_mail
-        password: True
         write_tab: False
         multiline: False
         font_name: "font/LibelSuit.ttf"
@@ -804,7 +805,7 @@
         font_size: root.width * 2 / 100
         text_size: self.size
         size_hint: .25, .1
-        pos_hint: {"center_x": .5, "y": .39}
+        pos_hint: {"center_x": .825, "y": .39}
 
     Label:
         id: txt_log_2
@@ -816,7 +817,7 @@
         font_size: root.width * 2 / 100
         text_size: self.size
         size_hint: .25, .1
-        pos_hint: {"center_x": .5, "y": .29}
+        pos_hint: {"center_x": .825, "y": .29}
 
     Label:
         id: txt_log_3
@@ -828,7 +829,7 @@
         font_size: root.width * 2 / 100
         text_size: self.size
         size_hint: .25, .1
-        pos_hint: {"center_x": .5, "y": .19}
+        pos_hint: {"center_x": .825, "y": .19}
 
     Label:
         id: txt_log_4
@@ -840,10 +841,90 @@
         font_size: root.width * 2 / 100
         text_size: self.size
         size_hint: .25, .1
-        pos_hint: {"center_x": .5, "y": .09}
+        pos_hint: {"center_x": .825, "y": .09}
+
+    Image:
+        id: img_fail
+        source: "img/ico_fail.png"
+        opacity: 0
+        allow_stretch: True
+        size_hint: .05, .05
+        pos_hint: {"center_x": .285, "y": .4}
+
+#: import ListItemButton kivy.uix.listview.ListItemButton
+<ListItemButton>:
+    deselected_color: 0,0,0,1
+    font_size: root.width * 3 / 100
+    size: (100, "50dp")
 
 <Tab_Lects>
     name: "tab_lects"
+
+    Image:
+        id: bg_lects
+        source: "img/bg_box_small.png"
+        opacity: .25
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .45, .8
+        pos_hint: {"center_x": .25, "y": .025}
+
+    Image:
+        id: bg_lects_front
+        source: "img/bg_box_small.png"
+        opacity: .5
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .425, .725
+        pos_hint: {"center_x": .25, "center_y": .4}
+
+    Label:
+        id: txt_lects
+        text: "Lectures"
+        color: 0,0,0,0.75
+        halign: "left"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.size
+        size_hint: .4, .05
+        pos_hint: {"center_x": .25, "y": .765}
+
+    ListView:
+        id: list_lects
+        adapter: ListAdapter(data=[], cls=ListItemButton)
+        size_hint: .4, .7
+        pos_hint: {"center_x": .25, "center_y": .4}
+
+    Image:
+        id: bg_draft
+        source: "img/bg_box_small.png"
+        opacity: .25
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .45, .8
+        pos_hint: {"center_x": .75, "y": .025}
+
+    Image:
+        id: bg_draft_front
+        source: "img/bg_box_small.png"
+        opacity: .5
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: .425, .725
+        pos_hint: {"center_x": .75, "center_y": .4}
+
+    Label:
+        id: txt_draft
+        text: "..."
+        color: 0,0,0,0.75
+        halign: "right"
+        multiline: False
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        text_size: self.size
+        size_hint: .4, .05
+        pos_hint: {"center_x": .75, "y": .765}
 
 <Tab_Stats>
     name: "tab_stats"

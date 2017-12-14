@@ -11,7 +11,8 @@ class Tab_Stats(Screen):
     pass
 
 class Tab_Lects(Screen):
-    pass
+    def on_pre_enter(self, *args):
+        tabLects.on_pre_enter(self)
 
 class Tab_Profile(Screen):
     def on_pre_enter(self, *args):

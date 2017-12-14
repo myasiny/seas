@@ -47,6 +47,7 @@ def on_login(self, pages, screen):
         btn_login.disabled = False
     else:
         try:
+            #data = ["LOCAL TEST","DELETE","LOCAL TEST","DELETE","LOCAL TEST","DELETE","LOCAL TEST","DELETE"]
             data = DatabaseAPI.signIn("http://10.50.81.24:8888", "istanbul sehir university", input_username, input_password)
         except:
             data = None
@@ -61,7 +62,7 @@ def on_login(self, pages, screen):
 
             btn_login.disabled = False
 
-            with open("data/temp_login.txt", "w+") as temp_login:
+            with open("data/temp_login.seas", "w+") as temp_login:
                 for d in data:
                     temp_login.write(str(d) + "\n")
                 temp_login.close()
