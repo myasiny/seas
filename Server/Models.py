@@ -35,6 +35,7 @@ class SqlLiteDB:
 
 
 class MySQLdb:
+
     def __init__(self, dbName, app, user="admin", password="1234"):
         mysql = MySQL()
         app.config['MYSQL_DATABASE_USER'] = "admin"
@@ -63,12 +64,12 @@ class MySQLdb:
                         "PRIMARY KEY (ID),"
                         "UNIQUE (Name) "
                         ")")
+
         try:
             for i in ["admin", "student", "lecturer"]:
                 self.execute("INSERT INTO Roles ( Name ) values ('%s')" %i)
         except:
             pass
-
 
     def execute(self, command):
         # print command
@@ -82,6 +83,9 @@ class MySQLdb:
         self.db.commit()
 
 
+    def getOrganization(self):
+        pass
+
 class Password:
     def hashPassword(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -90,6 +94,31 @@ class Password:
         return pwd_context.verify(password, self.password_hash)
     def verify_password_hash(self, password, hashed_password):
         return pwd_context.verify(password, hashed_password)
+
+class Credential:
+    def __init__(self, username, password, db, org):
+        self.username = username
+        self.password = password
+        self.db = db
+        self.org = org
+        pass
+
+    def getPassword(self):
+        return self.db.execute("SELECT Password FROM %s_members WHERE Username = '%s'" %(self.org, self.username))[0]
+
+    def checkPassword(self):
+        return Password().verify_password_hash(self.password, self.getPassword())
+
+    def getRole(self):
+        self.db.execute("SELECT Role FROM %s_members WHERE Username='%s'" %(self.org, self.username))
+
+    def getPermissions(self):
+        pass
+
+
+
+
+
 
 if __name__ == "__main__":
     a = Password("12345")

@@ -26,15 +26,16 @@ class signUpOrganization(Resource):
         db.execute("CREATE TABLE IF NOT EXISTS %s_members ("
                    "Domain INT NOT NULL,"
                    "ID INT NOT NULL,"
-                   "Role CHAR(10) NOT NULL,"
+                   "Role INT NOT NULL,"
                    "Name CHAR(25) NOT NULL, "
                    "Surname CHAR(20) NOT NULL,"
                    "Username CHAR(25) NOT NULL,"
                    "Password CHAR(128) NOT NULL,"
                    "Email CHAR(60) ,"
-                   "Department Char(60)"
+                   "Department Char(60),"
                    "PRIMARY KEY (ID),"
-                   "FOREIGN KEY (Domain) REFERENCES Organizations (ID) "
+                   "FOREIGN KEY (Domain) REFERENCES Organizations (ID), "
+                   "FOREIGN KEY (Role) REFERENCES roles(ID)"
                    ")" %org)
 
         db.execute("CREATE TABLE IF NOT EXISTS %s_courses ("
@@ -68,6 +69,14 @@ class signUpOrganization(Resource):
 
         db.execute("ALTER TABLE %s_registrations ADD UNIQUE Index(Student_ID, Course_id)" % org)
 
+        db.execute("CREATE TABLE IF NOT EXISTS %s_roles ("
+                   "Domain INT NOT NULL,"
+                   "UserID INT NOT NULL,"
+                   "RoleID INT NOT NULL,"
+                   "FOREIGN KEY (Domain) REFERENCES Organizations (ID),"
+                   "FOREIGN KEY (UserID) REFERENCES %s_members (ID),"
+                   "FOREIGN KEY (RoleID) REFERENCES roles (ID))" %(org, org))
+
         try:
             db.execute("INSERT INTO Organizations ( Name ) VALUES ( '%s' )" % org)
         except:
@@ -89,15 +98,22 @@ class signUpUser(Resource):
                   %(organization.replace(" ", "_").lower(),
                     domain ,
                     request.form["ID"],
-                    request.form["Role"],
+                    db.execute("SELECT ID FROM roles WHERE Name = '%s'" %request.form["Role"])[0],
                     request.form["Name"],
                     request.form["Surname"],
                     request.form["Username"],
-                    Password(request.form["Password"]).hashPassword(),
+                    Password().hashPassword(request.form["Password"]),
                     request.form["Email"],
                     request.form["Department"]
                     )
         db.execute(command)
+
+        db.execute("INSERT INTO %s_roles (Domain, UserID, RoleID) values ( '%s', '%s', '%s')" %(
+            organization.replace(" ", "_").lower(),
+            db.execute("SELECT ID FROM organizations WHERE Name = '%s'" % organization.replace(" ", "_").lower())[0],
+            db.execute("SELECT ID FROM %s_members WHERE Username = '%s'" % (organization.replace(" ", "_").lower(), request.form["Username"]))[0],
+            db.execute("SELECT ID FROM roles WHERE Name = '%s'" % request.form["Role"])[0]
+        ))
 
 
 # Checks user credentials.
@@ -109,6 +125,7 @@ class signInUser(Resource):
             if Password().verify_password_hash(request.form["Password"] ,passwd):
                 rtn = list(db.execute("select Username, Name, Surname, ID, Role, Email, Department "
                                       "from %s_members where Username=('%s')" % (org, request.form["Username"])))
+                rtn[4] = db.execute("SELECT Name FROM roles WHERE ID = '%s'" %rtn[4])[0]
                 rtn.append(org)
                 return rtn
             else:
