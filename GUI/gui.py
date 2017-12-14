@@ -25,22 +25,25 @@ class Tab_Start(Screen):
         tabStart.follow(on)
 
 class PgLecturer(Screen):
-    pgLecturer.load_string()
+    pgLogin.load_string("lecturer")
 
     def on_pre_enter(self, *args):
         pgLecturer.on_pre_enter(self)
 
     def on_enter(self, *args):
-        pgLecturer.on_enter(self)
+        pgLogin.on_enter(self)
 
     def on_logout(self):
         pgLecturer.on_logout(pages, screen)
 
     def on_quit(self):
-        pgLecturer.on_quit()
+        pgLogin.on_quit()
+
+    def on_check_connection(self):
+        pgLogin.on_check_connection(self)
 
 class PgLogin(Screen):
-    pgLogin.load_string()
+    pgLogin.load_string("login")
 
     def __init__(self, **kwargs):
         super(PgLogin, self).__init__(**kwargs)
@@ -64,6 +67,9 @@ class PgLogin(Screen):
 
     def on_quit(self):
         pgLogin.on_quit()
+
+    def on_check_connection(self):
+        pgLogin.on_check_connection(self)
 
 class PgSplash(Screen):
     with open("css/splash.seas", "r") as design:
