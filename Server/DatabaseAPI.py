@@ -1,4 +1,12 @@
-from requests import put, get
+from requests import put, get, ConnectionError
+
+def testConnection(URL):
+    try:
+        get(URL)
+        return True
+    except ConnectionError:
+        return False
+
 
 def addOrganization(URL, Organization):
     Organization = Organization.replace(" ", "_").lower()

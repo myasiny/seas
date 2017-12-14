@@ -1,5 +1,6 @@
 import sqlite3
 from flaskext.mysql import MySQL
+from passlib.apps import custom_app_context as pwd_context
 
 
 class SqlLiteDB:
@@ -34,7 +35,7 @@ class SqlLiteDB:
 
 
 class MySQLdb:
-    def __init__(self, dbName, app):
+    def __init__(self, dbName, app, user="admin", password="1234"):
         mysql = MySQL()
         app.config['MYSQL_DATABASE_USER'] = "admin"
         app.config['MYSQL_DATABASE_PASSWORD'] = '1234'
@@ -79,3 +80,18 @@ class MySQLdb:
 
     def __commit(self):
         self.db.commit()
+
+
+class Password:
+    def hashPassword(self, password):
+        self.password_hash = pwd_context.encrypt(password)
+        return self.password_hash
+    def verify_password(self, password):
+        return pwd_context.verify(password, self.password_hash)
+    def verify_password_hash(self, password, hashed_password):
+        return pwd_context.verify(password, hashed_password)
+
+if __name__ == "__main__":
+    a = Password("12345")
+    a.hashPassword()
+    print a.verify_password("1234")

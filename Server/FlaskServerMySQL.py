@@ -2,7 +2,7 @@
 
 from flask import Flask, request
 from flask_restful import Resource, Api
-from Models import MySQLdb
+from Models import MySQLdb, Password
 
 app = Flask(__name__)
 api = Api(app)
@@ -10,6 +10,11 @@ api = Api(app)
 db = MySQLdb("TestDB", app)
 
 # Adds Organization to Database
+
+class testConnection(Resource):
+    def get(self):
+        return True
+
 class signUpOrganization(Resource):
     def get(self):
         return db.execute("select * from Organizations")
@@ -25,7 +30,7 @@ class signUpOrganization(Resource):
                    "Name CHAR(25) NOT NULL, "
                    "Surname CHAR(20) NOT NULL,"
                    "Username CHAR(25) NOT NULL,"
-                   "Password CHAR(25) NOT NULL,"
+                   "Password CHAR(128) NOT NULL,"
                    "Email CHAR(60) ,"
                    "Department Char(60)"
                    "PRIMARY KEY (ID),"
@@ -88,7 +93,7 @@ class signUpUser(Resource):
                     request.form["Name"],
                     request.form["Surname"],
                     request.form["Username"],
-                    request.form["Password"],
+                    Password(request.form["Password"]).hashPassword(),
                     request.form["Email"],
                     request.form["Department"]
                     )
@@ -99,26 +104,27 @@ class signUpUser(Resource):
 class signInUser(Resource):
     def get(self, organization, user):
         org = db.execute("SELECT Name FROM Organizations WHERE Name = '"+ organization.replace(" ", "_").lower() +"'")[0]
-        print org
         try:
             passwd = db.execute("select Password from %s_members where Username = '%s'" %(org,user))[0]
+            if Password().verify_password_hash(request.form["Password"] ,passwd):
+                rtn = list(db.execute("select Username, Name, Surname, ID, Role, Email, Department "
+                                      "from %s_members where Username=('%s')" % (org, request.form["Username"])))
+                rtn.append(org)
+                return rtn
+            else:
+                return "Wrong Password"
         except IndexError:
             return None
         except TypeError:
             return "Wrong Username!"
-        if passwd == request.form["Password"]:
-            rtn = list(db.execute("select Username, Name, Surname, ID, Role, Email, Department "
-                              "from %s_members where Username=('%s')" %(org, request.form["Username"])))
-            rtn.append(org)
-            return rtn
-        else:
-            return "Wrong Password"
+
 
 
 
 api.add_resource(signUpUser, "/organizations/<string:organization>")
 api.add_resource(signUpOrganization, "/organizations")
 api.add_resource(signInUser, "/organizations/<string:organization>/<string:user>")
+api.add_resource(testConnection, "/")
 
 if __name__ == "__main__":
-    app.run(host = "10.50.81.24", port = 8888)
+    app.run(host = "localhost", port = 8888)
