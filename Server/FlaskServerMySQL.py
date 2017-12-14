@@ -127,4 +127,4 @@ api.add_resource(signInUser, "/organizations/<string:organization>/<string:user>
 api.add_resource(testConnection, "/")
 
 if __name__ == "__main__":
-    app.run(host = "localhost", port = 8888)
+    app.run(host = "10.50.81.24", port = 8888)

@@ -3,7 +3,7 @@ from DatabaseAPI import *
 
 ### Sample usage of API
 
-print testConnection("http://localhost:8888")
+print testConnection("http://10.52.0.17:8888")
 
 # print addOrganization("http://10.50.81.24:8888", "Istanbul Sehir University")
 # print addOrganization("http://10.50.81.24:8888", "Istanbul Technical University")

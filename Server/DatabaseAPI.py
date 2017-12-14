@@ -1,8 +1,14 @@
 from requests import put, get, ConnectionError
-
+from multiprocessing import Process
 def testConnection(URL):
     try:
-        get(URL)
+        p = Process(target=get(URL))
+        p.start()
+        p.join(10)
+        if p.is_alive():
+            p.terminate()
+            p.join()
+            return False
         return True
     except ConnectionError:
         return False
