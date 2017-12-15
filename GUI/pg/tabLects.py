@@ -5,4 +5,7 @@ def on_pre_enter(self):
     for lect in temp_lects.readlines():
         data_lects.append(lect.replace("\n", "").title())
 
-    #open("data/temp_lects.seas", "w+").close()
+def on_detail(self): # TODO: Show details when lecture selected
+    txt_hint = self.ids["txt_hint"]
+    txt_hint.size_hint_y = None
+    txt_hint.height = "0dp"

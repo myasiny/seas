@@ -333,7 +333,7 @@
 
     Label:
         id: txt_faq_1
-        text: "How to bla bla bla bla?"
+        text: "How to lorem ipsum?"
         color: 0,0,0,0.75
         halign: "left"
         multiline: False
@@ -371,7 +371,7 @@
 
     Label:
         id: txt_faq_2
-        text: "How to bla bla bla bla?"
+        text: "How to lorem ipsum?"
         color: 0,0,0,0.75
         halign: "left"
         multiline: False
@@ -409,7 +409,7 @@
 
     Label:
         id: txt_faq_3
-        text: "How to bla bla bla bla?"
+        text: "How to lorem ipsum?"
         color: 0,0,0,0.75
         halign: "left"
         multiline: False
@@ -447,7 +447,7 @@
 
     Label:
         id: txt_faq_4
-        text: "How to bla bla bla bla?"
+        text: "How to lorem ipsum?"
         color: 0,0,0,0.75
         halign: "left"
         multiline: False
@@ -614,6 +614,7 @@
         padding_y: [self.height / 4, 0]
         size_hint: .275, .075
         pos_hint: {"center_x": .175, "y": .385}
+        on_text: root.on_text("current_password")
 
     Image:
         id: img_divider
@@ -645,6 +646,7 @@
         padding_y: [self.height / 4, 0]
         size_hint: .275, .075
         pos_hint: {"center_x": .175, "y": .255}
+        on_text: root.on_text("new_password")
 
     Label:
         id: txt_divider
@@ -677,6 +679,7 @@
         padding_y: [self.height / 4, 0]
         size_hint: .275, .075
         pos_hint: {"center_x": .175, "y": .14}
+        on_text: root.on_text("new_mail")
 
     Button:
         id: btn_settings
@@ -856,6 +859,7 @@
     deselected_color: 0,0,0,1
     font_size: root.width * 3 / 100
     size: (100, "50dp")
+    on_press: app.tab_lects.on_detail()
 
 <Tab_Lects>
     name: "tab_lects"
@@ -897,7 +901,7 @@
         pos_hint: {"center_x": .25, "center_y": .4}
 
     Image:
-        id: bg_draft
+        id: bg_details
         source: "img/bg_box_small.png"
         opacity: .25
         keep_ratio: False
@@ -906,7 +910,7 @@
         pos_hint: {"center_x": .75, "y": .025}
 
     Image:
-        id: bg_draft_front
+        id: bg_details_front
         source: "img/bg_box_small.png"
         opacity: .5
         keep_ratio: False
@@ -915,8 +919,8 @@
         pos_hint: {"center_x": .75, "center_y": .4}
 
     Label:
-        id: txt_draft
-        text: "..."
+        id: txt_details
+        text: "Details"
         color: 0,0,0,0.75
         halign: "right"
         multiline: False
@@ -925,6 +929,16 @@
         text_size: self.size
         size_hint: .4, .05
         pos_hint: {"center_x": .75, "y": .765}
+
+    Label:
+        id: txt_hint
+        text: "Please select a course in order to see its details"
+        color: 0,0,0,0.25
+        halign: "center"
+        font_name: "font/LibelSuit.ttf"
+        font_size: root.width * 2 / 100
+        size_hint: .4, .4
+        pos_hint: {"center_x": .75, "center_y": .5}
 
 <Tab_Stats>
     name: "tab_stats"

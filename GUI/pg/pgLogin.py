@@ -47,8 +47,8 @@ def on_login(self, pages, screen):
         btn_login.disabled = False
     else:
         try:
-            #data = ["LOCAL TEST","DELETE","LOCAL TEST","DELETE","LOCAL TEST","DELETE","LOCAL TEST","DELETE"]
-            data = DatabaseAPI.signIn("http://10.50.81.24:8888", "istanbul sehir university", input_username, input_password)
+            data = ["loremipsum","Lorem","Ipsum","Ipsum","Lorem Ipsumer","lorem@ipsum.edu","Lorem Department","Ipsum University"]
+            #data = DatabaseAPI.signIn("http://10.50.81.24:8888", "istanbul sehir university", input_username, input_password)
         except:
             data = None
             print ("SEAS [ERROR]: pgLogin > Except > Server Communication Failed")

@@ -12,6 +12,28 @@ def on_pre_enter(self):
     self.ids["txt_useruniv"].text = (data_login[7].replace("\n", " ")).replace("_", " ").title()
     self.ids["txt_userrole"].text = (data_login[4].replace("\n", " ")).replace("_", " ").title()
 
+    self.ids["input_new_password"].disabled = True
+    self.ids["input_new_mail"].disabled = True
+
+def on_text(self, this):
+    if this == "current_password":
+        if not self.ids["input_current_password"].text == "":
+            self.ids["input_new_password"].disabled = False
+            self.ids["input_new_mail"].disabled = False
+        else:
+            self.ids["input_new_password"].disabled = True
+            self.ids["input_new_mail"].disabled = True
+    elif this == "new_password":
+        if not self.ids["input_new_password"].text == "":
+            self.ids["input_new_mail"].disabled = True
+        else:
+            self.ids["input_new_mail"].disabled = False
+    elif this == "new_mail":
+        if not self.ids["input_new_mail"].text == "":
+            self.ids["input_new_password"].disabled = True
+        else:
+            self.ids["input_new_password"].disabled = False
+
 def on_change(self): # TODO: Change personal settings
     img_fail = self.ids["img_fail"]
     img_fail.opacity = 0
@@ -23,9 +45,9 @@ def on_change(self): # TODO: Change personal settings
     if input_current_password.text == "":
         anim_appear = Animation(opacity=1, duration=1)
         anim_appear.start(img_fail)
-    elif input_current_password.text != "" and input_new_password.text == "":
+    elif input_new_password.text == "":
         pass
-    elif input_current_password.text != "" and input_new_mail.text == "":
+    elif input_new_mail.text == "":
         pass
     else:
         pass

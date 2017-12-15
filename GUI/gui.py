@@ -1,3 +1,6 @@
+from kivy.config import Config
+Config.set("input", "mouse", "mouse, multitouch_on_demand")
+
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.clock import Clock
@@ -14,9 +17,15 @@ class Tab_Lects(Screen):
     def on_pre_enter(self, *args):
         tabLects.on_pre_enter(self)
 
+    def on_detail(self):
+        tabLects.on_detail(self)
+
 class Tab_Profile(Screen):
     def on_pre_enter(self, *args):
         tabProfile.on_pre_enter(self)
+
+    def on_text(self, this):
+        tabProfile.on_text(self, this)
 
     def on_change(self):
         tabProfile.on_change(self)
@@ -104,6 +113,8 @@ screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(PgSplash(name="PgSplash"))
 
 class SeasApp(App):
+    tab_lects = Tab_Lects()
+
     def build(self):
         screen.current = "PgSplash"
         return screen
