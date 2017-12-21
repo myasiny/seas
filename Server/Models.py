@@ -88,7 +88,7 @@ class MySQLdb:
 
 class Password:
     def hashPassword(self, password):
-        self.password_hash = pwd_context.encrypt(password)
+        self.password_hash = pwd_context.encrypt(password, )
         return self.password_hash
     def verify_password(self, password):
         return pwd_context.verify(password, self.password_hash)
@@ -107,7 +107,7 @@ class Credential:
         return self.db.execute("SELECT Password FROM %s_members WHERE Username = '%s'" %(self.org, self.username))[0]
 
     def checkPassword(self):
-        return Password().verify_password_hash(self.password, self.getPassword())
+        return Password().verify_password_hash(Password().hashPassword(self.password), self.getPassword())
 
     def getRole(self):
         self.db.execute("SELECT Role FROM %s_members WHERE Username='%s'" %(self.org, self.username))
