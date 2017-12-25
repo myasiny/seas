@@ -2,7 +2,6 @@ import sqlite3
 from flaskext.mysql import MySQL
 from passlib.apps import custom_app_context as pwd_context
 
-
 class SqlLiteDB:
     def __init__(self, dbName):
         if ".db" not in dbName:
@@ -38,8 +37,8 @@ class MySQLdb:
 
     def __init__(self, dbName, app, user="admin", password="1234"):
         mysql = MySQL()
-        app.config['MYSQL_DATABASE_USER'] = "admin"
-        app.config['MYSQL_DATABASE_PASSWORD'] = '1234'
+        app.config['MYSQL_DATABASE_USER'] = user
+        app.config['MYSQL_DATABASE_PASSWORD'] = password
         app.config['MYSQL_DATABASE_DB'] = dbName
         app.config['MYSQL_DATABASE_HOST'] = 'localhost'
         app.config['MYSQL_DATABASE_PORT'] = 8000
@@ -50,38 +49,79 @@ class MySQLdb:
         self.db = mysql.connect()
         self.cursor = self.db.cursor()
 
-        self.execute("CREATE TABLE IF NOT EXISTS Organizations "
-                   "( "
-                   "Name CHAR(40) NOT NULL, "
-                   "ID INT NOT NULL AUTO_INCREMENT, "
-                   "PRIMARY KEY (ID),"
-                   "UNIQUE (Name) )")
-
-        self.execute("CREATE TABLE IF NOT EXISTS Roles "
-                        "( "
-                        "Name CHAR(40) NOT NULL, "
-                        "ID INT NOT NULL AUTO_INCREMENT, "
-                        "PRIMARY KEY (ID),"
-                        "UNIQUE (Name) "
-                        ")")
-
+    def initialize_organization(self, organization):
         try:
-            for i in ["admin", "student", "lecturer"]:
-                self.execute("INSERT INTO Roles ( Name ) values ('%s')" %i)
-        except:
-            pass
+            self.execute(
+                "CREATE SCHEMA %s;"
+                "USE %s" %(organization, organization)
+            )
+
+            self.execute(
+                "CREATE TABLE roles ("
+                    "Role VARCHAR(20),"
+                    "ID INT AUTO_INCREMENT,"
+                    "PRIMARY KEY (ID),"
+                    "UNIQUE (Role)"
+                ");"
+                "INSERT INTO roles (Role) values ('superuser');"
+                "INSERT INTO roles (Role) values ('admin');"
+                "INSERT INTO roles (Role) values ('lecturer');"
+                "INSERT INTO roles (Role) values ('student');"
+                "CREATE TABLE members ("
+                    "ID       INT         NOT NULL,"
+                    "Role     INT         NOT NULL,"
+                    "Name     VARCHAR(25) NOT NULL,"
+                    "Surname  VARCHAR(20) NOT NULL,"
+                    "Username VARCHAR(25) NOT NULL,"
+                    "Password VARCHAR(255) NOT NULL,"
+                    "Email    VARCHAR(35) NOT NULL,"
+                    "Department VARCHAR(255) NOT NULL,"
+                    "PRIMARY KEY (ID),"
+                    "FOREIGN KEY (Role) REFERENCES roles (ID),"
+                    "UNIQUE (Name, Surname, Username)"
+                ");"
+                "CREATE TABLE courses ("
+                    "ID       INT         NOT NULL,"
+                    "NAME     VARCHAR(30) NOT NULL,"
+                    "isActive BOOLEAN DEFAULT TRUE,"
+                    "PRIMARY KEY (ID)"
+                ");"
+                "CREATE TABLE registrations ("
+                    "StudentID INT NOT NULL,"
+                    "CourseID  INT NOT NULL,"
+                    "ID        INT AUTO_INCREMENT,"
+                    "FOREIGN KEY (StudentID) REFERENCES members (ID),"
+                    "FOREIGN KEY (CourseID) REFERENCES courses (ID),"
+                    "UNIQUE (StudentID, CourseID),"
+                    "PRIMARY KEY (ID)"
+                ");"
+                "CREATE TABLE lecturers ("
+                    "LecturerID INT NOT NULL,"
+                    "CourseID   INT NOT NULL,"
+                    "ID         INT AUTO_INCREMENT,"
+                    "FOREIGN KEY (LecturerID) REFERENCES members (ID),"
+                    "FOREIGN KEY (CourseID) REFERENCES courses (ID),"
+                    "PRIMARY KEY (ID)"
+                ");"
+            )
+            return "Organization Initialized"
+        except self.cursor.ProgrammingError:
+            return "Organization Exists"
 
     def execute(self, command):
         # print command
-        self.cursor.execute(command)
+        try:
+            self.cursor.execute(command)
 
-        rtn = self.cursor.fetchone()
-        self.__commit()
-        return rtn
+            rtn = self.cursor.fetchone()
+            self.__commit()
+            return rtn
+
+        except:
+            return None
 
     def __commit(self):
         self.db.commit()
-
 
     def getOrganization(self):
         pass
