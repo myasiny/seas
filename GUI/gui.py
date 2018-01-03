@@ -1,59 +1,109 @@
 from kivy.config import Config
+Config.set("kivy", "exit_on_escape", "0")
 Config.set("input", "mouse", "mouse, multitouch_on_demand")
 
 from kivy.app import App
-from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, pgLecturer, tabStart, tabProfile, tabLects, tabStats
+from pg import pgLogin, tabReset, tabActivate, pgStart, pgProfile
 
-class Tab_Stats(Screen):
-    pass
-
-class Tab_Lects(Screen):
-    def on_pre_enter(self, *args):
-        tabLects.on_pre_enter(self)
-
-    def on_detail(self):
-        tabLects.on_detail(self)
-
-class Tab_Profile(Screen):
-    def on_pre_enter(self, *args):
-        tabProfile.on_pre_enter(self)
-
-    def on_text(self, this):
-        tabProfile.on_text(self, this)
-
-    def on_change(self):
-        tabProfile.on_change(self)
-
-class Tab_Start(Screen):
-    def on_faq(self, no):
-        tabStart.faq(self, no)
-
-    def on_follow(self, on):
-        tabStart.follow(on)
-
-class PgLecturer(Screen):
-    pgLogin.load_string("lecturer")
+class PgProfile(Screen):
+    pgLogin.load_string("profile")
 
     def on_pre_enter(self, *args):
-        pgLecturer.on_pre_enter(self)
-
-    def on_enter(self, *args):
         pgLogin.on_enter(self)
+        pgProfile.on_pre_enter(self)
+
+    def on_start(self):
+        pages.append(PgStart(name="PgStart"))
+        tabReset.on_back(pages, screen)
+
+    def on_lects(self):
+        pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_stats(self):
+        pages.append(PgStats(name="PgStats"))
+        tabReset.on_back(pages, screen)
+
+    def on_text_change(self, this):
+        pgProfile.on_text_change(self, this)
+
+    def on_submit(self):
+        pgProfile.on_submit(self)
 
     def on_logout(self):
-        pgLecturer.on_logout(pages, screen)
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
 
     def on_quit(self):
         pgLogin.on_quit()
 
-    def on_check_connection(self):
-        pgLogin.on_check_connection(self)
+class PgStart(Screen):
+    pgLogin.load_string("start")
+
+    def on_pre_enter(self, *args):
+        pgLogin.on_enter(self)
+
+    def on_profile(self):
+        pages.append(PgProfile(name="PgProfile"))
+        tabReset.on_back(pages, screen)
+
+    def on_lects(self):
+        pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_stats(self):
+        pages.append(PgStats(name="PgStats"))
+        tabReset.on_back(pages, screen)
+
+    def on_faq(self, no):
+        pgStart.on_faq(self, no)
+
+    def on_follow(self, this):
+        pgStart.on_follow(this)
+
+    def on_logout(self):
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit()
+
+class TabActivate(Screen):
+    pgLogin.load_string("activate")
+
+    def on_pre_enter(self, *args):
+        pgLogin.on_enter(self)
+
+    def on_activate(self):
+        tabActivate.on_activate(self)
+
+    def on_back(self):
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit()
+
+class TabReset(Screen):
+    pgLogin.load_string("reset")
+
+    def on_pre_enter(self, *args):
+        pgLogin.on_enter(self)
+
+    def on_reset(self):
+        tabReset.on_reset(self)
+
+    def on_back(self):
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit()
 
 class PgLogin(Screen):
     pgLogin.load_string("login")
@@ -69,34 +119,38 @@ class PgLogin(Screen):
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
         if keycode[1] == 'enter':
-            pgLogin.on_login(self, pages, screen)
+            PgLogin.on_login(self)
         return True
 
     def on_enter(self, *args):
         pgLogin.on_enter(self)
 
     def on_login(self):
-        #pages.append(PgLecturer(name="PgLecturer"))
+        pages.append(PgStart(name="PgStart"))
         pgLogin.on_login(self, pages, screen)
+
+    def on_reset(self):
+        pages.append(TabReset(name="TabReset"))
+        pgLogin.on_reset(pages, screen)
+
+    def on_activate(self):
+        pages.append(TabActivate(name="TabActivate"))
+        pgLogin.on_activate(pages, screen)
 
     def on_quit(self):
         pgLogin.on_quit()
 
-    def on_check_connection(self):
-        pgLogin.on_check_connection(self)
-
 class PgSplash(Screen):
-    with open("css/splash.seas", "r") as design:
-        Builder.load_string(design.read())
+    pgLogin.load_string("splash")
 
     def skip(self, dt):
         screen.switch_to(pages[1])
 
     def on_enter(self, *args):
-        Clock.schedule_once(self.skip, 1)
+        Clock.schedule_once(self.skip, 2)
 
-        anim_fade = Animation(opacity=1, duration=0.5) + Animation(opacity=0, duration=0.5)
-        anim_fade.start(self.ids["img_wivern"])
+        anim_fade = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
+        anim_fade.start(self.ids["img_developer_dark"])
 
 '''
     SMART EXAM ADMINISTRATION SYSTEM
@@ -106,19 +160,20 @@ class PgSplash(Screen):
 '''
 
 pages = [PgSplash(name="PgSplash"),
-         PgLogin(name="PgLogin"),
-         PgLecturer(name="PgLecturer")]
+         PgLogin(name="PgLogin")]
 
 screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(PgSplash(name="PgSplash"))
 
 class SeasApp(App):
-    tab_lects = Tab_Lects()
+    icon = "icon.ico"
+    title = "Smart Exam Administration System"
+    use_kivy_settings = False
+    Window.fullscreen = "auto"
 
     def build(self):
         screen.current = "PgSplash"
         return screen
 
 if __name__ == "__main__":
-    Window.fullscreen = "auto"
     SeasApp().run()

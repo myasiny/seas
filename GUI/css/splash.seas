@@ -1,8 +1,8 @@
 <PgSplash>:
     Image:
-        id: img_wivern
-        source: "img/img_wivern.png"
+        id: img_developer_dark
+        source: "img/img_developer_dark.png"
         opacity: 0
         allow_stretch: True
-        size_hint: .1, .1
+        size_hint: .2, .2
         pos_hint: {"center_x": .5, "center_y": .5}

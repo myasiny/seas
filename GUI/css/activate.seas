@@ -1,9 +1,9 @@
-<PgLogin>:
+<TabActivate>:
     FloatLayout:
         canvas:
             Rectangle:
                 id: img_bg
-                source: "img/bg_poly.png"
+                source: "img/bg_blur.png"
                 size: self.size
                 pos: self.pos
 
@@ -54,8 +54,8 @@
             pos_hint: {"center_x": .5, "center_y": .75}
 
         Label:
-            id: txt_username
-            text: "Username   "
+            id: txt_code
+            text: " Code"
             color: 0,0,0,0.5
             multiline: False
             font_name: "font/CaviarDreams.ttf"
@@ -64,8 +64,8 @@
             pos_hint: {"center_x": .4, "center_y": .545}
 
         TextInput:
-            id: input_username
-            hint_text: "e.g. Student ID"
+            id: input_code
+            hint_text: "e.g. SEAS123"
             write_tab: False
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
@@ -78,8 +78,8 @@
             pos_hint: {"center_x": .55, "center_y": .55}
 
         Label:
-            id: txt_password
-            text: "Password   "
+            id: txt_email
+            text: "E-mail"
             color: 0,0,0,0.5
             multiline: False
             font_name: "font/CaviarDreams.ttf"
@@ -88,8 +88,7 @@
             pos_hint: {"center_x": .4, "center_y": .435}
 
         TextInput:
-            id: input_password
-            password: True
+            id: input_email
             write_tab: False
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
@@ -102,8 +101,8 @@
             pos_hint: {"center_x": .55, "center_y": .44}
 
         Button:
-            id: btn_login
-            text: "LOGIN"
+            id: btn_activate
+            text: "ACTIVATE"
             font_name: "font/LibelSuit.ttf"
             font_size: self.height / 3
             background_normal: "img/widget_75.png"
@@ -111,11 +110,11 @@
             background_disabled_normal: "img/widget_75_black.png"
             size_hint: .3, .1
             pos_hint: {"center_x": .5, "center_y": .285}
-            on_release: root.on_login()
+            on_release: root.on_activate()
 
         Label:
-            id: txt_reset
-            text: "Reset Password "
+            id: txt_back
+            text: "< Back         "
             color: 0,0,0,0.5
             multiline: False
             font_name: "font/CaviarDreams.ttf"
@@ -124,33 +123,8 @@
             pos_hint: {"center_x": .4, "y": .15}
 
         Button:
-            text: "btn_reset"
+            text: "btn_back"
             opacity: 0
             size_hint: .1, .075
             pos_hint: {"x": .35, "center_y": .2}
-            on_release: root.on_reset()
-
-        Label:
-            id: txt_generate
-            text: "Activate Account "
-            color: 0,0,0,0.5
-            multiline: False
-            font_name: "font/CaviarDreams.ttf"
-            font_size: self.height / 5
-            size_hint: .1, .1
-            pos_hint: {"center_x": .6, "y": .15}
-
-        Button:
-            text: "btn_activate"
-            opacity: 0
-            size_hint: .1, .075
-            pos_hint: {"x": .55, "center_y": .2}
-            on_release: root.on_activate()
-
-        Image:
-            id: img_status
-            source: "img/ico_loading.gif"
-            opacity: 0
-            allow_stretch: True
-            size_hint: .05, .05
-            pos_hint: {"center_x": .65, "center_y": .8}
+            on_release: root.on_back()
