@@ -5,6 +5,11 @@ from kivy.uix.gridlayout import GridLayout
 
 import webbrowser
 from functools import partial
+from GUI.func.round_image import round_image
+
+def on_pre_enter(self):
+    round_image()
+    self.ids["img_user"].reload()
 
 def faq_status(sign, dt):
     if sign.text == "+":

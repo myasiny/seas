@@ -8,14 +8,41 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, tabReset, tabActivate, pgStart, pgProfile
+from pg import pgLogin, tabReset, tabActivate, pgStart, pgProfile, pgLects
+
+class PgLects(Screen):
+    pgLogin.load_string("lects")
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
+
+    def on_profile(self):
+        pages.append(PgProfile(name="PgProfile"))
+        tabReset.on_back(pages, screen)
+
+    def on_start(self):
+        pages.append(PgStart(name="PgStart"))
+        tabReset.on_back(pages, screen)
+
+    def on_stats(self):
+        pages.append(PgStats(name="PgStats"))
+        tabReset.on_back(pages, screen)
+
+    def on_logout(self):
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit()
 
 class PgProfile(Screen):
     pgLogin.load_string("profile")
 
     def on_pre_enter(self, *args):
-        pgLogin.on_enter(self)
         pgProfile.on_pre_enter(self)
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
 
     def on_start(self):
         pages.append(PgStart(name="PgStart"))
@@ -46,6 +73,9 @@ class PgStart(Screen):
     pgLogin.load_string("start")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
+
+    def on_enter(self, *args):
         pgLogin.on_enter(self)
 
     def on_profile(self):

@@ -1,10 +1,18 @@
 from kivy.animation import Animation
 
-def on_pre_enter(self):
-    self.ids["img_user"].reload()
+from GUI.func.round_image import round_image
+from GUI.func.barcode_png import barcode_png
 
+def on_pre_enter(self):
     temp_login = open("data/temp_login.seas", "r")
     data_login = temp_login.readlines()
+
+    round_image()
+    self.ids["img_user"].reload()
+
+    barcode_png(data_login[0].replace("\n", " ")) #TODO: DEBUG! ERROR! FIX IT!
+    self.ids["img_barcode_1"].reload()
+    self.ids["img_barcode_2"].reload()
 
     self.ids["txt_username"].text = (data_login[1].replace("\n", " ")).replace("_", " ").title() + (data_login[2].replace("\n", " ")).replace("_", " ").title()
     self.ids["txt_usermail"].text = data_login[5].replace("\n", " ")

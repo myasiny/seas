@@ -122,12 +122,28 @@
             pos_hint: {"x": .315, "center_y": .725}
 
         Image:
-            id: img_barcode
+            id: img_barcode_bg
+            source: "img/widget_75_black.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .027, .21
+            pos_hint: {"x": .314, "center_y": .725}
+
+        Image:
+            id: img_barcode_1
             source: "img/pic_barcode.png"
             keep_ratio: False
             allow_stretch: True
-            size_hint: .025, .2
-            pos_hint: {"x": .315, "center_y": .725}
+            size_hint: .025, .1
+            pos_hint: {"x": .315, "center_y": .775}
+
+        Image:
+            id: img_barcode_2
+            source: "img/pic_barcode.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .025, .1
+            pos_hint: {"x": .315, "center_y": .675}
 
         Image:
             id: img_user_border
