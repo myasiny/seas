@@ -10,14 +10,14 @@ def on_pre_enter(self):
     round_image()
     self.ids["img_user"].reload()
 
-    barcode_png(data_login[0].replace("\n", " ")) #TODO: DEBUG! ERROR! FIX IT!
+    barcode_png(data_login[0].replace("\n", ""))
     self.ids["img_barcode_1"].reload()
     self.ids["img_barcode_2"].reload()
 
-    self.ids["txt_username"].text = (data_login[1].replace("\n", " ")).replace("_", " ").title() + (data_login[2].replace("\n", " ")).replace("_", " ").title()
-    self.ids["txt_usermail"].text = data_login[5].replace("\n", " ")
-    self.ids["txt_userdept"].text = (data_login[6].replace("\n", " ")).replace("_", " ").title()
-    self.ids["txt_useruniv"].text = (data_login[7].replace("\n", " ")).replace("_", " ").title()
+    self.ids["txt_username"].text = (data_login[1].replace("\n", " ")).replace("_", " ").title() + (data_login[2].replace("\n", "")).replace("_", " ").title()
+    self.ids["txt_usermail"].text = data_login[5].replace("\n", "")
+    self.ids["txt_userdept"].text = (data_login[6].replace("\n", "")).replace("_", " ").title()
+    self.ids["txt_useruniv"].text = (data_login[7].replace("\n", "")).replace("_", " ").title()
 
     self.ids["input_new_password"].disabled = True
     self.ids["input_new_mail"].disabled = True

@@ -130,23 +130,6 @@
             pos_hint: {"x": .35, "center_y": .2}
             on_release: root.on_reset()
 
-        Label:
-            id: txt_generate
-            text: "Activate Account "
-            color: 0,0,0,0.5
-            multiline: False
-            font_name: "font/CaviarDreams.ttf"
-            font_size: self.height / 5
-            size_hint: .1, .1
-            pos_hint: {"center_x": .6, "y": .15}
-
-        Button:
-            text: "btn_activate"
-            opacity: 0
-            size_hint: .1, .075
-            pos_hint: {"x": .55, "center_y": .2}
-            on_release: root.on_activate()
-
         Image:
             id: img_status
             source: "img/ico_loading.gif"
@@ -154,3 +137,20 @@
             allow_stretch: True
             size_hint: .05, .05
             pos_hint: {"center_x": .65, "center_y": .8}
+
+        Label:
+            id: txt_activate_REMOVED
+            text: "Activate Account "
+            color: 0,0,0,0.5
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 5
+            size_hint: .1, .0
+            pos_hint: {"center_x": .6, "y": .15}
+
+        Button:
+            text: "btn_activate_REMOVED"
+            opacity: 0
+            size_hint: .1, .0
+            pos_hint: {"x": .55, "center_y": .2}
+            on_release: root.on_activate()

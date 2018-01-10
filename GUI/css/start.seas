@@ -159,8 +159,8 @@
             pos_hint: {"center_x": .75, "y": .2}
 
         Label:
-            id: txt_welcome_head
-            text: "Welcome"
+            id: txt_about_head
+            text: "About"
             color: 0,0,0,0.75
             multiline: False
             font_name: "font/LibelSuit.ttf"
@@ -169,7 +169,7 @@
             pos_hint: {"center_x": .25, "y": .75}
 
         Label:
-            id: txt_welcome_body
+            id: txt_about_body
             text: "Smart Exam Administration System, also known as SEAS, develops a computer-based examination system for avoiding paper usage, providing fast and reliable evaluation processes, preventing cheating issues and creating student-friendly environments during exams. Smart Exam Administration System, also known as SEAS, develops a computer-based examination system for avoiding paper usage, providing fast and reliable evaluation processes and so on."
             color: 0,0,0,1
             halign: "center"

@@ -1,4 +1,4 @@
-<PgLects>:
+<PgStats>:
     FloatLayout:
         canvas:
             Rectangle:
@@ -97,6 +97,7 @@
             background_disabled_normal: "img/widget_75_black.png"
             size_hint: .15, .1
             pos_hint: {"center_x": .25, "y": .9}
+            on_release: root.on_lects()
 
         Button:
             id: btn_stats
@@ -108,7 +109,6 @@
             background_disabled_normal: "img/widget_75_black.png"
             size_hint: .15, .1
             pos_hint: {"center_x": .75, "y": .9}
-            on_release: root.on_stats()
 
         Image:
             id: img_left
@@ -117,74 +117,3 @@
             allow_stretch: True
             size_hint: .2, .9
             pos_hint: {"x": .0, "y": .0}
-
-        Button:
-            id: btn_exams
-            text: "Exams"
-            font_name: "font/LibelSuit.ttf"
-            font_size: self.height / 3
-            background_normal: "img/widget_75.png"
-            background_down: "img/widget_75_selected.png"
-            background_disabled_normal: "img/widget_75_black.png"
-            size_hint: .2, .1
-            pos_hint: {"x": .0, "center_y": .56}
-            on_release: root.on_exams()
-            disabled: True
-
-        Button:
-            id: btn_participants
-            text: "Participants"
-            font_name: "font/LibelSuit.ttf"
-            font_size: self.height / 3
-            background_normal: "img/widget_75.png"
-            background_down: "img/widget_75_selected.png"
-            background_disabled_normal: "img/widget_75_black.png"
-            size_hint: .2, .1
-            pos_hint: {"x": .0, "center_y": .45}
-            on_release: root.on_participants()
-            disabled: True
-
-        Button:
-            id: btn_class_statistics
-            text: "Class Statistics"
-            font_name: "font/LibelSuit.ttf"
-            font_size: self.height / 3
-            background_normal: "img/widget_75.png"
-            background_down: "img/widget_75_selected.png"
-            background_disabled_normal: "img/widget_75_black.png"
-            size_hint: .2, .1
-            pos_hint: {"x": .0, "center_y": .34}
-            on_release: root.on_class_statistics()
-            disabled: True
-
-        Label:
-            id: txt_hint
-            text: "No Lecture Selected"
-            color: 0,0,0,0.25
-            multiline: False
-            font_name: "font/LibelSuit.ttf"
-            font_size: self.height / 2
-            size_hint: .4, .1
-            pos_hint: {"center_x": .6, "center_y": .45}
-
-        Label:
-            id: txt_lect_code
-            text: "..."
-            opacity: 0
-            color: 0,0,0,0.75
-            multiline: False
-            font_name: "font/LibelSuit.ttf"
-            font_size: self.height / 3
-            size_hint: .85, .1
-            pos_hint: {"center_x": .6, "y": .8}
-
-        Label:
-            id: txt_lect_name
-            text: "..."
-            opacity: 0
-            color: 0,0,0,0.75
-            multiline: False
-            font_name: "font/LibelSuit.ttf"
-            font_size: self.height / 2
-            size_hint: .85, .1
-            pos_hint: {"center_x": .6, "y": .75}
