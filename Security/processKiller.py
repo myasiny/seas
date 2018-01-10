@@ -1,6 +1,5 @@
 import wmi
 import psutil
-
 def ProcessKiller(process_name):
     c = wmi.WMI()
     processes = {}
