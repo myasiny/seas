@@ -173,7 +173,7 @@
             opacity: 0
             color: 0,0,0,0.75
             multiline: False
-            font_name: "font/LibelSuit.ttf"
+            font_name: "font/CaviarDreams.ttf"
             font_size: self.height / 3
             size_hint: .85, .1
             pos_hint: {"center_x": .6, "y": .8}
@@ -184,7 +184,138 @@
             opacity: 0
             color: 0,0,0,0.75
             multiline: False
-            font_name: "font/LibelSuit.ttf"
+            font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 2
             size_hint: .85, .1
             pos_hint: {"center_x": .6, "y": .75}
+
+        FloatLayout:
+            id: layout_exams
+            opacity: 0
+
+            Image:
+                id: img_add_exam_gradient
+                source: "img/widget_gradient_black.png"
+                opacity: .75
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .5, .1
+                pos_hint: {"center_x": .5, "center_y": .65}
+
+            Button:
+                id: btn_add_exam
+                text: "ADD EXAM"
+                font_name: "font/LibelSuit.ttf"
+                font_size: self.height / 3
+                background_normal: "img/widget_75_black.png"
+                background_down: "img/widget_75_gray.png"
+                size_hint: .2, .1
+                pos_hint: {"center_x": .875, "center_y": .65}
+                on_release: root.on_add_exam
+
+            ListView:
+                id: list_exams
+                size_hint: .5, .5
+                pos_hint: {"center_x": .5, "center_y": .3}
+
+            Image:
+                id: img_info_top
+                source: "img/widget_75_black.png"
+                opacity: 0
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .2, .1
+                pos_hint: {"center_x": .875, "center_y": .5}
+
+            Image:
+                id: img_info_body
+                source: "img/widget_75_gray.png"
+                opacity: 0
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .2, .5
+                pos_hint: {"center_x": .875, "center_y": .3}
+
+            Label:
+                id: txt_info_head
+                text: "..."
+                opacity: 0
+                color: 0,0,0,0.75
+                multiline: False
+                font_name: "font/LibelSuit.ttf"
+                font_size: self.height / 3
+                size_hint: .2, .1
+                pos_hint: {"center_x": .875, "center_y": .5}
+
+            Label:
+                id: txt_status_head
+                text: "Status:"
+                opacity: 0
+                color: 0,0,0,0.75
+                multiline: False
+                font_name: "font/CaviarDreams.ttf"
+                font_size: self.height / 5
+                size_hint: .2, .1
+                pos_hint: {"center_x": .875, "center_y": .425}
+
+            Label:
+                id: txt_status_body
+                text: "..."
+                opacity: 0
+                color: 0,0,0,0.75
+                multiline: False
+                font_name: "font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 3
+                size_hint: .2, .1
+                pos_hint: {"center_x": .875, "center_y": .375}
+
+            Label:
+                id: txt_options_head
+                text: "Options:"
+                opacity: 0
+                color: 0,0,0,0.75
+                multiline: False
+                font_name: "font/CaviarDreams.ttf"
+                font_size: self.height / 5
+                size_hint: .2, .1
+                pos_hint: {"center_x": .875, "center_y": .275}
+
+            Button:
+                id: btn_exam_edit
+                text: "EDIT"
+                opacity: 0
+                font_name: "font/LibelSuit.ttf"
+                font_size: self.height / 2
+                background_normal: "img/widget_75.png"
+                background_down: "img/widget_75_selected.png"
+                background_disabled_normal: "img/widget_75_black.png"
+                size_hint: .15, .045
+                pos_hint: {"center_x": .875, "y": .175}
+
+            Button:
+                id: btn_exam_delete
+                text: "DELETE"
+                opacity: 0
+                font_name: "font/LibelSuit.ttf"
+                font_size: self.height / 2
+                background_normal: "img/widget_75.png"
+                background_down: "img/widget_75_selected.png"
+                background_disabled_normal: "img/widget_75_black.png"
+                size_hint: .15, .045
+                pos_hint: {"center_x": .875, "y": .125}
+
+            Button:
+                id: btn_exam_start
+                text: "START"
+                opacity: 0
+                font_name: "font/LibelSuit.ttf"
+                font_size: self.height / 2
+                background_normal: "img/widget_100.png"
+                background_down: "img/widget_100_selected.png"
+                background_disabled_normal: "img/widget_75_black.png"
+                size_hint: .15, .045
+                pos_hint: {"center_x": .875, "y": .075}
+
+        FloatLayout:
+            id: layout_participants
+            opacity: 0

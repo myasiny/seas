@@ -56,6 +56,18 @@ class PgLects(Screen):
         pages.append(PgStats(name="PgStats"))
         tabReset.on_back(pages, screen)
 
+    def on_exams(self):
+        pgLects.on_exams(self)
+
+    def on_exam_selected(self, dt):
+        pgLects.on_exam_selected(self)
+
+    def on_participants(self):
+        pgLects.on_participants(self)
+
+    def on_class_statistics(self):
+        pgLects.on_class_statistics(self)
+
     def on_logout(self):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
