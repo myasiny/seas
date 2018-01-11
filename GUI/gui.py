@@ -65,6 +65,15 @@ class PgLects(Screen):
     def on_participants(self):
         pgLects.on_participants(self)
 
+    def on_participant_selected(self, dt):
+        pgLects.on_participant_selected(self)
+
+    def on_import_list(self, dt):
+        pgLects.on_import_list(self)
+
+    def on_import_list_selected(self, widget_name, file_path, mouse_pos):
+        pgLects.on_import_list_selected(self, widget_name, file_path, mouse_pos)
+
     def on_class_statistics(self):
         pgLects.on_class_statistics(self)
 
