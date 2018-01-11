@@ -36,6 +36,6 @@ from DatabaseAPI import *
 
 # print getLecturerCourses("http://10.50.81.24:8888", "Istanbul Sehir University", "alicakmak")
 
-print changePassword("http://10.50.81.24:8888", "Istanbul Sehir University", "admin", "12345", "degisti@admin.com", isMail=True)
+print changePassword("http://10.50.81.24:8888", "Istanbul Sehir University", "alicakmak", "12345", "alicakmak@sehir.edu.tr", True)
 
 # print deleteStudentFromLecture("http://10.50.81.24:8888", "Istanbul Sehir University", "ENGR 101", "213962062")
