@@ -1,3 +1,5 @@
+# -*- coding:UTF-8 -*-
+
 from flask import Flask, request, jsonify
 from Models import MySQLdb, Password, Credential
 from flask_security import Security, login_required, SQLAlchemySessionUserDatastore, roles_accepted
@@ -132,8 +134,7 @@ def getCourse(organization, course):
 
 @app.route("/organizations/<string:organization>/<string:course>/register/<string:liste>", methods=['PUT'])
 def putStudentList(organization, course, liste):
-
-    print request.files["liste"].save("incoming.csv", 163840)
+    db.registerStudentCSV(request.files["liste"], organization, course, request.form["username"])
     return jsonify(organization, course, liste)
 
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"])

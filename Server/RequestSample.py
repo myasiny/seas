@@ -1,3 +1,5 @@
+# -*- coding:UTF-8 -*-
+
 from requests import put, get, post, delete
 from DatabaseAPI import *
 
@@ -16,7 +18,7 @@ from DatabaseAPI import *
 # print signIn("http://10.50.81.24:8888", "Istanbul Sehir University", "admin", "12345")
 # print addUser("http://10.50.81.24:8888", "Istanbul Sehir University", "000000000", "Joe", "Doe", "joedoe", "12345", "joe@doe.com", "Computer Science", role="Student")
 # print addUser("http://10.50.81.24:8888", "Istanbul Sehir University", "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
-
+# print addUser("http://10.50.81.24:8888", "Istanbul Sehir University", "215000000", "Özkan", "Çağlar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
 # print signIn("http://10.50.81.24:8888", "Istanbul Sehir University", "fatihgulmez", "12345")
 # print signIn("http://10.50.81.24:8888", "Istanbul Sehir University", "aliozz", "12345")
@@ -27,4 +29,4 @@ from DatabaseAPI import *
 
 # print addCourse("http://10.50.81.24:8888", "istanbul sehir university", "Introduction to Programming", "ENGR 101", "alicakmak")
 # print getCourse("http://10.50.81.24:8888", "istanbul sehir university", "ENGR 101")
-print registerStudent("http://10.50.81.24:8888", "Istanbul Sehir University", "EECS 468", True, "ornek.csv")
+# print registerStudent("http://10.50.81.24:8888", "Istanbul Sehir University", "EECS 468", True, "ornek.csv")

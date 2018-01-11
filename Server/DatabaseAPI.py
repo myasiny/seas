@@ -1,6 +1,11 @@
+#-*-coding:utf-8-*-
+import sys
+sys.path.append("..")
+
+from Functionality.excelToCsv import xls2csv
+from Functionality.passwordGenerator import passwordGenerator
 from requests import put, get, post, ConnectionError, Timeout
-
-
+import csv
 import re
 
 
@@ -74,12 +79,12 @@ def getCourse(URL, organization, courseCode):
     }).json()
 
 
-def registerStudent(URL, organization, courseCode, isList, students):
+def registerStudent(URL, organization, courseCode, isList, students, username):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     url = URL+"/organizations/%s/%s/register/%s" %(organization, courseCode, isList)
     students = open(students)
     if isList:
-        return put(url, files={"liste": students}).json()
+        return put(url, files={"liste": students}, data={"username": username}).json()
     else:
         pass

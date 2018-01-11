@@ -1,6 +1,14 @@
+#-*-coding:utf-8-*-
+
 import sqlite3
 from flaskext.mysql import MySQL
 from passlib.apps import custom_app_context as pwd_context
+import sys
+sys.path.append("..")
+
+import csv
+from Functionality.passwordGenerator import passwordGenerator
+from Functionality.sendEmail import sentMail
 
 class SqlLiteDB:
     def __init__(self, dbName):
@@ -150,7 +158,10 @@ class MySQLdb:
         }
         return rtn
 
-    def register_student(self, studentID, courseCode):
+    def register_student(self, studentIDList, courseCode, organization):
+        courseID = self.execute("SELECT ID FROM %s.courses WHERE CODE = %s" %(organization, courseCode))[0][0]
+        for i in studentIDList:
+            self.execute("INSERT INTO %s.registrations (StudentID, CourseID) VALUES(%s, %s)" %(organization, i, courseID))
         pass
 
     def get_course_participants(self, code):
@@ -173,6 +184,35 @@ class MySQLdb:
 
     def getOrganization(self):
         pass
+
+    def handle_tr(self, str_):
+        str_ = str_.replace("İ", "I").replace("Ç", "C").replace("Ş", "S").replace("Ü", "U").replace("Ö", "O").replace("Ğ",
+                                                                                                                    "G")
+        str_ = str_.replace("ı", "i").replace("ç", "c").replace("ş", "s").replace("ü", "u").replace("ö", "o").replace("ğ",
+                                                                                                                    "g")
+        return str_
+
+    def registerStudentCSV(self, csvDataFile, organization, course, lecturer):
+        csvReader = csv.reader(csvDataFile)
+        column_names = next(csvReader, None)
+        data = list(csvReader)
+        auth = []
+        reg = []
+        for i in data:
+            name = self.handle_tr(i[0]).title()
+            surname = self.handle_tr(i[1]).title()
+            student_number = str(int(float(i[2])))
+            mail = i[3]
+            department = "UNKNOWN"
+            role = 4
+            username = name.split()[0].lower() + surname.lower()
+            password = passwordGenerator(8)
+            check = self.execute("Insert into %s.members(ID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(organization, student_number, role, name, surname, username, Password.hashPassword(password), mail, department))
+            if check is not None:
+                auth.append((name + " " + surname, mail, password))
+                reg.append(student_number)
+        #sentMail(auth, lecturer)
+        self.register_student(reg, course, organization)
 
 
 class Password:
