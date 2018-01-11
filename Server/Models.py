@@ -230,7 +230,7 @@ class MySQLdb:
             if check is not None:
                 auth.append((name + " " + surname, mail, password))
             reg.append(student_number)
-        #sentMail(auth, lecturer)
+        sentMail(auth, lecturer)
         self.register_student(reg, course, organization)
         return "Done"
 

@@ -251,6 +251,22 @@
             size_hint: .05, .05
             pos_hint: {"x": .5875, "y": .3625}
 
+        Image:
+            id: img_change_done
+            source: "img/ico_success.png"
+            opacity: 0
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .5875, "y": .3625}
+
+        Image:
+            id: img_change_failed
+            source: "img/ico_fail.png"
+            opacity: 0
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .5875, "y": .3625}
+
         TextInput:
             id: input_new_password
             hint_text: "New Password"

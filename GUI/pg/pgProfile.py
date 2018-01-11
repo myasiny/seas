@@ -1,5 +1,9 @@
 from kivy.animation import Animation
 
+import sys
+sys.path.append("../..")
+
+from Server import DatabaseAPI
 from GUI.func.round_image import round_image
 from GUI.func.barcode_png import barcode_png
 
@@ -44,6 +48,13 @@ def on_text_change(self, this):
 def on_submit(self):
     img_wrong = self.ids["img_wrong"]
     img_wrong.opacity = 0
+    img_change_done = self.ids["img_change_done"]
+    img_change_done.opacity = 0
+    img_change_failed = self.ids["img_change_failed"]
+    img_change_failed.opacity = 0
+
+    temp_login = open("data/temp_login.seas", "r")
+    data_login = temp_login.readlines()
 
     input_current_password = self.ids["input_current_password"]
     input_new_password = self.ids["input_new_password"]
@@ -52,10 +63,29 @@ def on_submit(self):
     if input_current_password.text == "":
         anim_appear = Animation(opacity=1, duration=1)
         anim_appear.start(img_wrong)
-    elif input_new_password.text == "":
-        pass
-    elif input_new_mail.text == "":
-        pass
     else:
-        pass
-    #TODO: Change Password & E-mail
+        if len(input_new_password.text) > 0:
+            result = DatabaseAPI.changePassword("http://10.50.81.24:8888", "istanbul sehir university",
+                                                data_login[0].replace("\n", ""),
+                                                input_current_password.text, input_new_password.text,
+                                                isMail=False)
+            if result == "Password Changed":
+                anim_appear = Animation(opacity=1, duration=1)
+                anim_appear.start(img_change_done)
+                self.on_logout()
+            else:
+                anim_appear = Animation(opacity=1, duration=1)
+                anim_appear.start(img_change_failed)
+        elif len(input_new_mail.text) > 0:
+            result = DatabaseAPI.changePassword("http://10.50.81.24:8888", "istanbul sehir university",
+                                                data_login[0].replace("\n", ""),
+                                                input_current_password.text, input_new_mail.text,
+                                                isMail=True)
+            if result == "Mail Changed":
+                anim_appear = Animation(opacity=1, duration=1)
+                anim_appear.start(img_change_done)
+                self.on_logout()
+            else:
+                anim_appear = Animation(opacity=1, duration=1)
+                anim_appear.start(img_change_failed)
+    # TODO: Change Password & E-mail
