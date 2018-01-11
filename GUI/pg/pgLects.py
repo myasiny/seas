@@ -151,14 +151,14 @@ def on_participant_selected(self):
     temp_student_list = open("data/temp_student_list.seas", "r")
     data_student_list = temp_student_list.readlines()
 
+    txt_id_body = "..."
+    txt_mail_body = "..."
+
     for i in data_student_list:
         if len(self.ids["list_participants"].adapter.selection) > 0:
             if i.split(",")[0]+" "+i.split(",")[1] == self.ids["list_participants"].adapter.selection[0].text:
                 txt_id_body = i.split(",")[2]
                 txt_mail_body = i.split(",")[3].replace("\n", "")
-        else:
-            txt_id_body = "..."
-            txt_mail_body = "..."
 
     self.ids["img_info_top_2"].opacity = 0.5
     self.ids["img_info_body_2"].opacity = 0.5
