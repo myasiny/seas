@@ -136,9 +136,25 @@ class MySQLdb:
         return "Course Added!"
 
     def get_course(self, org, code):
-        a = self.execute("SELECT * FROM %s.courses WHERE Code = '%s'" % (org,code))
-        print a
-        return "Done!"
+        a = self.execute("SELECT * FROM %s.courses WHERE Code = '%s'" % (org,code))[0]
+        lecturer_IDs = self.execute("SELECT LecturerID FROM %s.lecturers WHERE CourseID = '%s'"%(org, a[0]))[0]
+        lecturers = ""
+        for id in lecturer_IDs:
+            lid = self.execute("SELECT Name, Surname FROM %s.members WHERE ID = '%s'" % (org, id))[0]
+            lecturers += lid[0] + " " + lid[1] + ":"
+        rtn = {
+            "Name": a[1],
+            "Code": a[2],
+            "Lecturers": lecturers,
+            "Participants": self.get_course_participants(a[2])
+        }
+        return rtn
+
+    def register_student(self, studentID, courseCode):
+        pass
+
+    def get_course_participants(self, code):
+        return None
 
     def execute(self, command):
         # print command

@@ -116,15 +116,25 @@ def signOutUser(organization, username):
     return jsonify(user_datastore.deactivate_user(user))
 
 
-@app.route("/organizations/<string:organization>/<string:course>", methods=['GET', 'POST'])
-def add_getCourse(organization, course):
-    if request.method == "PUT":
-        name = request.form["name"]
-        code = request.form["code"]
-        lecturers = request.form["lecturers"]
-        return jsonify(db.add_course(organization, name, code, lecturers))
-    else:
-        return jsonify(db.get_course(organization, course))
+@app.route("/organizations/<string:organization>/<string:course>", methods=['PUT'])
+def addCourse(organization, course):
+    name = request.form["name"]
+    code = request.form["code"]
+    lecturers = request.form["lecturers"]
+    return jsonify(db.add_course(organization, name, code, lecturers))
+
+
+@app.route("/organizations/<string:organization>/<string:course>/get", methods=['GET'])
+def getCourse(organization, course):
+
+    return jsonify(db.get_course(organization, course))
+
+
+@app.route("/organizations/<string:organization>/<string:course>/register/<string:liste>", methods=['PUT'])
+def putStudentList(organization, course, liste):
+
+    print request.files["liste"].save("incoming.csv", 163840)
+    return jsonify(organization, course, liste)
 
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"])
 def changePassword(organization, username):

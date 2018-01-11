@@ -1,4 +1,5 @@
-from requests import put, get, ConnectionError, Timeout
+from requests import put, get, post, ConnectionError, Timeout
+
 
 import re
 
@@ -64,9 +65,21 @@ def addCourse(URL, organization, courseName, courseCode, *lecturer_users):
 def addLecturerToCourse():
     pass
 
+
 def getCourse(URL, organization, courseCode):
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     organization = organization.replace(" ", "_").lower()
-    url = URL + "/organizations/%s/%s" % (organization, courseCode)
+    url = URL + "/organizations/%s/%s/get" % (organization, courseCode)
     return get(url, data={
     }).json()
+
+
+def registerStudent(URL, organization, courseCode, isList, students):
+    organization = organization.replace(" ", "_").lower()
+    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    url = URL+"/organizations/%s/%s/register/%s" %(organization, courseCode, isList)
+    students = open(students)
+    if isList:
+        return put(url, files={"liste": students}).json()
+    else:
+        pass

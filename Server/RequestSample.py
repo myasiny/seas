@@ -25,5 +25,6 @@ from DatabaseAPI import *
 
 #print signOut("http://10.50.81.24:8888", "Istanbul Sehir University", "admin")
 
-# print addCourse("http://10.50.81.24:8888", "istanbul sehir university", "Bioinformatics", "EECS 468", "alicakmak")
-print getCourse("http://10.50.81.24:8888", "istanbul sehir university", "EECS 468")
+# print addCourse("http://10.50.81.24:8888", "istanbul sehir university", "Introduction to Programming", "ENGR 101", "alicakmak")
+# print getCourse("http://10.50.81.24:8888", "istanbul sehir university", "ENGR 101")
+print registerStudent("http://10.50.81.24:8888", "Istanbul Sehir University", "EECS 468", True, "ornek.csv")
