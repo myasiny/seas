@@ -98,12 +98,13 @@ def getLecturerCourses(URL, organization, username):
     url = URL + "/organizations/%s/%s/courses/role=lecturer" % (organization, username)
     return get(url).json()
 
-def changePassword(URL, organization, username, password, newpass):
+def changePassword(URL, organization, username, password, newpass, isMail=False):
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/edit_password" % (organization, username)
     return put(url, data={
         "Password": password,
-        "newPassword": newpass
+        "newPassword": newpass,
+        "isMail": isMail
     }).json()
 
 def deleteStudentFromLecture(URL, organization, courseCode, studentID):

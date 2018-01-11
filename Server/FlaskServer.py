@@ -152,7 +152,7 @@ def deleteStudentFromLecture(organization, course):
 
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"])
 def changePassword(organization, username):
-    return jsonify(db.changePassword(organization, username, request.form["Password"], request.form["newPassword"]))
+    return jsonify(db.changePasswordOREmail(organization, username, request.form["Password"], request.form["newPassword"], email=bool(request.form["isMail"])))
 
 if __name__ == "__main__":
     app.run(host="10.50.81.24", port=8888)

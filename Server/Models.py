@@ -234,21 +234,27 @@ class MySQLdb:
         self.register_student(reg, course, organization)
         return "Done"
 
-    def changePassword(self, organization ,username, oldPassword, newPassword):
+    def changePasswordOREmail(self, organization, username, oldPassword, newVal, email=False):
         pas = Password()
         user = self.get_user_info(organization, username)
         password = user[5]
         if pas.verify_password_hash(oldPassword, password):
-            password = pas.hashPassword(newPassword)
-            self.execute("UPDATE %s.members SET Password='%s' WHERE Username = '%s'" % (organization, password, username))
-            return "Password Changed"
+            if email:
+                self.execute(
+                    "UPDATE %s.members SET Email='%s' WHERE Username = '%s'" % (organization, newVal, username))
+                return "Mail Changed"
+            else:
+                password = pas.hashPassword(newVal)
+                self.execute("UPDATE %s.members SET Password='%s' WHERE Username = '%s'" % (organization, password, username))
+                return "Password Changed"
         else:
             return "Not Authorized"
 
     def delete_student_course(self, organization, course, studentID):
         courseID = self.execute("SELECT ID FROM %s.courses WHERE Code = '%s'" % (organization, course))[0][0]
         command = "DELETE FROM %s.registrations WHERE StudentID = %d AND CourseID = %d" % (organization, int(studentID), int(courseID))
-        return self.execute(command)
+        self.execute(command)
+        return None
 
 
 
