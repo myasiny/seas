@@ -50,70 +50,102 @@ class MySQLdb:
         self.cursor = self.db.cursor()
 
     def initialize_organization(self, organization):
-        try:
-            self.execute(
-                "CREATE SCHEMA %s;"
-                "USE %s" %(organization, organization)
-            )
+        self.execute(
+            "CREATE SCHEMA %s;"
+            "USE %s" %(organization, organization)
+        )
 
-            self.execute(
-                "CREATE TABLE roles ("
-                    "Role VARCHAR(20),"
-                    "ID INT AUTO_INCREMENT,"
-                    "PRIMARY KEY (ID),"
-                    "UNIQUE (Role)"
-                ");"
-                "INSERT INTO roles (Role) values ('superuser');"
-                "INSERT INTO roles (Role) values ('admin');"
-                "INSERT INTO roles (Role) values ('lecturer');"
-                "INSERT INTO roles (Role) values ('student');"
-                "CREATE TABLE members ("
-                    "ID       INT         NOT NULL,"
-                    "Role     INT         NOT NULL,"
-                    "Name     VARCHAR(25) NOT NULL,"
-                    "Surname  VARCHAR(20) NOT NULL,"
-                    "Username VARCHAR(25) NOT NULL,"
-                    "Password VARCHAR(255) NOT NULL,"
-                    "Email    VARCHAR(35) NOT NULL,"
-                    "Department VARCHAR(255) NOT NULL,"
-                    "PRIMARY KEY (ID),"
-                    "FOREIGN KEY (Role) REFERENCES roles (ID),"
-                    "UNIQUE (Name, Surname, Username)"
-                ");"
-                "CREATE TABLE courses ("
-                    "ID       INT         NOT NULL,"
-                    "NAME     VARCHAR(30) NOT NULL,"
-                    "isActive BOOLEAN DEFAULT TRUE,"
-                    "PRIMARY KEY (ID)"
-                ");"
-                "CREATE TABLE registrations ("
-                    "StudentID INT NOT NULL,"
-                    "CourseID  INT NOT NULL,"
-                    "ID        INT AUTO_INCREMENT,"
-                    "FOREIGN KEY (StudentID) REFERENCES members (ID),"
-                    "FOREIGN KEY (CourseID) REFERENCES courses (ID),"
-                    "UNIQUE (StudentID, CourseID),"
-                    "PRIMARY KEY (ID)"
-                ");"
-                "CREATE TABLE lecturers ("
-                    "LecturerID INT NOT NULL,"
-                    "CourseID   INT NOT NULL,"
-                    "ID         INT AUTO_INCREMENT,"
-                    "FOREIGN KEY (LecturerID) REFERENCES members (ID),"
-                    "FOREIGN KEY (CourseID) REFERENCES courses (ID),"
-                    "PRIMARY KEY (ID)"
-                ");"
-            )
+        if self.execute(
+            "CREATE TABLE roles ("
+                "Role VARCHAR(20),"
+                "ID INT AUTO_INCREMENT,"
+                "PRIMARY KEY (ID),"
+                "UNIQUE (Role)"
+            ");"
+            "INSERT INTO roles (Role) values ('superuser');"
+            "INSERT INTO roles (Role) values ('admin');"
+            "INSERT INTO roles (Role) values ('lecturer');"
+            "INSERT INTO roles (Role) values ('student');"
+            "CREATE TABLE members ("
+                "ID       INT         NOT NULL,"
+                "Role     INT         NOT NULL,"
+                "Name     VARCHAR(25) NOT NULL,"
+                "Surname  VARCHAR(20) NOT NULL,"
+                "Username VARCHAR(25) NOT NULL,"
+                "Password VARCHAR(255) NOT NULL,"
+                "Email    VARCHAR(35) NOT NULL,"
+                "Department VARCHAR(255) NOT NULL,"
+                "PRIMARY KEY (ID),"
+                "FOREIGN KEY (Role) REFERENCES roles (ID),"
+                "UNIQUE (Name, Surname, Username)"
+            ");"
+            "CREATE TABLE courses ("
+                "ID       INT         NOT NULL AUTO_INCREMENT,"
+                "NAME     VARCHAR(30) NOT NULL,"
+                "CODE     VARCHAR(10) NOT NULL,"
+                "isActive BOOLEAN DEFAULT TRUE,"
+                "PRIMARY KEY (ID),"
+                "UNIQUE (NAME, CODE, isActive)"
+            ");"
+            "CREATE TABLE registrations ("
+                "StudentID INT NOT NULL,"
+                "CourseID  INT NOT NULL,"
+                "ID        INT AUTO_INCREMENT,"
+                "FOREIGN KEY (StudentID) REFERENCES members (ID),"
+                "FOREIGN KEY (CourseID) REFERENCES courses (ID),"
+                "UNIQUE (StudentID, CourseID),"
+                "PRIMARY KEY (ID)"
+            ");"
+            "CREATE TABLE lecturers ("
+                "LecturerID INT NOT NULL,"
+                "CourseID   INT NOT NULL,"
+                "ID         INT AUTO_INCREMENT,"
+                "FOREIGN KEY (LecturerID) REFERENCES members (ID),"
+                "FOREIGN KEY (CourseID) REFERENCES courses (ID),"
+                "PRIMARY KEY (ID)"
+            ");"
+            "CREATE TABLE exams ("
+                "ID INT AUTO_INCREMENT,"
+                "Name varchar(255) NOT NULL,"
+                "CourseID INT,"
+                "Time TIMESTAMP,"
+                "PRIMARY KEY (ID),"
+                "FOREIGN KEY (CourseID) REFERENCES courses(ID),"
+                "UNIQUE (Name),"
+                "UNIQUE (Name, Time)"
+            ");"
+        ) is not None:
             return "Organization Initialized"
-        except self.cursor.ProgrammingError:
+        else:
             return "Organization Exists"
+
+    def add_course(self, org, name, code, lecturer_users):
+        command = "INSERT INTO %s.courses (NAME, CODE) VALUES ('%s', '%s');" % (org, name, code)
+        self.execute(command)
+        command = "select ID from %s.courses where CODE = '%s'" % (org, code)
+        lecturer_users = lecturer_users.split(":")
+        lecture_id = self.execute(command)[0][0]
+        command = ""
+        if len(lecturer_users) > 0:
+            for lecturer in lecturer_users:
+                lecturer_id = self.execute("select ID from %s.members where Username = '%s'" % (org, lecturer))[0][0]
+
+                command += "insert into %s.lecturers (LecturerID, CourseID) VALUES ('%s', '%s');" % (org, lecturer_id, lecture_id)
+            pass
+        self.execute(command)
+        return "Course Added!"
+
+    def get_course(self, org, code):
+        a = self.execute("SELECT * FROM %s.courses WHERE Code = '%s'" % (org,code))
+        print a
+        return "Done!"
 
     def execute(self, command):
         # print command
         try:
             self.cursor.execute(command)
 
-            rtn = self.cursor.fetchone()
+            rtn = self.cursor.fetchall()
             self.__commit()
             return rtn
 
@@ -126,6 +158,7 @@ class MySQLdb:
     def getOrganization(self):
         pass
 
+
 class Password:
     def hashPassword(self, password):
         self.password_hash = pwd_context.encrypt(password, )
@@ -134,6 +167,7 @@ class Password:
         return pwd_context.verify(password, self.password_hash)
     def verify_password_hash(self, password, hashed_password):
         return pwd_context.verify(password, hashed_password)
+
 
 class Credential:
     def __init__(self, username, password, db, org):
@@ -154,10 +188,6 @@ class Credential:
 
     def getPermissions(self):
         pass
-
-
-
-
 
 
 if __name__ == "__main__":
