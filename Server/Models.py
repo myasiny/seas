@@ -151,10 +151,11 @@ class MySQLdb:
             lid = self.execute("SELECT Name, Surname FROM %s.members WHERE ID = '%s'" % (org, id))[0]
             lecturers += lid[0] + " " + lid[1] + ":"
         rtn = {
+            "ID": a[0],
             "Name": a[1],
             "Code": a[2],
             "Lecturers": lecturers,
-            "Participants": self.get_course_participants(a[2])
+            "Participants": self.get_course_participants(a[2], org)
         }
         return rtn
 
@@ -180,6 +181,9 @@ class MySQLdb:
         command = "SELECT courses.Name, courses.CODE FROM lecturers JOIN courses ON lecturers.CourseID = courses.ID JOIN members ON members.ID = lecturers.LecturerID WHERE members.Username = '%s';" % (username)
         lectureIDs = self.execute(command)
         return lectureIDs
+
+    def get_user_info(self, organization, username):
+        return self.execute("SELECT * FROM %s.members WHERE Username='%s'" % (organization, username))[0]
 
     def execute(self, command):
         # print command
@@ -225,10 +229,28 @@ class MySQLdb:
             check = self.execute("Insert into %s.members(ID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(organization, student_number, role, name, surname, username, pas.hashPassword(password), mail, department))
             if check is not None:
                 auth.append((name + " " + surname, mail, password))
-                reg.append(student_number)
+            reg.append(student_number)
         #sentMail(auth, lecturer)
         self.register_student(reg, course, organization)
         return "Done"
+
+    def changePassword(self, organization ,username, oldPassword, newPassword):
+        pas = Password()
+        user = self.get_user_info(organization, username)
+        password = user[5]
+        if pas.verify_password_hash(oldPassword, password):
+            password = pas.hashPassword(newPassword)
+            self.execute("UPDATE %s.members SET Password='%s' WHERE Username = '%s'" % (organization, password, username))
+            return "Password Changed"
+        else:
+            return "Not Authorized"
+
+    def delete_student_course(self, organization, course, studentID):
+        courseID = self.execute("SELECT ID FROM %s.courses WHERE Code = '%s'" % (organization, course))[0][0]
+        command = "DELETE FROM %s.registrations WHERE StudentID = %d AND CourseID = %d" % (organization, int(studentID), int(courseID))
+        return self.execute(command)
+
+
 
 class Password:
     def hashPassword(self, password):

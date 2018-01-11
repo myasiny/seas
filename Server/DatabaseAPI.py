@@ -2,7 +2,7 @@
 import sys
 sys.path.append("..")
 
-from requests import put, get, post, ConnectionError, Timeout
+from requests import put, get, delete, ConnectionError, Timeout
 import csv
 import re
 
@@ -97,3 +97,18 @@ def getLecturerCourses(URL, organization, username):
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/courses/role=lecturer" % (organization, username)
     return get(url).json()
+
+def changePassword(URL, organization, username, password, newpass):
+    organization = organization.replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/edit_password" % (organization, username)
+    return put(url, data={
+        "Password": password,
+        "newPassword": newpass
+    }).json()
+
+def deleteStudentFromLecture(URL, organization, courseCode, studentID):
+    organization = organization.replace(" ", "_").lower()
+    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/delete_user" % (organization, courseCode)
+    return delete(url, data={"Student": studentID}).json()
+

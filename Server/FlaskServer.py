@@ -100,7 +100,7 @@ def signInUser(organization, username):
         if Password().verify_password_hash(request.form["Password"], passwd):
             rtn = list(db.execute("select Username, Name, Surname, ID, Role, Email, Department "
                                   "from %s.members where Username=('%s')" % (organization, username))[0])
-            rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE ID = '%s'" % (organization, rtn[4]))[0]
+            rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE ID = '%s'" % (organization, rtn[4]))[0][0]
             rtn.append(organization)
             # login_user(user_datastore.find_user(username=username), remember=True)
             return jsonify(rtn)
@@ -134,8 +134,8 @@ def getCourse(organization, course):
 
 @app.route("/organizations/<string:organization>/<string:course>/register/<string:liste>", methods=['PUT'])
 def putStudentList(organization, course, liste):
-    db.registerStudentCSV(request.files["liste"], organization, course, request.form["username"])
-    return jsonify(organization, course, liste)
+
+    return jsonify(db.registerStudentCSV(request.files["liste"], organization, course, request.form["username"]))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/register", methods=['GET'])
@@ -144,12 +144,15 @@ def getStudentList(organization, course):
 
 @app.route("/organizations/<string:organization>/<string:username>/courses/role=lecturer", methods=["GET"])
 def getLecturerCourseList(organization, username):
-
     return jsonify(db.get_lecturer_courses(organization, username))
+
+@app.route("/organizations/<string:organization>/<string:course>/delete_user", methods=['DELETE'])
+def deleteStudentFromLecture(organization, course):
+    return jsonify(db.delete_student_course(organization, course, request.form["Student"]))
 
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"])
 def changePassword(organization, username):
-    pass
+    return jsonify(db.changePassword(organization, username, request.form["Password"], request.form["newPassword"]))
 
 if __name__ == "__main__":
     app.run(host="10.50.81.24", port=8888)
