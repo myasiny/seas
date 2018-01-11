@@ -159,13 +159,27 @@ class MySQLdb:
         return rtn
 
     def register_student(self, studentIDList, courseCode, organization):
-        courseID = self.execute("SELECT ID FROM %s.courses WHERE CODE = %s" %(organization, courseCode))[0][0]
+        courseID = self.execute("SELECT ID FROM %s.courses WHERE CODE = '%s'" % (organization, courseCode))[0][0]
         for i in studentIDList:
             self.execute("INSERT INTO %s.registrations (StudentID, CourseID) VALUES(%s, %s)" %(organization, i, courseID))
         pass
 
-    def get_course_participants(self, code):
-        return None
+    def get_course_participants(self, code, organization):
+        courseID = self.execute("SELECT ID FROM %s.courses WHERE CODE = '%s'" %(organization, code))[0][0]
+        studentIDs = self.execute("SELECT StudentID FROM %s.registrations WHERE CourseID = '%s'" %(organization, courseID))
+        print studentIDs
+        students = []
+        for student in studentIDs:
+            info = self.execute("SELECT Name, Surname, ID, Email FROM %s.members WHERE ID = '%s'" % (organization, student[0]))[0]
+            students.append(info)
+
+        return students
+
+    def get_lecturer_courses(self, organization, username):
+        self.execute("USE %s" % organization)
+        command = "SELECT courses.Name, courses.CODE FROM lecturers JOIN courses ON lecturers.CourseID = courses.ID JOIN members ON members.ID = lecturers.LecturerID WHERE members.Username = '%s';" % (username)
+        lectureIDs = self.execute(command)
+        return lectureIDs
 
     def execute(self, command):
         # print command
@@ -206,14 +220,15 @@ class MySQLdb:
             department = "UNKNOWN"
             role = 4
             username = name.split()[0].lower() + surname.lower()
+            pas = Password()
             password = passwordGenerator(8)
-            check = self.execute("Insert into %s.members(ID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(organization, student_number, role, name, surname, username, Password.hashPassword(password), mail, department))
+            check = self.execute("Insert into %s.members(ID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(organization, student_number, role, name, surname, username, pas.hashPassword(password), mail, department))
             if check is not None:
                 auth.append((name + " " + surname, mail, password))
                 reg.append(student_number)
         #sentMail(auth, lecturer)
         self.register_student(reg, course, organization)
-
+        return "Done"
 
 class Password:
     def hashPassword(self, password):

@@ -30,3 +30,7 @@ from DatabaseAPI import *
 # print addCourse("http://10.50.81.24:8888", "istanbul sehir university", "Introduction to Programming", "ENGR 101", "alicakmak")
 # print getCourse("http://10.50.81.24:8888", "istanbul sehir university", "ENGR 101")
 # print registerStudent("http://10.50.81.24:8888", "Istanbul Sehir University", "EECS 468", True, "ornek.csv")
+
+# print getCourseStudents("http://10.50.81.24:8888", "Istanbul Sehir University", "ENGR 101")
+
+print getLecturerCourses("http://10.50.81.24:8888", "Istanbul Sehir University", "alicakmak")

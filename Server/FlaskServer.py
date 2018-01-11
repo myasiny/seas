@@ -137,6 +137,16 @@ def putStudentList(organization, course, liste):
     db.registerStudentCSV(request.files["liste"], organization, course, request.form["username"])
     return jsonify(organization, course, liste)
 
+
+@app.route("/organizations/<string:organization>/<string:course>/register", methods=['GET'])
+def getStudentList(organization, course):
+    return jsonify(db.get_course_participants(course, organization))
+
+@app.route("/organizations/<string:organization>/<string:username>/courses/role=lecturer", methods=["GET"])
+def getLecturerCourseList(organization, username):
+
+    return jsonify(db.get_lecturer_courses(organization, username))
+
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"])
 def changePassword(organization, username):
     pass
