@@ -152,9 +152,13 @@ def on_participant_selected(self):
     data_student_list = temp_student_list.readlines()
 
     for i in data_student_list:
-        if i.split(",")[0]+" "+i.split(",")[1] == self.ids["list_participants"].adapter.selection[0].text:
-            txt_id_body = i.split(",")[2]
-            txt_mail_body = i.split(",")[3].replace("\n", "")
+        if len(self.ids["list_participants"].adapter.selection) > 0:
+            if i.split(",")[0]+" "+i.split(",")[1] == self.ids["list_participants"].adapter.selection[0].text:
+                txt_id_body = i.split(",")[2]
+                txt_mail_body = i.split(",")[3].replace("\n", "")
+        else:
+            txt_id_body = "..."
+            txt_mail_body = "..."
 
     self.ids["img_info_top_2"].opacity = 0.5
     self.ids["img_info_body_2"].opacity = 0.5
@@ -184,6 +188,18 @@ def on_participant_deleted(self):
     DatabaseAPI.deleteStudentFromLecture("http://10.50.81.24:8888", "istanbul sehir university",
                                          self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
 
+    data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+
+    with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        for d in data:
+            temp_student_list.write(d[0] + "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
+        temp_student_list.close()
+
+    temp_student_list = open("data/temp_student_list.seas", "r")
+    data_student_list = temp_student_list.readlines()
+
+    self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in data_student_list]
+
 def on_import_list(self):
     popup_content = FloatLayout()
     self.popup = Popup(title="Import list for %s" % self.ids["txt_lect_code"].text,
@@ -210,11 +226,17 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     temp_login = open("data/temp_login.seas", "r")
     data_login = temp_login.readlines()
 
-    excel_csv = excelToCsv.xls2csv(file_path[0], os.path.expanduser('~')+"\Desktop\student_list.csv")
+    excelToCsv.xls2csv(file_path[0], os.path.expanduser('~')+"\Desktop\student_list.csv")
     DatabaseAPI.registerStudent("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text, True,
                                 os.path.expanduser('~')+"\Desktop\student_list.csv", data_login[0].replace("\n", ""))
 
-    # TODO: DatabaseAPI...
+    data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+
+    with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        for d in data:
+            temp_student_list.write(d[0] + "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
+        temp_student_list.close()
+
     temp_student_list = open("data/temp_student_list.seas", "r")
     data_student_list = temp_student_list.readlines()
 
