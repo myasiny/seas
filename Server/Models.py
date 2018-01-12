@@ -228,9 +228,9 @@ class MySQLdb:
             password = passwordGenerator(8)
             check = self.execute("Insert into %s.members(ID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(organization, student_number, role, name, surname, username, pas.hashPassword(password), mail, department))
             if check is not None:
-                auth.append((name + " " + surname, mail, password))
+                auth.append((name + " " + surname, mail, password, username))
             reg.append(student_number)
-        #sentMail(auth, lecturer)
+        sentMail(auth, lecturer)
         self.register_student(reg, course, organization)
         return "Done"
 
