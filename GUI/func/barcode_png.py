@@ -7,7 +7,7 @@ from barcode.writer import ImageWriter
 def barcode_png(id):
     try:
         ean = barcode.get_barcode_class("ean13")
-        cod = ean(id, writer=ImageWriter())
+        cod = ean(str(id), writer=ImageWriter())
         png = cod.save("pic_barcode")
         move("pic_barcode.png", "img/pic_barcode.png")
         try:

@@ -68,6 +68,9 @@ class PgLects(Screen):
     def on_participant_selected(self, dt):
         pgLects.on_participant_selected(self)
 
+    def on_participant_deleted(self, dt):
+        pgLects.on_participant_deleted(self)
+
     def on_import_list(self, dt):
         pgLects.on_import_list(self)
 

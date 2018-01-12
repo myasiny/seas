@@ -1,4 +1,3 @@
-from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
@@ -10,12 +9,17 @@ from kivy.adapters.listadapter import ListAdapter
 import os, sys
 sys.path.append("../..")
 
-from functools import partial
 from Server import DatabaseAPI
+from Functionality import excelToCsv
 
 def on_pre_enter(self):
-    data = ["Cs_361_Software","Eecs_202_Basic_Digital_Communication","Engr_101_Computer_Skills","Life_101_Biology"]
-    #TODO: data = DatabaseAPI...
+    temp_login = open("data/temp_login.seas", "r")
+    data_login = temp_login.readlines()
+
+    data = []
+    data_lectures = DatabaseAPI.getLecturerCourses("http://10.50.81.24:8888", "istanbul sehir university", data_login[0].replace("\n", ""))
+    for i in data_lectures:
+        data.append(i[1] + "_" + i[0])
 
     list_dropdown = DropDown()
 
@@ -84,11 +88,14 @@ def on_exams(self):
     self.ids["layout_exams"].opacity = 1
     self.remove_widget(self.ids["layout_participants"])
 
+    # TODO: data = DatabaseAPI...
+    data = ["Quiz 1","Midterm 1","Make Up","Quiz 2","Final"]
+
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
                                            "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height/25,
                                            "size_hint_y": None, "height": self.height/10}
-    self.ids["list_exams"].adapter = ListAdapter(data=[i for i in ["Quiz 1","Midterm 1","Make Up","Quiz 2","Final"]], cls=ListItemButton,
+    self.ids["list_exams"].adapter = ListAdapter(data=[i for i in data], cls=ListItemButton,
                                                  args_converter=args_converter, allow_empty_selection=False)
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
 
@@ -119,6 +126,13 @@ def on_participants(self):
     self.ids["layout_participants"].opacity = 1
     self.remove_widget(self.ids["layout_exams"])
 
+    data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+
+    with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        for d in data:
+            temp_student_list.write(d[0]+ "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
+        temp_student_list.close()
+
     temp_student_list = open("data/temp_student_list.seas", "r")
     data_student_list = temp_student_list.readlines()
 
@@ -126,7 +140,7 @@ def on_participants(self):
                                            "background_normal": "img/widget_75_black_crop.png",
                                            "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height / 50,
                                            "size_hint_y": None, "height": self.height / 25}
-    self.ids["list_participants"].adapter = ListAdapter(data=[i.split(",")[0] for i in data_student_list],
+    self.ids["list_participants"].adapter = ListAdapter(data=[i.split(",")[0]+" "+i.split(",")[1] for i in data_student_list],
                                                         cls=ListItemButton, args_converter=args_converter,
                                                         allow_empty_selection=False)
     self.ids["list_participants"].adapter.bind(on_selection_change=self.on_participant_selected)
@@ -137,10 +151,14 @@ def on_participant_selected(self):
     temp_student_list = open("data/temp_student_list.seas", "r")
     data_student_list = temp_student_list.readlines()
 
+    txt_id_body = "..."
+    txt_mail_body = "..."
+
     for i in data_student_list:
-        if i.split(",")[0] == self.ids["list_participants"].adapter.selection[0].text:
-            txt_id_body = i.split(",")[1]
-            txt_mail_body = i.split(",")[2].replace("\n","")
+        if len(self.ids["list_participants"].adapter.selection) > 0:
+            if i.split(",")[0]+" "+i.split(",")[1] == self.ids["list_participants"].adapter.selection[0].text:
+                txt_id_body = i.split(",")[2]
+                txt_mail_body = i.split(",")[3].replace("\n", "")
 
     self.ids["img_info_top_2"].opacity = 0.5
     self.ids["img_info_body_2"].opacity = 0.5
@@ -159,8 +177,28 @@ def on_participant_selected(self):
     self.ids["txt_mail_body"].text = txt_mail_body
 
     self.ids["txt_options_head_2"].opacity = 1
+
     self.ids["btn_student_delete"].opacity = 1
+
+    self.ids["btn_student_delete"].bind(on_release=self.on_participant_deleted)
+
     self.ids["btn_student_statistics"].opacity = 1
+
+def on_participant_deleted(self):
+    DatabaseAPI.deleteStudentFromLecture("http://10.50.81.24:8888", "istanbul sehir university",
+                                         self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
+
+    data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+
+    with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        for d in data:
+            temp_student_list.write(d[0] + "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
+        temp_student_list.close()
+
+    temp_student_list = open("data/temp_student_list.seas", "r")
+    data_student_list = temp_student_list.readlines()
+
+    self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in data_student_list]
 
 def on_import_list(self):
     popup_content = FloatLayout()
@@ -185,12 +223,24 @@ def on_import_list(self):
 def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.popup.dismiss()
 
-    print file_path[0]
+    temp_login = open("data/temp_login.seas", "r")
+    data_login = temp_login.readlines()
+
+    excelToCsv.xls2csv(file_path[0], os.path.expanduser('~')+"\Desktop\student_list.csv")
+    DatabaseAPI.registerStudent("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text, True,
+                                os.path.expanduser('~')+"\Desktop\student_list.csv", data_login[0].replace("\n", ""))
+
+    data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+
+    with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        for d in data:
+            temp_student_list.write(d[0] + "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
+        temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
     data_student_list = temp_student_list.readlines()
 
-    self.ids["list_participants"].adapter.data = [i.split(",")[0] for i in data_student_list]
+    self.ids["list_participants"].adapter.data = [i.split(",")[0]+" "+i.split(",")[1] for i in data_student_list]
 
 def on_class_statistics(self):
     pass # TODO: Re-direct To Class Statistics
