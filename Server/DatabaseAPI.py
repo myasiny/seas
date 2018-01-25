@@ -3,7 +3,7 @@ import sys
 sys.path.append("..")
 
 from requests import put, get, delete, ConnectionError, Timeout
-import csv
+import json
 import re
 
 
@@ -113,3 +113,21 @@ def deleteStudentFromLecture(URL, organization, courseCode, studentID):
     url = URL + "/organizations/%s/%s/delete_user" % (organization, courseCode)
     return delete(url, data={"Student": studentID}).json()
 
+def createExam(URL, organization, courseCode, name, time, duration, questions):
+    organization = organization.replace(" ", "_").lower()
+    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/add" % (organization, courseCode)
+    question = json.dumps(questions)
+    return put(url, data={"name": name, "time": time, "duration": duration, "questions": question}).json()
+
+def getExamsOfLecture(URL, organization, courseCode):
+    organization = organization.replace(" ", "_").lower()
+    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/" % (organization, courseCode)
+    return get(url).json()
+
+def getExam(URL, organization, courseCode, name):
+    organization = organization.replace(" ", "_").lower()
+    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/%s" % (organization, courseCode, name)
+    return get(url).json()

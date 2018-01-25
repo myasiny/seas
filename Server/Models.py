@@ -4,6 +4,7 @@ import sqlite3
 from flaskext.mysql import MySQL
 from passlib.apps import custom_app_context as pwd_context
 import sys
+import json
 sys.path.append("..")
 
 import csv
@@ -287,6 +288,111 @@ class Credential:
 
     def getPermissions(self):
         pass
+
+
+class Question:
+    def __init__(self, tip, subject, text, answer, inputs, outputs, value, tags):
+        self.tip = tip
+        self.subject = subject
+        self.text = text
+        self.tags = tags
+        self.answer = answer
+        self.inputs = inputs
+        self.outputs = outputs
+        self.value = value
+        self.get ={"type": self.tip,
+                "subject": self.subject,
+                "text": self.text,
+                "answer": self.answer,
+                "inputs": self.inputs,
+                "outputs": self.outputs,
+                "value": self.value,
+                "tags" : self.tags
+                }
+
+    def getString(self):
+        return json.dumps(self.get)
+
+    def save(self, db, course_code, organization, exam_code):
+        org = organization.replace(" ", "_").lower()
+        course_code = course_code.lower().replace(" ", "_")
+        command = "USE %s;" %org
+        command += "INSERT INTO questions (info, ExamID) select '%s' , ID from (select exams.ID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.ID and exams.ID = %d) as T where T.CODE = '%s';" %(self.getString(), exam_code, course_code)
+        return db.execute(command)
+
+    def save_command(self, course_code, exam_name):
+        course_code = course_code.lower().replace(" ", "_")
+        command = "INSERT INTO questions (info, ExamID) select '%s' , ID from (select exams.ID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.ID and exams.Name = '%s') as T where T.CODE = '%s';" %(self.getString(), exam_name, course_code)
+        return command
+
+    def load(self, db, id, organization):
+        org = organization.replace(" ", "_").lower()
+        # command = "USE %s;" %org
+        command = "SELECT * FROM %s.questions WHERE questionID = %d;" % (org, int(id))
+
+        data = db.execute(command)[0]
+        return json.dumps({
+            "question id": data[0],
+            "exam id": data[1],
+            "info": json.loads(data[2])
+        })
+
+    def load_command(self, db, id, organization):
+        pass
+
+
+class Exam:
+    def __init__(self, Name, CourseCode, Time, duration, organization):
+        self.org = organization.replace(" ", "_").lower()
+        self.name = Name
+        self.course = CourseCode.replace(" ", "_").lower()
+        self.time = Time
+        self.duration = duration
+        self.questions = list()
+
+    def addQuestion(self, tip, subject, text, answer, inputs, outputs, value, tags):
+        self.questions.append(Question(tip, subject, text, answer, inputs, outputs, value, tags))
+
+    def addQuestionObject(self, questionObj):
+        self.questions.append(questionObj)
+
+    def save(self, db):
+        """
+            use istanbul_sehir_university;
+            insert into exams(Name,Time,CourseID) select 'bioinformatics mt 1', '2018-02-15 10:30:00', ID from courses where courses.CODE = 'eecs_468';
+        """
+
+        command = "USE %s;" % self.org
+        command += "insert into exams(Name,Time,Duration,CourseID) select '%s', '%s', %d, ID from courses where courses.CODE = '%s';" % (self.name, self.time, int(self.duration), self.course)
+
+        for question in self.questions:
+            command += question.save_command(self.course, self.name)
+
+        return db.execute(command)
+
+    def get(self, db):
+        command = "SELECT info, time, duration  FROM %s.questions join %s.exams where %s.exams.Name = '%s' and examID = ID;" % (self.org, self.org, self.org, self.name)
+        saved = db.execute(command)
+        questions = {}
+        i = 0
+        for question in saved:
+            i = i+1
+            questions[i] = question[0]
+        for question in self.questions:
+            i = i+1
+            questions[i] = question.get
+        return{
+            "Name": self.name,
+            "Course": self.course,
+            "Time": saved[0][1],
+            "Duration": saved[0][2],
+            "Questions": questions
+        }
+
+    def getString(self, db):
+        return json.dumps(self.get(db))
+
+
 
 
 if __name__ == "__main__":

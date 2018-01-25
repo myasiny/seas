@@ -1,12 +1,12 @@
 # -*- coding:UTF-8 -*-
 
 from flask import Flask, request, jsonify
-from Models import MySQLdb, Password, Credential
+from Models import MySQLdb, Password, Credential, Question, Exam
 from flask_security import Security, login_required, SQLAlchemySessionUserDatastore, roles_accepted
 from flask_security.utils import login_user
 from SessionManager import db_session, init_db
 from SessionModels import User, Role
-from mysql.connector.errors import IntegrityError
+import json
 import datetime, time
 
 app = Flask(__name__)
@@ -142,13 +142,16 @@ def putStudentList(organization, course, liste):
 def getStudentList(organization, course):
     return jsonify(db.get_course_participants(course, organization))
 
+
 @app.route("/organizations/<string:organization>/<string:username>/courses/role=lecturer", methods=["GET"])
 def getLecturerCourseList(organization, username):
     return jsonify(db.get_lecturer_courses(organization, username))
 
+
 @app.route("/organizations/<string:organization>/<string:course>/delete_user", methods=['DELETE'])
 def deleteStudentFromLecture(organization, course):
     return jsonify(db.delete_student_course(organization, course, request.form["Student"]))
+
 
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"])
 def changePassword(organization, username):
@@ -159,5 +162,46 @@ def changePassword(organization, username):
         ismail = False
     return jsonify(db.changePasswordOREmail(organization, username, request.form["Password"], request.form["newPassword"], email=ismail))
 
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/add", methods=["PUT"])
+def addExam(organization, course):
+    name = request.form["name"]
+    time = request.form["time"]
+    duration = request.form["duration"]
+    questions = json.loads(request.form["questions"])
+    exam = Exam(name, course, time, duration, organization)
+    for j in questions:
+        i=questions[j]
+        exam.addQuestion(
+            i["type"],
+            i["subject"],
+            i["text"],
+            i["answer"],
+            i["inputs"],
+            i["outputs"],
+            i["value"],
+            i["tags"])
+    return jsonify(exam.save(db))
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/", methods=["GET"])
+def getExamsOfLecture(organization, course):
+    pass
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>", methods=["GET"])
+def getExam(organization, course, name):
+    exam = Exam(name, course, None, None, organization)
+    return jsonify(exam.get(db))
+
+from json import loads
 if __name__ == "__main__":
     app.run(host="10.50.81.24", port=8888)
+    # a = Question("classic", "history", "who is the founder of TR?", "Ataturk", [(1,2),(2,3)], [(3),(5)], 30, "mustafa", "kemal")
+    # e = Exam("bioinformatics mt 1", "eecs 468", "17.2.2018.10.00.00", 60, "istanbul sehir university")
+    # e.addQuestionObject(a)
+    # e.addQuestion("truefalse", "history", "Ottomans were Muslims.", "true", "", "", 30, "ottomans", "muslim")
+    # print e.get()
+    # print e.getString()
+    # print loads(a.load(db, 3, "istanbul sehir university"))["info"]["tags"]
+    # print a.load(db, 3, "istanbul sehir university")
+    # print e.get(db)
+    pass
