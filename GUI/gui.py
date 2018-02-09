@@ -8,7 +8,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, tabReset, tabActivate, pgStart, pgProfile, pgLects, pgStats
+from pg import pgLogin, tabReset, tabActivate, pgStart, pgProfile, pgLects, pgNewExam, pgStats
 
 class PgStats(Screen):
     pgLogin.load_string("stats")
@@ -26,6 +26,38 @@ class PgStats(Screen):
 
     def on_lects(self):
         pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_logout(self):
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit()
+
+class PgNewExam(Screen):
+    pgLogin.load_string("newexam")
+
+    def on_pre_enter(self, *args):
+        pgNewExam.on_pre_enter(self)
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
+
+    def on_profile(self):
+        pages.append(PgProfile(name="PgProfile"))
+        tabReset.on_back(pages, screen)
+
+    def on_start(self):
+        pages.append(PgStart(name="PgStart"))
+        tabReset.on_back(pages, screen)
+
+    def on_lects(self):
+        pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_stats(self):
+        pages.append(PgStats(name="PgStats"))
         tabReset.on_back(pages, screen)
 
     def on_logout(self):
@@ -54,6 +86,10 @@ class PgLects(Screen):
 
     def on_stats(self):
         pages.append(PgStats(name="PgStats"))
+        tabReset.on_back(pages, screen)
+
+    def on_add_exam(self):
+        pages.append(PgNewExam(name="PgNewExam"))
         tabReset.on_back(pages, screen)
 
     def on_exams(self):

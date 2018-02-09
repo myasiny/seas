@@ -17,9 +17,10 @@ def on_pre_enter(self):
     data_login = temp_login.readlines()
 
     data = []
-    data_lectures = DatabaseAPI.getLecturerCourses("http://10.50.81.24:8888", "istanbul sehir university", data_login[0].replace("\n", ""))
+    # data_lectures = DatabaseAPI.getLecturerCourses("http://10.50.81.24:8888", "istanbul sehir university", data_login[0].replace("\n", ""))
+    data_lectures = [["TODO", "TODO", "TODO"]]
     for i in data_lectures:
-        data.append(i[1] + "_" + i[0])
+        data.append(i[1] + "_" + i[0] + "_" + i[2])
 
     list_dropdown = DropDown()
 
@@ -63,6 +64,10 @@ def on_lect_select(self, data, dropdown, txt):
         if txt in " ".join(lect.split("_")).upper():
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
+
+            with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+                temp_selected_lect.write(txt + "\n" + self.ids["txt_lect_name"].text)
+                temp_selected_lect.close()
             break
 
     self.ids["img_info_top"].opacity = 0
@@ -89,7 +94,7 @@ def on_exams(self):
     self.remove_widget(self.ids["layout_participants"])
 
     # TODO: data = DatabaseAPI...
-    data = ["Quiz 1","Midterm 1","Make Up","Quiz 2","Final"]
+    data = ["Quiz 1", "Midterm 1", "Make Up", "Quiz 2", "Final"]
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -126,7 +131,8 @@ def on_participants(self):
     self.ids["layout_participants"].opacity = 1
     self.remove_widget(self.ids["layout_exams"])
 
-    data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+    # data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+    data = [["TODO", "TODO", 0, "TODO"]]
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
@@ -202,7 +208,7 @@ def on_participant_deleted(self):
 
 def on_import_list(self):
     popup_content = FloatLayout()
-    self.popup = Popup(title="Import list for %s" % self.ids["txt_lect_code"].text,
+    self.popup = Popup(title="* Double click to select a file!",
                        content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
                        size_hint=(None, None), size=(self.width / 2, self.height / 2))
     filechooser = FileChooserListView(path=os.path.expanduser('~'),
@@ -216,7 +222,7 @@ def on_import_list(self):
                                     background_normal="img/widget_100.png",
                                     background_down="img/widget_100_selected.png",
                                     size_hint_y=None, height=self.height / 20,
-                                    pos_hint={"center_x": .5, "y": .0},
+                                    pos_hint={"center_x": .75, "y": .0},
                                     on_release=self.popup.dismiss))
     self.popup.open()
 

@@ -11,7 +11,7 @@ from Server import DatabaseAPI
 from GUI.func.check_connection import check_connection
 
 def load_string(name):
-    with open("css/" + name + ".seas", "r") as design:
+    with open("css/%s.seas" % name, "r") as design:
         Builder.load_string(design.read())
 
 def on_enter(self):
@@ -41,7 +41,8 @@ def on_login(self, pages, screen):
         btn_login.disabled = False
     else:
         try:
-            data = DatabaseAPI.signIn("http://10.50.81.24:8888", "istanbul sehir university", input_username, input_password)
+            # data = DatabaseAPI.signIn("http://10.50.81.24:8888", "istanbul sehir university", input_username, input_password)
+            data = ["TODO", "TODO", "TODO", "TODO", "TODO", "TODO", "TODO", "TODO"]
         except:
             data = None
             print ("SEAS [ERROR]: pgLogin > Except > Server Communication Failed")

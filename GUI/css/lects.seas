@@ -187,7 +187,7 @@
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 2
             size_hint: .85, .1
-            pos_hint: {"center_x": .6, "y": .75}
+            pos_hint: {"center_x": .6, "y": .725}
 
     FloatLayout:
         id: layout_exams
@@ -211,6 +211,7 @@
             background_down: "img/widget_75_gray.png"
             size_hint: .2, .1
             pos_hint: {"center_x": .875, "center_y": .65}
+            on_release: root.on_add_exam()
 
         ListView:
             id: list_exams

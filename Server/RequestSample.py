@@ -47,15 +47,15 @@ from DatabaseAPI import *
 #                  "2018-03-15 10:30:00",
 #                  50,
 #                  {1:
-#                       {"type": "classic",
-#                         "subject": "ataturk",
-#                         "text": "who is the founder of TR?",
-#                         "answer": "Ataturk",
-#                         "inputs": [(1,2),(2,3)],
-#                         "outputs": [(3),(5)],
-#                           "value": 50,
-#                           "tags": ["mustafa","kemal"]},
-#                  2:
+#                      {"type": "classic",
+#                        "subject": "ataturk",
+#                        "text": "who is the founder of TR?",
+#                        "answer": "Ataturk",
+#                        "inputs": [(1,2),(2,3)],
+#                        "outputs": [(3),(5)],
+#                        "value": 50,
+#                        "tags": ["mustafa","kemal"]},
+#                   2:
 #                      {"type": "truefalse",
 #                       "subject": "history",
 #                       "text": "ottomans were muslims.",
@@ -64,8 +64,8 @@ from DatabaseAPI import *
 #                       "outputs": "",
 #                       "value": 50,
 #                       "tags": ["ottomans", "muslims"]}
-#                   }
-#                  )
+#                  }
+#                 )
 
 print getExam("http://10.50.81.24:8888",
                  "Istanbul Sehir University",
