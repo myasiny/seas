@@ -8,7 +8,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, tabReset, tabActivate, pgStart, pgProfile, pgLects, pgNewExam, pgStats
+from pg import pgLogin, tabReset, tabActivate, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats
 
 class PgStats(Screen):
     pgLogin.load_string("stats")
@@ -35,6 +35,16 @@ class PgStats(Screen):
     def on_quit(self):
         pgLogin.on_quit()
 
+class PgNewQuestion(Screen):
+    pgLogin.load_string("newquestion")
+
+    def on_new_question_cancel(self):
+        pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_new_question_complete(self):
+        pgNewQuestion.on_new_question_complete(self)
+
 class PgNewExam(Screen):
     pgLogin.load_string("newexam")
 
@@ -58,6 +68,14 @@ class PgNewExam(Screen):
 
     def on_stats(self):
         pages.append(PgStats(name="PgStats"))
+        tabReset.on_back(pages, screen)
+
+    def on_new_exam_cancel(self):
+        pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_new_exam_create(self):
+        pages.append(PgNewQuestion(name="PgNewQuestion"))
         tabReset.on_back(pages, screen)
 
     def on_logout(self):

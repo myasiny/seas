@@ -206,11 +206,36 @@
             size_hint: .45, .65
             pos_hint: {"center_x": .75, "center_y": .45}
 
-        Image:
-            id: img_widget_75_black_right
-            source: "img/widget_75_black.png"
-            opacity: .25
-            keep_ratio: False
-            allow_stretch: True
-            size_hint: .45, .35
-            pos_hint: {"center_x": .75, "center_y": .6}
+        Label:
+            id: txt_date_time
+            text: "Exam Date & Time"
+            color: 0,0,0,0.5
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 3
+            size_hint: .45, .1
+            pos_hint: {"center_x": .75, "center_y": .725}
+
+        Button:
+            id: btn_new_exam_cancel
+            text: "CANCEL"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_100_red.png"
+            background_down: "img/widget_100_red_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .1, .075
+            pos_hint: {"center_x": .8, "center_y": .075}
+            on_release: root.on_new_exam_cancel()
+
+        Button:
+            id: btn_new_exam_create
+            text: "CREATE"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_100_green.png"
+            background_down: "img/widget_100_green_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .1, .075
+            pos_hint: {"center_x": .925, "center_y": .075}
+            on_release: root.on_new_exam_create()

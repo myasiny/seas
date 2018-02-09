@@ -222,7 +222,7 @@ def on_import_list(self):
                                     background_normal="img/widget_100.png",
                                     background_down="img/widget_100_selected.png",
                                     size_hint_y=None, height=self.height / 20,
-                                    pos_hint={"center_x": .75, "y": .0},
+                                    pos_hint={"center_x": .5, "y": .0},
                                     on_release=self.popup.dismiss))
     self.popup.open()
 
