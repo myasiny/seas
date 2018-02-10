@@ -3,11 +3,8 @@
 import sqlite3
 from flaskext.mysql import MySQL
 from passlib.apps import custom_app_context as pwd_context
-import sys
-import json
+import sys, json, csv, threading
 sys.path.append("..")
-
-import csv
 from Functionality.passwordGenerator import passwordGenerator
 from Functionality.sendEmail import sentMail
 
@@ -60,96 +57,146 @@ class MySQLdb:
 
     def initialize_organization(self, organization):
         self.execute(
-            "CREATE SCHEMA %s;"
-            "USE %s" %(organization, organization)
+            "CREATE SCHEMA %s;" %organization
         )
+        self.execute(
+            "USE %s;" %organization
+        )
+        command_seq = list()
 
-        if self.execute(
-            "CREATE TABLE roles ("
-                "Role VARCHAR(20),"
-                "ID INT AUTO_INCREMENT,"
-                "PRIMARY KEY (ID),"
-                "UNIQUE (Role)"
-            ");"
-            "INSERT INTO roles (Role) values ('superuser');"
-            "INSERT INTO roles (Role) values ('admin');"
-            "INSERT INTO roles (Role) values ('lecturer');"
-            "INSERT INTO roles (Role) values ('student');"
-            "CREATE TABLE members ("
-                "ID       INT         NOT NULL,"
-                "Role     INT         NOT NULL,"
-                "Name     VARCHAR(25) NOT NULL,"
-                "Surname  VARCHAR(20) NOT NULL,"
-                "Username VARCHAR(25) NOT NULL,"
-                "Password VARCHAR(255) NOT NULL,"
-                "Email    VARCHAR(35) NOT NULL,"
-                "Department VARCHAR(255) NOT NULL,"
-                "PRIMARY KEY (ID),"
-                "FOREIGN KEY (Role) REFERENCES roles (ID),"
-                "UNIQUE (Name, Surname, Username)"
-            ");"
-            "CREATE TABLE courses ("
-                "ID       INT         NOT NULL AUTO_INCREMENT,"
-                "NAME     VARCHAR(30) NOT NULL,"
-                "CODE     VARCHAR(10) NOT NULL,"
-                "isActive BOOLEAN DEFAULT TRUE,"
-                "PRIMARY KEY (ID),"
-                "UNIQUE (NAME, CODE, isActive)"
-            ");"
-            "CREATE TABLE registrations ("
-                "StudentID INT NOT NULL,"
-                "CourseID  INT NOT NULL,"
-                "ID        INT AUTO_INCREMENT,"
-                "FOREIGN KEY (StudentID) REFERENCES members (ID),"
-                "FOREIGN KEY (CourseID) REFERENCES courses (ID),"
-                "UNIQUE (StudentID, CourseID),"
-                "PRIMARY KEY (ID)"
-            ");"
-            "CREATE TABLE lecturers ("
-                "LecturerID INT NOT NULL,"
-                "CourseID   INT NOT NULL,"
-                "ID         INT AUTO_INCREMENT,"
-                "FOREIGN KEY (LecturerID) REFERENCES members (ID),"
-                "FOREIGN KEY (CourseID) REFERENCES courses (ID),"
-                "PRIMARY KEY (ID)"
-            ");"
-            "CREATE TABLE exams ("
-                "ID INT AUTO_INCREMENT,"
-                "Name varchar(255) NOT NULL,"
-                "CourseID INT,"
-                "Time TIMESTAMP,"
-                "PRIMARY KEY (ID),"
-                "FOREIGN KEY (CourseID) REFERENCES courses(ID),"
-                "UNIQUE (Name),"
-                "UNIQUE (Name, Time)"
-            ");"
-        ) is not None:
-            return "Organization Initialized"
-        else:
-            return "Organization Exists"
+        roleTable = DBTable("roles",
+                            [
+                                ("Role", "varchar(20)", ""),
+                                ("roleID", "INT", "AUTO_INCREMENT")
+                            ],
+                            uniques=[("Role")],
+                            primary_key="RoleID",
+                              database=self)
+
+        # command_seq.append(roleTable.get_command())
+
+        memberTable = DBTable("members",
+                              [
+                                  ("PersonID", "int", "not null"),
+                                  ("Role", "int", "not null"),
+                                  ("Name", "varchar(255)", "not null"),
+                                  ("Surname", "varchar(255)", "not null"),
+                                  ("Username", "varchar(255)", "not null"),
+                                  ("Password", "varchar(255)", "not null"),
+                                  ("Email", "varchar(50)", "not null"),
+                                  ("Department", "varchar(255)", "not null")
+                              ],
+                              primary_key="PersonID",
+                              foreign_keys_tuple=[("Role", "roles", "RoleID")],
+                              uniques=[("Name", "Surname", "Username"), ("PersonID")],
+                              database=self)
+
+        # command_seq.append(memberTable.get_command())
+
+        coursesTable = DBTable("courses",
+                               [
+                                   ("CourseID", "int", "not null auto_increment"),
+                                   ("Name", "varchar(255)", "not null"),
+                                   ("Code", "varchar(20)", "not null"),
+                                   ("isActive", "boolean", "default true"),
+                               ],
+                               primary_key="CourseID",
+                               uniques=[("Name", "Code", "isActive")],
+                              database=self)
+
+        # command_seq.append(coursesTable.get_command())
+
+        regisTable = DBTable("registrations",
+                             [
+                                 ("StudentID", "int", "not null"),
+                                 ("CourseID", "int", "not null"),
+                                 ("RegistrationID", "int", "auto_increment")
+                             ],
+                             foreign_keys_tuple=[
+                                 ("StudentID", "members", "PersonID"),
+                                 ("courseID", "courses", "CourseID")
+                             ],
+                             uniques=[
+                                 ("StudentID", "CourseID")
+                             ],
+                             primary_key="RegistrationID",
+                              database=self)
+
+        # command_seq.append(regisTable.get_command())
+
+        lecturersTable = DBTable("lecturers",
+                                 [
+                                     ("LecturerID", "int", "not null"),
+                                     ("CourseID", "int", "not null"),
+                                     ("LeCorID", "int", "not null auto_increment")
+                                 ],
+                                 foreign_keys_tuple=
+                                 [
+                                     ("LecturerID", "members", "PersonID"),
+                                     ("CourseID", "courses", "CourseID")
+                                 ],
+                                 primary_key="LeCorID",
+                              database=self)
+
+        # command_seq.append(lecturersTable.get_command())
+
+        examsTable = DBTable("exams",
+                             [
+                                 ("ExamID", "int", "auto_increment"),
+                                 ("Name", "varchar(255)", "not null"),
+                                 ("CourseID", "int", ""),
+                                 ("Time", "timestamp", "")
+                             ],
+                             primary_key="ExamId",
+                             foreign_keys_tuple=
+                             [
+                                 ("CourseID", "courses", "CourseID")
+                             ],
+                             uniques=
+                             [
+                                 ("Name"),
+                                 ("Name", "Time")
+                             ],
+                              database=self)
+
+        # command_seq.append(examsTable.get_command())
+
+        questionsTable = DBTable("questions",
+                                 [
+                                     ("QuestionID", "int", "auto_increment"),
+                                     ("ExamID", "int", ""),
+                                     ("info", "JSON", "")
+                                 ],
+                                 primary_key="QuestionID",
+                                 foreign_keys_tuple=[("ExamID", "exams", "ExamID")],
+                              database=self)
+
+        # command_seq.append(questionsTable.get_command())
 
     def add_course(self, org, name, code, lecturer_users):
         command = "INSERT INTO %s.courses (NAME, CODE) VALUES ('%s', '%s');" % (org, name, code)
         self.execute(command)
-        command = "select ID from %s.courses where CODE = '%s'" % (org, code)
+        command = "select CourseID from %s.courses where CODE = '%s'" % (org, code)
         lecturer_users = lecturer_users.split(":")
         lecture_id = self.execute(command)[0][0]
         command = ""
         if len(lecturer_users) > 0:
             for lecturer in lecturer_users:
-                lecturer_id = self.execute("select ID from %s.members where Username = '%s'" % (org, lecturer))[0][0]
+                lecturer_id = self.execute("select PersonID from %s.members where Username = '%s'" % (org, lecturer))[0][0]
 
                 command += "insert into %s.lecturers (LecturerID, CourseID) VALUES ('%s', '%s');" % (org, lecturer_id, lecture_id)
             pass
+        print command
         self.execute(command)
         return "Course Added!"
 
+    # todo: fatihgulmez; use JOIN query.
     def get_course(self, org, code):
         a = self.execute("SELECT * FROM %s.courses WHERE Code = '%s'" % (org,code))[0]
         lecturer_IDs = self.execute("SELECT LecturerID FROM %s.lecturers WHERE CourseID = '%s'"%(org, a[0]))[0]
         lecturers = ""
         for id in lecturer_IDs:
-            lid = self.execute("SELECT Name, Surname FROM %s.members WHERE ID = '%s'" % (org, id))[0]
+            lid = self.execute("SELECT Name, Surname FROM %s.members WHERE PersonID = '%s'" % (org, id))[0]
             lecturers += lid[0] + " " + lid[1] + ":"
         rtn = {
             "ID": a[0],
@@ -160,26 +207,27 @@ class MySQLdb:
         }
         return rtn
 
+    # todo: fatihgulmez; use JOIN query.
     def register_student(self, studentIDList, courseCode, organization):
-        courseID = self.execute("SELECT ID FROM %s.courses WHERE CODE = '%s'" % (organization, courseCode))[0][0]
+        courseID = self.execute("SELECT CourseID FROM %s.courses WHERE CODE = '%s'" % (organization, courseCode))[0][0]
         for i in studentIDList:
             self.execute("INSERT INTO %s.registrations (StudentID, CourseID) VALUES(%s, %s)" %(organization, i, courseID))
         pass
 
+    # todo: fatihgulmez; use JOIN query.
     def get_course_participants(self, code, organization):
-        courseID = self.execute("SELECT ID FROM %s.courses WHERE CODE = '%s'" %(organization, code))[0][0]
+        courseID = self.execute("SELECT CourseID FROM %s.courses WHERE CODE = '%s'" %(organization, code))[0][0]
         studentIDs = self.execute("SELECT StudentID FROM %s.registrations WHERE CourseID = '%s'" %(organization, courseID))
-        print studentIDs
         students = []
         for student in studentIDs:
-            info = self.execute("SELECT Name, Surname, ID, Email FROM %s.members WHERE ID = '%s'" % (organization, student[0]))[0]
+            info = self.execute("SELECT Name, Surname, PersonID, Email FROM %s.members WHERE ID = '%s'" % (organization, student[0]))[0]
             students.append(info)
 
         return students
 
     def get_lecturer_courses(self, organization, username):
         self.execute("USE %s" % organization)
-        command = "SELECT courses.Name, courses.CODE FROM lecturers JOIN courses ON lecturers.CourseID = courses.ID JOIN members ON members.ID = lecturers.LecturerID WHERE members.Username = '%s';" % (username)
+        command = "SELECT courses.Name, courses.CODE FROM lecturers JOIN courses ON lecturers.CourseID = courses.CourseID JOIN members ON members.PersonID = lecturers.LecturerID WHERE members.Username = '%s';" % (username)
         lectureIDs = self.execute(command)
         return lectureIDs
 
@@ -211,6 +259,7 @@ class MySQLdb:
                                                                                                                     "g")
         return str_
 
+    # todo: fatihgulmez; use JOIN query.
     def registerStudentCSV(self, csvDataFile, organization, course, lecturer):
         csvReader = csv.reader(csvDataFile)
         column_names = next(csvReader, None)
@@ -227,14 +276,16 @@ class MySQLdb:
             username = name.split()[0].lower() + surname.lower()
             pas = Password()
             password = passwordGenerator(8)
-            check = self.execute("Insert into %s.members(ID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(organization, student_number, role, name, surname, username, pas.hashPassword(password), mail, department))
+            check = self.execute("Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(organization, student_number, role, name, surname, username, pas.hashPassword(password), mail, department))
             if check is not None:
                 auth.append((name + " " + surname, mail, password, username))
             reg.append(student_number)
-        sentMail(auth, lecturer)
+        threading.Thread(target=sentMail, args=(auth, lecturer)).start()
+        print auth, lecturer
         self.register_student(reg, course, organization)
         return "Done"
 
+    # todo: fatihgulmez; use JOIN query.
     def changePasswordOREmail(self, organization, username, oldPassword, newVal, email=False):
         pas = Password()
         user = self.get_user_info(organization, username)
@@ -251,20 +302,25 @@ class MySQLdb:
         else:
             return "Not Authorized"
 
+    # todo: fatihgulmez; use JOIN query.
     def delete_student_course(self, organization, course, studentID):
-        courseID = self.execute("SELECT ID FROM %s.courses WHERE Code = '%s'" % (organization, course))[0][0]
+        courseID = self.execute("SELECT CourseID FROM %s.courses WHERE Code = '%s'" % (organization, course))[0][0]
         command = "DELETE FROM %s.registrations WHERE StudentID = %d AND CourseID = %d" % (organization, int(studentID), int(courseID))
         self.execute(command)
         return None
 
 
-
 class Password:
+    def __init__(self):
+        pass
+
     def hashPassword(self, password):
         self.password_hash = pwd_context.encrypt(password, )
         return self.password_hash
+
     def verify_password(self, password):
         return pwd_context.verify(password, self.password_hash)
+
     def verify_password_hash(self, password, hashed_password):
         return pwd_context.verify(password, hashed_password)
 
@@ -288,6 +344,71 @@ class Credential:
 
     def getPermissions(self):
         pass
+
+
+class DBTable:
+    def __init__(self, name, columns, primary_key=None, foreign_keys_tuple=None, uniques=None, database=None):
+        """
+        Creates SQL query codes for creating a table in MySQL DBs.
+        Also Can directly create table with Database param.
+        :param name: string, name of table in database.
+        :param columns: list of tuples; ( ColumnName, ColumnType, ColumnsSettings )
+        :param primary_key: string, primary key column name
+        :param foreign_keys_tuple: list of tuples, each foreign key as a tuple; ( ColumnName, referenceTable, referenceColumn)
+        :param uniques: list of tuples, a tuple for a unique constraint; ( *ColumnNames )
+        :param database: Database object, optional, for use direct table creation.
+        """
+
+        self.command = "CREATE TABLE %s ( " %name
+        self.columns = columns
+        self.name = name
+        self.pk = primary_key
+        self.foreign_keys = foreign_keys_tuple
+        self.uniques = uniques
+        self.db = database
+
+        for column in columns:
+            self.command += "%s %s %s, " % column
+
+        self.command = self.command[:len(self.command)-2] + " "
+
+        if primary_key is not None:
+            self.PrimaryKey(primary_key)
+
+        if foreign_keys_tuple is not None:
+            for foreign in foreign_keys_tuple:
+                col = foreign[0]
+                ref = foreign[1], foreign[2]
+                self.ForeignKey(col, ref)
+
+        if uniques is not None:
+            for unique in uniques:
+                self.Unique(unique)
+
+        self.command = self.command + ");\n" if self.command != "" else ""
+        self.db.execute(self.command)
+
+    def PrimaryKey(self, column):
+        self.command += ", primary key (%s)" % column
+
+    def ForeignKey(self, column, referenceTuple):
+        self.command += ", foreign key (%s) references %s(%s)" % (column, referenceTuple[0], referenceTuple[1])
+
+    def Unique(self, columnTuple):
+        if type(columnTuple) == tuple:
+            self.command += ", Unique %s" % str(columnTuple).replace("\'", "")
+        else:
+            self.command += ", Unique (%s)" % columnTuple
+
+    def insert(self, key_values):
+        """
+        :param key_values: list of tuples, each tuple contains column nmae-value pairs, *( ColumnName, ColumnValue )
+        :return: None
+        """
+        pass
+
+    def get_command(self):
+        return self.command
 
 
 class Question:
@@ -393,9 +514,13 @@ class Exam:
         return json.dumps(self.get(db))
 
 
-
-
 if __name__ == "__main__":
-    a = Password("12345")
-    a.hashPassword()
-    print a.verify_password("1234")
+    a = DBTable("example",
+                [
+                    ("col1", "Varchar(255)", "not null"),
+                    ("col2", "int", "auto_increment")
+                ],
+                primary_key="col2",
+                foreign_keys_tuple=[("col2", "courses", "ID")],
+                uniques=[("col1", "col2")])
+    print a.get_command()

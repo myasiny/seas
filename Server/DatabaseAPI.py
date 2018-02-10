@@ -70,6 +70,7 @@ def addLecturerToCourse():
 
 
 def getCourse(URL, organization, courseCode):
+    # type: (str, str, str) -> str
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/get" % (organization, courseCode)

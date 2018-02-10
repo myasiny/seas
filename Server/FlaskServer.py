@@ -64,29 +64,26 @@ def signUpOrganization():
 @app.route("/organizations/<string:organization>", methods = ["PUT"])
 # @roles_accepted("admin")
 def signUpUser(organization):
-    if request.method == "GET":
-        return jsonify(db.execute("SELECT * FROM %s.members" % organization))
-    else:
-        passwd = Password().hashPassword(request.form["Password"])
-        username = request.form["Username"]
-        role = request.form["Role"].lower()
-        command = "Insert into %s.members(ID, Role, Name, Surname, Username, Password, Email, Department) " \
-                  "values(%s, '%d', '%s', '%s', '%s', '%s', '%s', '%s')" \
-                  % (organization,
-                     request.form["ID"],
-                     int(db.execute("SELECT ID FROM %s.roles WHERE Role = '%s'" % (
-                     organization, role))[0][0]),
-                     request.form["Name"],
-                     request.form["Surname"],
-                     username,
-                     passwd,
-                     request.form["Email"],
-                     request.form["Department"]
-                     )
+    passwd = Password().hashPassword(request.form["Password"])
+    username = request.form["Username"]
+    role = request.form["Role"].lower()
+    command = "Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) " \
+              "values(%s, '%d', '%s', '%s', '%s', '%s', '%s', '%s')" \
+              % (organization,
+                 request.form["ID"],
+                 int(db.execute("SELECT RoleID FROM %s.roles WHERE Role = '%s'" % (
+                 organization, role))[0][0]),
+                 request.form["Name"],
+                 request.form["Surname"],
+                 username,
+                 passwd,
+                 request.form["Email"],
+                 request.form["Department"]
+                 )
 
-        rtn = jsonify(db.execute(command))
-        create_user(username=username, domain=organization, role = role, password=passwd, current_ip=None)
-        return rtn
+    rtn = jsonify(db.execute(command))
+    create_user(username=username, domain=organization, role = role, password=passwd, current_ip=None)
+    return rtn
 
 
 @app.route("/organizations/<string:organization>/<string:username>", methods=["GET"])
@@ -98,9 +95,9 @@ def signInUser(organization, username):
         passwd = db.execute("select Password from %s.members where Username = '%s'"
                             % (organization, username))[0][0]
         if Password().verify_password_hash(request.form["Password"], passwd):
-            rtn = list(db.execute("select Username, Name, Surname, ID, Role, Email, Department "
+            rtn = list(db.execute("select Username, Name, Surname, PersonID, Role, Email, Department "
                                   "from %s.members where Username=('%s')" % (organization, username))[0])
-            rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE ID = '%s'" % (organization, rtn[4]))[0][0]
+            rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE RoleID = '%s'" % (organization, rtn[4]))[0][0]
             rtn.append(organization)
             # login_user(user_datastore.find_user(username=username), remember=True)
             return jsonify(rtn)
