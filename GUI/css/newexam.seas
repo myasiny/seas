@@ -112,22 +112,22 @@
             on_release: root.on_stats()
 
         Image:
-            id: img_widget_75_gray_left
+            id: img_widget_75_gray
             source: "img/widget_75_gray.png"
             opacity: .5
             keep_ratio: False
             allow_stretch: True
-            size_hint: .45, .65
-            pos_hint: {"center_x": .25, "center_y": .45}
+            size_hint: .9, .65
+            pos_hint: {"center_x": .5, "center_y": .45}
 
         Image:
-            id: img_widget_75_black_left
+            id: img_widget_75_black
             source: "img/widget_75_black.png"
             opacity: .5
             keep_ratio: False
             allow_stretch: True
-            size_hint: .45, .2
-            pos_hint: {"center_x": .25, "center_y": .675}
+            size_hint: .9, .2
+            pos_hint: {"center_x": .5, "center_y": .675}
 
         Label:
             id: txt_lect_code
@@ -136,8 +136,8 @@
             multiline: False
             font_name: "font/CaviarDreams.ttf"
             font_size: self.height / 3
-            size_hint: .45, .1
-            pos_hint: {"center_x": .25, "center_y": .725}
+            size_hint: .75, .1
+            pos_hint: {"center_x": .5, "center_y": .725}
 
         Label:
             id: txt_lect_name
@@ -146,8 +146,8 @@
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
-            size_hint: .45, .1
-            pos_hint: {"center_x": .25, "center_y": .625}
+            size_hint: .75, .1
+            pos_hint: {"center_x": .5, "center_y": .625}
 
         Label:
             id: txt_examname
@@ -156,8 +156,8 @@
             multiline: False
             font_name: "font/CaviarDreams.ttf"
             font_size: self.height / 3
-            size_hint: .45, .1
-            pos_hint: {"center_x": .25, "center_y": .5}
+            size_hint: .25, .1
+            pos_hint: {"center_x": .2, "center_y": .5}
 
         TextInput:
             id: input_examname
@@ -171,21 +171,21 @@
             background_disabled_normal: "img/widget_75_black.png"
             padding_y: [self.height / 3, 0]
             size_hint: .25, .1
-            pos_hint: {"center_x": .25, "center_y": .4}
+            pos_hint: {"center_x": .2, "center_y": .4}
 
         Label:
             id: txt_duration
-            text: "Duration (Mins)"
+            text: "Exam Duration"
             color: 0,0,0,0.5
             multiline: False
             font_name: "font/CaviarDreams.ttf"
             font_size: self.height / 3
-            size_hint: .45, .1
-            pos_hint: {"center_x": .25, "center_y": .3}
+            size_hint: .25, .1
+            pos_hint: {"center_x": .2, "center_y": .3}
 
         TextInput:
             id: input_duration
-            hint_text: "e.g. 120"
+            hint_text: "e.g. 120 (mins)"
             write_tab: False
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
@@ -195,26 +195,45 @@
             background_disabled_normal: "img/widget_75_black.png"
             padding_y: [self.height / 3, 0]
             size_hint: .25, .1
-            pos_hint: {"center_x": .25, "center_y": .2}
-
-        Image:
-            id: img_widget_75_gray_right
-            source: "img/widget_75_gray.png"
-            opacity: .5
-            keep_ratio: False
-            allow_stretch: True
-            size_hint: .45, .65
-            pos_hint: {"center_x": .75, "center_y": .45}
+            pos_hint: {"center_x": .2, "center_y": .2}
 
         Label:
-            id: txt_date_time
-            text: "Exam Date & Time"
+            id: txt_date
+            text: "Exam Date"
             color: 0,0,0,0.5
             multiline: False
             font_name: "font/CaviarDreams.ttf"
             font_size: self.height / 3
-            size_hint: .45, .1
-            pos_hint: {"center_x": .75, "center_y": .725}
+            size_hint: .25, .1
+            pos_hint: {"center_x": .525, "center_y": .5}
+
+        Image:
+            id: img_date
+            source: "img/widget_75_black.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .3, .3
+            pos_hint: {"center_x": .525, "y": .15}
+
+        Label:
+            id: txt_time
+            text: "Exam Time"
+            color: 0,0,0,0.5
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 3
+            size_hint: .25, .1
+            pos_hint: {"center_x": .825, "center_y": .5}
+
+        Image:
+            id: img_time
+            source: "img/widget_75_black_circle.png"
+            opacity: .1
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .175, .3
+            pos_hint: {"center_x": .825, "y": .15}
 
         Button:
             id: btn_new_exam_cancel
@@ -225,7 +244,7 @@
             background_down: "img/widget_100_red_selected.png"
             background_disabled_normal: "img/widget_75_black.png"
             size_hint: .1, .075
-            pos_hint: {"center_x": .8, "center_y": .075}
+            pos_hint: {"center_x": .775, "center_y": .075}
             on_release: root.on_new_exam_cancel()
 
         Button:
@@ -237,5 +256,5 @@
             background_down: "img/widget_100_green_selected.png"
             background_disabled_normal: "img/widget_75_black.png"
             size_hint: .1, .075
-            pos_hint: {"center_x": .925, "center_y": .075}
+            pos_hint: {"center_x": .9, "center_y": .075}
             on_release: root.on_new_exam_create()

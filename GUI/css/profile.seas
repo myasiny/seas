@@ -147,7 +147,7 @@
 
         Image:
             id: img_user_border
-            source: "img/pic_user_border.png"
+            source: "img/widget_75_black_circle.png"
             allow_stretch: True
             size_hint: .205, .205
             pos_hint: {"center_x": .415, "center_y": .725}

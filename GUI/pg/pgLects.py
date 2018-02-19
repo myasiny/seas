@@ -94,7 +94,7 @@ def on_exams(self):
     self.remove_widget(self.ids["layout_participants"])
 
     # TODO: data = DatabaseAPI...
-    data = ["Quiz 1", "Midterm 1", "Make Up", "Quiz 2", "Final"]
+    data = ["TODO"]
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",

@@ -38,6 +38,12 @@ class PgStats(Screen):
 class PgNewQuestion(Screen):
     pgLogin.load_string("newquestion")
 
+    def on_pre_enter(self, *args):
+        pgNewQuestion.on_pre_enter(self)
+
+    def on_type_checked(self, no):
+        pgNewQuestion.on_type_checked(self, no)
+
     def on_new_question_cancel(self):
         pages.append(PgLects(name="PgLects"))
         tabReset.on_back(pages, screen)
@@ -75,6 +81,7 @@ class PgNewExam(Screen):
         tabReset.on_back(pages, screen)
 
     def on_new_exam_create(self):
+        pgNewExam.on_new_exam_create(self)
         pages.append(PgNewQuestion(name="PgNewQuestion"))
         tabReset.on_back(pages, screen)
 

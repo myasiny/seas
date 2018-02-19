@@ -33,11 +33,11 @@
 
         Button:
             id: btn_new_question_previous
-            text: "< Back"
+            text: "< Previous"
             font_name: "font/LibelSuit.ttf"
             font_size: self.height / 3
-            background_normal: "img/widget_75_selected.png"
-            background_down: "img/widget_100_selected.png"
+            background_normal: "img/btn_rect.png"
+            background_down: "img/btn_rect_selected.png"
             background_disabled_normal: "img/widget_75_black.png"
             size_hint: .15, .1
             pos_hint: {"x": .0, "y": .9}
@@ -51,8 +51,8 @@
             background_normal: "img/widget_100_red.png"
             background_down: "img/widget_100_red_selected.png"
             background_disabled_normal: "img/widget_75_black.png"
-            size_hint: .15, .1
-            pos_hint: {"center_x": .25, "y": .9}
+            size_hint: .1, .075
+            pos_hint: {"center_x": .25, "center_y": .95}
             on_release: root.on_new_question_cancel()
 
         Button:
@@ -60,8 +60,8 @@
             text: "Next >"
             font_name: "font/LibelSuit.ttf"
             font_size: self.height / 3
-            background_normal: "img/widget_75_selected.png"
-            background_down: "img/widget_100_selected.png"
+            background_normal: "img/btn_rect.png"
+            background_down: "img/btn_rect_selected.png"
             background_disabled_normal: "img/widget_75_black.png"
             size_hint: .15, .1
             pos_hint: {"x": .85, "y": .9}
@@ -75,19 +75,72 @@
             background_normal: "img/widget_100_green.png"
             background_down: "img/widget_100_green_selected.png"
             background_disabled_normal: "img/widget_75_black.png"
-            size_hint: .15, .1
-            pos_hint: {"center_x": .75, "y": .9}
+            size_hint: .1, .075
+            pos_hint: {"center_x": .75, "center_y": .95}
             on_release: root.on_new_question_complete()
+
+        Image:
+            id: img_widget_75_gray
+            source: "img/widget_75_gray.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .825
+            pos_hint: {"center_x": .5, "center_y": .45}
+
+        Image:
+            id: img_widget_75_black
+            source: "img/widget_75_black.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .125
+            pos_hint: {"center_x": .5, "center_y": .8}
 
         Label:
             id: txt_question_no
-            text: "Question  "
+            text: "Question 1"
             color: 0,0,0,0.75
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
-            size_hint: .45, .1
+            size_hint: .4, .1
             pos_hint: {"center_x": .25, "center_y": .8}
+
+        GridLayout:
+            cols: 6
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .8}
+
+            CheckBox:
+                id: check_1
+                group: "type"
+                size_hint_x: .25
+            Label:
+                text: "Programming"
+                multiline: False
+                font_name: "font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 6
+
+            CheckBox:
+                id: check_2
+                group: "type"
+                size_hint_x: .25
+            Label:
+                text: "Short Answer"
+                multiline: False
+                font_name: "font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 6
+
+            CheckBox:
+                id: check_3
+                group: "type"
+                size_hint_x: .25
+            Label:
+                text: "Multiple Choice"
+                multiline: False
+                font_name: "font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 6
 
         TextInput:
             id: input_subject
@@ -118,8 +171,8 @@
             pos_hint: {"center_x": .25, "center_y": .55}
 
         TextInput:
-            id: input_value
-            hint_text: "Value"
+            id: input_grade
+            hint_text: "Grade"
             write_tab: False
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
@@ -139,12 +192,49 @@
             background_normal: "img/widget_75_gray.png"
             background_active: "img/widget_75_selected.png"
             background_disabled_normal: "img/widget_75_black.png"
+            padding_y: [self.height / 9, 0]
             size_hint: .4, .3
             pos_hint: {"center_x": .25, "center_y": .2}
 
         TextInput:
             id: input_input
             hint_text: "Input"
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 9
+            background_normal: "img/widget_75_gray.png"
+            background_active: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            padding_y: [self.height / 9, 0]
+            size_hint: .4, .3
+            pos_hint: {"center_x": .75, "center_y": .575}
+
+        TextInput:
+            id: input_output
+            hint_text: "Output"
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 9
+            background_normal: "img/widget_75_gray.png"
+            background_active: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            padding_y: [self.height / 9, 0]
+            size_hint: .4, .3
+            pos_hint: {"center_x": .75, "center_y": .2}
+
+        TextInput:
+            id: input_answer
+            hint_text: "Answer"
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 20.25
+            background_normal: "img/widget_75_gray.png"
+            background_active: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            padding_y: [self.height / 20.25, 0]
+            size_hint: .4, .675
+            pos_hint: {"center_x": .75, "center_y": .3875}
+
+        TextInput:
+            id: input_answer_a
+            hint_text: "A"
             write_tab: False
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
@@ -157,8 +247,8 @@
             pos_hint: {"center_x": .75, "center_y": .675}
 
         TextInput:
-            id: input_output
-            hint_text: "Output"
+            id: input_answer_b
+            hint_text: "B"
             write_tab: False
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
@@ -171,12 +261,43 @@
             pos_hint: {"center_x": .75, "center_y": .55}
 
         TextInput:
-            id: input_answer
-            hint_text: "Answer"
+            id: input_answer_c
+            hint_text: "C"
+            write_tab: False
+            multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
-            font_size: self.height / 9
+            font_size: self.height / 3
             background_normal: "img/widget_75_gray.png"
             background_active: "img/widget_75_selected.png"
             background_disabled_normal: "img/widget_75_black.png"
-            size_hint: .4, .3
-            pos_hint: {"center_x": .75, "center_y": .2}
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .425}
+
+        TextInput:
+            id: input_answer_d
+            hint_text: "D"
+            write_tab: False
+            multiline: False
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_75_gray.png"
+            background_active: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .3}
+
+        TextInput:
+            id: input_answer_e
+            hint_text: "E"
+            write_tab: False
+            multiline: False
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_75_gray.png"
+            background_active: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .175}
