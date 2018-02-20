@@ -14,17 +14,18 @@ from Functionality import excelToCsv
 
 def on_pre_enter(self):
     temp_login = open("data/temp_login.seas", "r")
-    data_login = temp_login.readlines()
+    self.data_login = temp_login.readlines()
 
-    data = []
-    # data_lectures = DatabaseAPI.getLecturerCourses("http://10.50.81.24:8888", "istanbul sehir university", data_login[0].replace("\n", ""))
+    self.data = []
+
+    # data_lectures = DatabaseAPI.getLecturerCourses("http://10.50.81.24:8888", "istanbul sehir university", self.data_login[0].replace("\n", ""))
     data_lectures = [["TODO", "TODO", "TODO"]]
     for i in data_lectures:
-        data.append(i[1] + "_" + i[0] + "_" + i[2])
+        self.data.append(i[1] + "_" + i[0] + "_" + i[2])
 
     list_dropdown = DropDown()
 
-    for lect in data:
+    for lect in self.data:
         btn_lect = Button(text=" ".join(lect.split("_")[:2]).upper(),
                           color=(0,0,0,1),
                           font_name="font/LibelSuit.ttf",
@@ -32,10 +33,10 @@ def on_pre_enter(self):
                           background_normal="img/widget_75_gray.png",
                           background_down="img/widget_100_gray.png",
                           size_hint_y=None, height=self.height / 10)
-        btn_lect.bind(on_release=lambda btn_lect: on_lect_select(self, data, list_dropdown, btn_lect.text))
+        btn_lect.bind(on_release=lambda btn_lect: on_lect_select(self, list_dropdown, btn_lect.text))
         list_dropdown.add_widget(btn_lect)
 
-    btn_main = Button(text="Select a Lecture",
+    btn_main = Button(text="Select A Lecture",
                       font_name="font/LibelSuit.ttf",
                       font_size=self.height / 40,
                       background_normal="img/widget_75_black.png",
@@ -48,7 +49,7 @@ def on_pre_enter(self):
 
     self.add_widget(btn_main)
 
-def on_lect_select(self, data, dropdown, txt):
+def on_lect_select(self, dropdown, txt):
     dropdown.select(txt)
 
     self.ids["btn_exams"].disabled = False
@@ -60,7 +61,7 @@ def on_lect_select(self, data, dropdown, txt):
     self.ids["txt_lect_code"].opacity = 1
     self.ids["txt_lect_name"].opacity = 1
 
-    for lect in data:
+    for lect in self.data:
         if txt in " ".join(lect.split("_")).upper():
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
@@ -93,13 +94,13 @@ def on_exams(self):
     self.ids["layout_exams"].opacity = 1
     self.remove_widget(self.ids["layout_participants"])
 
-    # TODO: data = DatabaseAPI...
+    # data = DatabaseAPI...
     data = ["TODO"]
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
-                                           "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height/25,
-                                           "size_hint_y": None, "height": self.height/10}
+                                           "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height / 25,
+                                           "size_hint_y": None, "height": self.height / 10}
     self.ids["list_exams"].adapter = ListAdapter(data=[i for i in data], cls=ListItemButton,
                                                  args_converter=args_converter, allow_empty_selection=False)
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
@@ -119,10 +120,12 @@ def on_exam_selected(self):
     self.ids["btn_exam_delete"].opacity = 1
     self.ids["btn_exam_start_grade"].opacity = 1
 
-    if self.ids["txt_status_body"].text == "Completed":
+    if self.ids["txt_status_body"].text != "Graded":
         self.ids["btn_exam_start_grade"].text = "GRADE"
+        # TODO: Grade Exam
     else:
         self.ids["btn_exam_start_grade"].text = "START"
+        # TODO: Start Exam
 
 def on_participants(self):
     if self.ids["layout_participants"] not in list(self.children):
@@ -136,17 +139,17 @@ def on_participants(self):
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
-            temp_student_list.write(d[0]+ "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
+            temp_student_list.write(d[0] + "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
-    data_student_list = temp_student_list.readlines()
+    self.data_student_list = temp_student_list.readlines()
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
                                            "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height / 50,
                                            "size_hint_y": None, "height": self.height / 25}
-    self.ids["list_participants"].adapter = ListAdapter(data=[i.split(",")[0]+" "+i.split(",")[1] for i in data_student_list],
+    self.ids["list_participants"].adapter = ListAdapter(data=[i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list],
                                                         cls=ListItemButton, args_converter=args_converter,
                                                         allow_empty_selection=False)
     self.ids["list_participants"].adapter.bind(on_selection_change=self.on_participant_selected)
@@ -154,15 +157,12 @@ def on_participants(self):
     self.ids["btn_import_list"].bind(on_release=self.on_import_list)
 
 def on_participant_selected(self):
-    temp_student_list = open("data/temp_student_list.seas", "r")
-    data_student_list = temp_student_list.readlines()
-
     txt_id_body = "..."
     txt_mail_body = "..."
 
-    for i in data_student_list:
+    for i in self.data_student_list:
         if len(self.ids["list_participants"].adapter.selection) > 0:
-            if i.split(",")[0]+" "+i.split(",")[1] == self.ids["list_participants"].adapter.selection[0].text:
+            if i.split(",")[0] + " " + i.split(",")[1] == self.ids["list_participants"].adapter.selection[0].text:
                 txt_id_body = i.split(",")[2]
                 txt_mail_body = i.split(",")[3].replace("\n", "")
 
@@ -202,9 +202,9 @@ def on_participant_deleted(self):
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
-    data_student_list = temp_student_list.readlines()
+    self.data_student_list = temp_student_list.readlines()
 
-    self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in data_student_list]
+    self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list]
 
 def on_import_list(self):
     popup_content = FloatLayout()
@@ -229,12 +229,9 @@ def on_import_list(self):
 def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.popup.dismiss()
 
-    temp_login = open("data/temp_login.seas", "r")
-    data_login = temp_login.readlines()
-
-    excelToCsv.xls2csv(file_path[0], os.path.expanduser('~')+"\Desktop\student_list.csv")
-    DatabaseAPI.registerStudent("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text, True,
-                                os.path.expanduser('~')+"\Desktop\student_list.csv", data_login[0].replace("\n", ""))
+    excelToCsv.xls2csv(file_path[0], "data/perm_student_list.csv")
+    DatabaseAPI.registerStudent("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text,
+                                True, "data/perm_student_list.csv", self.data_login[0].replace("\n", ""))
 
     data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
 
@@ -244,9 +241,10 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
-    data_student_list = temp_student_list.readlines()
+    self.data_student_list = temp_student_list.readlines()
 
-    self.ids["list_participants"].adapter.data = [i.split(",")[0]+" "+i.split(",")[1] for i in data_student_list]
+    self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list]
 
 def on_class_statistics(self):
-    pass # TODO: Re-direct To Class Statistics
+    pass
+    # TODO: Class Statistics

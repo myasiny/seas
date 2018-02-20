@@ -99,7 +99,7 @@
 
         Label:
             id: txt_question_no
-            text: "Question 1"
+            text: "Question  "
             color: 0,0,0,0.75
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
@@ -175,6 +175,8 @@
             hint_text: "Grade"
             write_tab: False
             multiline: False
+            input_type: "number"
+            input_filter: "int"
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
             background_normal: "img/widget_75_gray.png"
@@ -221,7 +223,7 @@
             pos_hint: {"center_x": .75, "center_y": .2}
 
         TextInput:
-            id: input_answer
+            id: input_short_answer
             hint_text: "Answer"
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 20.25

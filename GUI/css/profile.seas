@@ -288,6 +288,7 @@
             hint_text: "New E-mail"
             write_tab: False
             multiline: False
+            input_type: "mail"
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
             background_normal: "img/widget_75_gray.png"

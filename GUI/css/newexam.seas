@@ -173,6 +173,14 @@
             size_hint: .25, .1
             pos_hint: {"center_x": .2, "center_y": .4}
 
+        Image:
+            id: img_wrong_examname
+            source: "img/ico_wrong.png"
+            opacity: 0
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .275, "center_y": .4}
+
         Label:
             id: txt_duration
             text: "Exam Duration"
@@ -188,6 +196,8 @@
             hint_text: "e.g. 120 (mins)"
             write_tab: False
             multiline: False
+            input_type: "number"
+            input_filter: "int"
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
             background_normal: "img/widget_75_gray.png"
@@ -196,6 +206,14 @@
             padding_y: [self.height / 3, 0]
             size_hint: .25, .1
             pos_hint: {"center_x": .2, "center_y": .2}
+
+        Image:
+            id: img_wrong_duration
+            source: "img/ico_wrong.png"
+            opacity: 0
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .275, "center_y": .2}
 
         Label:
             id: txt_date

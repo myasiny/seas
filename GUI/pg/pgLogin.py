@@ -1,7 +1,12 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.clock import Clock
+from kivy.uix.image import Image
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
 from kivy.animation import Animation
+from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
 
 import sys
 sys.path.append("../..")
@@ -61,11 +66,15 @@ def on_login(self, pages, screen):
                     temp_login.write(str(d) + "\n")
                 temp_login.close()
 
+            # if role != "student":
+            #     pages.append(PgLects(name="PgLects"))
+            # else:
+            #     pages.append(PgLects(name="PgLects"))
+
             try:
                 screen.switch_to(pages[2])
             except:
                 screen.current = pages[2].name
-            del pages[1]
         else:
             anim_status.stop(img_status)
 
@@ -75,20 +84,34 @@ def on_login(self, pages, screen):
 
             btn_login.disabled = False
 
-def on_reset(pages, screen):
-    try:
-        screen.switch_to(pages[2])
-    except:
-        screen.current = pages[2].name
     del pages[1]
 
-def on_activate(pages, screen):
-    try:
-        screen.switch_to(pages[2])
-    except:
-        screen.current = pages[2].name
-    del pages[1]
-
-def on_quit():
-    #TODO: Warning On Quit
-    App.get_running_app().stop()
+def on_quit(self):
+    popup_content = FloatLayout()
+    popup = Popup(title="Quit",
+                  content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
+                  size_hint=(None, None), size=(self.width / 5, self.height / 5))
+    popup_content.add_widget(Image(source="img/widget_75_gray.png", allow_stretch=True, keep_ratio=False,
+                                   size=(self.width, self.height), pos_hint={"center_x":.5, "center_y":.5}))
+    popup_content.add_widget(Label(text="Are you sure?", color=(0,0,0,1),
+                                   font_name="font/CaviarDreams.ttf", font_size=self.width / 50,
+                                   pos_hint={"center_x": .5, "center_y": .6}))
+    popup_content.add_widget(Button(text="Yes",
+                                    font_name="font/LibelSuit.ttf",
+                                    font_size=self.height / 40,
+                                    background_normal="img/widget_100_green.png",
+                                    background_down="img/widget_100_green_selected.png",
+                                    size_hint_x=None, width=self.width/ 11,
+                                    size_hint_y=None, height=self.height / 25,
+                                    pos_hint={"center_x": .25, "y": .01},
+                                    on_release=App.get_running_app().stop))
+    popup_content.add_widget(Button(text="No",
+                                    font_name="font/LibelSuit.ttf",
+                                    font_size=self.height / 40,
+                                    background_normal="img/widget_100_red.png",
+                                    background_down="img/widget_100_red_selected.png",
+                                    size_hint_x=None, width=self.width/ 11,
+                                    size_hint_y=None, height=self.height / 25,
+                                    pos_hint={"center_x": .75, "y": .01},
+                                    on_release=popup.dismiss))
+    popup.open()
