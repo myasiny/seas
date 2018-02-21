@@ -23,6 +23,10 @@ from Functionality.excelToCsv import xls2csv
 # print addUser("http://10.50.81.24:8888", "Istanbul Sehir University", "215000000", "Özkan", "Çağlar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
 # print signIn("http://10.50.81.24:8888", "Istanbul Sehir University", "fatihgulmez", "12345")
+
+# print addUser("http://192.168.1.106:8888", "Istanbul Sehir University", "213962062", "Fatih", "gulmez", "fatihgulmez", "12345","fatihgulmez@std.sehir.edu.tr", "Computer Science", role="student")
+print signIn("http://192.168.1.106:8888", "Istanbul Sehir University", "fatihgulmez", "12345")
+
 # print signIn("http://10.50.81.24:8888", "Istanbul Sehir University", "alioz", "123")
 
 # print signIn("http://10.50.81.24:8888", "Istanbul Sehir University", "alicakmak", "12345")
@@ -85,8 +89,43 @@ from Functionality.excelToCsv import xls2csv
 # print signIn("http://10.50.81.24:8888", "Istanbul Technical University", "fatihgulmez", "12345")
 # print addCourse("http://10.50.81.24:8888", "Istanbul Technical University", "Introduction to Programming", "ENGR 101", "alicakmak")
 
-print registerStudent("http://10.50.81.24:8888", "Istanbul Technical University", "ENGR 101", True, "fakelist.csv", "alicakmak")
+# print registerStudent("http://10.50.81.24:8888", "Istanbul Technical University", "ENGR 101", True, "fakelist.csv", "alicakmak")
 
 # print getCourse("http://10.50.81.24:8888", "Istanbul Technical University", "ENGR 101")
 # print getCourseStudents("http://10.50.81.24:8888", "Istanbul Technical University", "ENGR 101")
 # print getLecturerCourses("http://10.50.81.24:8888", "Istanbul Technical University", "alicakmak")
+
+# print createExam("http://10.50.81.24:8888",
+#                  "Istanbul Technical University",
+#                  "engr 101",
+#                  "bioinformatic mt 2",
+#                  "2018-03-15 10:30:00",
+#                  50,
+#                  {1:
+#                       {"type": "classic",
+#                         "subject": "ataturk",
+#                         "text": "who is the founder of TR?",
+#                         "answer": "Ataturk",
+#                         "inputs": [[1,2],[2,3]],
+#                         "outputs": [(3),(5)],
+#                           "value": 50,
+#                           "tags": ["mustafa","kemal"]},
+#                  2:
+#                      {"type": "truefalse",
+#                       "subject": "history",
+#                       "text": "ottomans were muslims.",
+#                       "answer": "true",
+#                       "inputs": "",
+#                       "outputs": "",
+#                       "value": 50,
+#                       "tags": ["ottomans", "muslims"]}
+#                   }
+#                  )
+
+
+### HOW TO GET EXAM
+# print getExam("http://10.50.81.24:8888",
+#                  "Istanbul Technical University",
+#                  "EECS 468",
+#                  "bioinformatic mt 2")
+

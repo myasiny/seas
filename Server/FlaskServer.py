@@ -11,7 +11,7 @@ import datetime, time
 
 app = Flask(__name__)
 db = MySQLdb("TestDB", app)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 app.config["SECRET_KEY"] = "super_secret"
 
 user_datastore = SQLAlchemySessionUserDatastore(db_session,
@@ -191,7 +191,7 @@ def getExam(organization, course, name):
 
 from json import loads
 if __name__ == "__main__":
-    app.run(host="10.50.81.24", port=8888)
+    app.run(host="192.168.1.106", port=8888, threaded = True)
     # a = Question("classic", "history", "who is the founder of TR?", "Ataturk", [(1,2),(2,3)], [(3),(5)], 30, "mustafa", "kemal")
     # e = Exam("bioinformatics mt 1", "eecs 468", "17.2.2018.10.00.00", 60, "istanbul sehir university")
     # e.addQuestionObject(a)

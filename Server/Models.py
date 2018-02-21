@@ -145,7 +145,8 @@ class MySQLdb:
                                  ("ExamID", "int", "auto_increment"),
                                  ("Name", "varchar(255)", "not null"),
                                  ("CourseID", "int", ""),
-                                 ("Time", "timestamp", "")
+                                 ("Time", "timestamp", ""),
+                                 ("Duration", "int", "not null")
                              ],
                              primary_key="ExamId",
                              foreign_keys_tuple=
@@ -173,6 +174,11 @@ class MySQLdb:
 
         # command_seq.append(questionsTable.get_command())
 
+        self.execute("Insert into roles(Role) values ('superuser'); "
+                     "Insert into roles(Role) values ('admin'); "
+                     "Insert into roles(Role) values ('lecturer');"
+                     "Insert into roles(Role) values ('student');")
+
     def add_course(self, org, name, code, lecturer_users):
         command = "INSERT INTO %s.courses (NAME, CODE) VALUES ('%s', '%s');" % (org, name, code)
         self.execute(command)
@@ -186,7 +192,6 @@ class MySQLdb:
 
                 command += "insert into %s.lecturers (LecturerID, CourseID) VALUES ('%s', '%s');" % (org, lecturer_id, lecture_id)
             pass
-        print command
         self.execute(command)
         return "Course Added!"
 
@@ -220,7 +225,7 @@ class MySQLdb:
         studentIDs = self.execute("SELECT StudentID FROM %s.registrations WHERE CourseID = '%s'" %(organization, courseID))
         students = []
         for student in studentIDs:
-            info = self.execute("SELECT Name, Surname, PersonID, Email FROM %s.members WHERE ID = '%s'" % (organization, student[0]))[0]
+            info = self.execute("SELECT Name, Surname, PersonID, Email FROM %s.members WHERE PersonID = '%s'" % (organization, student[0]))[0]
             students.append(info)
 
         return students
@@ -235,16 +240,26 @@ class MySQLdb:
         return self.execute("SELECT * FROM %s.members WHERE Username='%s'" % (organization, username))[0]
 
     def execute(self, command):
-        # print command
+        a = command.replace(";", ";--").split("--")
         try:
-            self.cursor.execute(command)
+            for i in a:
+                if len(i)>5:
+                    self.cursor.execute(i)
 
             rtn = self.cursor.fetchall()
             self.__commit()
             return rtn
-
         except:
             return None
+        # try:
+        #     self.cursor.execute(command)
+        #     print command
+        #     rtn = self.cursor.fetchone()
+        #     self.__commit()
+        #     return rtn
+        #
+        # except:
+        #     return None
 
     def __commit(self):
         self.db.commit()
@@ -438,12 +453,12 @@ class Question:
         org = organization.replace(" ", "_").lower()
         course_code = course_code.lower().replace(" ", "_")
         command = "USE %s;" %org
-        command += "INSERT INTO questions (info, ExamID) select '%s' , ID from (select exams.ID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.ID and exams.ID = %d) as T where T.CODE = '%s';" %(self.getString(), exam_code, course_code)
+        command += "INSERT INTO questions (info, examID) select \'%s\' , ExamID from (select exams.ExamID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.CourseID and exams.ExamID = %d) as T where T.CODE = \'%s\';" %(self.getString(), exam_code, course_code)
         return db.execute(command)
 
     def save_command(self, course_code, exam_name):
         course_code = course_code.lower().replace(" ", "_")
-        command = "INSERT INTO questions (info, ExamID) select '%s' , ID from (select exams.ID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.ID and exams.Name = '%s') as T where T.CODE = '%s';" %(self.getString(), exam_name, course_code)
+        command = "INSERT INTO questions (info, ExamID) select \'%s\' , ExamID from (select exams.ExamID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.CourseID and exams.Name = \'%s\') as T where T.CODE = \'%s\';" %(self.getString(), exam_name, course_code)
         return command
 
     def load(self, db, id, organization):
@@ -484,7 +499,7 @@ class Exam:
         """
 
         command = "USE %s;" % self.org
-        command += "insert into exams(Name,Time,Duration,CourseID) select '%s', '%s', %d, ID from courses where courses.CODE = '%s';" % (self.name, self.time, int(self.duration), self.course)
+        command += " insert into exams(Name,Time,Duration,CourseID) select \'%s\', \'%s\', %d, CourseID from courses where courses.CODE = \'%s\';" % (self.name, self.time, int(self.duration), self.course)
 
         for question in self.questions:
             command += question.save_command(self.course, self.name)
@@ -492,7 +507,7 @@ class Exam:
         return db.execute(command)
 
     def get(self, db):
-        command = "SELECT info, time, duration  FROM %s.questions join %s.exams where %s.exams.Name = '%s' and examID = ID;" % (self.org, self.org, self.org, self.name)
+        command = "SELECT info, time, duration  FROM %s.questions join %s.exams where %s.exams.Name = '%s' and %s.questions.examID = %s.exams.examID;" % (self.org, self.org, self.org, self.name, self.org, self.org)
         saved = db.execute(command)
         questions = {}
         i = 0
@@ -523,4 +538,3 @@ if __name__ == "__main__":
                 primary_key="col2",
                 foreign_keys_tuple=[("col2", "courses", "ID")],
                 uniques=[("col1", "col2")])
-    print a.get_command()
