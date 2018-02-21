@@ -147,7 +147,7 @@
 
         Image:
             id: img_user_border
-            source: "img/pic_user_border.png"
+            source: "img/widget_75_black_circle.png"
             allow_stretch: True
             size_hint: .205, .205
             pos_hint: {"center_x": .415, "center_y": .725}
@@ -288,6 +288,7 @@
             hint_text: "New E-mail"
             write_tab: False
             multiline: False
+            input_type: "mail"
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
             background_normal: "img/widget_75_gray.png"

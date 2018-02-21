@@ -8,7 +8,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, tabReset, tabActivate, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats
+from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats
 
 class PgStats(Screen):
     pgLogin.load_string("stats")
@@ -33,17 +33,21 @@ class PgStats(Screen):
         tabReset.on_back(pages, screen)
 
     def on_quit(self):
-        pgLogin.on_quit()
+        pgLogin.on_quit(self)
 
 class PgNewQuestion(Screen):
     pgLogin.load_string("newquestion")
 
+    def on_pre_enter(self, *args):
+        self.question_no = 0 # TODO: Question Number
+        pgNewQuestion.on_pre_enter(self)
+
+    def on_new_question_next(self):
+        pgNewQuestion.on_new_question_next(self)
+
     def on_new_question_cancel(self):
         pages.append(PgLects(name="PgLects"))
         tabReset.on_back(pages, screen)
-
-    def on_new_question_complete(self):
-        pgNewQuestion.on_new_question_complete(self)
 
 class PgNewExam(Screen):
     pgLogin.load_string("newexam")
@@ -75,15 +79,16 @@ class PgNewExam(Screen):
         tabReset.on_back(pages, screen)
 
     def on_new_exam_create(self):
-        pages.append(PgNewQuestion(name="PgNewQuestion"))
-        tabReset.on_back(pages, screen)
+        if pgNewExam.on_new_exam_create(self):
+            pages.append(PgNewQuestion(name="PgNewQuestion"))
+            tabReset.on_back(pages, screen)
 
     def on_logout(self):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
     def on_quit(self):
-        pgLogin.on_quit()
+        pgLogin.on_quit(self)
 
 class PgLects(Screen):
     pgLogin.load_string("lects")
@@ -139,7 +144,7 @@ class PgLects(Screen):
         tabReset.on_back(pages, screen)
 
     def on_quit(self):
-        pgLogin.on_quit()
+        pgLogin.on_quit(self)
 
 class PgProfile(Screen):
     pgLogin.load_string("profile")
@@ -162,8 +167,8 @@ class PgProfile(Screen):
         pages.append(PgStats(name="PgStats"))
         tabReset.on_back(pages, screen)
 
-    def on_text_change(self, this):
-        pgProfile.on_text_change(self, this)
+    def on_text_change(self, name):
+        pgProfile.on_text_change(self, name)
 
     def on_submit(self):
         pgProfile.on_submit(self)
@@ -173,7 +178,7 @@ class PgProfile(Screen):
         tabReset.on_back(pages, screen)
 
     def on_quit(self):
-        pgLogin.on_quit()
+        pgLogin.on_quit(self)
 
 class PgStart(Screen):
     pgLogin.load_string("start")
@@ -199,36 +204,20 @@ class PgStart(Screen):
     def on_faq(self, no):
         pgStart.on_faq(self, no)
 
-    def on_follow(self, this):
-        pgStart.on_follow(this)
+    def on_follow(self, name):
+        pgStart.on_follow(name)
 
     def on_logout(self):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
     def on_quit(self):
-        pgLogin.on_quit()
-
-class TabActivate(Screen):
-    pgLogin.load_string("activate")
-
-    def on_pre_enter(self, *args):
-        pgLogin.on_enter(self)
-
-    def on_activate(self):
-        tabActivate.on_activate(self)
-
-    def on_back(self):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
-
-    def on_quit(self):
-        pgLogin.on_quit()
+        pgLogin.on_quit(self)
 
 class TabReset(Screen):
     pgLogin.load_string("reset")
 
-    def on_pre_enter(self, *args):
+    def on_enter(self, *args):
         pgLogin.on_enter(self)
 
     def on_reset(self):
@@ -239,7 +228,7 @@ class TabReset(Screen):
         tabReset.on_back(pages, screen)
 
     def on_quit(self):
-        pgLogin.on_quit()
+        pgLogin.on_quit(self)
 
 class PgLogin(Screen):
     pgLogin.load_string("login")
@@ -267,14 +256,10 @@ class PgLogin(Screen):
 
     def on_reset(self):
         pages.append(TabReset(name="TabReset"))
-        pgLogin.on_reset(pages, screen)
-
-    def on_activate(self):
-        pages.append(TabActivate(name="TabActivate"))
-        pgLogin.on_activate(pages, screen)
+        tabReset.on_back(pages, screen)
 
     def on_quit(self):
-        pgLogin.on_quit()
+        pgLogin.on_quit(self)
 
 class PgSplash(Screen):
     pgLogin.load_string("splash")
@@ -287,13 +272,6 @@ class PgSplash(Screen):
 
         anim_fade = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
         anim_fade.start(self.ids["img_developer_dark"])
-
-'''
-    SMART EXAM ADMINISTRATION SYSTEM
-    --- -- --- -- --- -- --- -- ---
-    PAGE DESIGNS & RELATED FUNCTIONS    => ABOVE
-    APP AND GENERAL SETTINGS            => BELOW
-'''
 
 pages = [PgSplash(name="PgSplash"),
          PgLogin(name="PgLogin")]
