@@ -109,3 +109,117 @@
             size_hint: .15, .1
             pos_hint: {"center_x": .75, "y": .9}
             on_release: root.on_stats()
+
+        Image:
+            id: img_left
+            source: "img/widget_75_black.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .9
+            pos_hint: {"x": .0, "y": .0}
+
+        Button:
+            id: btn_exams
+            text: "Exams"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_75.png"
+            background_down: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .2, .1
+            pos_hint: {"x": .0, "center_y": .56}
+            on_release: root.on_exams()
+            disabled: True
+
+        Button:
+            id: btn_personal_statistics
+            text: "Personal Statistics"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_75.png"
+            background_down: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .2, .1
+            pos_hint: {"x": .0, "center_y": .45}
+            on_release: root.on_personal_statistics()
+            disabled: True
+
+        Label:
+            id: txt_hint
+            text: "No Lecture Selected"
+            color: 0,0,0,0.25
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 2
+            size_hint: .4, .1
+            pos_hint: {"center_x": .6, "center_y": .45}
+
+        Label:
+            id: txt_lect_code
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 3
+            size_hint: .85, .1
+            pos_hint: {"center_x": .6, "y": .8}
+
+        Label:
+            id: txt_lect_name
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 2
+            size_hint: .85, .1
+            pos_hint: {"center_x": .6, "y": .725}
+
+    FloatLayout:
+        id: layout_exams
+        opacity: 0
+
+        Image:
+            id: img_join_exam_name_2
+            source: "img/widget_75_black.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .77, .11
+            pos_hint: {"center_x": .6, "center_y": .65}
+
+        Image:
+            id: img_join_exam_name
+            source: "img/widget_75_black.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .76, .11
+            pos_hint: {"center_x": .6, "center_y": .65}
+
+        Label:
+            id: txt_join_exam_name
+            text: "No exam started"
+            color: 1,1,1,0.25
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            size_hint: .5, .1
+            pos_hint: {"center_x": .5, "center_y": .65}
+
+        Button:
+            id: btn_join_exam
+            text: "JOIN NOW"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_100_green.png"
+            background_down: "img/widget_100_green_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .65}
+            on_release: root.on_join_exam()
+            disabled: True
+
+        ListView:
+            id: list_exams
+            size_hint: .5, .5
+            pos_hint: {"center_x": .5, "center_y": .3}
