@@ -8,7 +8,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats
+from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats, pgStdLects
 
 class PgStats(Screen):
     pgLogin.load_string("stats")
@@ -35,19 +35,52 @@ class PgStats(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+class PgStdLects(Screen):
+    pgLogin.load_string("stdlects")
+
+    def on_pre_enter(self, *args):
+        pgStdLects.on_pre_enter(self)
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
+
+    # def on_profile(self):
+    #     pages.append(PgStdProfile(name="PgStdProfile"))
+    #     tabReset.on_back(pages, screen)
+    #
+    # def on_start(self):
+    #     pages.append(PgStdStart(name="PgStdStart"))
+    #     tabReset.on_back(pages, screen)
+    #
+    # def on_stats(self):
+    #     pages.append(PgStdStats(name="PgStdStats"))
+    #     tabReset.on_back(pages, screen)
+
+    def on_logout(self):
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit(self)
+
 class PgNewQuestion(Screen):
     pgLogin.load_string("newquestion")
 
     def on_pre_enter(self, *args):
-        self.question_no = 0 # TODO: Question Number
         pgNewQuestion.on_pre_enter(self)
 
     def on_new_question_next(self):
         pgNewQuestion.on_new_question_next(self)
 
+    def on_new_question_previous(self):
+        pgNewQuestion.on_new_question_previous(self)
+
     def on_new_question_cancel(self):
         pages.append(PgLects(name="PgLects"))
         tabReset.on_back(pages, screen)
+
+    def on_new_question_complete(self):
+        pgNewQuestion.on_new_question_complete(self)
 
 class PgNewExam(Screen):
     pgLogin.load_string("newexam")
@@ -251,8 +284,7 @@ class PgLogin(Screen):
         pgLogin.on_enter(self)
 
     def on_login(self):
-        pages.append(PgLects(name="PgLects"))
-        pgLogin.on_login(self, pages, screen)
+        pgLogin.on_login(self, pages, screen, PgLects, PgStdLects)
 
     def on_reset(self):
         pages.append(TabReset(name="TabReset"))
