@@ -8,7 +8,32 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats, pgStdLects
+from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdStats
+
+class PgStdStats(Screen):
+    pgLogin.load_string("stdstats")
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
+
+    def on_profile(self):
+        pages.append(PgStdProfile(name="PgStdProfile"))
+        tabReset.on_back(pages, screen)
+
+    def on_start(self):
+        pages.append(PgStdStart(name="PgStdStart"))
+        tabReset.on_back(pages, screen)
+
+    def on_lects(self):
+        pages.append(PgStdLects(name="PgStdLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_logout(self):
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit(self)
 
 class PgStats(Screen):
     pgLogin.load_string("stats")
@@ -44,20 +69,88 @@ class PgStdLects(Screen):
     def on_enter(self, *args):
         pgLogin.on_enter(self)
 
-    # def on_profile(self):
-    #     pages.append(PgStdProfile(name="PgStdProfile"))
-    #     tabReset.on_back(pages, screen)
-    #
-    # def on_start(self):
-    #     pages.append(PgStdStart(name="PgStdStart"))
-    #     tabReset.on_back(pages, screen)
-    #
-    # def on_stats(self):
-    #     pages.append(PgStdStats(name="PgStdStats"))
-    #     tabReset.on_back(pages, screen)
+    def on_profile(self):
+        pages.append(PgStdProfile(name="PgStdProfile"))
+        tabReset.on_back(pages, screen)
+
+    def on_start(self):
+        pages.append(PgStdStart(name="PgStdStart"))
+        tabReset.on_back(pages, screen)
+
+    def on_stats(self):
+        pages.append(PgStdStats(name="PgStdStats"))
+        tabReset.on_back(pages, screen)
 
     def on_exam_selected(self, dt):
         pgStdLects.on_exam_selected(self)
+
+    def on_logout(self):
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit(self)
+
+class PgStdProfile(Screen):
+    pgLogin.load_string("stdprofile")
+
+    def on_pre_enter(self, *args):
+        pgProfile.on_pre_enter(self)
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
+
+    def on_start(self):
+        pages.append(PgStdStart(name="PgStdStart"))
+        tabReset.on_back(pages, screen)
+
+    def on_lects(self):
+        pages.append(PgStdLects(name="PgStdLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_stats(self):
+        pages.append(PgStdStats(name="PgStdStats"))
+        tabReset.on_back(pages, screen)
+
+    def on_text_change(self, name):
+        pgProfile.on_text_change(self, name)
+
+    def on_submit(self):
+        pgProfile.on_submit(self)
+
+    def on_logout(self):
+        pages.append(PgLogin(name="PgLogin"))
+        tabReset.on_back(pages, screen)
+
+    def on_quit(self):
+        pgLogin.on_quit(self)
+
+class PgStdStart(Screen):
+    pgLogin.load_string("stdstart")
+
+    def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
+
+    def on_enter(self, *args):
+        pgLogin.on_enter(self)
+
+    def on_profile(self):
+        pages.append(PgStdProfile(name="PgStdProfile"))
+        tabReset.on_back(pages, screen)
+
+    def on_lects(self):
+        pages.append(PgStdLects(name="PgStdLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_stats(self):
+        pages.append(PgStdStats(name="PgStdStats"))
+        tabReset.on_back(pages, screen)
+
+    def on_faq(self, no):
+        pgStdStart.on_faq(self, no)
+
+    def on_follow(self, name):
+        pgStart.on_follow(name)
 
     def on_logout(self):
         pages.append(PgLogin(name="PgLogin"))

@@ -223,3 +223,100 @@
             id: list_exams
             size_hint: .5, .5
             pos_hint: {"center_x": .5, "center_y": .3}
+
+        Image:
+            id: img_info_top
+            source: "img/widget_75_black.png"
+            opacity: 0
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .5}
+
+        Image:
+            id: img_info_body
+            source: "img/widget_75_gray.png"
+            opacity: 0
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .5
+            pos_hint: {"center_x": .875, "center_y": .3}
+
+        Label:
+            id: txt_info_head
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .5}
+
+        Label:
+            id: txt_date_head
+            text: "Date:"
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 5
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .425}
+
+        Label:
+            id: txt_date_body
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .375}
+
+        Label:
+            id: txt_time_head
+            text: "Time:"
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 5
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .3}
+
+        Label:
+            id: txt_time_body
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 5
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .25}
+
+        Label:
+            id: txt_options_head
+            text: "Options:"
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 5
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "y": .125}
+
+        Button:
+            id: btn_exam_statistics
+            text: "STATISTICS"
+            opacity: 0
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 2
+            background_normal: "img/widget_100.png"
+            background_down: "img/widget_100_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .15, .045
+            pos_hint: {"center_x": .875, "y": .075}
+            on_release: root.on_personal_exam_statistics()

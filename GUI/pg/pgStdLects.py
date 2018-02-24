@@ -76,4 +76,22 @@ def on_lect_select(self, dropdown, txt):
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
 
 def on_exam_selected(self):
+    self.ids["img_info_top"].opacity = 0.5
+    self.ids["img_info_body"].opacity = 0.5
+    self.ids["txt_info_head"].opacity = 1
+    self.ids["txt_info_head"].text = self.ids["list_exams"].adapter.selection[0].text
+
+    self.ids["txt_date_head"].opacity = 1
+    self.ids["txt_date_body"].opacity = 1
+    self.ids["txt_date_body"].text = "TODO"
+
+    self.ids["txt_time_head"].opacity = 1
+    self.ids["txt_time_body"].opacity = 1
+    self.ids["txt_time_body"].text = "TODO"
+
+    self.ids["txt_options_head"].opacity = 1
+    self.ids["btn_exam_statistics"].opacity = 1
+
+def on_personal_exam_statistics(self):
     pass
+    # TODO: Personal Exam Statistics
