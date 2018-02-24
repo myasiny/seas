@@ -84,6 +84,10 @@ class PgStdLects(Screen):
     def on_exam_selected(self, dt):
         pgStdLects.on_exam_selected(self)
 
+    def on_join_exam(self):
+        pages.append(PgStdLiveExam(name="PgStdLiveExam"))
+        tabReset.on_back(pages, screen)
+
     def on_logout(self):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)

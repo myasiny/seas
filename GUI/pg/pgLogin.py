@@ -1,7 +1,6 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.clock import Clock
-from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.animation import Animation
@@ -20,7 +19,7 @@ def load_string(name):
         Builder.load_string(design.read())
 
 def on_enter(self):
-    Clock.schedule_once(partial(check_connection, self.ids["img_connection"]))
+    Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 1.0 / 10.0)
 
 def on_login(self, pages, screen, pgEdu, pgStd):
     btn_login = self.ids["btn_login"]

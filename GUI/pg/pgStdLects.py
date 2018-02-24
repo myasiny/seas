@@ -1,13 +1,15 @@
-from kivy.uix.popup import Popup
+from kivy.clock import Clock
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.listview import ListItemButton
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.filechooser import FileChooserListView
 from kivy.adapters.listadapter import ListAdapter
 
 import sys
 sys.path.append("../..")
+
+from functools import partial
+from Server import DatabaseAPI
+from GUI.func.check_std_live_exam import check_std_live_exam
 
 def on_pre_enter(self):
     temp_login = open("data/temp_login.seas", "r")
@@ -45,6 +47,8 @@ def on_pre_enter(self):
     list_dropdown.bind(on_select=lambda instance, x: setattr(btn_main, "text", x))
 
     self.add_widget(btn_main)
+
+    Clock.schedule_interval(partial(check_std_live_exam, self), 1.0 / 10.0)
 
 def on_lect_select(self, dropdown, txt):
     dropdown.select(txt)
