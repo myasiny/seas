@@ -181,19 +181,11 @@
         opacity: 0
 
         Image:
-            id: img_join_exam_name_2
-            source: "img/widget_75_black.png"
-            keep_ratio: False
-            allow_stretch: True
-            size_hint: .77, .11
-            pos_hint: {"center_x": .6, "center_y": .65}
-
-        Image:
             id: img_join_exam_name
-            source: "img/widget_75_black.png"
+            source: "img/btn_oval_black.png"
             keep_ratio: False
             allow_stretch: True
-            size_hint: .76, .11
+            size_hint: .7, .1
             pos_hint: {"center_x": .6, "center_y": .65}
 
         Label:

@@ -8,7 +8,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdStats
+from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
 
 class PgStdStats(Screen):
     pgLogin.load_string("stdstats")
@@ -59,6 +59,9 @@ class PgStats(Screen):
 
     def on_quit(self):
         pgLogin.on_quit(self)
+
+class PgStdLiveExam(Screen):
+    pgLogin.load_string("stdliveexam")
 
 class PgStdLects(Screen):
     pgLogin.load_string("stdlects")

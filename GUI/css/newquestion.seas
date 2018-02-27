@@ -199,6 +199,18 @@
             pos_hint: {"center_x": .25, "center_y": .2}
 
         TextInput:
+            id: input_short_answer
+            hint_text: "Answer"
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 20.25
+            background_normal: "img/widget_75_gray.png"
+            background_active: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            padding_y: [self.height / 20.25, 0]
+            size_hint: .4, .675
+            pos_hint: {"center_x": .75, "center_y": .3875}
+
+        TextInput:
             id: input_input
             hint_text: "Input"
             font_name: "font/CaviarDreams_Bold.ttf"
@@ -221,18 +233,6 @@
             padding_y: [self.height / 9, 0]
             size_hint: .4, .3
             pos_hint: {"center_x": .75, "center_y": .2}
-
-        TextInput:
-            id: input_short_answer
-            hint_text: "Answer"
-            font_name: "font/CaviarDreams_Bold.ttf"
-            font_size: self.height / 20.25
-            background_normal: "img/widget_75_gray.png"
-            background_active: "img/widget_75_selected.png"
-            background_disabled_normal: "img/widget_75_black.png"
-            padding_y: [self.height / 20.25, 0]
-            size_hint: .4, .675
-            pos_hint: {"center_x": .75, "center_y": .3875}
 
         TextInput:
             id: input_answer_a
