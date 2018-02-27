@@ -20,21 +20,16 @@
 # to_compile.write(script)
 # to_compile.close()
 # from subprocess import *
-# call('python a.py')
-
-import subprocess
-from threading import Timer
-kill = lambda process: process.kill()
-cmd = ['python', 'a.py']
-run = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-my_timer = Timer(5, kill, [run])
-
+# call('python a.py', timeout=5.0)
+import sys
+import subprocess32 as subprocess
 try:
-    my_timer.start()
-    stdout, stderr = run.communicate()
-finally:
-    my_timer.cancel()
+    try:
+        a = subprocess.check_output("python a.py", stderr=subprocess.STDOUT, timeout=5)
 
+    except subprocess.CalledProcessError as e:
+        a = e.output.split("\n")[-3] + "\n" + e.output.split("\n")[-2]
+except:
+    a = "Timeout Error"
 
-
-print stderr,stdout
+print a
