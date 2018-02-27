@@ -2,49 +2,16 @@
 
 from flask import Flask, request, jsonify
 from Models import MySQLdb, Password, Credential, Question, Exam
-from flask_security import Security, login_required, SQLAlchemySessionUserDatastore, roles_accepted
-from flask_security.utils import login_user
-from SessionManager import db_session, init_db
-from SessionModels import User, Role
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import json
-import datetime, time
+import datetime
 
 app = Flask(__name__)
 db = MySQLdb("TestDB", app)
 app.config["DEBUG"] = False
-app.config["SECRET_KEY"] = "super_secret"
+app.config["JWT_SECRET_KEY"] = "CHANGE THIS BEFORE DEPLOYMENT ! ! !"
 
-user_datastore = SQLAlchemySessionUserDatastore(db_session,
-                                                User, Role)
-security = Security(app, user_datastore)
-
-
-roles = {"admin": user_datastore.find_or_create_role("admin"),
-         "superuser": user_datastore.find_or_create_role("superuser"),
-         "student": user_datastore.find_or_create_role("student"),
-         "lecturer": user_datastore.find_or_create_role("lecturer")}
-
-
-
-def create_user(username, domain, role, password, current_ip = None):
-    init_db()
-    user = user_datastore.find_user(username=username)
-    today = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if user is None:
-        user_datastore.create_user(username=username, domain=domain, roles=[role], password=password,
-                                   current_login_ip=current_ip,
-                                   current_login_at=today, active=0)
-    else:
-        date = user.current_login_at
-        ip = user.current_login_ip
-
-        user_datastore.activate_user(user)
-        user.last_login_at = date
-        user.last_login_ip = ip
-        user.current_login_ip = current_ip
-        user.current_login_at = today
-    db_session.commit()
-
+jwt = JWTManager(app)
 
 @app.route("/")
 def test_connection():
@@ -62,7 +29,6 @@ def signUpOrganization():
 
 
 @app.route("/organizations/<string:organization>", methods = ["PUT"])
-# @roles_accepted("admin")
 def signUpUser(organization):
     passwd = Password().hashPassword(request.form["Password"])
     username = request.form["Username"]
@@ -82,24 +48,23 @@ def signUpUser(organization):
                  )
 
     rtn = jsonify(db.execute(command))
-    create_user(username=username, domain=organization, role = role, password=passwd, current_ip=None)
     return rtn
 
 
 @app.route("/organizations/<string:organization>/<string:username>", methods=["GET"])
-# @app.before_first_request
 def signInUser(organization, username):
     organization = organization.replace(" ", "_").lower()
-    username = request.form["Username"]
+    username = request.authorization["username"]
     try:
         passwd = db.execute("select Password from %s.members where Username = '%s'"
                             % (organization, username))[0][0]
-        if Password().verify_password_hash(request.form["Password"], passwd):
+        if Password().verify_password_hash(request.authorization["password"], passwd):
             rtn = list(db.execute("select Username, Name, Surname, PersonID, Role, Email, Department "
                                   "from %s.members where Username=('%s')" % (organization, username))[0])
             rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE RoleID = '%s'" % (organization, rtn[4]))[0][0]
             rtn.append(organization)
-            # login_user(user_datastore.find_user(username=username), remember=True)
+            token = create_access_token(identity=(rtn[0], rtn[4], str(datetime.datetime.today())))
+            rtn.append(token)
             return jsonify(rtn)
 
         else:
@@ -110,13 +75,12 @@ def signInUser(organization, username):
 
 @app.route("/organizations/<string:organization>/<string:username>/out", methods=["GET", "PUT"])
 def signOutUser(organization, username):
-    organization = organization.replace(" ", "_").lower()
-    user = user_datastore.find_user(username=username, domain=organization)
-    return jsonify(user_datastore.deactivate_user(user))
-
+    pass
 
 @app.route("/organizations/<string:organization>/<string:course>", methods=['PUT'])
+@jwt_required
 def addCourse(organization, course):
+    user, role, token_time = get_jwt_identity()
     name = request.form["name"]
     code = request.form["code"]
     lecturers = request.form["lecturers"]
@@ -191,7 +155,7 @@ def getExam(organization, course, name):
 
 from json import loads
 if __name__ == "__main__":
-    app.run(host="192.168.1.106", port=8888, threaded = True)
+    app.run(host="10.50.81.24", port=8888, threaded = True)
     # a = Question("classic", "history", "who is the founder of TR?", "Ataturk", [(1,2),(2,3)], [(3),(5)], 30, "mustafa", "kemal")
     # e = Exam("bioinformatics mt 1", "eecs 468", "17.2.2018.10.00.00", 60, "istanbul sehir university")
     # e.addQuestionObject(a)

@@ -63,6 +63,9 @@ class PgStats(Screen):
 class PgStdLiveExam(Screen):
     pgLogin.load_string("stdliveexam")
 
+    def on_pre_enter(self, *args):
+        pgStdLiveExam.on_pre_enter(self)
+
 class PgStdLects(Screen):
     pgLogin.load_string("stdlects")
 
