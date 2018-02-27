@@ -124,7 +124,9 @@ def changePassword(organization, username):
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/add", methods=["PUT"])
 def addExam(organization, course):
-    name = request.form["name"]
+    name = request.form["name"] ##
+
+
     time = request.form["time"]
     duration = request.form["duration"]
     questions = json.loads(request.form["questions"])
