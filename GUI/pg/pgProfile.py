@@ -3,7 +3,7 @@ from kivy.animation import Animation
 import sys
 sys.path.append("../..")
 
-from Server import DatabaseAPI
+from GUI.func import database_api
 from GUI.func.round_image import round_image
 from GUI.func.barcode_png import barcode_png
 
@@ -63,10 +63,10 @@ def on_submit(self):
         anim_appear.start(img_wrong)
     else:
         if len(input_new_password.text) > 0 and input_new_password.disabled is False:
-            result = DatabaseAPI.changePassword("http://10.50.81.24:8888", "istanbul sehir university",
-                                                self.data_login[0].replace("\n", ""),
-                                                input_current_password.text, input_new_password.text,
-                                                isMail=False)
+            result = database_api.changePassword("http://10.50.81.24:8888", "istanbul sehir university",
+                                                 self.data_login[0].replace("\n", ""),
+                                                 input_current_password.text, input_new_password.text,
+                                                 isMail=False)
             if result == "Password Changed":
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_done)
@@ -75,10 +75,10 @@ def on_submit(self):
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_failed)
         elif len(input_new_mail.text) > 0 and input_new_mail.disabled is False:
-            result = DatabaseAPI.changePassword("http://10.50.81.24:8888", "istanbul sehir university",
-                                                self.data_login[0].replace("\n", ""),
-                                                input_current_password.text, input_new_mail.text,
-                                                isMail=True)
+            result = database_api.changePassword("http://10.50.81.24:8888", "istanbul sehir university",
+                                                 self.data_login[0].replace("\n", ""),
+                                                 input_current_password.text, input_new_mail.text,
+                                                 isMail=True)
             if result == "Mail Changed":
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_done)

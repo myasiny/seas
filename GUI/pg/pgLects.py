@@ -9,7 +9,7 @@ from kivy.adapters.listadapter import ListAdapter
 import os, sys
 sys.path.append("../..")
 
-from Server import DatabaseAPI
+from GUI.func import database_api
 from Functionality import excelToCsv
 
 def on_pre_enter(self):
@@ -191,10 +191,10 @@ def on_participant_selected(self):
     self.ids["btn_student_statistics"].opacity = 1
 
 def on_participant_deleted(self):
-    DatabaseAPI.deleteStudentFromLecture("http://10.50.81.24:8888", "istanbul sehir university",
-                                         self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
+    database_api.deleteStudentFromLecture("http://10.50.81.24:8888", "istanbul sehir university",
+                                          self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
 
-    data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
@@ -230,10 +230,10 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.popup.dismiss()
 
     excelToCsv.xls2csv(file_path[0], "data/perm_student_list.csv")
-    DatabaseAPI.registerStudent("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text,
-                                True, "data/perm_student_list.csv", self.data_login[0].replace("\n", ""))
+    database_api.registerStudent("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text,
+                                 True, "data/perm_student_list.csv", self.data_login[0].replace("\n", ""))
 
-    data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:

@@ -8,7 +8,6 @@ import sys
 sys.path.append("../..")
 
 from functools import partial
-from Server import DatabaseAPI
 from GUI.func.check_std_live_exam import check_std_live_exam
 
 def on_pre_enter(self):

@@ -11,7 +11,6 @@ import sys
 sys.path.append("../..")
 
 from functools import partial
-from Server import DatabaseAPI
 from GUI.func.check_connection import check_connection
 
 def load_string(name):

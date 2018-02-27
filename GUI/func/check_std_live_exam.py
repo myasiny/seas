@@ -1,7 +1,6 @@
 import sys
 sys.path.append("../..")
 
-from Server import DatabaseAPI
 
 def check_std_live_exam(self, dt):
     try:

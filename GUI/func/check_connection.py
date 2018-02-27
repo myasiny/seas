@@ -1,11 +1,12 @@
 import sys
 sys.path.append("../..")
 
-from Server import DatabaseAPI
+from GUI.func import database_api
+
 
 def check_connection(img, dt):
     try:
-        if DatabaseAPI.testConnection("http://10.50.81.24:8888"):
+        if database_api.testConnection("http://10.50.81.24:8888"):
             img.source = "img/ico_connection_success.png"
         else:
             img.source = "img/ico_connection_fail.png"
