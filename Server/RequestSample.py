@@ -1,10 +1,8 @@
 # -*- coding:UTF-8 -*-
 
-from requests import put, get, post, delete
-from DatabaseAPI import *
+from GUI.func.database_api import *
 import sys
 sys.path.append("..")
-from Functionality.excelToCsv import xls2csv
 
 address = "10.50.81.24"
 

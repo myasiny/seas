@@ -4,7 +4,8 @@ import sys
 sys.path.append("../..")
 
 from functools import partial
-from Server import DatabaseAPI
+from GUI.func import database_api
+
 
 def on_pre_enter(self):
     try:
@@ -166,12 +167,12 @@ def on_new_question_next(self):
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
     self.data_selected_lect = temp_selected_lect.readlines()
 
-    DatabaseAPI.createExam("http://192.168.43.164:8888", "istanbul sehir university",
-                           self.data_selected_lect[0].replace("\n", ""),
-                           self.data_selected_lect[2].replace("\n", ""),
-                           self.data_selected_lect[4],
-                           int(self.data_selected_lect[3].replace("\n", "")),
-                           yson)
+    database_api.createExam("http://192.168.43.164:8888", "istanbul sehir university",
+                            self.data_selected_lect[0].replace("\n", ""),
+                            self.data_selected_lect[2].replace("\n", ""),
+                            self.data_selected_lect[4],
+                            int(self.data_selected_lect[3].replace("\n", "")),
+                            yson)
     # TODO: Next Question
 
 def on_new_question_previous(self):
