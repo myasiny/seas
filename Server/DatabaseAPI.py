@@ -36,10 +36,7 @@ def addUser(URL, organization, id, name, surname, username, password, Email, Dep
 
 def signIn(URL, organization, username, password):
     url = URL+"/organizations/%s/%s" %(organization.replace(" ", "_").lower(), username)
-    return get(url, data={
-                        "Username": username,
-                        "Password": password
-                        }).json()
+    return get(url, auth=(username, password)).json()
 
 
 def signOut(URL, organization, username):
@@ -114,7 +111,7 @@ def deleteStudentFromLecture(URL, organization, courseCode, studentID):
     url = URL + "/organizations/%s/%s/delete_user" % (organization, courseCode)
     return delete(url, data={"Student": studentID}).json()
 
-def createExam(URL, organization, courseCode, name, time, duration, questions):
+def createExam(URL, organization, courseCode, name, time, duration, questions={}):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/add" % (organization, courseCode)

@@ -2,49 +2,15 @@
 
 from flask import Flask, request, jsonify
 from Models import MySQLdb, Password, Credential, Question, Exam
-from flask_security import Security, login_required, SQLAlchemySessionUserDatastore, roles_accepted
-from flask_security.utils import login_user
 from SessionManager import db_session, init_db
 from SessionModels import User, Role
 import json
-import datetime, time
+import datetime
 
 app = Flask(__name__)
 db = MySQLdb("TestDB", app)
 app.config["DEBUG"] = False
 app.config["SECRET_KEY"] = "super_secret"
-
-user_datastore = SQLAlchemySessionUserDatastore(db_session,
-                                                User, Role)
-security = Security(app, user_datastore)
-
-
-roles = {"admin": user_datastore.find_or_create_role("admin"),
-         "superuser": user_datastore.find_or_create_role("superuser"),
-         "student": user_datastore.find_or_create_role("student"),
-         "lecturer": user_datastore.find_or_create_role("lecturer")}
-
-
-
-def create_user(username, domain, role, password, current_ip = None):
-    init_db()
-    user = user_datastore.find_user(username=username)
-    today = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    if user is None:
-        user_datastore.create_user(username=username, domain=domain, roles=[role], password=password,
-                                   current_login_ip=current_ip,
-                                   current_login_at=today, active=0)
-    else:
-        date = user.current_login_at
-        ip = user.current_login_ip
-
-        user_datastore.activate_user(user)
-        user.last_login_at = date
-        user.last_login_ip = ip
-        user.current_login_ip = current_ip
-        user.current_login_at = today
-    db_session.commit()
-
 
 @app.route("/")
 def test_connection():
@@ -82,7 +48,6 @@ def signUpUser(organization):
                  )
 
     rtn = jsonify(db.execute(command))
-    create_user(username=username, domain=organization, role = role, password=passwd, current_ip=None)
     return rtn
 
 
@@ -90,11 +55,11 @@ def signUpUser(organization):
 # @app.before_first_request
 def signInUser(organization, username):
     organization = organization.replace(" ", "_").lower()
-    username = request.form["Username"]
+    username = request.authorization["username"]
     try:
         passwd = db.execute("select Password from %s.members where Username = '%s'"
                             % (organization, username))[0][0]
-        if Password().verify_password_hash(request.form["Password"], passwd):
+        if Password().verify_password_hash(request.authorization["password"], passwd):
             rtn = list(db.execute("select Username, Name, Surname, PersonID, Role, Email, Department "
                                   "from %s.members where Username=('%s')" % (organization, username))[0])
             rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE RoleID = '%s'" % (organization, rtn[4]))[0][0]
@@ -110,10 +75,7 @@ def signInUser(organization, username):
 
 @app.route("/organizations/<string:organization>/<string:username>/out", methods=["GET", "PUT"])
 def signOutUser(organization, username):
-    organization = organization.replace(" ", "_").lower()
-    user = user_datastore.find_user(username=username, domain=organization)
-    return jsonify(user_datastore.deactivate_user(user))
-
+    pass
 
 @app.route("/organizations/<string:organization>/<string:course>", methods=['PUT'])
 def addCourse(organization, course):

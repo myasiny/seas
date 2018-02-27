@@ -504,7 +504,8 @@ class Exam:
         for question in self.questions:
             command += question.save_command(self.course, self.name)
 
-        return db.execute(command)
+        db.execute(command)
+        return db.execute("SELECT ExamID FROM exams WHERE Name = '%s'" % self.name)[0][0]
 
     def get(self, db):
         command = "SELECT info, time, duration  FROM %s.questions join %s.exams where %s.exams.Name = '%s' and %s.questions.examID = %s.exams.examID;" % (self.org, self.org, self.org, self.name, self.org, self.org)
