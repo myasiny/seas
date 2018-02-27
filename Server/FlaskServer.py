@@ -2,15 +2,16 @@
 
 from flask import Flask, request, jsonify
 from Models import MySQLdb, Password, Credential, Question, Exam
-from SessionManager import db_session, init_db
-from SessionModels import User, Role
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import json
 import datetime
 
 app = Flask(__name__)
 db = MySQLdb("TestDB", app)
 app.config["DEBUG"] = False
-app.config["SECRET_KEY"] = "super_secret"
+app.config["JWT_SECRET_KEY"] = "CHANGE THIS BEFORE DEPLOYMENT ! ! !"
+
+jwt = JWTManager(app)
 
 @app.route("/")
 def test_connection():
@@ -28,7 +29,6 @@ def signUpOrganization():
 
 
 @app.route("/organizations/<string:organization>", methods = ["PUT"])
-# @roles_accepted("admin")
 def signUpUser(organization):
     passwd = Password().hashPassword(request.form["Password"])
     username = request.form["Username"]
@@ -52,7 +52,6 @@ def signUpUser(organization):
 
 
 @app.route("/organizations/<string:organization>/<string:username>", methods=["GET"])
-# @app.before_first_request
 def signInUser(organization, username):
     organization = organization.replace(" ", "_").lower()
     username = request.authorization["username"]
@@ -64,7 +63,8 @@ def signInUser(organization, username):
                                   "from %s.members where Username=('%s')" % (organization, username))[0])
             rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE RoleID = '%s'" % (organization, rtn[4]))[0][0]
             rtn.append(organization)
-            # login_user(user_datastore.find_user(username=username), remember=True)
+            token = create_access_token(identity=(rtn[0], rtn[4], str(datetime.datetime.today())))
+            rtn.append(token)
             return jsonify(rtn)
 
         else:
@@ -78,7 +78,9 @@ def signOutUser(organization, username):
     pass
 
 @app.route("/organizations/<string:organization>/<string:course>", methods=['PUT'])
+@jwt_required
 def addCourse(organization, course):
+    user, role, token_time = get_jwt_identity()
     name = request.form["name"]
     code = request.form["code"]
     lecturers = request.form["lecturers"]
@@ -124,9 +126,7 @@ def changePassword(organization, username):
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/add", methods=["PUT"])
 def addExam(organization, course):
-    name = request.form["name"] ##
-
-
+    name = request.form["name"]
     time = request.form["time"]
     duration = request.form["duration"]
     questions = json.loads(request.form["questions"])
@@ -155,7 +155,7 @@ def getExam(organization, course, name):
 
 from json import loads
 if __name__ == "__main__":
-    app.run(host="192.168.1.106", port=8888, threaded = True)
+    app.run(host="10.50.81.24", port=8888, threaded = True)
     # a = Question("classic", "history", "who is the founder of TR?", "Ataturk", [(1,2),(2,3)], [(3),(5)], 30, "mustafa", "kemal")
     # e = Exam("bioinformatics mt 1", "eecs 468", "17.2.2018.10.00.00", 60, "istanbul sehir university")
     # e.addQuestionObject(a)

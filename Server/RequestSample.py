@@ -6,7 +6,10 @@ import sys
 sys.path.append("..")
 from Functionality.excelToCsv import xls2csv
 
-address = "192.168.1.106"
+address = "10.50.81.24"
+
+student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjFhMmFkZi03NWMwLTQ1ZWItYTg1Yy00ZmNjNzM4MmFmNGUiLCJleHAiOjE1MTk3NjE1NTYsImZyZXNoIjpmYWxzZSwiaWF0IjoxNTE5NzYwNjU2LCJ0eXBlIjoiYWNjZXNzIiwibmJmIjoxNTE5NzYwNjU2LCJpZGVudGl0eSI6WyJmYXRpaGd1bG1leiIsInN0dWRlbnQiLCIyMDE4LTAyLTI3IDIyOjQ0OjE2Ljk4MDAwMCJdfQ.UCa5uiyoS-HUWt0ti_TMB61LEHDeXTmCeNjxfkgoyLA"
+lecturer_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0YWZkOTJjNi04NzU1LTQ0YWEtYTgwZC02OWE5OGVmZDE5MmEiLCJleHAiOjE1MTk3NjI1NDQsImZyZXNoIjpmYWxzZSwiaWF0IjoxNTE5NzYxNjQ0LCJ0eXBlIjoiYWNjZXNzIiwibmJmIjoxNTE5NzYxNjQ0LCJpZGVudGl0eSI6WyJhbGljYWttYWsiLCJsZWN0dXJlciIsIjIwMTgtMDItMjcgMjM6MDA6NDQuMDM4MDAwIl19.OP_CQEGHbciDXju6-4UOeZpnpMIu8jrE-aIBci--N2Y"
 
 ### Sample usage of API
 
@@ -31,12 +34,12 @@ address = "192.168.1.106"
 
 # print signIn("http://" + address +":8888", "Istanbul Sehir University", "alioz", "123")
 
-# print signIn("http://" + address +":8888", "Istanbul Sehir University", "alicakmak", "12345")
+print signIn("http://" + address +":8888", "Istanbul Sehir University", "alicakmak", "12345")
 # print signIn("http://" + address +":8888", "Istanbul Sehir University", "admin", "12345")
 
 # print signOut("http://" + address +":8888", "Istanbul Sehir University", "admin")
 
-# print addCourse("http://" + address +":8888", "istanbul sehir university", "Bioinformatics", "EECS 468", "alicakmak")
+# print addCourse("http://" + address +":8888", "istanbul sehir university", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjFhMmFkZi03NWMwLTQ1ZWItYTg1Yy00ZmNjNzM4MmFmNGUiLCJleHAiOjE1MTk3NjE1NTYsImZyZXNoIjpmYWxzZSwiaWF0IjoxNTE5NzYwNjU2LCJ0eXBlIjoiYWNjZXNzIiwibmJmIjoxNTE5NzYwNjU2LCJpZGVudGl0eSI6WyJmYXRpaGd1bG1leiIsInN0dWRlbnQiLCIyMDE4LTAyLTI3IDIyOjQ0OjE2Ljk4MDAwMCJdfQ.UCa5uiyoS-HUWt0ti_TMB61LEHDeXTmCeNjxfkgoyLA", "Bioinformatics", "EECS 468", "alicakmak")
 # print getCourse("http://" + address +":8888", "istanbul sehir university", "ENGR 101")
 
 # print registerStudent("http://" + address +":8888", "Istanbul Sehir University", "EECS 468", True, "ornek.csv")
@@ -51,12 +54,12 @@ address = "192.168.1.106"
 
 #### HOW TO CREATE EXAM
 
-print createExam("http://" + address +":8888",
-                 "Istanbul Sehir University",
-                 "EECS 468",
-                 "bioinformatic mt 2",
-                 "2018-03-15 10:30:00",
-                 50
+# print createExam("http://" + address +":8888",
+#                  "Istanbul Sehir University",
+#                  "EECS 468",
+#                  "bioinformatic mt 2",
+#                  "2018-03-15 10:30:00",
+#                  50
                  # ,{1:
                  #      {"type": "classic",
                  #        "subject": "ataturk",
@@ -76,7 +79,7 @@ print createExam("http://" + address +":8888",
                  #      "value": 50,
                  #      "tags": ["ottomans", "muslims"]}
                  #  }
-)
+# )
 
 
 ### HOW TO GET EXAM
