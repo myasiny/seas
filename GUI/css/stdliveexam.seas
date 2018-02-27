@@ -1,0 +1,143 @@
+<PgStdLiveExam>:
+    FloatLayout:
+        canvas:
+            Rectangle:
+                id: img_bg
+                source: "img/bg_light.png"
+                size: self.size
+                pos: self.pos
+
+        Image:
+            id: img_top
+            source: "img/widget_100.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: 1, .1
+            pos_hint: {"x": .0, "y": .9}
+
+        Image:
+            id: img_seas_long_bg
+            source: "img/btn_oval_selected.png"
+            opacity: .25
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .25, .1
+            pos_hint: {"center_x": .5, "center_y": .95}
+
+        Image:
+            id: img_seas_long
+            source: "img/img_seas_long.png"
+            allow_stretch: True
+            size_hint_y: .05
+            pos_hint: {"center_x": .5, "center_y": .95}
+
+        Button:
+            id: btn_question_previous
+            text: "< Previous"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/btn_rect.png"
+            background_down: "img/btn_rect_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .15, .1
+            pos_hint: {"x": .0, "y": .9}
+            on_release: root.on_question_previous()
+
+        Button:
+            id: btn_question_remove
+            text: "REMOVE"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_100_red.png"
+            background_down: "img/widget_100_red_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .1, .075
+            pos_hint: {"center_x": .25, "center_y": .95}
+            on_release: root.on_question_remove()
+
+        Button:
+            id: btn_question_next
+            text: "Next >"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/btn_rect.png"
+            background_down: "img/btn_rect_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .15, .1
+            pos_hint: {"x": .85, "y": .9}
+            on_release: root.on_question_next()
+
+        Button:
+            id: btn_question_save
+            text: "SAVE"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_100_green.png"
+            background_down: "img/widget_100_green_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .1, .075
+            pos_hint: {"center_x": .75, "center_y": .95}
+            on_release: root.on_question_save()
+
+        Image:
+            id: img_widget_75_gray
+            source: "img/widget_75_gray.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .825
+            pos_hint: {"center_x": .5, "center_y": .45}
+
+        Image:
+            id: img_widget_75_black
+            source: "img/widget_75_black.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .125
+            pos_hint: {"center_x": .5, "center_y": .8}
+
+        Label:
+            id: txt_question_no
+            text: "Question  "
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .8}
+
+        Label:
+            id: txt_question_grade
+            text: "Grade:   "
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 3
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .8}
+
+        Label:
+            id: txt_question_body
+            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel leo nec mauris consequat tempor id sed felis. Vestibulum eu fermentum nunc. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ut mollis leo, sit amet iaculis purus. Quisque eu sem turpis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut auctor convallis felis, at dictum ante gravida a. Morbi dignissim dapibus lacus, ut molestie purus fringilla eget. Duis aliquet maximus orci eget bibendum."
+            color: 0,0,0,1
+            halign: "center"
+            multiline: True
+            font_name: "font/CaviarDreams.ttf"
+            font_size: root.height / 25
+            text_size: self.width * 4 / 10, None
+            size_hint_y: None
+            height: self.texture_size[1]
+            pos_hint: {"center_x": .25, "center_y": .3875}
+
+        TextInput:
+            id: input_short_answer
+            hint_text: "Answer"
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 20.25
+            background_normal: "img/widget_75_gray.png"
+            background_active: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            padding_y: [self.height / 20.25, 0]
+            size_hint: .4, .675
+            pos_hint: {"center_x": .75, "center_y": .3875}

@@ -7,7 +7,11 @@ from functools import partial
 from Server import DatabaseAPI
 
 def on_pre_enter(self):
-    self.question_no += 1
+    try:
+        self.question_no += 1
+    except:
+        self.question_no = 1
+
     self.ids["txt_question_no"].text = "Question %d" % self.question_no
 
     self.correct_answer = Spinner(text="Correct Answer", values=("A", "B", "C", "D", "E"),
@@ -143,16 +147,21 @@ def on_new_question_next(self):
                                    "value": int(self.ids["input_value"].text),
                                    "tags": self.ids["input_tags"].text.split(",")}
                 }
-    # else:
-    #     yson = {self.question_no: {"type": self.question_type,
-    #                                "subject": self.ids["input_subject"].text,
-    #                                "text": self.ids["input_question_body"].text,
-    #                                "answer": self.multiple_choice_answer,
-    #                                "inputs": None,
-    #                                "outputs": None,
-    #                                "value": int(self.ids["input_value"].text),
-    #                                "tags": self.ids["input_tags"].text.split(",")}
-    #             }
+    else:
+        yson = {self.question_no: {"type": self.question_type,
+                                   "subject": self.ids["input_subject"].text,
+                                   "text": self.ids["input_question_body"].text + "\n\n" +
+                                           "A)\t" + self.ids["input_answer_a"].text + "\n" +
+                                           "B)\t" + self.ids["input_answer_b"].text + "\n" +
+                                           "C)\t" + self.ids["input_answer_c"].text + "\n" +
+                                           "D)\t" + self.ids["input_answer_d"].text + "\n" +
+                                           "E)\t" + self.ids["input_answer_e"].text,
+                                   "answer": self.multiple_choice_answer,
+                                   "inputs": None,
+                                   "outputs": None,
+                                   "value": int(self.ids["input_value"].text),
+                                   "tags": self.ids["input_tags"].text.split(",")}
+                }
 
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
     self.data_selected_lect = temp_selected_lect.readlines()
@@ -163,3 +172,12 @@ def on_new_question_next(self):
                            self.data_selected_lect[4],
                            int(self.data_selected_lect[3].replace("\n", "")),
                            yson)
+    # TODO: Next Question
+
+def on_new_question_previous(self):
+    pass
+    # TODO: Previous Question
+
+def on_new_question_complete(self):
+    pass
+    # TODO: Complete Exam Creation

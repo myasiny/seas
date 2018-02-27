@@ -1,0 +1,314 @@
+<PgStdLects>:
+    FloatLayout:
+        canvas:
+            Rectangle:
+                id: img_bg
+                source: "img/bg_light.png"
+                size: self.size
+                pos: self.pos
+
+        Image:
+            id: img_top
+            source: "img/widget_100.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: 1, .1
+            pos_hint: {"x": .0, "y": .9}
+
+        Image:
+            id: img_seas_long_bg
+            source: "img/btn_oval_selected.png"
+            opacity: .25
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .25, .1
+            pos_hint: {"center_x": .5, "center_y": .95}
+
+        Image:
+            id: img_seas_long
+            source: "img/img_seas_long.png"
+            allow_stretch: True
+            size_hint_y: .05
+            pos_hint: {"center_x": .5, "center_y": .95}
+
+        Button:
+            text: "btn_start"
+            opacity: 0
+            size_hint: .25, .1
+            pos_hint: {"center_x": .5, "center_y": .95}
+            on_release: root.on_start()
+
+        Image:
+            id: img_connection
+            source: "img/ico_connection_wait.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .9, "center_y": .95}
+
+        Image:
+            id: img_quit
+            source: "img/ico_quit.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .95, "center_y": .95}
+
+        Button:
+            text: "btn_quit"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .95, "center_y": .95}
+            on_release: root.on_quit()
+
+        Image:
+            id: img_logout
+            source: "img/ico_logout.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .0, "center_y": .95}
+
+        Button:
+            text: "btn_logout"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .0, "center_y": .95}
+            on_release: root.on_logout()
+
+        Image:
+            id: img_user
+            source: "img/pic_user.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .05, "center_y": .95}
+
+        Button:
+            text: "btn_profile"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .05, "center_y": .95}
+            on_release: root.on_profile()
+
+        Button:
+            id: btn_lects
+            text: "Lectures"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/btn_rect.png"
+            background_down: "img/btn_rect_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .15, .1
+            pos_hint: {"center_x": .25, "y": .9}
+
+        Button:
+            id: btn_stats
+            text: "Statistics"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/btn_rect.png"
+            background_down: "img/btn_rect_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .15, .1
+            pos_hint: {"center_x": .75, "y": .9}
+            on_release: root.on_stats()
+
+        Image:
+            id: img_left
+            source: "img/widget_75_black.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .9
+            pos_hint: {"x": .0, "y": .0}
+
+        Button:
+            id: btn_exams
+            text: "Exams"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_75.png"
+            background_down: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .2, .1
+            pos_hint: {"x": .0, "center_y": .56}
+            on_release: root.on_exams()
+            disabled: True
+
+        Button:
+            id: btn_personal_statistics
+            text: "Personal Statistics"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_75.png"
+            background_down: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .2, .1
+            pos_hint: {"x": .0, "center_y": .45}
+            on_release: root.on_personal_statistics()
+            disabled: True
+
+        Label:
+            id: txt_hint
+            text: "No Lecture Selected"
+            color: 0,0,0,0.25
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 2
+            size_hint: .4, .1
+            pos_hint: {"center_x": .6, "center_y": .45}
+
+        Label:
+            id: txt_lect_code
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 3
+            size_hint: .85, .1
+            pos_hint: {"center_x": .6, "y": .8}
+
+        Label:
+            id: txt_lect_name
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 2
+            size_hint: .85, .1
+            pos_hint: {"center_x": .6, "y": .725}
+
+    FloatLayout:
+        id: layout_exams
+        opacity: 0
+
+        Image:
+            id: img_join_exam_name
+            source: "img/btn_oval_black.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .7, .1
+            pos_hint: {"center_x": .6, "center_y": .65}
+
+        Label:
+            id: txt_join_exam_name
+            text: "No exam started"
+            color: 1,1,1,0.25
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            size_hint: .5, .1
+            pos_hint: {"center_x": .5, "center_y": .65}
+
+        Button:
+            id: btn_join_exam
+            text: "JOIN NOW"
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "img/widget_100_green.png"
+            background_down: "img/widget_100_green_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .65}
+            on_release: root.on_join_exam()
+            disabled: True
+
+        ListView:
+            id: list_exams
+            size_hint: .5, .5
+            pos_hint: {"center_x": .5, "center_y": .3}
+
+        Image:
+            id: img_info_top
+            source: "img/widget_75_black.png"
+            opacity: 0
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .5}
+
+        Image:
+            id: img_info_body
+            source: "img/widget_75_gray.png"
+            opacity: 0
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .5
+            pos_hint: {"center_x": .875, "center_y": .3}
+
+        Label:
+            id: txt_info_head
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 3
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .5}
+
+        Label:
+            id: txt_date_head
+            text: "Date:"
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 5
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .425}
+
+        Label:
+            id: txt_date_body
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .375}
+
+        Label:
+            id: txt_time_head
+            text: "Time:"
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 5
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .3}
+
+        Label:
+            id: txt_time_body
+            text: "..."
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 5
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "center_y": .25}
+
+        Label:
+            id: txt_options_head
+            text: "Options:"
+            opacity: 0
+            color: 0,0,0,0.75
+            multiline: False
+            font_name: "font/CaviarDreams.ttf"
+            font_size: self.height / 5
+            size_hint: .2, .1
+            pos_hint: {"center_x": .875, "y": .125}
+
+        Button:
+            id: btn_exam_statistics
+            text: "STATISTICS"
+            opacity: 0
+            font_name: "font/LibelSuit.ttf"
+            font_size: self.height / 2
+            background_normal: "img/widget_100.png"
+            background_down: "img/widget_100_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            size_hint: .15, .045
+            pos_hint: {"center_x": .875, "y": .075}
+            on_release: root.on_personal_exam_statistics()

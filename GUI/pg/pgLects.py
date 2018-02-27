@@ -120,7 +120,7 @@ def on_exam_selected(self):
     self.ids["btn_exam_delete"].opacity = 1
     self.ids["btn_exam_start_grade"].opacity = 1
 
-    if self.ids["txt_status_body"].text != "Graded":
+    if self.ids["txt_status_body"].text == "Completed":
         self.ids["btn_exam_start_grade"].text = "GRADE"
         # TODO: Grade Exam
     else:

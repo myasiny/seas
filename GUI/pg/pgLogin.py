@@ -1,7 +1,6 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.clock import Clock
-from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.animation import Animation
@@ -20,9 +19,9 @@ def load_string(name):
         Builder.load_string(design.read())
 
 def on_enter(self):
-    Clock.schedule_once(partial(check_connection, self.ids["img_connection"]))
+    Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 1.0 / 10.0)
 
-def on_login(self, pages, screen):
+def on_login(self, pages, screen, pgEdu, pgStd):
     btn_login = self.ids["btn_login"]
     btn_login.disabled = True
 
@@ -47,7 +46,7 @@ def on_login(self, pages, screen):
     else:
         try:
             # data = DatabaseAPI.signIn("http://10.50.81.24:8888", "istanbul sehir university", input_username, input_password)
-            data = ["TODO", "TODO", "TODO", "TODO", "TODO", "TODO", "TODO", "TODO"]
+            data = ["TODO", "TODO", "TODO", "TODO", "student", "TODO", "TODO", "TODO"]
         except:
             data = None
             print ("SEAS [ERROR]: pgLogin > Except > Server Communication Failed")
@@ -66,10 +65,10 @@ def on_login(self, pages, screen):
                     temp_login.write(str(d) + "\n")
                 temp_login.close()
 
-            # if role != "student":
-            #     pages.append(PgLects(name="PgLects"))
-            # else:
-            #     pages.append(PgLects(name="PgLects"))
+            if data[4] != "student":
+                pages.append(pgEdu(name="PgLects"))
+            else:
+                pages.append(pgStd(name="PgStdLects"))
 
             try:
                 screen.switch_to(pages[2])
@@ -91,11 +90,9 @@ def on_quit(self):
     popup = Popup(title="Quit",
                   content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
                   size_hint=(None, None), size=(self.width / 5, self.height / 5))
-    popup_content.add_widget(Image(source="img/widget_75_gray.png", allow_stretch=True, keep_ratio=False,
-                                   size=(self.width, self.height), pos_hint={"center_x":.5, "center_y":.5}))
-    popup_content.add_widget(Label(text="Are you sure?", color=(0,0,0,1),
+    popup_content.add_widget(Label(text="Are you sure?", color=(1,1,1,1),
                                    font_name="font/CaviarDreams.ttf", font_size=self.width / 50,
-                                   pos_hint={"center_x": .5, "center_y": .6}))
+                                   pos_hint={"center_x": .5, "center_y": .625}))
     popup_content.add_widget(Button(text="Yes",
                                     font_name="font/LibelSuit.ttf",
                                     font_size=self.height / 40,
