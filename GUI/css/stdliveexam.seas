@@ -133,18 +133,6 @@
                 size_hint_y: None
                 height: self.texture_size[1]
 
-        TextInput:
-            id: input_short_answer
-            hint_text: "Answer"
-            font_name: "font/CaviarDreams_Bold.ttf"
-            font_size: self.height / 20.25
-            background_normal: "img/widget_75_gray.png"
-            background_active: "img/widget_75_selected.png"
-            background_disabled_normal: "img/widget_75_black.png"
-            padding_y: [self.height / 20.25, 0]
-            size_hint: .4, .675
-            pos_hint: {"center_x": .75, "center_y": .3875}
-
         CodeInput:
             id: input_code_answer
             hint_text: "Code"
@@ -156,6 +144,20 @@
             padding_y: [self.height / 20.25, 0]
             size_hint: .4, .5
             pos_hint: {"center_x": .75, "center_y": .475}
+
+        Image:
+            id: img_run
+            source: "img/ico_run.png"
+            allow_stretch: True
+            size_hint: .025, .025
+            pos_hint: {"x": .95, "y": .7}
+
+        Button:
+            id: btn_run
+            opacity: 0
+            size_hint: .025, .025
+            pos_hint: {"x": .95, "y": .7}
+            on_release: root.on_run()
 
         Image:
             id: img_code_output_bg
@@ -183,7 +185,20 @@
                 size_hint_y: None
                 height: self.texture_size[1]
 
+        TextInput:
+            id: input_short_answer
+            hint_text: "Answer"
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 20.25
+            background_normal: "img/widget_75_gray.png"
+            background_active: "img/widget_75_selected.png"
+            background_disabled_normal: "img/widget_75_black.png"
+            padding_y: [self.height / 20.25, 0]
+            size_hint: .4, .675
+            pos_hint: {"center_x": .75, "center_y": .3875}
+
         ScrollView:
+            id: txt_multiple_choices_scroll
             size_hint: .4, .5
             pos_hint: {"center_x": .75, "center_y": .475}
 
