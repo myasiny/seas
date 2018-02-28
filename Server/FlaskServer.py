@@ -13,42 +13,50 @@ app.config["JWT_SECRET_KEY"] = "CHANGE THIS BEFORE DEPLOYMENT ! ! !"
 
 jwt = JWTManager(app)
 
+def check_auth(token, *allowed_roles):
+    user, role, token_time = token
+    return role in allowed_roles
+
 @app.route("/")
 def test_connection():
     return jsonify("I am alive!")
 
 
 @app.route("/organizations", methods=["PUT"])
+@jwt_required
 def signUpOrganization():
-    # user = user_datastore.find_user(current_login_ip = request.remote_addr, username=request.form["user"])
-    # if user is not None and user.is_active and user.has_role(user_datastore.find_role("admin")):
-    #     return jsonify(db.initialize_organization(request.form["data"]))
-    # else:
-    #     return jsonify("Unauthorized process!!")
-    return jsonify(db.initialize_organization(request.form["data"]))
+    if check_auth(get_jwt_identity(), "superuser"):
+        return jsonify(db.initialize_organization(request.form["data"]))
+    else:
+        return jsonify("Unauthorized access!")
 
 
 @app.route("/organizations/<string:organization>", methods = ["PUT"])
+@jwt_required
 def signUpUser(organization):
-    passwd = Password().hashPassword(request.form["Password"])
-    username = request.form["Username"]
-    role = request.form["Role"].lower()
-    command = "Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) " \
-              "values(%s, '%d', '%s', '%s', '%s', '%s', '%s', '%s')" \
-              % (organization,
-                 request.form["ID"],
-                 int(db.execute("SELECT RoleID FROM %s.roles WHERE Role = '%s'" % (
-                 organization, role))[0][0]),
-                 request.form["Name"],
-                 request.form["Surname"],
-                 username,
-                 passwd,
-                 request.form["Email"],
-                 request.form["Department"]
-                 )
+    token = get_jwt_identity()
+    if not check_auth(token, "superuser", "admin"):
+        return jsonify("Unauthorized access!")
+    else:
+        passwd = Password().hashPassword(request.form["Password"])
+        username = request.form["Username"]
+        role = request.form["Role"].lower()
+        command = "Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) " \
+                  "values(%s, '%d', '%s', '%s', '%s', '%s', '%s', '%s')" \
+                  % (organization,
+                     request.form["ID"],
+                     int(db.execute("SELECT RoleID FROM %s.roles WHERE Role = '%s'" % (
+                     organization, role))[0][0]),
+                     request.form["Name"],
+                     request.form["Surname"],
+                     username,
+                     passwd,
+                     request.form["Email"],
+                     request.form["Department"]
+                     )
 
-    rtn = jsonify(db.execute(command))
-    return rtn
+        rtn = jsonify(db.execute(command))
+        return rtn
 
 
 @app.route("/organizations/<string:organization>/<string:username>", methods=["GET"])
@@ -80,41 +88,62 @@ def signOutUser(organization, username):
 @app.route("/organizations/<string:organization>/<string:course>", methods=['PUT'])
 @jwt_required
 def addCourse(organization, course):
-    user, role, token_time = get_jwt_identity()
-    name = request.form["name"]
-    code = request.form["code"]
-    lecturers = request.form["lecturers"]
-    return jsonify(db.add_course(organization, name, code, lecturers))
+    token = get_jwt_identity()
+    if not check_auth(token, "superuser", "admin"):
+        return jsonify("Unauthorized access!")
+    else:
+        name = request.form["name"]
+        code = request.form["code"]
+        lecturers = request.form["lecturers"]
+        return jsonify(db.add_course(organization, name, code, lecturers))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/get", methods=['GET'])
+@jwt_required
 def getCourse(organization, course):
-
     return jsonify(db.get_course(organization, course))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/register/<string:liste>", methods=['PUT'])
+@jwt_required
 def putStudentList(organization, course, liste):
+    token = get_jwt_identity()
+    if not check_auth(token, "superuser", "admin", "lecturer"):
+        return jsonify("Unauthorized access!")
 
-    return jsonify(db.registerStudentCSV(request.files["liste"], organization, course, request.form["username"]))
+    else:
+        return jsonify(db.registerStudentCSV(request.files["liste"], organization, course, request.form["username"]))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/register", methods=['GET'])
+@jwt_required
 def getStudentList(organization, course):
+    token = get_jwt_identity()
     return jsonify(db.get_course_participants(course, organization))
 
 
 @app.route("/organizations/<string:organization>/<string:username>/courses/role=lecturer", methods=["GET"])
+@jwt_required
 def getLecturerCourseList(organization, username):
-    return jsonify(db.get_lecturer_courses(organization, username))
+    token = get_jwt_identity()
+    if not check_auth(token, "superuser", "admin", "lecturer"):
+        return jsonify("Unauthorized access!")
+    else:
+        return jsonify(db.get_lecturer_courses(organization, username))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/delete_user", methods=['DELETE'])
+@jwt_required
 def deleteStudentFromLecture(organization, course):
-    return jsonify(db.delete_student_course(organization, course, request.form["Student"]))
+    token = get_jwt_identity()
+    if not check_auth(token, "superuser", "admin", "lecturer"):
+        return jsonify("Unauthorized access!")
+    else:
+        return jsonify(db.delete_student_course(organization, course, request.form["Student"]))
 
 
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"])
+@jwt_required
 def changePassword(organization, username):
     ismail = request.form["isMail"]
     if ismail == "True":
@@ -125,44 +154,43 @@ def changePassword(organization, username):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/add", methods=["PUT"])
+@jwt_required
 def addExam(organization, course):
-    name = request.form["name"]
-    time = request.form["time"]
-    duration = request.form["duration"]
-    questions = json.loads(request.form["questions"])
-    exam = Exam(name, course, time, duration, organization)
-    for j in questions:
-        i=questions[j]
-        exam.addQuestion(
-            i["type"],
-            i["subject"],
-            i["text"],
-            i["answer"],
-            i["inputs"],
-            i["outputs"],
-            i["value"],
-            i["tags"])
-    return jsonify(exam.save(db))
+    token = get_jwt_identity()
+    if not check_auth(token, "superuser", "admin", "lecturer"):
+        return jsonify("Unauthorized access!")
+    else:
+        name = request.form["name"]
+        time = request.form["time"]
+        duration = request.form["duration"]
+        questions = json.loads(request.form["questions"])
+        exam = Exam(name, course, time, duration, organization)
+        for j in questions:
+            i=questions[j]
+            exam.addQuestion(
+                i["type"],
+                i["subject"],
+                i["text"],
+                i["answer"],
+                i["inputs"],
+                i["outputs"],
+                i["value"],
+                i["tags"])
+        return jsonify(exam.save(db))
+
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/", methods=["GET"])
+@jwt_required
 def getExamsOfLecture(organization, course):
     pass
 
+
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>", methods=["GET"])
+@jwt_required
 def getExam(organization, course, name):
     exam = Exam(name, course, None, None, organization)
     return jsonify(exam.get(db))
 
-from json import loads
+
 if __name__ == "__main__":
     app.run(host="10.50.81.24", port=8888, threaded = True)
-    # a = Question("classic", "history", "who is the founder of TR?", "Ataturk", [(1,2),(2,3)], [(3),(5)], 30, "mustafa", "kemal")
-    # e = Exam("bioinformatics mt 1", "eecs 468", "17.2.2018.10.00.00", 60, "istanbul sehir university")
-    # e.addQuestionObject(a)
-    # e.addQuestion("truefalse", "history", "Ottomans were Muslims.", "true", "", "", 30, "ottomans", "muslim")
-    # print e.get()
-    # print e.getString()
-    # print loads(a.load(db, 3, "istanbul sehir university"))["info"]["tags"]
-    # print a.load(db, 3, "istanbul sehir university")
-    # print e.get(db)
-    pass

@@ -1,6 +1,5 @@
 #-*-coding:utf-8-*-
 import sys
-sys.path.append("..")
 
 from requests import put, get, delete, ConnectionError
 import json

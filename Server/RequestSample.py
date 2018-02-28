@@ -32,7 +32,7 @@ lecturer_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0YWZkOTJjNi04N
 
 # print signIn("http://" + address +":8888", "Istanbul Sehir University", "alioz", "123")
 
-print signIn("http://" + address +":8888", "Istanbul Sehir University", "alicakmak", "12345")
+# print signIn("http://" + address +":8888", "Istanbul Sehir University", "alicakmak", "12345")
 # print signIn("http://" + address +":8888", "Istanbul Sehir University", "admin", "12345")
 
 # print signOut("http://" + address +":8888", "Istanbul Sehir University", "admin")
