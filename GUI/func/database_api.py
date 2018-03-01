@@ -128,6 +128,7 @@ def deleteStudentFromLecture(URL, organization, token, courseCode, studentID):
 def createExam(URL, organization, token, courseCode, name, time, duration, questions={}):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/add" % (organization, courseCode)
     question = json.dumps(questions)
     return put(url, data={"name": name, "time": time, "duration": duration, "questions": question},
@@ -145,6 +146,16 @@ def getExamsOfLecture(URL, organization, token, courseCode):
 def getExam(URL, organization, token, courseCode, name):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/%s" % (organization, courseCode, name)
     return get(url, headers = {"Authorization": "Bearer " + token}).json()
+
+
+def sendAnswers(URL, organization, token, courseCode, examName, username, answers):
+    organization = organization.replace(" ", "_").lower()
+    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    examName = re.sub(r'[^\w\s]', '_', examName).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, courseCode, examName, username)
+    return put(url, data={"answers" : json.dumps(answers)}, headers={"Authorization": "Bearer " + token}).json()
+
 

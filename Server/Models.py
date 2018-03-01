@@ -172,6 +172,23 @@ class MySQLdb:
                                  foreign_keys_tuple=[("ExamID", "exams", "ExamID")],
                               database=self)
 
+        answersTable = DBTable("answers",
+                               [
+                                   ("answerID", "int", "auto_increment"),
+                                   ("examID", "int", "not null"),
+                                   ("studentID", "int", "not null"),
+                                   ("answers", "JSON", "")
+                               ],
+                               primary_key="answerID",
+                               foreign_keys_tuple=[
+                                   ("examID", "exams", "ExamID"),
+                                   ("studentID", "members", "PersonID")
+                               ],
+                               uniques=[
+                                   ("examID", "studentID")
+                               ],
+                               database=self)
+
         # command_seq.append(questionsTable.get_command())
 
         self.execute("Insert into roles(Role) values ('superuser'); "
@@ -323,6 +340,16 @@ class MySQLdb:
         command = "DELETE FROM %s.registrations WHERE StudentID = %d AND CourseID = %d" % (organization, int(studentID), int(courseID))
         self.execute(command)
         return None
+
+    def add_answer(self, organization, exam_name, username, answers):
+        try:
+            exam_id = self.execute("SELECT examID FROM %s.exams WHERE Name = '%s'" %(organization, exam_name))[0][0]
+            student_id = self.execute("SELECT personID FROM %s.members WHERE username = '%s'" %(organization, username))[0][0]
+            command = "INSERT INTO %s.answers(examID, studentID, answers) VALUES ('%s', '%s', '%s') ON DUPLICATE KEY UPDATE answers = '%s'" %(organization, exam_id, student_id, answers, answers)
+            return self.execute(command)
+        except Exception:
+            return "Error occurred."
+
 
 
 class Password:
