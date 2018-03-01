@@ -201,11 +201,22 @@ def getExam(organization, course, name):
     exam = Exam(name, course, None, None, organization)
     return jsonify(exam.get(db))
 
+
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/addQuestion", methods=["PUT"])
 @jwt_required
 def addQuestionsToExam(organization, course, name):
-
+    token = get_jwt_identity()
+    if not check_auth(token, "superuser", "admin", "lecturer"):
+        return jsonify("Unauthorized access!")
+    else:
+        return jsonify("Constraction Sİte!")
     pass
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/answers/<string:username>", methods=["PUT"])
+@jwt_required
+def answerExam(organization, course, name, username):
+    return jsonify(db.add_answer(organization, name, username, request.form["answers"]))
 
 
 if __name__ == "__main__":
