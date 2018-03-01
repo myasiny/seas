@@ -8,8 +8,12 @@ import datetime
 
 app = Flask(__name__)
 db = MySQLdb("TestDB", app)
-app.config["DEBUG"] = False
+app.config["DEBUG"] = True
 app.config["JWT_SECRET_KEY"] = "CHANGE THIS BEFORE DEPLOYMENT ! ! !"
+if app.config["DEBUG"]:
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
+else:
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=18)
 
 jwt = JWTManager(app)
 
@@ -179,9 +183,15 @@ def addExam(organization, course):
         return jsonify(exam.save(db))
 
 
+# todo: fatihgulmez
 @app.route("/organizations/<string:organization>/<string:course>/exams/", methods=["GET"])
 @jwt_required
 def getExamsOfLecture(organization, course):
+    token = get_jwt_identity()
+    if not check_auth(token, "superuser", "admin", "lecturer"):
+        return jsonify("Unauthorized access!")
+    else:
+        return jsonify("Constraction Sİte!")
     pass
 
 
@@ -190,6 +200,12 @@ def getExamsOfLecture(organization, course):
 def getExam(organization, course, name):
     exam = Exam(name, course, None, None, organization)
     return jsonify(exam.get(db))
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/addQuestion", methods=["PUT"])
+@jwt_required
+def addQuestionsToExam(organization, course, name):
+
+    pass
 
 
 if __name__ == "__main__":

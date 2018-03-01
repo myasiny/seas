@@ -508,11 +508,13 @@ class Exam:
         return db.execute("SELECT ExamID FROM exams WHERE Name = '%s'" % self.name)[0][0]
 
     def get(self, db):
-        command = "SELECT info, time, duration  FROM %s.questions join %s.exams where %s.exams.Name = '%s' and %s.questions.examID = %s.exams.examID;" % (self.org, self.org, self.org, self.name, self.org, self.org)
+        command = "select time, duration from %s.exams where name = '%s'" %(self.org, self.name)
         saved = db.execute(command)
+        command = "SELECT info FROM %s.questions join %s.exams where %s.exams.Name = '%s' and %s.questions.examID = %s.exams.examID;" % (self.org, self.org, self.org, self.name, self.org, self.org)
+        raw_questions = db.execute(command)
         questions = {}
         i = 0
-        for question in saved:
+        for question in raw_questions:
             i = i+1
             questions[i] = question[0]
         for question in self.questions:
@@ -521,8 +523,8 @@ class Exam:
         return{
             "Name": self.name,
             "Course": self.course,
-            "Time": saved[0][1],
-            "Duration": saved[0][2],
+            "Time": saved[0][0],
+            "Duration": saved[0][1],
             "Questions": questions
         }
 
