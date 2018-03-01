@@ -45,7 +45,7 @@ def on_login(self, pages, screen, pgEdu, pgStd):
     else:
         try:
             # data = DatabaseAPI.signIn("http://10.50.81.24:8888", "istanbul sehir university", input_username, input_password)
-            data = ["TODO", "TODO", "TODO", "TODO", "student", "TODO", "TODO", "TODO"]
+            data = ["TODO", "TODO", "TODO", "TODO", "TODO", "TODO", "TODO", "TODO"]
         except:
             data = None
             print ("SEAS [ERROR]: pgLogin > Except > Server Communication Failed")
@@ -73,6 +73,8 @@ def on_login(self, pages, screen, pgEdu, pgStd):
                 screen.switch_to(pages[2])
             except:
                 screen.current = pages[2].name
+
+            del pages[1]
         else:
             anim_status.stop(img_status)
 
@@ -81,8 +83,6 @@ def on_login(self, pages, screen, pgEdu, pgStd):
             img_status.reload()
 
             btn_login.disabled = False
-
-    del pages[1]
 
 def on_quit(self):
     popup_content = FloatLayout()

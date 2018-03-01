@@ -125,7 +125,7 @@ def on_exam_selected(self):
         # TODO: Grade Exam
     else:
         self.ids["btn_exam_start_grade"].text = "START"
-        # TODO: Start Exam
+        self.ids["btn_exam_start_grade"].bind(on_release=self.on_start_exam)
 
 def on_participants(self):
     if self.ids["layout_participants"] not in list(self.children):

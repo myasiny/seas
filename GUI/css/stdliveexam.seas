@@ -181,9 +181,8 @@
                 multiline: True
                 font_name: "font/AndaleMono.ttf"
                 font_size: root.height / 40
-                text_size: self.width, None
-                size_hint_y: None
-                height: self.texture_size[1]
+                size_hint: None, None
+                size: self.texture_size
 
         TextInput:
             id: input_short_answer

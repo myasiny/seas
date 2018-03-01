@@ -8,7 +8,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
+from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
 
 class PgStdStats(Screen):
     pgLogin.load_string("stdstats")
@@ -65,6 +65,9 @@ class PgStdLiveExam(Screen):
 
     def on_pre_enter(self, *args):
         pgStdLiveExam.on_pre_enter(self)
+
+    def on_run(self):
+        pgStdLiveExam.on_run(self)
 
 class PgStdLects(Screen):
     pgLogin.load_string("stdlects")
@@ -229,6 +232,19 @@ class PgNewExam(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+class PgLiveExam(Screen):
+    pgLogin.load_string("liveexam")
+
+    def on_pre_enter(self, *args):
+        pgLiveExam.on_pre_enter(self)
+
+    def on_finish_exam(self):
+        pass
+        # TODO: Finish exam
+
+    def on_participant_selected(self, dt):
+        pgLiveExam.on_participant_selected(self)
+
 class PgLects(Screen):
     pgLogin.load_string("lects")
 
@@ -259,6 +275,13 @@ class PgLects(Screen):
 
     def on_exam_selected(self, dt):
         pgLects.on_exam_selected(self)
+
+    def on_start_exam(self, dt):
+        with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:
+            temp_selected_lect.write("\n" + self.ids["txt_info_head"].text)
+            temp_selected_lect.close()
+        pages.append(PgLiveExam(name="PgLiveExam"))
+        tabReset.on_back(pages, screen)
 
     def on_participants(self):
         pgLects.on_participants(self)
