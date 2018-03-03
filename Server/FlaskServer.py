@@ -183,6 +183,17 @@ def addExam(organization, course):
         return jsonify(exam.save(db))
 
 
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/delete", methods=["DELETE"])
+@jwt_required
+def deleteExam(organization, course, exam):
+    token = get_jwt_identity()
+    if not check_auth(token, "superuser", "admin", "lecturer"):
+        return jsonify("Unauthorized access!")
+    else:
+        return jsonify(db.delete_exam(organization, exam))
+
+
+
 # todo: fatihgulmez
 @app.route("/organizations/<string:organization>/<string:course>/exams/", methods=["GET"])
 @jwt_required

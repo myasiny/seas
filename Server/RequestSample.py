@@ -75,6 +75,16 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                       "outputs": "",
 #                       "value": 50,
 #                       "tags": ["ottomans", "muslims"]}
+                 # ,3:
+                 #     {"type": "test",
+                 #      "subject": "math",
+                 #      "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
+                 #      "answer": "c",
+                 #      "inputs": "",
+                 #      "outputs": "",
+                 #      "value": 20,
+                 #      "tags": ["integers", "math"]
+                 #     }
 #                   }
 # )
 
@@ -87,3 +97,5 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                  "bioinformatic mt 2")
 
 # print sendAnswers("http://" + address +":8888", "Istanbul Sehir University", student_token,"EECS 468", "bioinformatic mt 2", "fatihgulmez", {1: "Ataturk", 2: "True", 3: 5})
+
+print deleteExam("http://" + address +":8888", "Istanbul Sehir University", lecturer_token, "bioinformatic_mt_2", "eecs_468")

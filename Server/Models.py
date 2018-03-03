@@ -170,6 +170,7 @@ class MySQLdb:
                                  ],
                                  primary_key="QuestionID",
                                  foreign_keys_tuple=[("ExamID", "exams", "ExamID")],
+                                 uniques=[("ExamID", "info")],
                               database=self)
 
         answersTable = DBTable("answers",
@@ -350,6 +351,15 @@ class MySQLdb:
         except Exception:
             return "Error occurred."
 
+    def delete_exam(self, organization, exam_name):
+        try:
+            id = self.execute("select ExamID from %s.exams where Name = '%s'" % (organization, exam_name))[0][0]
+            c = "DELETE FROM %s.exams WHERE ExamID='%s'" %(organization, id)
+            self.execute("delete from %s.answers where examID = %s" %(organization, id))
+            self.execute("delete from %s.questions where ExamID = '%s'" %(organization, id))
+            return self.execute(c)
+        except IndexError:
+            return "No such an Exam named " + exam_name
 
 
 class Password:
@@ -480,12 +490,12 @@ class Question:
         org = organization.replace(" ", "_").lower()
         course_code = course_code.lower().replace(" ", "_")
         command = "USE %s;" %org
-        command += "INSERT INTO questions (info, examID) select \'%s\' , ExamID from (select exams.ExamID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.CourseID and exams.ExamID = %d) as T where T.CODE = \'%s\';" %(self.getString(), exam_code, course_code)
+        command += "INSERT IGNORE INTO questions (info, examID) select \'%s\' , ExamID from (select exams.ExamID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.CourseID and exams.ExamID = %d) as T where T.CODE = \'%s\';" %(self.getString(), exam_code, course_code)
         return db.execute(command)
 
     def save_command(self, course_code, exam_name):
         course_code = course_code.lower().replace(" ", "_")
-        command = "INSERT INTO questions (info, ExamID) select \'%s\' , ExamID from (select exams.ExamID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.CourseID and exams.Name = \'%s\') as T where T.CODE = \'%s\';" %(self.getString(), exam_name, course_code)
+        command = "INSERT IGNORE INTO questions (info, ExamID) select \'%s\' , ExamID from (select exams.ExamID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.CourseID and exams.Name = \'%s\') as T where T.CODE = \'%s\';" %(self.getString(), exam_name, course_code)
         return command
 
     def load(self, db, id, organization):
@@ -526,8 +536,13 @@ class Exam:
         """
 
         command = "USE %s;" % self.org
-        command += " insert into exams(Name,Time,Duration,CourseID) select \'%s\', \'%s\', %d, CourseID from courses where courses.CODE = \'%s\';" % (self.name, self.time, int(self.duration), self.course)
+        command += "insert ignore into exams(Name,Time,Duration,CourseID) select \'%s\', \'%s\', %d, CourseID from courses where courses.CODE = \'%s\';" % (self.name, self.time, int(self.duration), self.course)
 
+        try:
+            oldie = self.get(db)["ID"]
+            db.execute("DELETE FROM %s.questions WHERE ExamID=%s;" %(self.org, oldie))
+        except KeyError:
+            pass
         for question in self.questions:
             command += question.save_command(self.course, self.name)
 
@@ -535,7 +550,7 @@ class Exam:
         return db.execute("SELECT ExamID FROM exams WHERE Name = '%s'" % self.name)[0][0]
 
     def get(self, db):
-        command = "select time, duration from %s.exams where name = '%s'" %(self.org, self.name)
+        command = "select time, duration, ExamID from %s.exams where name = '%s'" %(self.org, self.name)
         saved = db.execute(command)
         command = "SELECT info FROM %s.questions join %s.exams where %s.exams.Name = '%s' and %s.questions.examID = %s.exams.examID;" % (self.org, self.org, self.org, self.name, self.org, self.org)
         raw_questions = db.execute(command)
@@ -552,7 +567,8 @@ class Exam:
             "Course": self.course,
             "Time": saved[0][0],
             "Duration": saved[0][1],
-            "Questions": questions
+            "Questions": questions,
+            "ID": saved[0][2]
         }
 
     def getString(self, db):

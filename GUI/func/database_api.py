@@ -158,4 +158,10 @@ def sendAnswers(URL, organization, token, courseCode, examName, username, answer
     url = URL + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, courseCode, examName, username)
     return put(url, data={"answers" : json.dumps(answers)}, headers={"Authorization": "Bearer " + token}).json()
 
-
+def deleteExam(URL, organization, token, examName, courseCode):
+    organization = organization.replace(" ", "_").lower()
+    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    examName = re.sub(r'[^\w\s]', '_', examName).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/%s/delete" % (organization, courseCode, examName)
+    return delete(url,
+               headers={"Authorization": "Bearer %s" % token}).json()
