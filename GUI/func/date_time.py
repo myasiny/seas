@@ -8,4 +8,7 @@ def min_timer(clock, self, dt):
     self.duration -= 1
 
     if self.duration <= 0:
+        self.over = True
         self.on_finish_exam()
+    else:
+        self.over = False

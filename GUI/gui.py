@@ -238,12 +238,37 @@ class PgLiveExam(Screen):
     def on_pre_enter(self, *args):
         pgLiveExam.on_pre_enter(self)
 
+    def on_value(self, instance, brightness):
+        pgLiveExam.on_value(self, brightness)
+
+    def on_monitor_backward(self):
+        pgLiveExam.on_monitor_backward(self)
+
+    def on_monitor_play(self):
+        pgLiveExam.on_monitor_play(self)
+
+    def on_monitor_pause(self):
+        pgLiveExam.on_monitor_pause(self)
+
+    def on_monitor_forward(self, dt):
+        pgLiveExam.on_monitor_forward(self)
+
+    def on_monitor_live(self):
+        pgLiveExam.on_monitor_live(self)
+
+    def on_add_time(self):
+        pgLiveExam.on_add_time(self)
+
     def on_finish_exam(self):
-        pass
-        # TODO: Finish exam
+        pgLiveExam.on_finish_exam(self)
 
     def on_participant_selected(self, dt):
         pgLiveExam.on_participant_selected(self)
+
+    def on_lects(self, dt):
+        pgLiveExam.on_lects(self)
+        pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
 
 class PgLects(Screen):
     pgLogin.load_string("lects")

@@ -138,8 +138,8 @@
             hint_text: "Code"
             font_name: "font/AndaleMono.ttf"
             font_size: self.height / 20
-            background_normal: "img/widget_75_gray.png"
-            background_active: "img/widget_75_selected.png"
+            background_normal: "img/widget_100_gray.png"
+            background_active: "img/widget_75_gray.png"
             background_disabled_normal: "img/widget_75_black.png"
             padding_y: [self.height / 20.25, 0]
             size_hint: .4, .5
@@ -161,8 +161,7 @@
 
         Image:
             id: img_code_output_bg
-            source: "img/widget_75_gray.png"
-            opacity: .5
+            source: "img/widget_75_black.png"
             keep_ratio: False
             allow_stretch: True
             size_hint: .4, .16
@@ -170,13 +169,13 @@
 
         ScrollView:
             id: txt_code_output_scroll
-            size_hint: .4, .15
+            size_hint: .39, .15
             pos_hint: {"center_x": .75, "center_y": .125}
 
             Label:
                 id: txt_code_output
                 text: "TODO"
-                color: 0,0,0,1
+                color: 1,1,1,1
                 halign: "left"
                 multiline: True
                 font_name: "font/AndaleMono.ttf"

@@ -184,8 +184,8 @@
             opacity: .5
             keep_ratio: False
             allow_stretch: True
-            size_hint: .45, .4
-            pos_hint: {"center_x": .75, "center_y": .675}
+            size_hint: .45, .3
+            pos_hint: {"center_x": .75, "center_y": .725}
 
         Image:
             id: img_top_right_bg
@@ -212,8 +212,8 @@
             opacity: .5
             keep_ratio: False
             allow_stretch: True
-            size_hint: .45, .4
-            pos_hint: {"center_x": .75, "center_y": .225}
+            size_hint: .45, .5
+            pos_hint: {"center_x": .75, "center_y": .275}
 
         Image:
             id: img_bottom_right_bg
@@ -222,7 +222,7 @@
             keep_ratio: False
             allow_stretch: True
             size_hint: .45, .1
-            pos_hint: {"center_x": .75, "center_y": .375}
+            pos_hint: {"center_x": .75, "center_y": .475}
 
         Label:
             id: txt_monitor_head
@@ -232,4 +232,103 @@
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
             size_hint: .45, .1
-            pos_hint: {"center_x": .75, "center_y": .375}
+            pos_hint: {"center_x": .75, "center_y": .475}
+
+        Image:
+            id: img_monitor_bg
+            source: "img/widget_75_black.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .4, .375
+            pos_hint: {"center_x": .735, "center_y": .225}
+
+        ScrollView:
+            size_hint: .39, .365
+            pos_hint: {"center_x": .735, "center_y": .225}
+
+            Label:
+                id: txt_monitor
+                color: 1,1,1,1
+                halign: "left"
+                multiline: True
+                font_name: "font/AndaleMono.ttf"
+                font_size: root.height / 40
+                size_hint: None, None
+                size: self.texture_size
+
+        Slider:
+            id: slider_monitor
+            cursor_image: "img/widget_75_black_circle_selected.png"
+            orientation: "horizontal"
+            size_hint: .4225, .05
+            pos_hint: {"center_x": .735, "center_y": .0375}
+
+        Image:
+            id: img_monitor_back
+            source: "img/ico_backward.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .35}
+
+        Button:
+            id: btn_monitor_back
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .35}
+            on_release: root.on_monitor_backward()
+
+        Image:
+            id: img_monitor_play
+            source: "img/ico_run.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .275}
+
+        Button:
+            id: btn_monitor_play
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .275}
+            on_release: root.on_monitor_play()
+
+        Image:
+            id: img_monitor_pause
+            source: "img/ico_pause.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .2}
+
+        Button:
+            id: btn_monitor_pause
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .2}
+            on_release: root.on_monitor_pause()
+
+        Image:
+            id: img_monitor_forward
+            source: "img/ico_forward.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .125}
+
+        Button:
+            id: btn_monitor_forward
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .125}
+            on_release: root.on_monitor_forward(-1)
+
+        Image:
+            id: img_monitor_live
+            source: "img/ico_live.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .05}
+
+        Button:
+            id: btn_monitor_live
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .93, "y": .05}
+            on_release: root.on_monitor_live()
