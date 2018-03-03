@@ -541,7 +541,7 @@ class Exam:
         try:
             oldie = self.get(db)["ID"]
             db.execute("DELETE FROM %s.questions WHERE ExamID=%s;" %(self.org, oldie))
-        except KeyError:
+        except IndexError:
             pass
         for question in self.questions:
             command += question.save_command(self.course, self.name)
