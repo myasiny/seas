@@ -14,7 +14,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 ### Sample usage of API
 
-# print testConnection("http://" + address +":8888")
+print testConnection("http://" + address +":8888")
 
 # print addOrganization("http://" + address +":8888", "Istanbul Sehir University", superuser_token)
 # print addOrganization("http://" + address +":8888", "Istanbul Technical University", superuser_token)
@@ -100,6 +100,6 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 # print deleteExam("http://" + address +":8888", "Istanbul Sehir University", lecturer_token, "bioinformatic_mt_2", "eecs_468")
 
-print uploadProfilePic("http://" + address +":8888", "Istanbul Sehir University", student_token, "fatihgulmez", "picc.jpg")
+# print uploadProfilePic("http://" + address +":8888", "Istanbul Sehir University", student_token, "fatihgulmez", "picc.jpg")
 
 # print getProfilePic("http://" + address +":8888", "Istanbul Sehir University", student_token, "fatihgulmez")

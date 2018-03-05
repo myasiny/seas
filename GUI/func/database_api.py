@@ -1,13 +1,15 @@
 #-*-coding:utf-8-*-
 import sys
 
-from requests import put, get, delete, ConnectionError
+from requests import put, get, delete
+from requests.exceptions import ConnectionError
 import json
 import re
 import pickle
 
 def testConnection(URL):
     try:
+        get(URL)
         return True
     except ConnectionError:
         return False
