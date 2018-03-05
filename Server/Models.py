@@ -9,6 +9,7 @@ from Functionality.sendEmail import sentMail
 import os
 sys.path.append("..")
 
+
 class SqlLiteDB:
     def __init__(self, dbName):
         if ".db" not in dbName:
@@ -41,7 +42,6 @@ class SqlLiteDB:
 
 
 class MySQLdb:
-
     def __init__(self, dbName, app, user="admin", password="1234"):
         mysql = MySQL()
         app.config['MYSQL_DATABASE_USER'] = user
@@ -172,27 +172,30 @@ class MySQLdb:
                                  ],
                                  primary_key="QuestionID",
                                  foreign_keys_tuple=[("ExamID", "exams", "ExamID")],
-                                 uniques=[("ExamID", "info")],
                               database=self)
+
+        print questionsTable.get_command()
 
         answersTable = DBTable("answers",
                                [
                                    ("answerID", "int", "auto_increment"),
-                                   ("examID", "int", "not null"),
+                                   ("questionID", "int", "not null"),
                                    ("studentID", "int", "not null"),
-                                   ("answers", "JSON", "")
+                                   ("answer", "JSON", ""),
+                                   ("grade", "int", "")
                                ],
                                primary_key="answerID",
                                foreign_keys_tuple=[
-                                   ("examID", "exams", "ExamID"),
+                                   ("questionID", "questions", "questionID"),
                                    ("studentID", "members", "PersonID")
                                ],
                                uniques=[
-                                   ("examID", "studentID")
+                                   ("questionID", "studentID")
                                ],
                                database=self)
 
         # command_seq.append(questionsTable.get_command())
+        print answersTable.get_command()
 
         self.execute("Insert into roles(Role) values ('superuser'); "
                      "Insert into roles(Role) values ('admin'); "
@@ -215,7 +218,6 @@ class MySQLdb:
         self.execute(command)
         return "Course Added!"
 
-    # todo: fatihgulmez; use JOIN query.
     def get_course(self, org, code):
         a = self.execute("SELECT * FROM %s.courses WHERE Code = '%s'" % (org,code))[0]
         lecturer_IDs = self.execute("SELECT LecturerID FROM %s.lecturers WHERE CourseID = '%s'"%(org, a[0]))[0]
@@ -232,14 +234,12 @@ class MySQLdb:
         }
         return rtn
 
-    # todo: fatihgulmez; use JOIN query.
     def register_student(self, studentIDList, courseCode, organization):
         courseID = self.execute("SELECT CourseID FROM %s.courses WHERE CODE = '%s'" % (organization, courseCode))[0][0]
         for i in studentIDList:
             self.execute("INSERT INTO %s.registrations (StudentID, CourseID) VALUES(%s, %s)" %(organization, i, courseID))
         pass
 
-    # todo: fatihgulmez; use JOIN query.
     def get_course_participants(self, code, organization):
         courseID = self.execute("SELECT CourseID FROM %s.courses WHERE CODE = '%s'" %(organization, code))[0][0]
         studentIDs = self.execute("SELECT StudentID FROM %s.registrations WHERE CourseID = '%s'" %(organization, courseID))
@@ -294,7 +294,6 @@ class MySQLdb:
                                                                                                                     "g")
         return str_
 
-    # todo: fatihgulmez; use JOIN query.
     def registerStudentCSV(self, csvDataFile, organization, course, lecturer):
         csvReader = csv.reader(csvDataFile)
         column_names = next(csvReader, None)
@@ -319,7 +318,6 @@ class MySQLdb:
         self.register_student(reg, course, organization)
         return "Done"
 
-    # todo: fatihgulmez; use JOIN query.
     def changePasswordOREmail(self, organization, username, oldPassword, newVal, email=False):
         pas = Password()
         user = self.get_user_info(organization, username)
@@ -336,18 +334,16 @@ class MySQLdb:
         else:
             return "Not Authorized"
 
-    # todo: fatihgulmez; use JOIN query.
     def delete_student_course(self, organization, course, studentID):
         courseID = self.execute("SELECT CourseID FROM %s.courses WHERE Code = '%s'" % (organization, course))[0][0]
         command = "DELETE FROM %s.registrations WHERE StudentID = %d AND CourseID = %d" % (organization, int(studentID), int(courseID))
         self.execute(command)
         return None
 
-    def add_answer(self, organization, exam_name, username, answers):
+    def add_answer(self, organization, question_id, username, answer):
         try:
-            exam_id = self.execute("SELECT examID FROM %s.exams WHERE Name = '%s'" %(organization, exam_name))[0][0]
             student_id = self.execute("SELECT personID FROM %s.members WHERE username = '%s'" %(organization, username))[0][0]
-            command = "INSERT INTO %s.answers(examID, studentID, answers) VALUES ('%s', '%s', '%s') ON DUPLICATE KEY UPDATE answers = '%s'" %(organization, exam_id, student_id, answers, answers)
+            command = "INSERT INTO %s.answers(questionID, studentID, answer) VALUES ('%s', '%s', '%s') ON DUPLICATE KEY UPDATE answer = '%s'" %(organization, question_id, student_id, answer, answer)
             return self.execute(command)
         except Exception:
             return "Error occurred."
@@ -381,6 +377,8 @@ class MySQLdb:
     def get_profile_picture(self, organization, username):
         path = self.execute("select ProfilePic from %s.members where Username = '%s'" %(organization, username))[0][0]
         return path
+
+
 class Password:
     def __init__(self):
         pass
@@ -592,14 +590,3 @@ class Exam:
 
     def getString(self, db):
         return json.dumps(self.get(db))
-
-
-if __name__ == "__main__":
-    a = DBTable("example",
-                [
-                    ("col1", "Varchar(255)", "not null"),
-                    ("col2", "int", "auto_increment")
-                ],
-                primary_key="col2",
-                foreign_keys_tuple=[("col2", "courses", "ID")],
-                uniques=[("col1", "col2")])

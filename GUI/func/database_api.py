@@ -1,6 +1,5 @@
 #-*-coding:utf-8-*-
 import sys
-
 from requests import put, get, delete
 from requests.exceptions import ConnectionError, Timeout
 import json
@@ -9,7 +8,7 @@ import pickle
 
 def testConnection(URL):
     try:
-        get(URL, timeout=2)
+        get(URL, timeout=5)
         return True
     except ConnectionError or Timeout:
         return False
@@ -153,12 +152,11 @@ def getExam(URL, organization, token, courseCode, name):
     return get(url, headers = {"Authorization": "Bearer " + token}).json()
 
 
-def sendAnswers(URL, organization, token, courseCode, examName, username, answers):
+def sendAnswers(URL, organization, token, courseCode, questionID, username, answer):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
-    examName = re.sub(r'[^\w\s]', '_', examName).replace(" ", "_").lower()
-    url = URL + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, courseCode, examName, username)
-    return put(url, data={"answers" : json.dumps(answers)}, headers={"Authorization": "Bearer " + token}).json()
+    url = URL + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, courseCode, str(questionID), username)
+    return put(url, data={"answers" : json.dumps(answer)}, headers={"Authorization": "Bearer " + token}).json()
 
 
 def deleteExam(URL, organization, token, examName, courseCode):

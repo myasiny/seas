@@ -1,6 +1,6 @@
 # -*- coding:UTF-8 -*-
 
-from flask import Flask, request, jsonify, send_from_directory, send_file
+from flask import Flask, request, jsonify
 from Models import MySQLdb, Password, Credential, Question, Exam
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import json
@@ -196,8 +196,6 @@ def deleteExam(organization, course, exam):
         return jsonify(db.delete_exam(organization, exam))
 
 
-
-# todo: fatihgulmez
 @app.route("/organizations/<string:organization>/<string:course>/exams/", methods=["GET"])
 @jwt_required
 def getExamsOfLecture(organization, course):
@@ -227,22 +225,15 @@ def addQuestionsToExam(organization, course, name):
     pass
 
 
-@app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/answers/<string:username>", methods=["PUT"])
+@app.route("/organizations/<string:organization>/<string:course>/exams/<question_id>/answers/<string:username>", methods=["PUT"])
 @jwt_required
-def answerExam(organization, course, name, username):
-    return jsonify(db.add_answer(organization, name, username, request.form["answers"]))
-
-
-# @app.route("/organizations/<string:organization>/<string:username>/pic", methods=["GET"])
-# @jwt_required
-# def getProfilePicture(organization, username):
-#     path = db.get_profile_picture(organization, username)
-#     return jsonify(send_from_directory(path, ""))
+def answerExam(organization, course, question_id, username):
+    return jsonify(db.add_answer(organization, question_id, username, request.form["answers"]))
 
 
 @app.route("/organizations/<string:organization>/<string:username>/pic", methods=["PUT", "GET"])
 @jwt_required
-def uploadProfilePicture(organization, username):
+def profilePicture(organization, username):
     if request.method == "PUT":
         user, role, tokentime = get_jwt_identity()
         pic = request.files["pic"]
@@ -257,10 +248,5 @@ def uploadProfilePicture(organization, username):
         return jsonify(pickle.dumps(a))
 
 
-
-
-
-
-
 if __name__ == "__main__":
-    app.run(host="10.50.81.24", port=8888, threaded = True)
+    app.run(host="10.50.81.24", port=8888, threaded=True)
