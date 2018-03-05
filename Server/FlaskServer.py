@@ -1,14 +1,16 @@
 # -*- coding:UTF-8 -*-
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory, send_file
 from Models import MySQLdb, Password, Credential, Question, Exam
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import json
 import datetime
+import pickle
 
 app = Flask(__name__)
 db = MySQLdb("TestDB", app)
 app.config["DEBUG"] = True
+app.config["UPLOAD_FOLDER"] = "./uploads/"
 app.config["JWT_SECRET_KEY"] = "CHANGE THIS BEFORE DEPLOYMENT ! ! !"
 if app.config["DEBUG"]:
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
@@ -149,12 +151,13 @@ def deleteStudentFromLecture(organization, course):
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"])
 @jwt_required
 def changePassword(organization, username):
+    user, role, tokentime = get_jwt_identity()
     ismail = request.form["isMail"]
     if ismail == "True":
         ismail = True
     else:
         ismail = False
-    return jsonify(db.changePasswordOREmail(organization, username, request.form["Password"], request.form["newPassword"], email=ismail))
+    return jsonify(db.changePasswordOREmail(organization, user, request.form["Password"], request.form["newPassword"], email=ismail))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/add", methods=["PUT"])
@@ -228,6 +231,35 @@ def addQuestionsToExam(organization, course, name):
 @jwt_required
 def answerExam(organization, course, name, username):
     return jsonify(db.add_answer(organization, name, username, request.form["answers"]))
+
+
+# @app.route("/organizations/<string:organization>/<string:username>/pic", methods=["GET"])
+# @jwt_required
+# def getProfilePicture(organization, username):
+#     path = db.get_profile_picture(organization, username)
+#     return jsonify(send_from_directory(path, ""))
+
+
+@app.route("/organizations/<string:organization>/<string:username>/pic", methods=["PUT", "GET"])
+@jwt_required
+def uploadProfilePicture(organization, username):
+    if request.method == "PUT":
+        user, role, tokentime = get_jwt_identity()
+        pic = request.files["pic"]
+        cont = request.form["pic"]
+        if pic.filename == "":
+            return jsonify("No picture selected.")
+        return jsonify(db.upload_profile_pic(organization, user, pic, pickle.loads(cont), app.config["UPLOAD_FOLDER"]))
+    else:
+        path = db.get_profile_picture(organization, username)
+        with open(path, "rb") as f:
+            a = f.read()
+        return jsonify(pickle.dumps(a))
+
+
+
+
+
 
 
 if __name__ == "__main__":

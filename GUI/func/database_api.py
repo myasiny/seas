@@ -4,7 +4,7 @@ import sys
 from requests import put, get, delete, ConnectionError
 import json
 import re
-
+import pickle
 
 def testConnection(URL):
     try:
@@ -158,6 +158,7 @@ def sendAnswers(URL, organization, token, courseCode, examName, username, answer
     url = URL + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, courseCode, examName, username)
     return put(url, data={"answers" : json.dumps(answers)}, headers={"Authorization": "Bearer " + token}).json()
 
+
 def deleteExam(URL, organization, token, examName, courseCode):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
@@ -165,3 +166,19 @@ def deleteExam(URL, organization, token, examName, courseCode):
     url = URL + "/organizations/%s/%s/exams/%s/delete" % (organization, courseCode, examName)
     return delete(url,
                headers={"Authorization": "Bearer %s" % token}).json()
+
+
+def uploadProfilePic(URL, organization, token, username, pic):
+    organization = organization.replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/pic" %(organization, username)
+    with open(pic, "rb") as f:
+        cont = f.read()
+    return put(url, headers={"Authorization": "Bearer " + token}, data = {"pic": pickle.dumps(cont)}, files = {"pic": open(pic)}).json()
+
+def getProfilePic(URL, organization, token, username):
+    organization = organization.replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/pic" %(organization, username)
+    with open("sent.jpg", "wb") as f:
+        f.write(pickle.loads(get(url, headers={"Authorization": "Bearer " + token}).json()))
+
+    return "Done"

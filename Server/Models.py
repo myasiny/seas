@@ -4,9 +4,10 @@ import sqlite3
 from flaskext.mysql import MySQL
 from passlib.apps import custom_app_context as pwd_context
 import sys, json, csv, threading
-sys.path.append("..")
 from Functionality.passwordGenerator import passwordGenerator
 from Functionality.sendEmail import sentMail
+import os
+sys.path.append("..")
 
 class SqlLiteDB:
     def __init__(self, dbName):
@@ -49,7 +50,7 @@ class MySQLdb:
         app.config['MYSQL_DATABASE_HOST'] = 'localhost'
         app.config['MYSQL_DATABASE_PORT'] = 8000
         self.name = dbName
-
+        self.allowed_extensions = set(['png', 'jpg', 'jpeg'])
         mysql.init_app(app)
 
         self.db = mysql.connect()
@@ -84,7 +85,8 @@ class MySQLdb:
                                   ("Username", "varchar(255)", "not null"),
                                   ("Password", "varchar(255)", "not null"),
                                   ("Email", "varchar(50)", "not null"),
-                                  ("Department", "varchar(255)", "not null")
+                                  ("Department", "varchar(255)", "not null"),
+                                  ("ProfilePic", "varchar(255)", "")
                               ],
                               primary_key="PersonID",
                               foreign_keys_tuple=[("Role", "roles", "RoleID")],
@@ -314,7 +316,6 @@ class MySQLdb:
                 auth.append((name + " " + surname, mail, password, username))
             reg.append(student_number)
         threading.Thread(target=sentMail, args=(auth, lecturer)).start()
-        print auth, lecturer
         self.register_student(reg, course, organization)
         return "Done"
 
@@ -361,7 +362,25 @@ class MySQLdb:
         except IndexError:
             return "No such an Exam named " + exam_name
 
+    def allowed_file(self, filename):  # to check if file type is appropriate.
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.allowed_extensions
 
+    def upload_profile_pic(self, organization, username, pic, content, path):
+        if pic and self.allowed_file(pic.filename):
+            userID = str(self.get_user_info(organization, username)[0])
+            extension = "." + pic.filename.rsplit('.', 1)[1].lower()
+            path = path + "media/%s/profiles/" % organization + userID + extension
+            if not os.path.exists(os.path.dirname(path)):
+                os.makedirs(os.path.dirname(path))
+            with open(path, "wb") as f:
+                f.write(content)
+            self.execute("update %s.members set ProfilePic = '%s' where PersonID = '%s';" %(organization, path, userID))
+            return "Done"
+        return "Not allowed extension."
+
+    def get_profile_picture(self, organization, username):
+        path = self.execute("select ProfilePic from %s.members where Username = '%s'" %(organization, username))[0][0]
+        return path
 class Password:
     def __init__(self):
         pass

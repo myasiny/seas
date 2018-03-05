@@ -50,43 +50,43 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 #### HOW TO CREATE EXAM
 
-print createExam("http://" + address +":8888",
-                 "Istanbul Sehir University",
-                  lecturer_token,
-                 "EECS 468",
-                 "bioinformatic mt 2",
-                 "2018-03-15 10:30:00",
-                 50
-                 ,{1:
-                      {"type": "classic",
-                        "subject": "ataturk",
-                        "text": "who is the founder of TR?",
-                        "answer": "Ataturk",
-                        "inputs": [[1,2],[2,3]],
-                        "outputs": [(3),(5)],
-                          "value": 50,
-                          "tags": ["mustafa","kemal"]},
-                 2:
-                     {"type": "truefalse",
-                      "subject": "history",
-                      "text": "ottomans were muslims.",
-                      "answer": "true",
-                      "inputs": "",
-                      "outputs": "",
-                      "value": 50,
-                      "tags": ["ottomans", "muslims"]}
-                 ,3:
-                     {"type": "test",
-                      "subject": "math",
-                      "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
-                      "answer": "c",
-                      "inputs": "",
-                      "outputs": "",
-                      "value": 20,
-                      "tags": ["integers", "math"]
-                     }
-                  }
-)
+# print createExam("http://" + address +":8888",
+#                  "Istanbul Sehir University",
+#                   lecturer_token,
+#                  "EECS 468",
+#                  "bioinformatic mt 2",
+#                  "2018-03-15 10:30:00",
+#                  50
+#                  ,{1:
+#                       {"type": "classic",
+#                         "subject": "ataturk",
+#                         "text": "who is the founder of TR?",
+#                         "answer": "Ataturk",
+#                         "inputs": [[1,2],[2,3]],
+#                         "outputs": [(3),(5)],
+#                           "value": 50,
+#                           "tags": ["mustafa","kemal"]},
+#                  2:
+#                      {"type": "truefalse",
+#                       "subject": "history",
+#                       "text": "ottomans were muslims.",
+#                       "answer": "true",
+#                       "inputs": "",
+#                       "outputs": "",
+#                       "value": 50,
+#                       "tags": ["ottomans", "muslims"]}
+#                  ,3:
+#                      {"type": "test",
+#                       "subject": "math",
+#                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
+#                       "answer": "c",
+#                       "inputs": "",
+#                       "outputs": "",
+#                       "value": 20,
+#                       "tags": ["integers", "math"]
+#                      }
+#                   }
+# )
 
 
 ### HOW TO GET EXAM
@@ -99,3 +99,7 @@ print createExam("http://" + address +":8888",
 # print sendAnswers("http://" + address +":8888", "Istanbul Sehir University", student_token,"EECS 468", "bioinformatic mt 2", "fatihgulmez", {1: "Ataturk", 2: "True", 3: 5})
 
 # print deleteExam("http://" + address +":8888", "Istanbul Sehir University", lecturer_token, "bioinformatic_mt_2", "eecs_468")
+
+print uploadProfilePic("http://" + address +":8888", "Istanbul Sehir University", student_token, "fatihgulmez", "picc.jpg")
+
+# print getProfilePic("http://" + address +":8888", "Istanbul Sehir University", student_token, "fatihgulmez")
