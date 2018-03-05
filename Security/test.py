@@ -1,17 +1,50 @@
+# x = [0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,105,110,115,120]
+# y = [10,22,35,35,35,35,42,46,87,90,90,90,90,150,200,200,205,206,210,210,210,210,210,250,275]
+# z = [0]
+# for i in range(1,len(y)):
+#    z.append((y[i]-y[i-1])/5.0)
+# print len(x)
+# print len(z)
+#
+# import matplotlib.pyplot as plt
+#
+# plt.plot(x, z, color='green')
+# plt.xlabel('Time (from beginning to now)')
+# plt.ylabel('Total Number of Keys Pressed')
+# plt.title('Student Activity\nAli Emre Oz - 213950785')
+# plt.grid(True)
+# plt.show()
+
+
+
+
+
+import matplotlib
+matplotlib.use('module://kivy.garden.matplotlib.backend_kivy')
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.clock import Clock
 import matplotlib.pyplot as plt
 
-d ={'5000cca234c1c445': {382877: 7, 382919: 3},
-'5000cca234c94a2e': {382873: 1, 382886: 1},
-'5000cca234c89421': {383173: 1, 383183: 2, 382917: 1, 382911: 1},
-'5000cca234c5d43a': {382889: 1, 382915: 1, 382917: 8},
-'5000cca234c56488': {382909: 2, 382911: 5}}
+fig, ax = plt.subplots()
+canvas = fig.canvas
 
-colors = list("rgbcmyk")
 
-for data_dict in d.values():
-   x = data_dict.keys()
-   y = data_dict.values()
-   plt.scatter(x,y,color=colors.pop())
+class MyApp(App):
+    def build(self):
+        box = BoxLayout()
+        self.i = 0
+        self.line = [self.i]
+        box.add_widget(canvas)
+        plt.show()
+        Clock.schedule_interval(self.update, 1)
+        return box
 
-plt.legend(d.keys())
-plt.show()
+    def update(self, *args):
+        plt.plot(self.line, self.line)
+        self.i += 1
+        self.line.append(self.i)
+        canvas.draw_idle()
+
+
+MyApp().run()
