@@ -131,10 +131,21 @@ def on_correct_answer_selected(self, spinner, text):
     self.multiple_choice_answer = text
 
 def on_new_question_next(self):
+    self.ids["img_wrong_grade"].opacity = 0
+    self.ids["img_wrong_question_body"].opacity = 0
+    self.ids["img_wrong_a"].opacity = 0
+    self.ids["img_wrong_b"].opacity = 0
+    self.ids["img_wrong_c"].opacity = 0
+    self.ids["img_wrong_d"].opacity = 0
+    self.ids["img_wrong_e"].opacity = 0
+    self.ids["img_wrong_question_type"].opacity = 0
+
     if self.ids["input_grade"].text == "":
-        pass
+        self.ids["img_wrong_grade"].opacity = 1
+        return
     elif self.ids["input_question_body"].text == "":
-        pass
+        self.ids["img_wrong_question_body"].opacity = 1
+        return
     else:
         if self.question_type == "programming":
             yson = {self.question_no: {"type": self.question_type,
@@ -158,15 +169,20 @@ def on_new_question_next(self):
                     }
         elif self.question_type == "multiple_choice":
             if self.ids["input_answer_a"].text == "":
-                pass
+                self.ids["img_wrong_a"].opacity = 1
+                return
             elif self.ids["input_answer_b"].text == "":
-                pass
+                self.ids["img_wrong_b"].opacity = 1
+                return
             elif self.ids["input_answer_c"].text == "":
-                pass
+                self.ids["img_wrong_c"].opacity = 1
+                return
             elif self.ids["input_answer_d"].text == "":
-                pass
+                self.ids["img_wrong_d"].opacity = 1
+                return
             elif self.ids["input_answer_e"].text == "":
-                pass
+                self.ids["img_wrong_e"].opacity = 1
+                return
             else:
                 yson = {self.question_no: {"type": self.question_type,
                                            "subject": self.ids["input_subject"].text,
@@ -183,7 +199,8 @@ def on_new_question_next(self):
                                            "tags": self.ids["input_tags"].text.split(",")}
                         }
         else:
-            pass
+            self.ids["img_wrong_question_type"].opacity = 1
+            return
 
         temp_selected_lect = open("data/temp_selected_lect.seas", "r")
         self.data_selected_lect = temp_selected_lect.readlines()

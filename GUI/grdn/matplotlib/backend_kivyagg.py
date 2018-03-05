@@ -200,7 +200,7 @@ class FigureCanvasKivyAgg(FigureCanvasKivy, FigureCanvasAgg):
         with self.canvas:
             Color(*color)
             Rectangle(pos=self.pos, size=(w, h))
-            Color(1.0, 1.0, 1.0, 1.0)
+            Color(0.792, 0.765, 0.765, 1.0)
             self.img_rect = Rectangle(texture=texture, pos=self.pos,
                                       size=(w, h))
         texture.blit_buffer(bytes(buf_rgba), colorfmt='rgba', bufferfmt='ubyte')

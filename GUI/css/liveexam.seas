@@ -198,13 +198,18 @@
 
         Label:
             id: txt_rate_head
-            text: "Typing Rate"
+            text: "Keystroke Graph"
             color: 0,0,0,0.75
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
             size_hint: .45, .1
             pos_hint: {"center_x": .75, "center_y": .825}
+
+        BoxLayout:
+            id: layout_rate
+            size_hint: .425, .175
+            pos_hint: {"center_x": .75, "center_y": .675}
 
         Image:
             id: img_bottom_right

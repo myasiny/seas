@@ -107,6 +107,14 @@
             size_hint: .4, .1
             pos_hint: {"center_x": .25, "center_y": .8}
 
+        Image:
+            id: img_wrong_question_type
+            source: "img/ico_wrong.png"
+            opacity: 0
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .9375, "center_y": .8}
+
         GridLayout:
             cols: 6
             size_hint: .4, .1

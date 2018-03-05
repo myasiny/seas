@@ -7,11 +7,13 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.adapters.listadapter import ListAdapter
 
 import sys, collections
+import matplotlib.pyplot as plt
 sys.path.append("../..")
 
 from functools import partial
 from GUI.func import database_api
 from GUI.func.date_time import date_time, min_timer
+from GUI.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 def on_pre_enter(self):
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
@@ -65,12 +67,29 @@ def on_pre_enter(self):
     self.ids["list_participants"].adapter.bind(on_selection_change=self.on_participant_selected)
 
 def on_participant_selected(self):
-    self.x_time = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110]
-    self.y_rate = [10, 22, 35, 35, 35, 35, 42, 46, 87, 90, 90, 90, 90, 150, 200, 200, 205, 206, 210, 210, 210, 210, 210]
-    self.z_tend = [0]
+    def keystroke_graph():
+        self.x_time = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110]
+        self.y_rate = [10, 22, 35, 35, 35, 35, 42, 46, 87, 90, 90, 90, 90, 150, 200, 200, 205, 206, 210, 210, 210, 210, 210]
+        self.z_tend = [0]
+
+        for i in range(1, len(self.y_rate)):
+            self.z_tend.append((self.y_rate[i] - self.y_rate[i - 1]) / 5.0)
+
+        plt.plot(self.x_time, self.z_tend, color="green")
+        plt.xlabel("Time")
+        plt.ylabel("Keystroke")
+        # plt.xticks([])
+        # plt.yticks([])
+        plt.grid(True)
+        plt.axes().set_aspect("equal")
+        plt.tight_layout()
+        return plt
+
+    self.graph_widget = FigureCanvasKivyAgg(keystroke_graph().gcf())
+    self.ids["layout_rate"].add_widget(self.graph_widget)
 
     # self.answer_dict = DatabaseAPI...
-    self.answer_dict = {0: {0: "", 1: "TODO"}}
+    self.answer_dict = {213950785: {0: '', 1516908288.722: u'def myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908290.718: u'\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908292.717: u'# Den\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908294.722: u'# Deneme\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908296.722: u'# Deneme\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908298.722: u'# Deneme\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908300.724: u'# Deneme\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908302.719: u'# Deneme\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908304.724: u'# Deneme\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i+1\n\nmyFunction(3, 5)', 1516908306.727: u'# Deneme\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i+1\n\nmyFunction(3, 5)', 1516908308.726: u'# Deneme\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i+1\n\nmyFunction(3, 5)', 1516908310.723: u'# Deneme\n\ndef myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i+1\n\nmyFunction(3, 5)', 1516908220.705: u'', 1516908222.708: u'', 1516908224.709: u'for ', 1516908226.707: u'for i in range', 1516908228.709: u'for i in range()', 1516908230.709: u'for i in range(3, 5)', 1516908232.708: u'for i in range(3, 5):\n', 1516908234.71: u'for i in range(3, 5):\n\t', 1516908236.713: u'for i in range(3, 5):\n\t', 1516908238.714: u'for i in range(3, 5):\n\tpr', 1516908240.717: u'for i in range(3, 5):\n\tprint i', 1516908242.723: u'for i in range(3, 5):\n\tprint i', 1516908244.718: u'for i in range(3, 5):\n\tprint i', 1516908246.725: u'\nfor i in range(3, 5):\n\tprint i', 1516908248.723: u'def my\nfor i in range(3, 5):\n\tprint i', 1516908250.726: u'def myFunck\nfor i in range(3, 5):\n\tprint i', 1516908252.721: u'def myFunction(\nfor i in range(3, 5):\n\tprint i', 1516908254.718: u'def myFunction();\nfor i in range(3, 5):\n\tprint i', 1516908256.716: u'def myFunction():\nfor i in range(3, 5):\n\tprint i', 1516908258.721: u'def myFunction():\n\tfor i in range(3, 5):\n\tprint i', 1516908260.721: u'def myFunction():\n\tfor i in range(3, 5):\n\t\tprint i', 1516908262.724: u'def myFunction():\n\tfor i in range(3, 5):\n\t\tprint i', 1516908264.721: u'def myFunction():\n\tfor i in range(input_1, 5):\n\t\tprint i', 1516908266.723: u'def myFunction():\n\tfor i in range(input_1, input):\n\t\tprint i', 1516908268.723: u'def myFunction(i):\n\tfor i in range(input_1, input_2):\n\t\tprint i', 1516908270.719: u'def myFunction(input_1, i):\n\tfor i in range(input_1, input_2):\n\t\tprint i', 1516908272.716: u'def myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i', 1516908274.716: u'def myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmy', 1516908276.713: u'def myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction', 1516908278.713: u'def myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3,', 1516908280.707: u'def myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908282.71: u'def myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908284.715: u'def myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)', 1516908286.719: u'def myFunction(input_1, input_2):\n\tfor i in range(input_1, input_2):\n\t\tprint i\n\nmyFunction(3, 5)'}}
 
     for i, j in self.answer_dict.items():
         self.ordered_answer_dict = collections.OrderedDict(sorted(j.items()))
