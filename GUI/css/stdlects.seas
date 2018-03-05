@@ -284,8 +284,8 @@
             opacity: 0
             color: 0,0,0,0.75
             multiline: False
-            font_name: "font/CaviarDreams.ttf"
-            font_size: self.height / 5
+            font_name: "font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
             size_hint: .2, .1
             pos_hint: {"center_x": .875, "center_y": .25}
 

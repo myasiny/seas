@@ -6,12 +6,9 @@ sys.path.append("../..")
 from functools import partial
 from GUI.func import database_api
 
-
 def on_pre_enter(self):
-    try:
-        self.question_no += 1
-    except:
-        self.question_no = 1
+    # self.question_no = DatabaseAPI...
+    self.question_no = 0
 
     self.ids["txt_question_no"].text = "Question %d" % self.question_no
 
@@ -23,6 +20,10 @@ def on_pre_enter(self):
                                   background_down="img/widget_100_selected.png",
                                   size_hint=(.4, .05), pos_hint={"center_x": .75, "center_y": .075})
     self.correct_answer.bind(text=partial(on_correct_answer_selected, self))
+    self.correct_answer.option_cls.font_name = "font/CaviarDreams_Bold.ttf"
+    self.correct_answer.option_cls.background_normal = "img/widget_75_black_crop.png"
+    self.correct_answer.option_cls.background_down = "img/widget_100_selected.png"
+    self.correct_answer.text_autoupdate = True
     self.add_widget(self.correct_answer)
 
     self.correct_answer.size_hint_y = 0
@@ -58,6 +59,8 @@ def on_pre_enter(self):
     check_3.background_radio_normal = "img/widget_75_black_circle.png"
     check_3.background_radio_down = "img/widget_75_black_circle_selected.png"
     check_3.bind(active=partial(on_type_checked, self, "multiple_choice"))
+
+    self.question_type = "none"
 
 def on_type_checked(self, name, checkbox, value):
     if name == "programming":
@@ -128,51 +131,69 @@ def on_correct_answer_selected(self, spinner, text):
     self.multiple_choice_answer = text
 
 def on_new_question_next(self):
-    if self.question_type == "programming":
-        yson = {self.question_no: {"type": self.question_type,
-                                   "subject": self.ids["input_subject"].text,
-                                   "text": self.ids["input_question_body"].text,
-                                   "answer": None,
-                                   "inputs": [self.ids["input_input"].text.split(";")],
-                                   "outputs": [self.ids["input_output"].text.split(";")],
-                                   "value": int(self.ids["input_value"].text),
-                                   "tags": self.ids["input_tags"].text.split(",")}
-                }
-    elif self.question_type == "short_answer":
-        yson = {self.question_no: {"type": self.question_type,
-                                   "subject": self.ids["input_subject"].text,
-                                   "text": self.ids["input_question_body"].text,
-                                   "answer": self.ids["input_short_answer"].text,
-                                   "inputs": None,
-                                   "outputs": None,
-                                   "value": int(self.ids["input_value"].text),
-                                   "tags": self.ids["input_tags"].text.split(",")}
-                }
+    if self.ids["input_grade"].text == "":
+        pass
+    elif self.ids["input_question_body"].text == "":
+        pass
     else:
-        yson = {self.question_no: {"type": self.question_type,
-                                   "subject": self.ids["input_subject"].text,
-                                   "text": self.ids["input_question_body"].text + "\n\n" +
-                                           "A)\t" + self.ids["input_answer_a"].text + "\n" +
-                                           "B)\t" + self.ids["input_answer_b"].text + "\n" +
-                                           "C)\t" + self.ids["input_answer_c"].text + "\n" +
-                                           "D)\t" + self.ids["input_answer_d"].text + "\n" +
-                                           "E)\t" + self.ids["input_answer_e"].text,
-                                   "answer": self.multiple_choice_answer,
-                                   "inputs": None,
-                                   "outputs": None,
-                                   "value": int(self.ids["input_value"].text),
-                                   "tags": self.ids["input_tags"].text.split(",")}
-                }
+        if self.question_type == "programming":
+            yson = {self.question_no: {"type": self.question_type,
+                                       "subject": self.ids["input_subject"].text,
+                                       "text": self.ids["input_question_body"].text,
+                                       "answer": None,
+                                       "inputs": [self.ids["input_input"].text.split(";")],
+                                       "outputs": [self.ids["input_output"].text.split(";")],
+                                       "value": int(self.ids["input_value"].text),
+                                       "tags": self.ids["input_tags"].text.split(",")}
+                    }
+        elif self.question_type == "short_answer":
+            yson = {self.question_no: {"type": self.question_type,
+                                       "subject": self.ids["input_subject"].text,
+                                       "text": self.ids["input_question_body"].text,
+                                       "answer": self.ids["input_short_answer"].text,
+                                       "inputs": None,
+                                       "outputs": None,
+                                       "value": int(self.ids["input_value"].text),
+                                       "tags": self.ids["input_tags"].text.split(",")}
+                    }
+        elif self.question_type == "multiple_choice":
+            if self.ids["input_answer_a"].text == "":
+                pass
+            elif self.ids["input_answer_b"].text == "":
+                pass
+            elif self.ids["input_answer_c"].text == "":
+                pass
+            elif self.ids["input_answer_d"].text == "":
+                pass
+            elif self.ids["input_answer_e"].text == "":
+                pass
+            else:
+                yson = {self.question_no: {"type": self.question_type,
+                                           "subject": self.ids["input_subject"].text,
+                                           "text": self.ids["input_question_body"].text + "\n\n" +
+                                                   "A)\t" + self.ids["input_answer_a"].text + "\n" +
+                                                   "B)\t" + self.ids["input_answer_b"].text + "\n" +
+                                                   "C)\t" + self.ids["input_answer_c"].text + "\n" +
+                                                   "D)\t" + self.ids["input_answer_d"].text + "\n" +
+                                                   "E)\t" + self.ids["input_answer_e"].text,
+                                           "answer": self.multiple_choice_answer,
+                                           "inputs": None,
+                                           "outputs": None,
+                                           "value": int(self.ids["input_value"].text),
+                                           "tags": self.ids["input_tags"].text.split(",")}
+                        }
+        else:
+            pass
 
-    temp_selected_lect = open("data/temp_selected_lect.seas", "r")
-    self.data_selected_lect = temp_selected_lect.readlines()
+        temp_selected_lect = open("data/temp_selected_lect.seas", "r")
+        self.data_selected_lect = temp_selected_lect.readlines()
 
-    database_api.createExam("http://192.168.43.164:8888", "istanbul sehir university",
-                            self.data_selected_lect[0].replace("\n", ""),
-                            self.data_selected_lect[2].replace("\n", ""),
-                            self.data_selected_lect[4],
-                            int(self.data_selected_lect[3].replace("\n", "")),
-                            yson)
+        database_api.createExam("http://192.168.43.164:8888", "istanbul sehir university",
+                                self.data_selected_lect[0].replace("\n", ""),
+                                self.data_selected_lect[2].replace("\n", ""),
+                                self.data_selected_lect[4],
+                                int(self.data_selected_lect[3].replace("\n", "")),
+                                yson)
     # TODO: Next Question
 
 def on_new_question_previous(self):

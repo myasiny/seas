@@ -1,7 +1,6 @@
 from kivy.uix.spinner import Spinner
 
 import sys
-
 sys.path.append("../..")
 
 import subprocess32
@@ -33,6 +32,10 @@ def on_pre_enter(self):
                                   background_down="img/widget_100_selected.png",
                                   size_hint=(.4, .05), pos_hint={"center_x": .75, "center_y": .075})
     self.correct_answer.bind(text=partial(on_correct_answer_selected, self))
+    self.correct_answer.option_cls.font_name = "font/CaviarDreams_Bold.ttf"
+    self.correct_answer.option_cls.background_normal = "img/widget_75_black_crop.png"
+    self.correct_answer.option_cls.background_down = "img/widget_100_selected.png"
+    self.correct_answer.text_autoupdate = True
     self.add_widget(self.correct_answer)
 
     if self.question_type == "programming":

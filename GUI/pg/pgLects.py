@@ -90,6 +90,7 @@ def on_lect_select(self, dropdown, txt):
 def on_exams(self):
     if self.ids["layout_exams"] not in list(self.children):
         self.add_widget(self.ids["layout_exams"])
+    # TODO: Debug here (ReferenceError: weakly-referenced object no longer exists)
 
     self.ids["layout_exams"].opacity = 1
     self.remove_widget(self.ids["layout_participants"])

@@ -1,6 +1,6 @@
-from KivyCalendar import CalendarWidget
 from kivy.animation import Animation
-from kivy.garden.circulardatetimepicker import CircularTimePicker
+from GUI.grdn.kivycalendar import CalendarWidget
+from GUI.grdn.circulardatetimepicker import CircularTimePicker
 
 def on_pre_enter(self):
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
@@ -13,8 +13,8 @@ def on_pre_enter(self):
                                    pos_hint={"center_x": .525, "y": .15})
     self.add_widget(self.calendar)
 
-    self.time = CircularTimePicker(color=(1,1,1,1),
-                                   selector_color=(0,0,0,0.5),
+    self.time = CircularTimePicker(color=(0.725, 0.463, 0.584, 1),
+                                   selector_color=[0.553, 0.216, 0.373, 1],
                                    size_hint=(.25, .25),
                                    pos_hint={"center_x": .825, "center_y": .3})
     self.add_widget(self.time)

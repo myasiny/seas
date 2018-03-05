@@ -53,5 +53,3 @@ def wewewe():
     gui()
     wait()
 wewewe()
-
-

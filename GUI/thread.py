@@ -1,9 +1,5 @@
-import sys
+import sys, os, time, threading
 sys.path.append("../..")
-
-import os
-import time
-import threading
 
 class Security(threading.Thread):
     def run(self):

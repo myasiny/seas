@@ -112,6 +112,54 @@
             on_release: root.on_stats()
 
         Image:
+            id: img_header_1
+            source: "img/img_header.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .025
+            pos_hint: {"x": .05, "y": .775}
+
+        Image:
+            id: img_header_2
+            source: "img/img_header.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .025
+            pos_hint: {"x": .2, "y": .775}
+
+        Image:
+            id: img_header_3
+            source: "img/img_header.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .025
+            pos_hint: {"x": .35, "y": .775}
+
+        Image:
+            id: img_header_4
+            source: "img/img_header.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .025
+            pos_hint: {"x": .5, "y": .775}
+
+        Image:
+            id: img_header_5
+            source: "img/img_header.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .025
+            pos_hint: {"x": .65, "y": .775}
+
+        Image:
+            id: img_header_1
+            source: "img/img_header.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .15, .025
+            pos_hint: {"x": .8, "y": .775}
+
+        Image:
             id: img_widget_75_gray
             source: "img/widget_75_gray.png"
             opacity: .5
@@ -123,7 +171,6 @@
         Image:
             id: img_widget_75_black
             source: "img/widget_75_black.png"
-            opacity: .5
             keep_ratio: False
             allow_stretch: True
             size_hint: .9, .2
@@ -132,7 +179,7 @@
         Label:
             id: txt_lect_code
             text: "..."
-            color: 0,0,0,0.75
+            color: 1,1,1,0.75
             multiline: False
             font_name: "font/CaviarDreams.ttf"
             font_size: self.height / 3
@@ -142,7 +189,7 @@
         Label:
             id: txt_lect_name
             text: "..."
-            color: 0,0,0,0.75
+            color: 1,1,1,0.75
             multiline: False
             font_name: "font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
@@ -225,15 +272,6 @@
             size_hint: .25, .1
             pos_hint: {"center_x": .525, "center_y": .5}
 
-        Image:
-            id: img_date
-            source: "img/widget_75_black.png"
-            opacity: .5
-            keep_ratio: False
-            allow_stretch: True
-            size_hint: .3, .3
-            pos_hint: {"center_x": .525, "y": .15}
-
         Label:
             id: txt_time
             text: "Exam Time"
@@ -247,11 +285,10 @@
         Image:
             id: img_time
             source: "img/widget_75_black_circle.png"
-            opacity: .1
             keep_ratio: False
             allow_stretch: True
-            size_hint: .175, .3
-            pos_hint: {"center_x": .825, "y": .15}
+            size_hint: .093, .175
+            pos_hint: {"center_x": .825, "y": .175}
 
         Button:
             id: btn_new_exam_cancel

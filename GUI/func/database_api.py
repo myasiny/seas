@@ -2,16 +2,16 @@
 import sys
 
 from requests import put, get, delete
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, Timeout
 import json
 import re
 import pickle
 
 def testConnection(URL):
     try:
-        get(URL)
+        get(URL, timeout=2)
         return True
-    except ConnectionError:
+    except ConnectionError or Timeout:
         return False
 
 

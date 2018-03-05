@@ -17,7 +17,7 @@ def on_pre_enter(self):
     self.data = []
 
     # data_lectures = DatabaseAPI.getLecturerCourses("http://10.50.81.24:8888", "istanbul sehir university", self.data_login[0].replace("\n", ""))
-    data_lectures = [["TODO", "TODO", "TODO"]]
+    data_lectures = [["0", "TODO", "TODO"]]
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0] + "_" + i[2])
 
