@@ -133,7 +133,7 @@ def getStudentList(organization, course):
 def getLecturerCourseList(organization, username):
     token = get_jwt_identity()
     if not check_auth(token, "superuser", "admin", "lecturer"):
-        return jsonify("Unauthorized access!")
+        return jsonify(db.get_student_courses(organization, username))
     else:
         return jsonify(db.get_lecturer_courses(organization, username))
 

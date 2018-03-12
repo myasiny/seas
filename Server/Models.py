@@ -254,6 +254,13 @@ class MySQLdb:
         lectureIDs = self.execute(command)
         return lectureIDs
 
+    def get_student_courses(self, organization, username):
+        self.execute("USE %s" % organization)
+        command = "SELECT courses.Name, courses.CODE FROM registrations JOIN courses ON registrations.CourseID = courses.CourseID JOIN members ON members.PersonID = registrations.studentID WHERE members.Username = '%s';" % (
+            username)
+        lectureIDs = self.execute(command)
+        return lectureIDs
+
     def get_user_info(self, organization, username):
         """
         :param organization:
