@@ -174,8 +174,6 @@ class MySQLdb:
                                  foreign_keys_tuple=[("ExamID", "exams", "ExamID")],
                               database=self)
 
-        print questionsTable.get_command()
-
         answersTable = DBTable("answers",
                                [
                                    ("answerID", "int", "auto_increment"),
@@ -195,7 +193,6 @@ class MySQLdb:
                                database=self)
 
         # command_seq.append(questionsTable.get_command())
-        print answersTable.get_command()
 
         self.execute("Insert into roles(Role) values ('superuser'); "
                      "Insert into roles(Role) values ('admin'); "
@@ -257,6 +254,11 @@ class MySQLdb:
         return lectureIDs
 
     def get_user_info(self, organization, username):
+        """
+        :param organization:
+        :param username:
+        :return: List, [studentID, roleID, name, surname, username, password_hash, email, department, profile_pic_path]
+        """
         return self.execute("SELECT * FROM %s.members WHERE Username='%s'" % (organization, username))[0]
 
     def execute(self, command):
@@ -378,6 +380,10 @@ class MySQLdb:
         path = self.execute("select ProfilePic from %s.members where Username = '%s'" %(organization, username))[0][0]
         return path
 
+    def grade_answer(self, organization, username, student_name, question_id, grade):
+        studentID = self.get_user_info(organization, student_name)[0]
+        #todo: UPDATE SQL for answers
+        pass
 
 class Password:
     def __init__(self):

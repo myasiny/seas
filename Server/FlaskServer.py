@@ -248,5 +248,16 @@ def profilePicture(organization, username):
         return jsonify(pickle.dumps(a))
 
 
+@app.route("/organizations/<string:organization>/<string:course>/exams/<question_id>/answers/<string:studentUser>/grade", methods=["PUT"])
+@jwt_required
+def gradeQuestion(organization, course, question_id, studentUser):
+    user, role, tokentime = get_jwt_identity()
+    if not check_auth(get_jwt_identity(), "lecturer"):
+        return "Unauthorized Access"
+    else:
+        return jsonify(db.grade_answer(organization, user, studentUser, question_id, request.form["grade"]))
+
+
 if __name__ == "__main__":
-    app.run(host="10.50.81.24", port=8888, threaded=True)
+    # app.run(host="10.50.81.24", port=8888, threaded=True)
+    print db.get_user_info("istanbul_sehir_university", "fatihgulmez")

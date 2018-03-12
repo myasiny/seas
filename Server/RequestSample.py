@@ -14,45 +14,43 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 ### Sample usage of API
 
-# print testConnection("http://" + address +":8888")
+# print testConnection()
 
-# print addOrganization("http://" + address +":8888", "Istanbul Sehir University", superuser_token)
-# print addOrganization("http://" + address +":8888", "Istanbul Technical University", superuser_token)
+# print addOrganization(superuser_token)
+# print addOrganization(superuser_token)
 
-# print addUser("http://" + address +":8888", "Istanbul Sehir University", admin_token, "213962062", "Fatih", "gulmez", "fatihgulmez", "12345","fatihgulmez@std.sehir.edu.tr", "Computer Science", role="student")
-# print addUser("http://" + address +":8888", "Istanbul Sehir University", admin_token, "213955555", "Muhammed Yasin", "Yildirim", "muhammedyildirim", "12345","muhamed@std.sehir.edu.tr", "Computer Science" , role="student")
-# print addUser("http://" + address +":8888", "Istanbul Sehir University", admin_token, "213944444", "Ali Emre", "Oz", "alioz", "12345", "alioz@std.sehir.edu.tr", "Computer Science" ,role="student")
-# print addUser("http://" + address +":8888", "Istanbul Sehir University", admin_token, "000000000", "Admin", "Admin", "admin", "12345", "admin@admin.com", "admin", role="Admin")
+# print addUser(admin_token, "213962062", "Fatih", "gulmez", "fatihgulmez", "12345","fatihgulmez@std.sehir.edu.tr", "Computer Science", role="student")
+# print addUser(admin_token, "213955555", "Muhammed Yasin", "Yildirim", "muhammedyildirim", "12345","muhamed@std.sehir.edu.tr", "Computer Science" , role="student")
+# print addUser(admin_token, "213944444", "Ali Emre", "Oz", "alioz", "12345", "alioz@std.sehir.edu.tr", "Computer Science" ,role="student")
+# print addUser(admin_token, "000000000", "Admin", "Admin", "admin", "12345", "admin@admin.com", "admin", role="Admin")
 
-# print addUser("http://" + address +":8888", "Istanbul Sehir University", admin_token, "000000000", "Joe", "Doe", "joedoe", "12345", "joe@doe.com", "Computer Science", role="Student")
-# print addUser("http://" + address +":8888", "Istanbul Sehir University", admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
-# print addUser("http://" + address +":8888", "Istanbul Sehir University", admin_token, "215000000", "Özkan", "Çağlar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
+# print addUser(admin_token, "000000000", "Joe", "Doe", "joedoe", "12345", "joe@doe.com", "Computer Science", role="Student")
+# print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
+# print addUser(admin_token, "215000000", "Özkan", "Çağlar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-# print signIn("http://" + address +":8888", "Istanbul Sehir University", "fatihgulmez", "12345")
-# print signIn("http://" + address +":8888", "Istanbul Sehir University", "admin", "12345")
-# print signIn("http://" + address +":8888", "Istanbul Sehir University", "superuser", "12345")
-# print signIn("http://" + address +":8888", "Istanbul Sehir University", "alicakmak", "12345")
+# print signIn("fatihgulmez", "12345")
+# print signIn("admin", "12345")
+# print signIn("superuser", "12345")
+# print signIn("alicakmak", "12345")
 
-# print signOut("http://" + address +":8888", "Istanbul Sehir University", "admin")
+# print signOut("admin")
 
-# print addCourse("http://" + address +":8888", "istanbul sehir university", admin_token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjFhMmFkZi03NWMwLTQ1ZWItYTg1Yy00ZmNjNzM4MmFmNGUiLCJleHAiOjE1MTk3NjE1NTYsImZyZXNoIjpmYWxzZSwiaWF0IjoxNTE5NzYwNjU2LCJ0eXBlIjoiYWNjZXNzIiwibmJmIjoxNTE5NzYwNjU2LCJpZGVudGl0eSI6WyJmYXRpaGd1bG1leiIsInN0dWRlbnQiLCIyMDE4LTAyLTI3IDIyOjQ0OjE2Ljk4MDAwMCJdfQ.UCa5uiyoS-HUWt0ti_TMB61LEHDeXTmCeNjxfkgoyLA", "Bioinformatics", "EECS 468", "alicakmak")
-# print getCourse("http://" + address +":8888", "istanbul sehir university", student_token, "ENGR 101")
+# print addCourse(admin_token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjFhMmFkZi03NWMwLTQ1ZWItYTg1Yy00ZmNjNzM4MmFmNGUiLCJleHAiOjE1MTk3NjE1NTYsImZyZXNoIjpmYWxzZSwiaWF0IjoxNTE5NzYwNjU2LCJ0eXBlIjoiYWNjZXNzIiwibmJmIjoxNTE5NzYwNjU2LCJpZGVudGl0eSI6WyJmYXRpaGd1bG1leiIsInN0dWRlbnQiLCIyMDE4LTAyLTI3IDIyOjQ0OjE2Ljk4MDAwMCJdfQ.UCa5uiyoS-HUWt0ti_TMB61LEHDeXTmCeNjxfkgoyLA", "Bioinformatics", "EECS 468", "alicakmak")
+# print getCourse(student_token, "ENGR 101")
 
-# print registerStudent("http://" + address +":8888", "Istanbul Sehir University", lecturer_token, "EECS 468", True, "ornek.csv")
+# print registerStudent(lecturer_token, "EECS 468", True, "ornek.csv")
 
-# print getCourseStudents("http://" + address +":8888", "Istanbul Sehir University", lecturer_token, "ENGR 101")
+# print getCourseStudents(lecturer_token, "ENGR 101")
 
-# print getLecturerCourses("http://" + address +":8888", "Istanbul Sehir University", lecturer_token, "alicakmak")
+# print getLecturerCourses(lecturer_token, "alicakmak")
 
-# print changePassword("http://" + address +":8888", "Istanbul Sehir University", lecturer_token, "alicakmak", "12345", "alicakmak@sehir.edu.tr", True)
+# print changePassword(lecturer_token, "alicakmak", "12345", "alicakmak@sehir.edu.tr", True)
 
-# print deleteStudentFromLecture("http://" + address +":8888", "Istanbul Sehir University", lecturer_token, "ENGR 101", "212980975")
+# print deleteStudentFromLecture(lecturer_token, "ENGR 101", "212980975")
 
 #### HOW TO CREATE EXAM
 
-# print createExam("http://" + address +":8888",
-#                  "Istanbul Sehir University",
-#                   lecturer_token,
+# print createExam(lecturer_token,
 #                  "EECS 468",
 #                  "bioinformatic mt 2",
 #                  "2018-03-15 10:30:00",
@@ -90,16 +88,14 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 
 ### HOW TO GET EXAM
-# print getExam("http://" + address +":8888",
-#                  "Istanbul Sehir University",
-#                   student_token,
+# print getExam(student_token,
 #                  "EECS 468",
 #                  "bioinformatic mt 2")
 
-# print sendAnswers("http://" + address +":8888", "Istanbul Sehir University", student_token,"EECS 468", 1, "fatihgulmez", "Atatürk")
+# print sendAnswers(student_token,"EECS 468", 1, "fatihgulmez", "Atatürk")
 
-# print deleteExam("http://" + address +":8888", "Istanbul Sehir University", lecturer_token, "bioinformatic_mt_2", "eecs_468")
+# print deleteExam(lecturer_token, "bioinformatic_mt_2", "eecs_468")
 
-# print uploadProfilePic("http://" + address +":8888", "Istanbul Sehir University", student_token, "fatihgulmez", "picc.jpg")
+# print uploadProfilePic(student_token, "fatihgulmez", "picc.jpg")
 
-# print getProfilePic("http://" + address +":8888", "Istanbul Sehir University", student_token, "fatihgulmez")
+# print getProfilePic(student_token, "fatihgulmez")

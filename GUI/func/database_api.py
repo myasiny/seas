@@ -1,12 +1,13 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 import sys
 from requests import put, get, delete
 from requests.exceptions import ConnectionError, Timeout
 import json
 import re
 import pickle
+from config import *
 
-def testConnection(URL):
+def testConnection(URL=server_address):
     try:
         get(URL, timeout=5)
         return True
@@ -14,14 +15,14 @@ def testConnection(URL):
         return False
 
 
-def addOrganization(URL, Organization, token):
+def addOrganization(token, URL=server_address, Organization=current_organization):
     Organization = Organization.replace(" ", "_").lower()
     url = URL+"/organizations"
     return put(url, data={"data": Organization},
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def addUser(URL, organization, token,  id, name, surname, username, password, Email, Department ,role="student"):
+def addUser(token,  id, name, surname, username, password, Email, Department ,role="student", URL=server_address, organization=current_organization):
     url = URL+"/organizations/%s" %organization.replace(" ", "_").lower()
     return put(url,data={
                         "ID": id,
@@ -36,12 +37,12 @@ def addUser(URL, organization, token,  id, name, surname, username, password, Em
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def signIn(URL, organization, username, password):
+def signIn(username, password, URL=server_address, organization=current_organization):
     url = URL+"/organizations/%s/%s" %(organization.replace(" ", "_").lower(), username)
     return get(url, auth=(username, password)).json()
 
 
-def signOut(URL, organization, token, username):
+def signOut(token, username, URL=server_address, organization=current_organization):
     url = URL + "/organizations/%s/%s/out" % (organization.replace(" ", "_").lower(), username)
     return get(url, data={
         "Username": username,
@@ -49,7 +50,7 @@ def signOut(URL, organization, token, username):
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def addCourse(URL, organization, token, courseName, courseCode, *lecturer_users):
+def addCourse(token, courseName, courseCode, URL=server_address, organization=current_organization, *lecturer_users):
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     courseName = courseName.replace(" ", "_").lower()
     organization = organization.replace(" ", "_").lower()
@@ -70,7 +71,7 @@ def addLecturerToCourse():
     pass
 
 
-def getCourse(URL, organization, token, courseCode):
+def getCourse(token, courseCode, URL=server_address, organization=current_organization):
     # type: (str, str, str) -> str
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     organization = organization.replace(" ", "_").lower()
@@ -80,7 +81,7 @@ def getCourse(URL, organization, token, courseCode):
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def registerStudent(URL, organization, token, courseCode, isList, students, username):
+def registerStudent(token, courseCode, isList, students, username, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     url = URL+"/organizations/%s/%s/register/%s" %(organization, courseCode, isList)
@@ -92,7 +93,7 @@ def registerStudent(URL, organization, token, courseCode, isList, students, user
         pass
 
 
-def getCourseStudents(URL, organization, token, courseCode):
+def getCourseStudents(token, courseCode, URL=server_address, organization=current_organization):
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/register" % (organization, courseCode)
@@ -100,14 +101,14 @@ def getCourseStudents(URL, organization, token, courseCode):
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def getLecturerCourses(URL, organization, token, username):
+def getLecturerCourses(token, username, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/courses/role=lecturer" % (organization, username)
     return get(url,
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def changePassword(URL, organization, token, username, password, newpass, isMail=False):
+def changePassword(token, username, password, newpass, isMail=False, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/edit_password" % (organization, username)
     return put(url, data={
@@ -118,7 +119,7 @@ def changePassword(URL, organization, token, username, password, newpass, isMail
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def deleteStudentFromLecture(URL, organization, token, courseCode, studentID):
+def deleteStudentFromLecture(token, courseCode, studentID, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/delete_user" % (organization, courseCode)
@@ -126,7 +127,7 @@ def deleteStudentFromLecture(URL, organization, token, courseCode, studentID):
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def createExam(URL, organization, token, courseCode, name, time, duration, questions={}):
+def createExam(token, courseCode, name, time, duration, questions={}, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
@@ -136,7 +137,7 @@ def createExam(URL, organization, token, courseCode, name, time, duration, quest
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def getExamsOfLecture(URL, organization, token, courseCode):
+def getExamsOfLecture(token, courseCode, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/" % (organization, courseCode)
@@ -144,7 +145,7 @@ def getExamsOfLecture(URL, organization, token, courseCode):
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def getExam(URL, organization, token, courseCode, name):
+def getExam(token, courseCode, name, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
@@ -152,14 +153,14 @@ def getExam(URL, organization, token, courseCode, name):
     return get(url, headers = {"Authorization": "Bearer " + token}).json()
 
 
-def sendAnswers(URL, organization, token, courseCode, questionID, username, answer):
+def sendAnswers(token, courseCode, questionID, username, answer, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, courseCode, str(questionID), username)
     return put(url, data={"answers" : json.dumps(answer)}, headers={"Authorization": "Bearer " + token}).json()
 
 
-def deleteExam(URL, organization, token, examName, courseCode):
+def deleteExam(token, examName, courseCode, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     examName = re.sub(r'[^\w\s]', '_', examName).replace(" ", "_").lower()
@@ -168,17 +169,23 @@ def deleteExam(URL, organization, token, examName, courseCode):
                headers={"Authorization": "Bearer %s" % token}).json()
 
 
-def uploadProfilePic(URL, organization, token, username, pic):
+def uploadProfilePic(token, username, pic, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
     with open(pic, "rb") as f:
         cont = f.read()
     return put(url, headers={"Authorization": "Bearer " + token}, data = {"pic": pickle.dumps(cont)}, files = {"pic": open(pic)}).json()
 
-def getProfilePic(URL, organization, token, username):
+
+def getProfilePic(token, username, URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
     with open("sent.jpg", "wb") as f:
         f.write(pickle.loads(get(url, headers={"Authorization": "Bearer " + token}).json()))
 
     return "Done"
+
+
+def grade_answer(token, question_id, student_user, grade, URL=server_address, organization=current_organization):
+
+    pass
