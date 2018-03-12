@@ -382,8 +382,8 @@ class MySQLdb:
 
     def grade_answer(self, organization, username, student_name, question_id, grade):
         studentID = self.get_user_info(organization, student_name)[0]
-        #todo: UPDATE SQL for answers
-        pass
+        c = "INSERT INTO %s.answers(questionID, studentID, grade) VALUES ('%s', '%s', '%s') ON DUPLICATE KEY UPDATE grade=VALUES(grade)" % (organization, str(question_id), studentID, str(grade))
+        return self.execute(c)
 
 class Password:
     def __init__(self):

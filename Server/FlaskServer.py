@@ -259,5 +259,5 @@ def gradeQuestion(organization, course, question_id, studentUser):
 
 
 if __name__ == "__main__":
-    # app.run(host="10.50.81.24", port=8888, threaded=True)
-    print db.get_user_info("istanbul_sehir_university", "fatihgulmez")
+    app.run(host="10.50.81.24", port=8888, threaded=True)
+    # print db.get_user_info("istanbul_sehir_university", "fatihgulmez")

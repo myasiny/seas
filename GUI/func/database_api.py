@@ -190,4 +190,4 @@ def grade_answer(token, course_code, question_id, student_user, grade, URL=serve
     organization = organization.replace(" ", "_").lower()
     course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/%s/answers/%s/grade" % (organization, course_code, str(question_id), student_user)
-    return put(url, headers={"Authorization": "Bearer " + token}, data={"grade": grade})
+    return put(url, headers={"Authorization": "Bearer " + token}, data={"grade": grade}).json()
