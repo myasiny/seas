@@ -171,7 +171,8 @@ def addExam(organization, course):
         time = request.form["time"]
         duration = request.form["duration"]
         questions = json.loads(request.form["questions"])
-        exam = Exam(name, course, time, duration, organization)
+        status = request.form["status"]
+        exam = Exam(name, course, time, duration, organization, status)
         for j in questions:
             i=questions[j]
             exam.addQuestion(

@@ -127,13 +127,13 @@ def deleteStudentFromLecture(token, courseCode, studentID, URL=server_address, o
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def createExam(token, courseCode, name, time, duration, questions={}, URL=server_address, organization=current_organization):
+def createExam(token, courseCode, name, time, duration, questions={}, status="draft", URL=server_address, organization=current_organization):
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/add" % (organization, courseCode)
     question = json.dumps(questions)
-    return put(url, data={"name": name, "time": time, "duration": duration, "questions": question},
+    return put(url, data={"name": name, "time": time, "duration": duration, "questions": question, "status": status},
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 

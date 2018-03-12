@@ -148,7 +148,8 @@ class MySQLdb:
                                  ("Name", "varchar(255)", "not null"),
                                  ("CourseID", "int", ""),
                                  ("Time", "timestamp", ""),
-                                 ("Duration", "int", "not null")
+                                 ("Duration", "int", "not null"),
+                                 ("Status", "varchar(20)", "not null Default 'draft'")
                              ],
                              primary_key="ExamId",
                              foreign_keys_tuple=
@@ -538,12 +539,13 @@ class Question:
 
 
 class Exam:
-    def __init__(self, Name, CourseCode, Time, duration, organization):
+    def __init__(self, Name, CourseCode, Time, duration, organization, status):
         self.org = organization.replace(" ", "_").lower()
         self.name = Name
         self.course = CourseCode.replace(" ", "_").lower()
         self.time = Time
         self.duration = duration
+        self.status = status
         self.questions = list()
 
     def addQuestion(self, tip, subject, text, answer, inputs, outputs, value, tags):
@@ -559,8 +561,12 @@ class Exam:
         """
 
         command = "USE %s;" % self.org
-        command += "insert ignore into exams(Name,Time,Duration,CourseID) select \'%s\', \'%s\', %d, CourseID from courses where courses.CODE = \'%s\';" % (self.name, self.time, int(self.duration), self.course)
-
+        command += "insert into exams(Name,Time,Duration, Status, CourseID) " \
+                   "select \'%s\', \'%s\', %d, '%s', CourseID " \
+                   "from courses where courses.CODE = \'%s\'" \
+                   "ON DUPLICATE KEY UPDATE Name = '%s', Time='%s', Duration='%s', Status = '%s';"\
+                   % (self.name, self.time, int(self.duration), self.status, self.course, self.name, self.time, self.duration, self.status)
+        print command
         try:
             oldie = self.get(db)["ID"]
             db.execute("DELETE FROM %s.questions WHERE ExamID=%s;" %(self.org, oldie))
