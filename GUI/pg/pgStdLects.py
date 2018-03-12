@@ -8,6 +8,7 @@ import sys
 sys.path.append("../..")
 
 from functools import partial
+from GUI.func import database_api
 from GUI.func.check_std_live_exam import check_std_live_exam
 
 def on_pre_enter(self):
@@ -16,7 +17,7 @@ def on_pre_enter(self):
 
     self.data = []
 
-    # data_lectures = DatabaseAPI.getLecturerCourses("http://10.50.81.24:8888", "istanbul sehir university", self.data_login[0].replace("\n", ""))
+    data_lectures = database_api.getStudentCourses(self.data_login[7].replace("\n", ""), self.data_login[0].replace("\n", ""))
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0] + "_" + i[2])
 
@@ -66,7 +67,7 @@ def on_lect_select(self, dropdown, txt):
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
 
-    # self.data_exams = DatabaseAPI.getExamNames...
+    # self.data_exams = database_api...
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -92,9 +93,6 @@ def on_exam_selected(self):
 
     self.ids["txt_options_head"].opacity = 1
     self.ids["btn_exam_statistics"].opacity = 1
-
-def on_join_exam(self):
-    # DatabaseAPI.joinExam...
 
 def on_personal_exam_statistics(self):
     pass

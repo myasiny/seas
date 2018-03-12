@@ -61,7 +61,13 @@ def on_pre_enter(self):
 
     self.question_type = "none"
 
-    # data = DatabaseAPI.ifedit...
+    temp_login = open("data/temp_login.seas", "r")
+    self.data_login = temp_login.readlines()
+
+    temp_selected_lect = open("data/temp_selected_lect.seas", "r")
+    self.data_selected_lect = temp_selected_lect.readlines()
+
+    # data = database_api.getExam(self.data_login[7].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""), self.data_selected_lect[2].replace("\n", ""))
     # if data is not None:
     #     self.ids["input_subject"].text = ...
     #     self.ids["input_tags"].text = ...

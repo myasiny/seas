@@ -1,10 +1,11 @@
 import sys
 sys.path.append("../..")
 
+from GUI.func import database_api
 
 def check_std_live_exam(self, dt):
     try:
-        # self.data_live_exam = DatabaseAPI.getLiveExamName...
+        # self.data_live_exam = database_api...
 
         if self.data_live_exam is not None:
             self.ids["btn_join_exam"].disabled = False

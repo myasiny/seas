@@ -69,6 +69,22 @@ class PgStdLiveExam(Screen):
     def on_run(self):
         pgStdLiveExam.on_run(self)
 
+    def on_question_previous(self):
+        if pgStdLiveExam.on_question_previous(self):
+            pages.append(PgStdLiveExam(name="PgStdLiveExam"))
+            tabReset.on_back(pages, screen)
+
+    def on_question_remove(self):
+        pgStdLiveExam.on_question_remove(self)
+
+    def on_question_next(self):
+        if pgStdLiveExam.on_question_next(self):
+            pages.append(PgStdLiveExam(name="PgStdLiveExam"))
+            tabReset.on_back(pages, screen)
+
+    def on_question_save(self):
+        pgStdLiveExam.on_question_save(self)
+
 class PgStdLects(Screen):
     pgLogin.load_string("stdlects")
 
@@ -94,7 +110,6 @@ class PgStdLects(Screen):
         pgStdLects.on_exam_selected(self)
 
     def on_join_exam(self):
-        self.on_join_exam(self)
         pages.append(PgStdLiveExam(name="PgStdLiveExam"))
         tabReset.on_back(pages, screen)
 
@@ -301,6 +316,9 @@ class PgLects(Screen):
 
     def on_exam_selected(self, dt):
         pgLects.on_exam_selected(self)
+
+    def on_exam_deleted(self, dt):
+        pgLects.on_exam_deleted(self)
 
     def on_start_exam(self, dt):
         with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:

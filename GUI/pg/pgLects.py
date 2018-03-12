@@ -10,7 +10,7 @@ import os, sys
 sys.path.append("../..")
 
 from GUI.func import excel_to_csv
-
+from GUI.func import database_api
 
 def on_pre_enter(self):
     temp_login = open("data/temp_login.seas", "r")
@@ -18,7 +18,7 @@ def on_pre_enter(self):
 
     self.data = []
 
-    # data_lectures = DatabaseAPI.getLecturerCourses("http://10.50.81.24:8888", "istanbul sehir university", self.data_login[0].replace("\n", ""))
+    data_lectures = database_api.getLecturerCourses(self.data_login[7].replace("\n", ""), self.data_login[0].replace("\n", ""))
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0] + "_" + i[2])
 
@@ -94,13 +94,13 @@ def on_exams(self):
     self.ids["layout_exams"].opacity = 1
     self.remove_widget(self.ids["layout_participants"])
 
-    # data = DatabaseAPI.getExamNames...
+    self.data_exam_details = database_api.getExamsOfLecture(self.data_login[0].replace("\n", ""), self.ids["txt_lect_code"].text)
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
                                            "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height / 25,
                                            "size_hint_y": None, "height": self.height / 10}
-    self.ids["list_exams"].adapter = ListAdapter(data=[i for i in data], cls=ListItemButton,
+    self.ids["list_exams"].adapter = ListAdapter(data=[i[0] for i in self.data_exam_details], cls=ListItemButton,
                                                  args_converter=args_converter, allow_empty_selection=False)
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
 
@@ -112,12 +112,17 @@ def on_exam_selected(self):
 
     self.ids["txt_status_head"].opacity = 1
     self.ids["txt_status_body"].opacity = 1
-    # self.ids["txt_status_body"].text = ...
+    for i in self.data_exam_details:
+        if i[0] == self.ids["list_exams"].adapter.selection[0].text:
+            self.ids["txt_status_body"].text = i[1]
+            break
 
     self.ids["txt_options_head"].opacity = 1
     self.ids["btn_exam_edit"].opacity = 1
     self.ids["btn_exam_delete"].opacity = 1
     self.ids["btn_exam_start_grade"].opacity = 1
+
+    self.ids["btn_exam_delete"].bind(on_release=self.on_exam_deleted)
 
     if self.ids["txt_status_body"].text == "Completed":
         self.ids["btn_exam_start_grade"].text = "GRADE"
@@ -125,9 +130,25 @@ def on_exam_selected(self):
     elif self.ids["txt_status_body"].text == "Graded":
         self.ids["btn_exam_start_grade"].text = "DOWNLOAD"
         # self.ids["btn_exam_start_grade"].bind(on_release=self...)
+    elif self.ids["txt_status_body"].text == "Ready":
+        self.ids["btn_exam_start_grade"].text = "PUBLISH"
+        # self.ids["btn_exam_start_grade"].bind(on_release=self...)
     else:
         self.ids["btn_exam_start_grade"].text = "START"
         self.ids["btn_exam_start_grade"].bind(on_release=self.on_start_exam)
+
+def on_exam_deleted(self):
+    database_api.deleteExam(self.data_login[0].replace("\n", ""), self.ids["list_exams"].adapter.selection[0].text, self.ids["txt_lect_code"].text)
+
+    self.data_exam_details = database_api.getExamsOfLecture(self.data_login[0].replace("\n", ""), self.ids["txt_lect_code"].text)
+
+    args_converter = lambda row_index, i: {"text": i,
+                                           "background_normal": "img/widget_75_black_crop.png",
+                                           "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height / 25,
+                                           "size_hint_y": None, "height": self.height / 10}
+    self.ids["list_exams"].adapter = ListAdapter(data=[i[0] for i in self.data_exam_details], cls=ListItemButton,
+                                                 args_converter=args_converter, allow_empty_selection=False)
+    self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
 
 def on_participants(self):
     if self.ids["layout_participants"] not in list(self.children):
@@ -136,7 +157,7 @@ def on_participants(self):
     self.ids["layout_participants"].opacity = 1
     self.remove_widget(self.ids["layout_exams"])
 
-    # data = DatabaseAPI.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents(self.data_login[0].replace("\n", ""), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
@@ -192,9 +213,9 @@ def on_participant_selected(self):
     self.ids["btn_student_statistics"].opacity = 1
 
 def on_participant_deleted(self):
-    # database_api.deleteStudentFromLecture("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
+    database_api.deleteStudentFromLecture(self.data_login[0].replace("\n", ""), self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
 
-    # data = database_api.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents(self.data_login[0].replace("\n", ""), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
@@ -230,9 +251,9 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.popup.dismiss()
 
     excel_to_csv.xls2csv(file_path[0], "data/perm_student_list.csv")
-    # database_api.registerStudent("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text, True, "data/perm_student_list.csv", self.data_login[0].replace("\n", ""))
+    database_api.registerStudent(self.data_login[0].replace("\n", ""), self.ids["txt_lect_code"].text, True, "data/perm_student_list.csv", self.data_login[0].replace("\n", ""))
 
-    # data = database_api.getCourseStudents("http://10.50.81.24:8888", "istanbul sehir university", self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents(self.data_login[0].replace("\n", ""), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:

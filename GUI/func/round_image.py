@@ -1,8 +1,13 @@
+from GUI.func import database_api
 from PIL import Image, ImageOps, ImageDraw
 
 def round_image():
     try:
-        # DatabaseAPI.getPicture...
+        temp_login = open("data/temp_login.seas", "r")
+        data_login = temp_login.readlines()
+
+        database_api.getProfilePic(data_login[7].replace("\n", ""), data_login[0].replace("\n", ""))
+
         size = (512, 512)
         mask = Image.new('L', size, 0)
         draw = ImageDraw.Draw(mask)
