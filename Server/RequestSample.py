@@ -106,4 +106,4 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 # print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 60)
 
-# print getExamsOfLecture(student_token, "eecs 468")
+print getExamsOfLecture(student_token, "eecs 468")

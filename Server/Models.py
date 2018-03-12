@@ -386,6 +386,10 @@ class MySQLdb:
         c = "INSERT INTO %s.answers(questionID, studentID, grade) VALUES ('%s', '%s', '%s') ON DUPLICATE KEY UPDATE grade=VALUES(grade)" % (organization, str(question_id), studentID, str(grade))
         return self.execute(c)
 
+    def get_exams_of_lecture(self, organization, course):
+        course_id = self.execute("select CourseID from %s.courses where Code = '%s'" % (organization, course))[0][0]
+        return self.execute("select * from %s.exams where CourseID = '%s'" %(organization, course_id))
+
 class Password:
     def __init__(self):
         pass

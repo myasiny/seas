@@ -201,10 +201,8 @@ def deleteExam(organization, course, exam):
 @jwt_required
 def getExamsOfLecture(organization, course):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin", "lecturer"):
-        return jsonify("Unauthorized access!")
-    else:
-        return jsonify("Constraction Sİte!")
+    # todo: STUDENT CANNOT REACH QUESTIONS BEFORE EXAM START TIME
+    return jsonify(db.get_exams_of_lecture(organization, course))
     pass
 
 
