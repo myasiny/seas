@@ -186,6 +186,8 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     return "Done"
 
 
-def grade_answer(token, question_id, student_user, grade, URL=server_address, organization=current_organization):
-
-    pass
+def grade_answer(token, course_code, question_id, student_user, grade, URL=server_address, organization=current_organization):
+    organization = organization.replace(" ", "_").lower()
+    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/%s/answers/%s/grade" % (organization, course_code, str(question_id), student_user)
+    return put(url, headers={"Authorization": "Bearer " + token}, data={"grade": grade})

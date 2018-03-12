@@ -44,6 +44,9 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 # print getLecturerCourses(lecturer_token, "alicakmak")
 
+# print getLecturerCourses(student_token, "fatihgulmez")
+
+
 # print changePassword(lecturer_token, "alicakmak", "12345", "alicakmak@sehir.edu.tr", True)
 
 # print deleteStudentFromLecture(lecturer_token, "ENGR 101", "212980975")
@@ -83,7 +86,8 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                       "value": 20,
 #                       "tags": ["integers", "math"]
 #                      }
-#                   }
+#                   },
+#                  status="published"
 # )
 
 
@@ -99,3 +103,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 # print uploadProfilePic(student_token, "fatihgulmez", "picc.jpg")
 
 # print getProfilePic(student_token, "fatihgulmez")
+
+print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 80)
+
+# print getExamsOfLecture(student_token, "eecs 468")
