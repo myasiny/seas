@@ -18,7 +18,7 @@ def on_pre_enter(self):
 
     self.data = []
 
-    data_lectures = database_api.getLecturerCourses(self.data_login[7].replace("\n", ""), self.data_login[0].replace("\n", ""))
+    data_lectures = database_api.getUserCourses(self.data_login[7].replace("\n", ""), self.data_login[0].replace("\n", ""))
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0] + "_" + i[2])
 

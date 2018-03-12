@@ -57,7 +57,7 @@ class MySQLdb:
         self.cursor = self.db.cursor()
 
     def initialize_organization(self, organization):
-        self.execute(
+        a = self.execute(
             "CREATE SCHEMA %s;" %organization
         )
         self.execute(
@@ -200,6 +200,8 @@ class MySQLdb:
                      "Insert into roles(Role) values ('lecturer');"
                      "Insert into roles(Role) values ('student');")
 
+        return a
+
     def add_course(self, org, name, code, lecturer_users):
         command = "INSERT INTO %s.courses (NAME, CODE) VALUES ('%s', '%s');" % (org, name, code)
         self.execute(command)
@@ -218,11 +220,11 @@ class MySQLdb:
 
     def get_course(self, org, code):
         a = self.execute("SELECT * FROM %s.courses WHERE Code = '%s'" % (org,code))[0]
-        lecturer_IDs = self.execute("SELECT LecturerID FROM %s.lecturers WHERE CourseID = '%s'"%(org, a[0]))[0]
-        lecturers = ""
+        lecturer_IDs = self.execute("SELECT LecturerID FROM %s.lecturers WHERE CourseID = '%s'"%(org, a[0]))
+        lecturers = []
         for id in lecturer_IDs:
-            lid = self.execute("SELECT Name, Surname FROM %s.members WHERE PersonID = '%s'" % (org, id))[0]
-            lecturers += lid[0] + " " + lid[1] + ":"
+            lid = self.execute("SELECT Name, Surname FROM %s.members WHERE PersonID = '%s'" % (org, id[0]))[0]
+            lecturers.append(lid[0] + " " + lid[1])
         rtn = {
             "ID": a[0],
             "Name": a[1],
@@ -239,7 +241,9 @@ class MySQLdb:
         pass
 
     def get_course_participants(self, code, organization):
-        courseID = self.execute("SELECT CourseID FROM %s.courses WHERE CODE = '%s'" %(organization, code))[0][0]
+        c = "SELECT CourseID FROM %s.courses WHERE CODE = '%s'" %(organization, code)
+        print c
+        courseID = self.execute(c)[0][0]
         studentIDs = self.execute("SELECT StudentID FROM %s.registrations WHERE CourseID = '%s'" %(organization, courseID))
         students = []
         for student in studentIDs:
@@ -550,7 +554,7 @@ class Question:
 
 
 class Exam:
-    def __init__(self, Name, CourseCode, Time, duration, organization, status):
+    def __init__(self, Name, CourseCode, Time, duration, organization, status="draft"):
         self.org = organization.replace(" ", "_").lower()
         self.name = Name
         self.course = CourseCode.replace(" ", "_").lower()

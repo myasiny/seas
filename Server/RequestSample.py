@@ -17,7 +17,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 # print testConnection()
 
 # print addOrganization(superuser_token)
-# print addOrganization(superuser_token)
+# print addOrganization(superuser_token, organization="istanbul technical university")
 
 # print addUser(admin_token, "213962062", "Fatih", "gulmez", "fatihgulmez", "12345","fatihgulmez@std.sehir.edu.tr", "Computer Science", role="student")
 # print addUser(admin_token, "213955555", "Muhammed Yasin", "Yildirim", "muhammedyildirim", "12345","muhamed@std.sehir.edu.tr", "Computer Science" , role="student")
@@ -35,21 +35,20 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 # print signOut("admin")
 
-# print addCourse(admin_token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjFhMmFkZi03NWMwLTQ1ZWItYTg1Yy00ZmNjNzM4MmFmNGUiLCJleHAiOjE1MTk3NjE1NTYsImZyZXNoIjpmYWxzZSwiaWF0IjoxNTE5NzYwNjU2LCJ0eXBlIjoiYWNjZXNzIiwibmJmIjoxNTE5NzYwNjU2LCJpZGVudGl0eSI6WyJmYXRpaGd1bG1leiIsInN0dWRlbnQiLCIyMDE4LTAyLTI3IDIyOjQ0OjE2Ljk4MDAwMCJdfQ.UCa5uiyoS-HUWt0ti_TMB61LEHDeXTmCeNjxfkgoyLA", "Bioinformatics", "EECS 468", "alicakmak")
-# print getCourse(student_token, "ENGR 101")
+# print addCourse(admin_token, "Database Systems", "CS 350", ["alicakmak"])
+# print getCourse(student_token, "eecs 468")
 
 # print registerStudent(lecturer_token, "EECS 468", True, "ornek.csv")
 
-# print getCourseStudents(lecturer_token, "ENGR 101")
+# print getCourseStudents(lecturer_token, "Eecs 468")
 
-# print getLecturerCourses(lecturer_token, "alicakmak")
+# print getUserCourses(lecturer_token, "alicakmak")
 
-print getLecturerCourses(student_token, "fatihgulmez")
+# print getUserCourses(student_token, "fatihgulmez")
 
+# print changePassword(lecturer_token, "alicakmak", "1234", "12345", False)
 
-# print changePassword(lecturer_token, "alicakmak", "12345", "alicakmak@sehir.edu.tr", True)
-
-# print deleteStudentFromLecture(lecturer_token, "ENGR 101", "212980975")
+# print deleteStudentFromLecture(lecturer_token, "EEcs 468", "213962062")
 
 #### HOW TO CREATE EXAM
 
@@ -87,7 +86,7 @@ print getLecturerCourses(student_token, "fatihgulmez")
 #                       "tags": ["integers", "math"]
 #                      }
 #                   },
-#                  status="published"
+#                  status="draft"
 # )
 
 
@@ -96,7 +95,7 @@ print getLecturerCourses(student_token, "fatihgulmez")
 #                  "EECS 468",
 #                  "bioinformatic mt 2")
 
-# print sendAnswers(student_token,"EECS 468", 1, "fatihgulmez", "Atatürk")
+# print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Atatürk")
 
 # print deleteExam(lecturer_token, "bioinformatic_mt_2", "eecs_468")
 
