@@ -17,7 +17,6 @@ def on_pre_enter(self):
     self.data = []
 
     # data_lectures = DatabaseAPI.getLecturerCourses("http://10.50.81.24:8888", "istanbul sehir university", self.data_login[0].replace("\n", ""))
-    data_lectures = [["0", "TODO", "TODO"]]
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0] + "_" + i[2])
 
@@ -47,7 +46,7 @@ def on_pre_enter(self):
 
     self.add_widget(btn_main)
 
-    Clock.schedule_interval(partial(check_std_live_exam, self), 1.0 / 10.0)
+    Clock.schedule_interval(partial(check_std_live_exam, self), 5.0)
 
 def on_lect_select(self, dropdown, txt):
     dropdown.select(txt)
@@ -67,8 +66,7 @@ def on_lect_select(self, dropdown, txt):
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
 
-    # self.data_exams = DatabaseAPI...
-    self.data_exams = ["TODO"]
+    # self.data_exams = DatabaseAPI.getExamNames...
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -86,15 +84,17 @@ def on_exam_selected(self):
 
     self.ids["txt_date_head"].opacity = 1
     self.ids["txt_date_body"].opacity = 1
-    self.ids["txt_date_body"].text = "TODO"
+    # self.ids["txt_date_body"].text = ...
 
     self.ids["txt_time_head"].opacity = 1
     self.ids["txt_time_body"].opacity = 1
-    self.ids["txt_time_body"].text = "TODO"
+    # self.ids["txt_time_body"].text = ...
 
     self.ids["txt_options_head"].opacity = 1
     self.ids["btn_exam_statistics"].opacity = 1
 
+def on_join_exam(self):
+    # DatabaseAPI.joinExam...
+
 def on_personal_exam_statistics(self):
     pass
-    # TODO: Personal Exam Statistics

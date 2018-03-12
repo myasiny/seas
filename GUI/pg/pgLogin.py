@@ -19,9 +19,7 @@ def load_string(name):
         Builder.load_string(design.read())
 
 def on_enter(self):
-    # Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 10.0)
-    pass
-    # TODO: Check connection
+    # Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 5.0)
 
 def on_login(self, pages, screen, pgEdu, pgStd):
     btn_login = self.ids["btn_login"]
@@ -48,7 +46,6 @@ def on_login(self, pages, screen, pgEdu, pgStd):
     else:
         try:
             # data = DatabaseAPI.signIn("http://10.50.81.24:8888", "istanbul sehir university", input_username, input_password)
-            data = [0, "TODO", "TODO", "TODO", "TODO", "TODO", "TODO", "TODO"]
         except:
             data = None
             print ("SEAS [ERROR]: pgLogin > Except > Server Communication Failed")

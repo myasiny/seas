@@ -94,6 +94,7 @@ class PgStdLects(Screen):
         pgStdLects.on_exam_selected(self)
 
     def on_join_exam(self):
+        self.on_join_exam(self)
         pages.append(PgStdLiveExam(name="PgStdLiveExam"))
         tabReset.on_back(pages, screen)
 

@@ -4,8 +4,7 @@ sys.path.append("../..")
 
 def check_std_live_exam(self, dt):
     try:
-        # self.data_live_exam = DatabaseAPI...
-        self.data_live_exam = "TODO"
+        # self.data_live_exam = DatabaseAPI.getLiveExamName...
 
         if self.data_live_exam is not None:
             self.ids["btn_join_exam"].disabled = False

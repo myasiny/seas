@@ -2,6 +2,7 @@ from PIL import Image, ImageOps, ImageDraw
 
 def round_image():
     try:
+        # DatabaseAPI.getPicture...
         size = (512, 512)
         mask = Image.new('L', size, 0)
         draw = ImageDraw.Draw(mask)

@@ -10,18 +10,14 @@ from pygments.lexers.python import PythonLexer
 
 def on_pre_enter(self):
     # self.question_type = DatabaseAPI...
-    self.question_type = "programming"
 
     # self.question_no = DatabaseAPI...
-    self.question_no = 0
     self.ids["txt_question_no"].text = "Question %d" % self.question_no
 
     # self.question_grade = DatabaseAPI...
-    self.question_grade = 0
     self.ids["txt_question_grade"].text = "Grade: %d" % self.question_grade
 
     # self.question_body = DatabaseAPI...
-    self.question_body = "TODO"
     self.ids["txt_question_body"].text = self.question_body
 
     self.correct_answer = Spinner(text="Answer", values=("A", "B", "C", "D", "E"),
@@ -108,6 +104,3 @@ def on_run(self):
         self.ids["img_run"].reload()
 
         self.run_or_pause = "run"
-
-        pass
-        # TODO: Threading & stop running when pressed

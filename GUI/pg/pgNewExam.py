@@ -31,7 +31,6 @@ def on_new_exam_create(self):
         with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:
             temp_selected_lect.write("\n%s\n%s\n%s %s" % (self.ids["input_examname"].text, self.ids["input_duration"].text, date, time))
             temp_selected_lect.close()
-
         return True
     else:
         anim_appear = Animation(opacity=1, duration=1)
@@ -40,5 +39,4 @@ def on_new_exam_create(self):
             anim_appear.start(self.ids["img_wrong_examname"])
         elif self.ids["input_duration"].text == "":
             anim_appear.start(self.ids["img_wrong_duration"])
-
         return False

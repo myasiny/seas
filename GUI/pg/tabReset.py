@@ -1,6 +1,4 @@
 def on_reset(self):
-    pass
-    # TODO: Password Reset
 
 def on_back(pages, screen):
     try:
