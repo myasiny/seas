@@ -331,16 +331,68 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
 
 def grade_answer(token, course_code, question_id, student_user, grade, URL=server_address, organization=current_organization):
     """
-    :param token:
-    :param course_code:
-    :param question_id:
-    :param student_user:
-    :param grade:
-    :param URL:
-    :param organization:
-    :return:
+    :param token: String; JWT token
+    :param course_code: String, course code
+    :param question_id: Integer, question id number
+    :param student_user: String; username of answer
+    :param grade: Integer; grade of answer
+    :param URL: String; Server address
+    :param organization: String; university name
+    :return: [] if successful.
     """
     organization = organization.replace(" ", "_").lower()
     course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/%s/answers/%s/grade" % (organization, course_code, str(question_id), student_user)
     return put(url, headers={"Authorization": "Bearer " + token}, data={"grade": grade}).json()
+
+
+def edit_question(token, course_code, exam_name, question_id, info, URL=server_address, organization=current_organization):
+    """
+    :param token: String; JWT token
+    :param course_code: String, course code
+    :param exam_name: String, exam name
+    :param question_id: Integer, question id number
+    :param info: JSON; question metadata.
+    :param URL: String; Server address
+    :param organization: String; university name
+    :return: [] if successful.
+    """
+    organization = organization.replace(" ", "_").lower()
+    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/%s/%s/edit" % (
+    organization, course_code, exam_name, str(question_id))
+    return put(url, headers={"Authorization": "Bearer " + token}, data={"data":json.dumps(info)}).json()
+
+
+def add_time_to_exam(token, course_code, exam_name, additional_time, URL=server_address, organization=current_organization):
+    """
+    :param token:
+    :param course_code:
+    :param exam_name:
+    :param additional_time:
+    :param URL:
+    :param organization:
+    :return: [] if success
+    """
+    organization = organization.replace(" ", "_").lower()
+    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/%s/more_time" % (organization, course_code, exam_name)
+    return put(url, headers={"Authorization": "Bearer " + token}, data={"additional_time": additional_time}).json()
+
+
+def change_status_of_exam(token, course_code, exam_name, status, URL=server_address, organization=current_organization):
+    """
+    :param token:
+    :param course_code:
+    :param exam_name:
+    :param status:
+    :param URL:
+    :param organization:
+    :return: [] if success
+    """
+    organization = organization.replace(" ", "_").lower()
+    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/%s/status" % (organization, course_code, exam_name)
+    if status not in ["draft", "finished", "published", "graded", "deactivated"]:
+        return "Wrong status."
+    return put(url, headers={"Authorization": "Bearer " + token}, data={"status": status}).json()

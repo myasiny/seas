@@ -91,9 +91,9 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 
 ### HOW TO GET EXAM
-print getExam(student_token,
-                 "EECS 468",
-                 "bioinformatic mt 2")
+# print getExam(student_token,
+#                  "EECS 468",
+#                  "bioinformatic mt 2")
 
 # print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Atatürk")
 
@@ -106,3 +106,25 @@ print getExam(student_token,
 # print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 60)
 
 # print getExamsOfLecture(student_token, "eecs 468")
+
+# print edit_question(lecturer_token, "eecse 468",
+#                     "bioinformatic_mt_2",
+#                     13,
+#                     {"type": "classic",
+#                     "subject": "ataturk",
+#                     "text": "who is the founder of Turkey?",
+#                     "answer": "Atatürk",
+#                     "inputs": [[111,222],[222,333]],
+#                     "outputs": [(3),(5)],
+#                     "value": 30,
+#                     "tags": ["mustapha","kemal"]})
+
+# print add_time_to_exam(lecturer_token,
+#                        "eecs 468",
+#                        "bioinformatic_mt_2",
+#                        10)
+
+# print change_status_of_exam(lecturer_token,
+#                             "eecs 468",
+#                             "bioinformatic_mt_2",
+#                             "draft")

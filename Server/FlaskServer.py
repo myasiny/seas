@@ -258,6 +258,26 @@ def gradeQuestion(organization, course, question_id, studentUser):
         return jsonify(db.grade_answer(organization, user, studentUser, question_id, request.form["grade"]))
 
 
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/<string:question_id>/edit", methods=["PUT"])
+@jwt_required
+def editQuestion(organization, course, exam_name, question_id):
+    return jsonify(Exam(exam_name, organization, db).edit_a_question(question_id, json.loads(request.form["data"])))
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/more_time", methods=["PUT"])
+@jwt_required
+def addTimeToExam(organization, course, exam_name):
+    return jsonify(Exam(exam_name, organization, db).add_more_time(request.form["additional_time"]))
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/status", methods=["PUT"])
+@jwt_required
+def changeStatusOfExam(organization, course, exam_name):
+    return jsonify(Exam(exam_name, organization, db).change_status(request.form["status"]))
+
+
+
+
 if __name__ == "__main__":
     app.run(host="10.50.81.24", port=8888, threaded=True)
     # print db.get_user_info("istanbul_sehir_university", "fatihgulmez")
