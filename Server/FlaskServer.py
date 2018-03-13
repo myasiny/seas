@@ -172,7 +172,7 @@ def addExam(organization, course):
         duration = request.form["duration"]
         questions = json.loads(request.form["questions"])
         status = request.form["status"]
-        exam = Exam(name, course, time, duration, organization, status)
+        exam = Exam(name, organization, db)
         for j in questions:
             i=questions[j]
             exam.addQuestion(
@@ -184,7 +184,7 @@ def addExam(organization, course):
                 i["outputs"],
                 i["value"],
                 i["tags"])
-        return jsonify(exam.save(db))
+        return jsonify(exam.save(course, time, duration, status))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/delete", methods=["DELETE"])
@@ -194,7 +194,7 @@ def deleteExam(organization, course, exam):
     if not check_auth(token, "superuser", "admin", "lecturer"):
         return jsonify("Unauthorized access!")
     else:
-        return jsonify(db.delete_exam(organization, exam))
+        return jsonify(Exam(exam, organization, db).delete_exam())
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/", methods=["GET"])
@@ -209,12 +209,13 @@ def getExamsOfLecture(organization, course):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>", methods=["GET"])
 @jwt_required
 def getExam(organization, course, name):
-    exam = Exam(name, course, None, None, organization)
-    return jsonify(exam.get(db))
+    exam = Exam(name, organization, db)
+    return jsonify(exam.get())
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/addQuestion", methods=["PUT"])
 @jwt_required
+#todo: fatihgulmez
 def addQuestionsToExam(organization, course, name):
     token = get_jwt_identity()
     if not check_auth(token, "superuser", "admin", "lecturer"):

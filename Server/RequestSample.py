@@ -54,7 +54,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 # print createExam(lecturer_token,
 #                  "EECS 468",
-#                  "bioinformatic mt 2",
+#                  "bioinformatic mt 3",
 #                  "2018-03-15 10:30:00",
 #                  50
 #                  ,{1:
@@ -91,13 +91,13 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 
 ### HOW TO GET EXAM
-# print getExam(student_token,
-#                  "EECS 468",
-#                  "bioinformatic mt 2")
+print getExam(student_token,
+                 "EECS 468",
+                 "bioinformatic mt 2")
 
 # print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Atatürk")
 
-# print deleteExam(lecturer_token, "bioinformatic_mt_2", "eecs_468")
+# print deleteExam(lecturer_token, "bioinformatic_mt_3", "eecs_468")
 
 # print uploadProfilePic(student_token, "fatihgulmez", "picc.jpg")
 
