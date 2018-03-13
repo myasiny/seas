@@ -104,3 +104,17 @@ def on_run(self):
         self.ids["img_run"].reload()
 
         self.run_or_pause = "run"
+
+    def on_question_previous(self):
+        # if DatabaseAPI... is not None:
+        #     return True
+
+    def on_question_remove(self):
+        # DatabaseAPI.delete...
+
+    def on_question_next(self):
+        # if DatabaseAPI... is not None:
+        #     return True
+
+    def on_question_save(self):
+        # DatabaseAPI.save...

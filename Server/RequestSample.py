@@ -17,7 +17,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 # print testConnection()
 
 # print addOrganization(superuser_token)
-# print addOrganization(superuser_token)
+# print addOrganization(superuser_token, organization="istanbul technical university")
 
 # print addUser(admin_token, "213962062", "Fatih", "gulmez", "fatihgulmez", "12345","fatihgulmez@std.sehir.edu.tr", "Computer Science", role="student")
 # print addUser(admin_token, "213955555", "Muhammed Yasin", "Yildirim", "muhammedyildirim", "12345","muhamed@std.sehir.edu.tr", "Computer Science" , role="student")
@@ -35,24 +35,26 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 # print signOut("admin")
 
-# print addCourse(admin_token, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2MjFhMmFkZi03NWMwLTQ1ZWItYTg1Yy00ZmNjNzM4MmFmNGUiLCJleHAiOjE1MTk3NjE1NTYsImZyZXNoIjpmYWxzZSwiaWF0IjoxNTE5NzYwNjU2LCJ0eXBlIjoiYWNjZXNzIiwibmJmIjoxNTE5NzYwNjU2LCJpZGVudGl0eSI6WyJmYXRpaGd1bG1leiIsInN0dWRlbnQiLCIyMDE4LTAyLTI3IDIyOjQ0OjE2Ljk4MDAwMCJdfQ.UCa5uiyoS-HUWt0ti_TMB61LEHDeXTmCeNjxfkgoyLA", "Bioinformatics", "EECS 468", "alicakmak")
-# print getCourse(student_token, "ENGR 101")
+# print addCourse(admin_token, "Database Systems", "CS 350", ["alicakmak"])
+# print getCourse(student_token, "eecs 468")
 
 # print registerStudent(lecturer_token, "EECS 468", True, "ornek.csv")
 
-# print getCourseStudents(lecturer_token, "ENGR 101")
+# print getCourseStudents(lecturer_token, "Eecs 468")
 
-# print getLecturerCourses(lecturer_token, "alicakmak")
+# print getUserCourses(lecturer_token, "alicakmak")
 
-# print changePassword(lecturer_token, "alicakmak", "12345", "alicakmak@sehir.edu.tr", True)
+# print getUserCourses(student_token, "fatihgulmez")
 
-# print deleteStudentFromLecture(lecturer_token, "ENGR 101", "212980975")
+# print changePassword(lecturer_token, "alicakmak", "1234", "12345", False)
+
+# print deleteStudentFromLecture(lecturer_token, "EEcs 468", "213962062")
 
 #### HOW TO CREATE EXAM
 
 # print createExam(lecturer_token,
 #                  "EECS 468",
-#                  "bioinformatic mt 2",
+#                  "bioinformatic mt 3",
 #                  "2018-03-15 10:30:00",
 #                  50
 #                  ,{1:
@@ -83,7 +85,8 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                       "value": 20,
 #                       "tags": ["integers", "math"]
 #                      }
-#                   }
+#                   },
+#                  status="draft"
 # )
 
 
@@ -92,10 +95,36 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                  "EECS 468",
 #                  "bioinformatic mt 2")
 
-# print sendAnswers(student_token,"EECS 468", 1, "fatihgulmez", "Atatürk")
+# print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Atatürk")
 
-# print deleteExam(lecturer_token, "bioinformatic_mt_2", "eecs_468")
+# print deleteExam(lecturer_token, "bioinformatic_mt_3", "eecs_468")
 
 # print uploadProfilePic(student_token, "fatihgulmez", "picc.jpg")
 
 # print getProfilePic(student_token, "fatihgulmez")
+
+# print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 60)
+
+# print getExamsOfLecture(student_token, "eecs 468")
+
+# print edit_question(lecturer_token, "eecse 468",
+#                     "bioinformatic_mt_2",
+#                     13,
+#                     {"type": "classic",
+#                     "subject": "ataturk",
+#                     "text": "who is the founder of Turkey?",
+#                     "answer": "Atatürk",
+#                     "inputs": [[111,222],[222,333]],
+#                     "outputs": [(3),(5)],
+#                     "value": 30,
+#                     "tags": ["mustapha","kemal"]})
+
+# print add_time_to_exam(lecturer_token,
+#                        "eecs 468",
+#                        "bioinformatic_mt_2",
+#                        10)
+
+# print change_status_of_exam(lecturer_token,
+#                             "eecs 468",
+#                             "bioinformatic_mt_2",
+#                             "draft")

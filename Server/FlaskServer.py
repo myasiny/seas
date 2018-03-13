@@ -133,7 +133,7 @@ def getStudentList(organization, course):
 def getLecturerCourseList(organization, username):
     token = get_jwt_identity()
     if not check_auth(token, "superuser", "admin", "lecturer"):
-        return jsonify("Unauthorized access!")
+        return jsonify(db.get_student_courses(organization, username))
     else:
         return jsonify(db.get_lecturer_courses(organization, username))
 
@@ -171,7 +171,8 @@ def addExam(organization, course):
         time = request.form["time"]
         duration = request.form["duration"]
         questions = json.loads(request.form["questions"])
-        exam = Exam(name, course, time, duration, organization)
+        status = request.form["status"]
+        exam = Exam(name, organization, db)
         for j in questions:
             i=questions[j]
             exam.addQuestion(
@@ -183,7 +184,7 @@ def addExam(organization, course):
                 i["outputs"],
                 i["value"],
                 i["tags"])
-        return jsonify(exam.save(db))
+        return jsonify(exam.save(course, time, duration, status))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/delete", methods=["DELETE"])
@@ -193,29 +194,28 @@ def deleteExam(organization, course, exam):
     if not check_auth(token, "superuser", "admin", "lecturer"):
         return jsonify("Unauthorized access!")
     else:
-        return jsonify(db.delete_exam(organization, exam))
+        return jsonify(Exam(exam, organization, db).delete_exam())
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/", methods=["GET"])
 @jwt_required
 def getExamsOfLecture(organization, course):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin", "lecturer"):
-        return jsonify("Unauthorized access!")
-    else:
-        return jsonify("Constraction Sİte!")
+    # todo: STUDENT CANNOT REACH QUESTIONS BEFORE EXAM START TIME
+    return jsonify(db.get_exams_of_lecture(organization, course))
     pass
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>", methods=["GET"])
 @jwt_required
 def getExam(organization, course, name):
-    exam = Exam(name, course, None, None, organization)
-    return jsonify(exam.get(db))
+    exam = Exam(name, organization, db)
+    return jsonify(exam.get())
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/addQuestion", methods=["PUT"])
 @jwt_required
+#todo: fatihgulmez
 def addQuestionsToExam(organization, course, name):
     token = get_jwt_identity()
     if not check_auth(token, "superuser", "admin", "lecturer"):
@@ -258,6 +258,26 @@ def gradeQuestion(organization, course, question_id, studentUser):
         return jsonify(db.grade_answer(organization, user, studentUser, question_id, request.form["grade"]))
 
 
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/<string:question_id>/edit", methods=["PUT"])
+@jwt_required
+def editQuestion(organization, course, exam_name, question_id):
+    return jsonify(Exam(exam_name, organization, db).edit_a_question(question_id, json.loads(request.form["data"])))
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/more_time", methods=["PUT"])
+@jwt_required
+def addTimeToExam(organization, course, exam_name):
+    return jsonify(Exam(exam_name, organization, db).add_more_time(request.form["additional_time"]))
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/status", methods=["PUT"])
+@jwt_required
+def changeStatusOfExam(organization, course, exam_name):
+    return jsonify(Exam(exam_name, organization, db).change_status(request.form["status"]))
+
+
+
+
 if __name__ == "__main__":
-    # app.run(host="10.50.81.24", port=8888, threaded=True)
-    print db.get_user_info("istanbul_sehir_university", "fatihgulmez")
+    app.run(host="10.50.81.24", port=8888, threaded=True)
+    # print db.get_user_info("istanbul_sehir_university", "fatihgulmez")

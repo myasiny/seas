@@ -1,4 +1,5 @@
 def on_reset(self):
+    pass
 
 def on_back(pages, screen):
     try:

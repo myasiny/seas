@@ -5,7 +5,7 @@ from GUI.func import database_api
 
 def check_connection(img, dt):
     try:
-        if database_api.testConnection("http://192.168.43.164:8888"):
+        if database_api.testConnection():
             img.source = "img/ico_connection_success.png"
         else:
             img.source = "img/ico_connection_fail.png"
