@@ -1,3 +1,9 @@
+'''
+    This method imports profile picture from server and rounds it in order to show on top menu and PgProfile
+'''
+
+from kivy.logger import Logger
+
 from GUI.func import database_api
 from PIL import Image, ImageOps, ImageDraw
 
@@ -16,5 +22,7 @@ def round_image():
         output = ImageOps.fit(img, mask.size, centering=(0.5, 0.5))
         output.putalpha(mask)
         output.save("img/pic_user.png")
+
+        Logger.info("round_image: Profile picture successfully imported from server and rounded on local")
     except:
-        print ("SEAS [ERROR]: round_image > Except > Image Shaping Failed")
+        Logger.error("round_image: Profile picture neither imported from server nor rounded on local")

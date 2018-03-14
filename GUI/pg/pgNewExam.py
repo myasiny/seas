@@ -1,6 +1,11 @@
+from kivy.logger import Logger
 from kivy.animation import Animation
 from GUI.grdn.kivycalendar import CalendarWidget
 from GUI.grdn.circulardatetimepicker import CircularTimePicker
+
+'''
+    This method updates lecture information, creates calendar and time picker widgets before entering PgNewExam
+'''
 
 def on_pre_enter(self):
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
@@ -19,6 +24,15 @@ def on_pre_enter(self):
                                    pos_hint={"center_x": .825, "center_y": .3})
     self.add_widget(self.time)
 
+    Logger.info("pgNewExam: Calendar and time picker widgets successfully created")
+
+'''
+    This method whether exam information is provided or not
+    Accordingly, it raises warning or creates exam on local machine
+    If required fields are filled, it stores information and directs to PgNewQuestion
+    If not, it raises error and process for creating exam fails
+'''
+
 def on_new_exam_create(self):
     self.ids["img_wrong_examname"].opacity = 0
     self.ids["img_wrong_duration"].opacity = 0
@@ -31,6 +45,9 @@ def on_new_exam_create(self):
         with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:
             temp_selected_lect.write("\n%s\n%s\n%s %s" % (self.ids["input_examname"].text, self.ids["input_duration"].text, date, time))
             temp_selected_lect.close()
+
+        Logger.info("pgNewExam: Exam information given, new exam successfully created on local")
+
         return True
     else:
         anim_appear = Animation(opacity=1, duration=1)
@@ -39,4 +56,5 @@ def on_new_exam_create(self):
             anim_appear.start(self.ids["img_wrong_examname"])
         elif self.ids["input_duration"].text == "":
             anim_appear.start(self.ids["img_wrong_duration"])
+
         return False

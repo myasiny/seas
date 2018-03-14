@@ -1,25 +1,40 @@
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.clock import Clock
+from kivy.logger import Logger
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.animation import Animation
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 
-import sys
-sys.path.append("../..")
-
 from functools import partial
 from GUI.func import database_api
 from GUI.func.check_connection import check_connection
+
+'''
+    This method loads design file for given page
+'''
 
 def load_string(name):
     with open("css/%s.seas" % name, "r") as design:
         Builder.load_string(design.read())
 
+    Logger.info("pg%s: Design successfully applied" % name.title())
+
+'''
+    This method triggers check_connection every 5 seconds
+'''
+
 def on_enter(self):
     Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 5.0)
+
+'''
+    This method checks whether username and password are provided or not
+    Accordingly, it raises warning or connects to server for logging in
+    If credentials are correct, it directs to either PgLects or PgStdLects according to account type
+    If not, it raises error and process for logging in fails
+'''
 
 def on_login(self, pages, screen, pgEdu, pgStd):
     btn_login = self.ids["btn_login"]
@@ -43,12 +58,17 @@ def on_login(self, pages, screen, pgEdu, pgStd):
         img_status.reload()
 
         btn_login.disabled = False
+
+        Logger.info("pgLogin: Required fields are not filled")
     else:
         try:
             data = database_api.signIn(input_username, input_password)
+
+            Logger.info("pgLogin: User credentials successfully sent to server")
         except:
             data = None
-            print ("SEAS [ERROR]: pgLogin > Except > Server Communication Failed")
+
+            Logger.error("pgLogin: Server is not reachable")
 
         if isinstance(data, list):
             anim_status.stop(img_status)
@@ -75,6 +95,8 @@ def on_login(self, pages, screen, pgEdu, pgStd):
                 screen.current = pages[2].name
 
             del pages[1]
+
+            Logger.info("pgLogin: User successfully logged in")
         else:
             anim_status.stop(img_status)
 
@@ -84,7 +106,16 @@ def on_login(self, pages, screen, pgEdu, pgStd):
 
             btn_login.disabled = False
 
+            Logger.info("pgLogin: User couldn't log in due to incorrect credentials")
+
+'''
+    This method asks user to confirm whether he or she wants to quit or not
+    Accordingly, program stops running or confirmation pop-up disappears
+'''
+
 def on_quit(self):
+    Logger.info("quit: This is sad :(")
+
     popup_content = FloatLayout()
     popup = Popup(title="Quit",
                   content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],

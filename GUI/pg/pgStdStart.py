@@ -1,3 +1,4 @@
+from kivy.logger import Logger
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
@@ -6,13 +7,23 @@ from kivy.uix.floatlayout import FloatLayout
 
 from functools import partial
 
+'''
+    This method is to update sign placed next to FAQ button according to its current status such as clicked, closed
+'''
+
 def faq_status(sign, dt):
     if sign.text == "+":
         sign.text = "-"
     else:
         sign.text = "+"
 
+'''
+    This method creates pop-up with specified design and given content whenever user clicks FAQ button
+'''
+
 def on_faq(self, no):
+    Logger.info("pgStart: Student clicked on FAQ button %s" % no)
+
     faq_status(self.ids["txt_faq_%s_click" % no], None)
 
     popup_content = FloatLayout()

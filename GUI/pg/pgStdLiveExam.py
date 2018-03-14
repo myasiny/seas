@@ -1,23 +1,26 @@
+from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
-
-import sys
-sys.path.append("../..")
 
 import subprocess32
 from functools import partial
 from GUI.func import database_api
 from pygments.lexers.python import PythonLexer
 
-def on_pre_enter(self):
-    # self.question_type = DatabaseAPI...
+'''
+    This method updates question information, creates multiple choice fields before entering PgStdLiveExam
+    Necessary fields get visible according to question type
+'''
 
-    # self.question_no = DatabaseAPI...
+def on_pre_enter(self):
+    # self.question_type = TODO
+
+    # self.question_no = TODO
     self.ids["txt_question_no"].text = "Question %d" % self.question_no
 
-    # self.question_grade = DatabaseAPI...
+    # self.question_grade = TODO
     self.ids["txt_question_grade"].text = "Grade: %d" % self.question_grade
 
-    # self.question_body = DatabaseAPI...
+    # self.question_body = TODO
     self.ids["txt_question_body"].text = self.question_body
 
     self.correct_answer = Spinner(text="Answer", values=("A", "B", "C", "D", "E"),
@@ -70,8 +73,19 @@ def on_pre_enter(self):
         self.ids["input_short_answer"].size_hint_y = 0
         self.ids["input_short_answer"].opacity = 0
 
+    Logger.info("pgStdLiveExam: Question %d successfully imported from server" & self.question_no)
+
+'''
+    This method is to store final answer given by student for multiple choice question
+'''
+
 def on_correct_answer_selected(self, spinner, text):
     self.multiple_choice_answer = text
+
+'''
+    This method enables student compiling code written by him or her and seeing its output
+    If compiling takes more than 10 seconds, it raises timeout exception and stops compiling
+'''
 
 def on_run(self):
     if self.run_or_pause == "run":
@@ -91,7 +105,8 @@ def on_run(self):
                 temp_output = e.output.split("\n")[-3][:-1] + "\n" + e.output.split("\n")[-2][:-1]
         except:
             temp_output = "TimeoutError: infinite loop or something"
-            print ("SEAS [ERROR]: pgStdLiveExam > Except > Compiling Took So Long")
+
+            Logger.error("pgStdLiveExam: Compiling student's code took more than 10 seconds, raised timeout error")
         finally:
             self.ids["txt_code_output"].text = temp_output
 
@@ -105,16 +120,34 @@ def on_run(self):
 
         self.run_or_pause = "run"
 
-    def on_question_previous(self):
-        # if DatabaseAPI... is not None:
-        #     return True
+'''
+    This method ...
+'''
 
-    def on_question_remove(self):
-        # DatabaseAPI.delete...
+def on_question_previous(self):
+    pass
+    # TODO
 
-    def on_question_next(self):
-        # if DatabaseAPI... is not None:
-        #     return True
+'''
+    This method ...
+'''
 
-    def on_question_save(self):
-        # DatabaseAPI.save...
+def on_question_remove(self):
+    pass
+    # TODO
+
+'''
+    This method ...
+'''
+
+def on_question_next(self):
+    pass
+    # TODO
+
+'''
+    This method ...
+'''
+
+def on_question_save(self):
+    pass
+    # TODO

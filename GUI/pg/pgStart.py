@@ -1,3 +1,4 @@
+from kivy.logger import Logger
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
@@ -8,9 +9,17 @@ import webbrowser
 from functools import partial
 from GUI.func.round_image import round_image
 
+'''
+    This method rounds user's profile picture and updates top-left image widget accordingly
+'''
+
 def on_pre_enter(self):
     round_image()
     self.ids["img_user"].reload()
+
+'''
+    This method is to update sign placed next to FAQ button according to its current status such as clicked, closed
+'''
 
 def faq_status(sign, dt):
     if sign.text == "+":
@@ -18,7 +27,13 @@ def faq_status(sign, dt):
     else:
         sign.text = "+"
 
+'''
+    This method creates pop-up with specified design and given content whenever user clicks FAQ button
+'''
+
 def on_faq(self, no):
+    Logger.info("pgStart: Educator clicked on FAQ button %s" % no)
+
     faq_status(self.ids["txt_faq_%s_click" % no], None)
 
     popup_content = FloatLayout()
@@ -54,6 +69,10 @@ def on_faq(self, no):
     popup.bind(on_dismiss=partial(faq_status, self.ids["txt_faq_%s_click" % no]))
     popup.open()
 
+'''
+    This method opens given website on default local web browser when user clicks
+'''
+
 def on_follow(name):
     if name == "twitter":
         webbrowser.open("https://twitter.com/wivernsoft/")
@@ -61,3 +80,5 @@ def on_follow(name):
         webbrowser.open("https://instagram.com/wivernsoft/")
     elif name == "linkedin":
         webbrowser.open("https://linkedin.com/company/11379247/")
+
+    Logger.info("pgStart: Educator clicked on social media link and directed to %s" % name.title())

@@ -1,5 +1,9 @@
-import sys
-sys.path.append("../..")
+'''
+    This method checks whether communication with server is still alive or not
+    Accordingly, it updates the image on pages where connection status is shown (e.g. PgLogin)
+'''
+
+from kivy.logger import Logger
 
 from GUI.func import database_api
 
@@ -7,11 +11,15 @@ def check_connection(img, dt):
     try:
         if database_api.testConnection():
             img.source = "img/ico_connection_success.png"
+
+            Logger.info("check_connection: GUI successfully connected to server")
         else:
             img.source = "img/ico_connection_fail.png"
-            print ("SEAS [ERROR]: check_connection > Try > Server Connection Failed")
+
+            Logger.error("check_connection: GUI couldn't connect to server")
     except:
         img.source = "img/ico_connection_fail.png"
-        print ("SEAS [ERROR]: check_connection > Except > Server Connection Not Found")
+
+        Logger.error("check_connection: Server is not reachable")
     finally:
         img.reload()
