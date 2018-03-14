@@ -3,11 +3,10 @@
 import sqlite3
 from flaskext.mysql import MySQL
 from passlib.apps import custom_app_context as pwd_context
-import sys, json, csv, threading
-from Functionality.passwordGenerator import passwordGenerator
-from Functionality.sendEmail import sentMail
+import json, csv, threading
+from Server.External_Functions.passwordGenerator import passwordGenerator
+from Server.External_Functions.sendEmail import sentMail
 import os
-sys.path.append("..")
 
 
 class SqlLiteDB:
