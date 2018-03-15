@@ -562,8 +562,6 @@ screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(PgSplash(name="PgSplash"))
 
 '''
-    APPLICATION SETTINGS
-    
     This part is to configure icon, title, size and preferences of program
     Additionally, settings for forcing run-on-top are also handled here
 '''
@@ -600,6 +598,6 @@ if __name__ == "__main__":
     hm.HookKeyboard()
 
     Logger.info("main: Blocked buttons successfully set")
-    Logger.info("main: App successfully started")
+    Logger.info("main: Program successfully started")
 
     SeasApp().run()

@@ -58,8 +58,6 @@ def on_login(self, pages, screen, pgEdu, pgStd):
         img_status.reload()
 
         btn_login.disabled = False
-
-        Logger.info("pgLogin: Required fields are not filled")
     else:
         try:
             data = database_api.signIn(input_username, input_password)
