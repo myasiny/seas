@@ -1,9 +1,10 @@
 from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
 
-import subprocess32
-from functools import partial
+import subprocess32, psutil, code, sys, os
+from StringIO import StringIO
 from GUI.func import database_api
+from functools import partial
 from pygments.lexers.python import PythonLexer
 
 '''
@@ -85,6 +86,11 @@ def on_pre_enter(self):
         self.ids["input_short_answer"].size_hint_y = 0
         self.ids["input_short_answer"].opacity = 0
 
+    self.list_progs_pre = []
+    proc = psutil.Process()
+    for i in proc.open_files():
+        self.list_progs_pre.append(i.path)
+
     Logger.info("pgStdLiveExam: Question %s successfully imported from server" & self.question_no)
 
 '''
@@ -113,6 +119,15 @@ def on_run(self):
         try:
             try:
                 temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"], stderr=subprocess32.STDOUT, timeout=10)
+
+                old_stdout = sys.stdout
+                sys.stdout = StringIO()
+                redirected_output = sys.stdout
+                script = self.codeinput.text
+                co = code.compile_command(script, "<stdin>", "exec")
+                exec co
+                sys.stdout = old_stdout
+                temp_output = redirected_output.getvalue()
             except subprocess32.CalledProcessError as e:
                 temp_output = e.output.split("\n")[-3][:-1] + "\n" + e.output.split("\n")[-2][:-1]
         except:
@@ -120,12 +135,23 @@ def on_run(self):
 
             Logger.error("pgStdLiveExam: Compiling student's code took more than 10 seconds, raised timeout error")
         finally:
-            self.ids["txt_code_output"].text = temp_output
+            self.list_progs_post = []
+            self.list_progs_ban = []
+            proc = psutil.Process()
+            for i in proc.open_files():
+                self.list_progs_post.append(i.path)
+            for i in list(set(self.list_progs_post) - set(self.list_progs_pre)):
+                if os.path.splitext(i)[1] != ".ttf":
+                    self.list_progs_ban.append(os.path.splitext(i))
+            if len(self.list_progs_ban) == 0:
+                self.ids["txt_code_output"].text = temp_output
 
-            self.ids["img_run"].source = "img/ico_run.png"
-            self.ids["img_run"].reload()
+                self.ids["img_run"].source = "img/ico_run.png"
+                self.ids["img_run"].reload()
 
-            self.run_or_pause = "run"
+                self.run_or_pause = "run"
+            else:
+                self.ids["txt_code_output"].text = "CheatingError: do not be an asshole"
     else:
         self.ids["img_run"].source = "img/ico_run.png"
         self.ids["img_run"].reload()
