@@ -97,20 +97,23 @@ def on_exam_selected(self):
     self.ids["img_info_top"].opacity = 0.5
     self.ids["img_info_body"].opacity = 0.5
     self.ids["txt_info_head"].opacity = 1
-    self.ids["txt_info_head"].text = self.ids["list_exams"].adapter.selection[0].text
+    try:
+        self.ids["txt_info_head"].text = self.ids["list_exams"].adapter.selection[0].text
+    except:
+        self.ids["txt_info_head"].text = "Information"
 
     self.ids["txt_date_head"].opacity = 1
     self.ids["txt_date_body"].opacity = 1
     for i in self.data_exams:
         if i[1] == self.ids["list_exams"].adapter.selection[0].text:
-            self.ids["txt_date_body"].text = i[3]
+            self.ids["txt_date_body"].text = str(i[3])
         break
 
     self.ids["txt_time_head"].opacity = 1
     self.ids["txt_time_body"].opacity = 1
     for i in self.data_exams:
         if i[1] == self.ids["list_exams"].adapter.selection[0].text:
-            self.ids["txt_time_body"].text = i[4]
+            self.ids["txt_time_body"].text = str(i[4])
         break
 
     self.ids["txt_options_head"].opacity = 1

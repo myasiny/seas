@@ -324,7 +324,7 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     Logger.info("pgLects: Educator successfully imported list of students")
 
 '''
-    This method TODO
+    This method stores selected exam's information locally and updates exam's status by connecting to server
 '''
 
 def on_start_exam(self):

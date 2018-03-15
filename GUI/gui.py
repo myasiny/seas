@@ -337,8 +337,6 @@ class PgLiveExam(Screen):
 
     def on_finish_exam(self):
         pgLiveExam.on_finish_exam(self)
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
 
     def on_participant_selected(self, dt):
         pgLiveExam.on_participant_selected(self)

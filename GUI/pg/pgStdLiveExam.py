@@ -31,7 +31,7 @@ def on_pre_enter(self):
     self.ids["txt_question_no"].text = "Question %s" % self.question_no
 
     self.question_grade = question_details["value"]
-    self.ids["txt_question_grade"].text = "Grade: %d" % self.question_grade
+    self.ids["txt_question_grade"].text = "Grade: %s" % str(self.question_grade)
 
     self.question_body = question_details["text"]
     self.ids["txt_question_body"].text = self.question_body
