@@ -283,29 +283,33 @@ def on_submit(self):
         return
     else:
         if self.question_type == "programming":
-            # TODO
-            # yson = {self.question_no: {"type": self.question_type,
-            #                            "subject": self.ids["input_subject"].text,
-            #                            "text": self.ids["input_question_body"].text,
-            #                            "answer": None,
-            #                            "inputs": [self.ids["input_input"].text.split(";")],
-            #                            "outputs": [self.ids["input_output"].text.split(";")],
-            #                            "value": int(self.ids["input_value"].text),
-            #                            "tags": self.ids["input_tags"].text.split(",")}
-            #         }
+            yson = {"type": self.question_type,
+                    "subject": self.ids["input_subject"].text,
+                    "text": self.ids["input_question_body"].text,
+                    "answer": None,
+                    "inputs": [self.ids["input_input"].text.split(",")],
+                    "outputs": [self.ids["input_output"].text.split(",")],
+                    "value": int(self.ids["input_value"].text),
+                    "tags": self.ids["input_tags"].text.split(",")}
+
+            database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
+                                           self.data_selected_lect[0].replace("\n", ""),
+                                           self.data_selected_lect[2].replace("\n", ""), yson)
 
             Logger.info("pgNewQuestion: Programming question created and sent to server")
         elif self.question_type == "short_answer":
-            # TODO
-            # yson = {self.question_no: {"type": self.question_type,
-            #                            "subject": self.ids["input_subject"].text,
-            #                            "text": self.ids["input_question_body"].text,
-            #                            "answer": self.ids["input_short_answer"].text,
-            #                            "inputs": None,
-            #                            "outputs": None,
-            #                            "value": int(self.ids["input_value"].text),
-            #                            "tags": self.ids["input_tags"].text.split(",")}
-            #         }
+            yson = {"type": self.question_type,
+                    "subject": self.ids["input_subject"].text,
+                    "text": self.ids["input_question_body"].text,
+                    "answer": self.ids["input_short_answer"].text,
+                    "inputs": None,
+                    "outputs": None,
+                    "value": int(self.ids["input_value"].text),
+                    "tags": self.ids["input_tags"].text.split(",")}
+
+            database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
+                                           self.data_selected_lect[0].replace("\n", ""),
+                                           self.data_selected_lect[2].replace("\n", ""), yson)
 
             Logger.info("pgNewQuestion: Short answer question created and sent to server")
         elif self.question_type == "multiple_choice":
@@ -325,21 +329,23 @@ def on_submit(self):
                 self.ids["img_wrong_e"].opacity = 1
                 return
             else:
-                # TODO
-                # yson = {self.question_no: {"type": self.question_type,
-                #                            "subject": self.ids["input_subject"].text,
-                #                            "text": self.ids["input_question_body"].text + "\n\n" +
-                #                                    "A)\t" + self.ids["input_answer_a"].text + "\n" +
-                #                                    "B)\t" + self.ids["input_answer_b"].text + "\n" +
-                #                                    "C)\t" + self.ids["input_answer_c"].text + "\n" +
-                #                                    "D)\t" + self.ids["input_answer_d"].text + "\n" +
-                #                                    "E)\t" + self.ids["input_answer_e"].text,
-                #                            "answer": self.multiple_choice_answer,
-                #                            "inputs": None,
-                #                            "outputs": None,
-                #                            "value": int(self.ids["input_value"].text),
-                #                            "tags": self.ids["input_tags"].text.split(",")}
-                #         }
+                yson = {"type": self.question_type,
+                        "subject": self.ids["input_subject"].text,
+                        "text": self.ids["input_question_body"].text + "\n\n" +
+                                "A)\t" + self.ids["input_answer_a"].text + "\n" +
+                                "B)\t" + self.ids["input_answer_b"].text + "\n" +
+                                "C)\t" + self.ids["input_answer_c"].text + "\n" +
+                                "D)\t" + self.ids["input_answer_d"].text + "\n" +
+                                "E)\t" + self.ids["input_answer_e"].text,
+                        "answer": self.multiple_choice_answer,
+                        "inputs": None,
+                        "outputs": None,
+                        "value": int(self.ids["input_value"].text),
+                        "tags": self.ids["input_tags"].text.split(",")}
+
+                database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
+                                               self.data_selected_lect[0].replace("\n", ""),
+                                               self.data_selected_lect[2].replace("\n", ""), yson)
 
                 Logger.info("pgNewQuestion: Multiple choice question created and sent to server")
         else:
