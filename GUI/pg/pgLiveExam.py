@@ -30,9 +30,9 @@ def on_pre_enter(self):
                                           self.data_selected_lect[0].replace("\n", ""),
                                           self.data_selected_lect[2].replace("\n", ""))
 
-    self.ids["txt_info_head"].text = self.data_selected_lect[0].replace("\n", " ") + "- " + self.data_selected_lect[2]
+    self.ids["txt_info_head"].text = self.data_selected_lect[0].replace("\n", "") + " - " + self.data_selected_lect[2]
 
-    self.duration = self.data_exam["Duration"]
+    self.duration = int(self.data_exam["Duration"])
     self.ids["txt_duration_clock"].text = str(self.duration)
 
     self.over = False
@@ -43,7 +43,7 @@ def on_pre_enter(self):
 
     self.ids["txt_info_time"].text = self.data_exam["Time"].split(" ")[1]
 
-    self.ids["txt_info_duration"].text = "%d mins" % self.duration
+    self.ids["txt_info_duration"].text = "%s mins" % str(self.duration)
 
     Logger.info("pgLiveExam: Exam information successfully imported from server")
 
@@ -59,11 +59,11 @@ def on_pre_enter(self):
     self.ids["img_monitor_forward"].opacity = 0.25
     self.ids["img_monitor_live"].opacity = 0.25
 
-    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", " "))
+    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""))
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
-            temp_student_list.write("{no} | {name}".format(no=str(d[2]), name=d[0] + " " + d[1]) + "\n")
+            temp_student_list.write("{no} | {name}\n".format(no=str(d[2]), name=d[0] + " " + d[1]))
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
@@ -143,17 +143,21 @@ def on_participant_selected(self):
 '''
 
 def on_value(self, bright):
-    self.ids["txt_monitor"].text = self.ordered_answer_dict.items()[int(bright)][1].replace("\t", "   ")
+    pass
+    # TODO
+    # self.ids["txt_monitor"].text = self.ordered_answer_dict.items()[int(bright)][1].replace("\t", "   ")
 
 '''
     This method is to enable educator rewinding text shown on monitor through button
 '''
 
 def on_monitor_backward(self):
-    if self.ids["slider_monitor"].value - 1 >= 0:
-        self.ids["slider_monitor"].value -= 1
-    else:
-        self.ids["slider_monitor"].value = 0
+    pass
+    # TODO
+    # if self.ids["slider_monitor"].value - 1 >= 0:
+    #     self.ids["slider_monitor"].value -= 1
+    # else:
+    #     self.ids["slider_monitor"].value = 0
 
 '''
     This method is to enable educator playing text on monitor automatically
@@ -179,7 +183,8 @@ def on_monitor_play(self):
 '''
 
 def on_monitor_pause(self):
-    self.event.cancel()
+    # TODO
+    # self.event.cancel()
 
     self.ids["btn_monitor_back"].disabled = False
     self.ids["btn_monitor_play"].disabled = False
@@ -198,10 +203,12 @@ def on_monitor_pause(self):
 '''
 
 def on_monitor_forward(self):
-    try:
-        self.ids["slider_monitor"].value += 1
-    except:
-        self.ids["slider_monitor"].value = 0
+    pass
+    # TODO
+    # try:
+    #     self.ids["slider_monitor"].value += 1
+    # except:
+    #     self.ids["slider_monitor"].value = 0
 
 '''
     This method ...
@@ -219,7 +226,7 @@ def on_add_time(self):
     database_api.add_time_to_exam(self.data_login[8].replace("\n", ""),
                                   self.data_selected_lect[0].replace("\n", ""),
                                   self.data_selected_lect[2].replace("\n", ""), 10)
-    self.ids["txt_info_duration"].text = "%d mins" % self.duration
+    self.ids["txt_info_duration"].text = "%s mins" % str(self.duration)
     self.ids["txt_duration_clock"].text = str(self.duration)
 
     Logger.info("pgLiveExam: Educator successfully added 10 more minutes to exam duration")

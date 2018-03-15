@@ -132,7 +132,10 @@ def on_exam_selected(self):
     self.ids["img_info_top"].opacity = 0.5
     self.ids["img_info_body"].opacity = 0.5
     self.ids["txt_info_head"].opacity = 1
-    self.ids["txt_info_head"].text = self.ids["list_exams"].adapter.selection[0].text
+    try:
+        self.ids["txt_info_head"].text = self.ids["list_exams"].adapter.selection[0].text
+    except:
+        self.ids["txt_info_head"].text = "Information"
 
     self.ids["txt_status_head"].opacity = 1
     self.ids["txt_status_body"].opacity = 1
@@ -319,6 +322,21 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list]
 
     Logger.info("pgLects: Educator successfully imported list of students")
+
+'''
+    This method TODO
+'''
+
+def on_start_exam(self):
+    with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:
+        temp_selected_lect.write("\n" + self.ids["txt_info_head"].text)
+        temp_selected_lect.close()
+
+    database_api.change_status_of_exam(self.data_login[8].replace("\n", ""),
+                                       self.ids["txt_lect_code"].text,
+                                       self.ids["txt_info_head"].text, "active")
+
+    Logger.info("pgLects: Educator successfully started exam")
 
 def on_class_statistics(self):
     pass

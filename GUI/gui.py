@@ -387,9 +387,7 @@ class PgLects(Screen):
         pgLects.on_exam_deleted(self)
 
     def on_start_exam(self, dt):
-        with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:
-            temp_selected_lect.write("\n" + self.ids["txt_info_head"].text)
-            temp_selected_lect.close()
+        pgLects.on_start_exam(self)
         pages.append(PgLiveExam(name="PgLiveExam"))
         tabReset.on_back(pages, screen)
 

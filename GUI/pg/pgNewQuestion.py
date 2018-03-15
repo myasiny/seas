@@ -76,7 +76,7 @@ def on_pre_enter(self):
 
     self.ids["txt_question_no"].text = "Question"
 
-    if "No Exam Named" not in self.data_detailed_exam:
+    if len(self.data_detailed_exam) > 0:
         Logger.info("pgNewQuestion: Question %s already exists, editing mode on" % self.question_no)
 
         self.question_no = self.data_detailed_exam.keys()[0]
@@ -289,7 +289,7 @@ def on_submit(self):
                     "answer": None,
                     "inputs": [self.ids["input_input"].text.split(",")],
                     "outputs": [self.ids["input_output"].text.split(",")],
-                    "value": int(self.ids["input_value"].text),
+                    "value": int(self.ids["input_grade"].text),
                     "tags": self.ids["input_tags"].text.split(",")}
 
             database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
@@ -304,7 +304,7 @@ def on_submit(self):
                     "answer": self.ids["input_short_answer"].text,
                     "inputs": None,
                     "outputs": None,
-                    "value": int(self.ids["input_value"].text),
+                    "value": int(self.ids["input_grade"].text),
                     "tags": self.ids["input_tags"].text.split(",")}
 
             database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
@@ -340,7 +340,7 @@ def on_submit(self):
                         "answer": self.multiple_choice_answer,
                         "inputs": None,
                         "outputs": None,
-                        "value": int(self.ids["input_value"].text),
+                        "value": int(self.ids["input_grade"].text),
                         "tags": self.ids["input_tags"].text.split(",")}
 
                 database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),

@@ -19,7 +19,7 @@ def check_std_live_exam(self, dt):
 
                 self.ids["btn_join_exam"].disabled = False
                 self.ids["txt_join_exam_name"].color = (1,1,1,1)
-                self.ids["txt_join_exam_name"].text = "%s has started!" % self.data_live_exam
+                self.ids["txt_join_exam_name"].text = "%s has started!" % exam[1]
 
                 Logger.info("check_std_live_exam: Successfully checked, there is a live exam")
 
