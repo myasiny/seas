@@ -6,6 +6,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.codeinput import CodeInput
 from kivy.config import Config
 from kivy.clock import Clock
+
 from kivy.extras.highlight import PythonLexer
 from kivy.uix.boxlayout import BoxLayout
 import matplotlib.pyplot as plt
@@ -19,13 +20,12 @@ key_list = []
 
 
 
-
 class MyApp(App):
     def build(self):
         Window.size = (1200, 500)
         flt = FloatLayout()
         self.codeinput = CodeInput(lexer=PythonLexer(), size_hint=(None, None), size=(500, 500), pos=(5, 5))
-        self.graph = BoxLayout(size_hint=(.5, .2), pos=(540, 5))
+        self.graph = BoxLayout(size_hint=(1, 1), pos=(540, 5))
         flt.add_widget(self.codeinput)
         flt.add_widget(self.graph)
         self.id = 0
@@ -53,6 +53,7 @@ class MyApp(App):
         for child in list(self.graph.children):
             self.graph.remove_widget(child)
         graph_widget = FigureCanvasKivyAgg(self.graphmaker().gcf())
+        graph_widget.size_hint = (1.0,1.0)
         self.graph.add_widget(graph_widget)
 
 def gui():
