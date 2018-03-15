@@ -1,11 +1,9 @@
 from kivy.app import App
-from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 
-import threading, socket, pickle
-from collections import OrderedDict
+import threading, socket, json
 
 class MainPage(Screen):
     def on_pre_enter(self, *args):
@@ -22,9 +20,13 @@ class MainPage(Screen):
         sock.listen(1)
         while 1:
             conn, addr = sock.accept()
-            data = pickle.loads(conn.recv(1024).decode("base64", "strict"))
+            # data = pickle.loads(conn.recv(1024).decode("base64"))
+            data = json.loads(conn.recv(1024))
             if data:
-                self.text_input.text = OrderedDict(sorted(data.items())).values()[-2]
+                try:
+                    self.text_input.text = data[sorted(data.keys())[-4]]
+                except:
+                    self.text_input.text = data[sorted(data.keys())[-2]]
 
 screen = ScreenManager()
 screen.add_widget(MainPage(name="MainPage"))

@@ -5,7 +5,7 @@ from kivy.uix.codeinput import CodeInput
 from kivy.uix.screenmanager import Screen, ScreenManager
 from pygments.lexers.python import PythonLexer
 
-import time, threading, socket, pickle
+import time, threading, socket, json
 from keyboard import on_press
 
 data = {}
@@ -37,7 +37,8 @@ class MainPage(Screen):
 
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect(("localhost", 8888))
-            sock.sendall(pickle.dumps(data).encode("base64", "strict"))
+            # sock.sendall(pickle.dumps(data).encode("base64"))
+            sock.sendall(json.dumps(data))
             sock.close()
         Clock.schedule_interval(tcp, 5)
 
