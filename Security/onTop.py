@@ -14,6 +14,7 @@ def on():
             hook_manager = pyHook.HookManager()
             hook_manager.KeyDown = OnKeyboardEvent
             hook_manager.HookKeyboard()
+
             window = win32gui.FindWindow(None, "Smart Exam Administration System")
             win32gui.ShowWindow(window, win32con.SW_MAXIMIZE)
             win32gui.SetWindowPos(window, win32con.HWND_TOPMOST, 0, 0, 0, 0, (win32con.SWP_NOSIZE))

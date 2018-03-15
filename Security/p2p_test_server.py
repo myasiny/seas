@@ -4,6 +4,7 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen, ScreenManager
 
 import threading, socket, json
+from collections import OrderedDict
 
 class MainPage(Screen):
     def on_pre_enter(self, *args):
@@ -21,12 +22,12 @@ class MainPage(Screen):
         while 1:
             conn, addr = sock.accept()
             # data = pickle.loads(conn.recv(1024).decode("base64"))
-            data = json.loads(conn.recv(1024))
+            data = json.loads(conn.recv())
             if data:
-                try:
-                    self.text_input.text = data[sorted(data.keys())[-4]]
-                except:
-                    self.text_input.text = data[sorted(data.keys())[-2]]
+                timestamp = OrderedDict(sorted(data.items())).values()[-1]
+                stdanswer = timestamp[0]
+                keystroke = timestamp[1]
+                self.text_input.text = stdanswer
 
 screen = ScreenManager()
 screen.add_widget(MainPage(name="MainPage"))
