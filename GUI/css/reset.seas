@@ -129,3 +129,12 @@
             size_hint: .1, .075
             pos_hint: {"x": .35, "center_y": .2}
             on_release: root.on_back()
+
+        Image:
+            id: img_status
+            source: "img/ico_loading.gif"
+            opacity: 0
+            allow_stretch: True
+            anim_loop: 0
+            size_hint: .05, .05
+            pos_hint: {"center_x": .65, "center_y": .8}

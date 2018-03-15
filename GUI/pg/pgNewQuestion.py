@@ -1,16 +1,17 @@
+from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
-
-import sys
-sys.path.append("../..")
 
 from functools import partial
 from GUI.func import database_api
 
+'''
+    This method creates multiple choice fields and makes right column invisible before entering PgNewQuestion
+    Necessary fields get visible according to question type selected through top-right radio buttons
+    Additionally, it checks whether question is already created or not
+    Accordingly, it leaves fields empty or connects to server for filling fields with given information
+'''
+
 def on_pre_enter(self):
-    # self.question_no = DatabaseAPI...
-
-    self.ids["txt_question_no"].text = "Question %d" % self.question_no
-
     self.correct_answer = Spinner(text="Correct Answer", values=("A", "B", "C", "D", "E"),
                                   color=(1, 1, 1, 1),
                                   font_name="font/CaviarDreams_Bold.ttf",
@@ -59,7 +60,7 @@ def on_pre_enter(self):
     check_3.background_radio_down = "img/widget_75_black_circle_selected.png"
     check_3.bind(active=partial(on_type_checked, self, "multiple_choice"))
 
-    self.question_type = "none"
+    Logger.info("pgNewQuestion: Radio buttons and fields for various question types created")
 
     temp_login = open("data/temp_login.seas", "r")
     self.data_login = temp_login.readlines()
@@ -67,8 +68,16 @@ def on_pre_enter(self):
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
     self.data_selected_lect = temp_selected_lect.readlines()
 
+    self.question_type = "none"
+
+    # self.question_no = TODO
+    self.ids["txt_question_no"].text = "Question %d" % self.question_no
+
     # data = database_api.getExam(self.data_login[7].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""), self.data_selected_lect[2].replace("\n", ""))
     # if data is not None:
+    #
+    #     Logger.info("pgNewQuestion: Question %d already exists, editing mode on" % self.question_no)
+    #
     #     self.ids["input_subject"].text = ...
     #     self.ids["input_tags"].text = ...
     #     self.ids["input_grade"].text = ...
@@ -139,6 +148,10 @@ def on_pre_enter(self):
     #         self.correct_answer.opacity = 1
 
 
+'''
+    This method either shows or hides widgets on PgNewQuestion whenever selected question type changes
+'''
+
 def on_type_checked(self, name, checkbox, value):
     if name == "programming":
         self.question_type = "programming"
@@ -204,20 +217,41 @@ def on_type_checked(self, name, checkbox, value):
         self.correct_answer.size_hint_y = 0.05
         self.correct_answer.opacity = 1
 
+'''
+    This method is to store correct answer selected by educator for multiple choice question
+'''
+
 def on_correct_answer_selected(self, spinner, text):
     self.multiple_choice_answer = text
 
+'''
+    This method ...
+'''
+
 def on_new_question_next(self):
     on_submit(self)
-    # nextPage
+    # TODO
+
+'''
+    This method ...
+'''
 
 def on_new_question_previous(self):
     pass
-    # prevPage
+    # TODO
+
+'''
+    This method ...
+'''
 
 def on_new_question_complete(self):
     on_submit(self)
-    # lectsPage
+    # TODO
+
+'''
+    This method checks whether required question information provided or not
+    Accordingly, it raises warning or connects to server for either creating or updating question
+'''
 
 def on_submit(self):
     self.ids["img_wrong_grade"].opacity = 0
@@ -237,6 +271,7 @@ def on_submit(self):
         return
     else:
         if self.question_type == "programming":
+            # TODO
             # yson = {self.question_no: {"type": self.question_type,
             #                            "subject": self.ids["input_subject"].text,
             #                            "text": self.ids["input_question_body"].text,
@@ -246,7 +281,10 @@ def on_submit(self):
             #                            "value": int(self.ids["input_value"].text),
             #                            "tags": self.ids["input_tags"].text.split(",")}
             #         }
+
+            Logger.info("pgNewQuestion: Programming question created and sent to server")
         elif self.question_type == "short_answer":
+            # TODO
             # yson = {self.question_no: {"type": self.question_type,
             #                            "subject": self.ids["input_subject"].text,
             #                            "text": self.ids["input_question_body"].text,
@@ -256,6 +294,8 @@ def on_submit(self):
             #                            "value": int(self.ids["input_value"].text),
             #                            "tags": self.ids["input_tags"].text.split(",")}
             #         }
+
+            Logger.info("pgNewQuestion: Short answer question created and sent to server")
         elif self.question_type == "multiple_choice":
             if self.ids["input_answer_a"].text == "":
                 self.ids["img_wrong_a"].opacity = 1
@@ -273,6 +313,7 @@ def on_submit(self):
                 self.ids["img_wrong_e"].opacity = 1
                 return
             else:
+                # TODO
                 # yson = {self.question_no: {"type": self.question_type,
                 #                            "subject": self.ids["input_subject"].text,
                 #                            "text": self.ids["input_question_body"].text + "\n\n" +
@@ -287,13 +328,16 @@ def on_submit(self):
                 #                            "value": int(self.ids["input_value"].text),
                 #                            "tags": self.ids["input_tags"].text.split(",")}
                 #         }
+
+                Logger.info("pgNewQuestion: Multiple choice question created and sent to server")
         else:
             self.ids["img_wrong_question_type"].opacity = 1
             return
 
-        temp_selected_lect = open("data/temp_selected_lect.seas", "r")
-        self.data_selected_lect = temp_selected_lect.readlines()
-
+        # TODO
+        # temp_selected_lect = open("data/temp_selected_lect.seas", "r")
+        # self.data_selected_lect = temp_selected_lect.readlines()
+        #
         # database_api.createExam("http://192.168.43.164:8888", "istanbul sehir university",
         #                         self.data_selected_lect[0].replace("\n", ""),
         #                         self.data_selected_lect[2].replace("\n", ""),

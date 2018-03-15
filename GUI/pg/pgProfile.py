@@ -1,11 +1,14 @@
+from kivy.logger import Logger
 from kivy.animation import Animation
 
-import sys, time
-sys.path.append("../..")
-
+import time
 from GUI.func import database_api
 from GUI.func.round_image import round_image
 from GUI.func.barcode_png import barcode_png
+
+'''
+    This method updates top-mid identity card widget according to user information before entering PgProfile
+'''
 
 def on_pre_enter(self):
     temp_login = open("data/temp_login.seas", "r")
@@ -27,6 +30,13 @@ def on_pre_enter(self):
     self.ids["input_new_password"].disabled = True
     self.ids["input_new_mail"].disabled = True
 
+    Logger.info("pgProfile: Detailed user information successfully written onto identity card")
+
+'''
+    This method runs every time text in current password field changes
+    Accordingly, it enables or disables new password and new e-mail fields
+'''
+
 def on_text_change(self, name):
     if name == "current_password":
         if not self.ids["input_current_password"].text == "":
@@ -45,6 +55,13 @@ def on_text_change(self, name):
             self.ids["input_new_password"].disabled = True
         else:
             self.ids["input_new_password"].disabled = False
+
+'''
+    This method checks whether new password or new e-mail are provided along with current password or not
+    Accordingly, it raises warning or connects to server for changing either password or e-mail
+    If current password is correct, it updates password or e-mail and directs to PgLogin
+    If not, it raises error and process for changing password or e-mail fails
+'''
 
 def on_submit(self):
     img_wrong = self.ids["img_wrong"]
@@ -68,6 +85,8 @@ def on_submit(self):
                                                  input_current_password.text, input_new_password.text,
                                                  isMail=False)
             if result == "Password Changed":
+                Logger.info("pgProfile: Password successfully changed")
+
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_done)
                 time.sleep(1)
@@ -81,6 +100,8 @@ def on_submit(self):
                                                  input_current_password.text, input_new_mail.text,
                                                  isMail=True)
             if result == "Mail Changed":
+                Logger.info("pgProfile: E-mail successfully changed")
+
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_done)
                 time.sleep(1)

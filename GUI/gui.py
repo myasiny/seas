@@ -1,14 +1,31 @@
-from kivy.config import Config
-Config.set("kivy", "exit_on_escape", "0")
-Config.set("input", "mouse", "mouse, multitouch_on_demand")
-
 from kivy.app import App
 from kivy.clock import Clock
+from kivy.logger import Logger
 from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
+import os, pyHook
 from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
+
+'''
+    This part is to block esc for preventing quick exit and right click for preventing red dots on screen
+    Additionally, enabling file logging is also handled here
+'''
+
+from kivy.config import Config
+Config.set("kivy", "log_enable", "1")
+Config.set("kivy", "log_maxfiles", "-1")
+Config.set("kivy", "log_name", "temp_logs_%d-%m-%y_%H-%M-%S.seas")
+Config.set("kivy", "log_dir", os.path.dirname(os.path.abspath(__file__)) + "\\data\\logs\\")
+Config.set("kivy", "exit_on_escape", "0")
+Config.set("input", "mouse", "mouse, multitouch_on_demand")
+
+Logger.info("main: Esc and right click successfully blocked")
+
+'''
+    This class is to organize functions of PgStdStats
+'''
 
 class PgStdStats(Screen):
     pgLogin.load_string("stdstats")
@@ -35,6 +52,10 @@ class PgStdStats(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+'''
+    This class is to organize functions of PgStats
+'''
+
 class PgStats(Screen):
     pgLogin.load_string("stats")
 
@@ -60,6 +81,10 @@ class PgStats(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+'''
+    This class is to organize functions of PgStdLiveExam
+'''
+
 class PgStdLiveExam(Screen):
     pgLogin.load_string("stdliveexam")
 
@@ -84,6 +109,10 @@ class PgStdLiveExam(Screen):
 
     def on_question_save(self):
         pgStdLiveExam.on_question_save(self)
+
+'''
+    This class is to organize functions of PgStdLects
+'''
 
 class PgStdLects(Screen):
     pgLogin.load_string("stdlects")
@@ -120,6 +149,10 @@ class PgStdLects(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+'''
+    This class is to organize functions of PgStdProfile
+'''
+
 class PgStdProfile(Screen):
     pgLogin.load_string("stdprofile")
 
@@ -153,6 +186,10 @@ class PgStdProfile(Screen):
 
     def on_quit(self):
         pgLogin.on_quit(self)
+
+'''
+    This class is to organize functions of PgStdStart
+'''
 
 class PgStdStart(Screen):
     pgLogin.load_string("stdstart")
@@ -188,6 +225,10 @@ class PgStdStart(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+'''
+    This class is to organize functions of PgNewQuestion
+'''
+
 class PgNewQuestion(Screen):
     pgLogin.load_string("newquestion")
 
@@ -206,6 +247,10 @@ class PgNewQuestion(Screen):
 
     def on_new_question_complete(self):
         pgNewQuestion.on_new_question_complete(self)
+
+'''
+    This class is to organize functions of PgNewExam
+'''
 
 class PgNewExam(Screen):
     pgLogin.load_string("newexam")
@@ -248,6 +293,10 @@ class PgNewExam(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+'''
+    This class is to organize functions of PgLiveExam
+'''
+
 class PgLiveExam(Screen):
     pgLogin.load_string("liveexam")
 
@@ -285,6 +334,10 @@ class PgLiveExam(Screen):
         pgLiveExam.on_lects(self)
         pages.append(PgLects(name="PgLects"))
         tabReset.on_back(pages, screen)
+
+'''
+    This class is to organize functions of PgLects
+'''
 
 class PgLects(Screen):
     pgLogin.load_string("lects")
@@ -352,6 +405,10 @@ class PgLects(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+'''
+    This class is to organize functions of PgProfile
+'''
+
 class PgProfile(Screen):
     pgLogin.load_string("profile")
 
@@ -385,6 +442,10 @@ class PgProfile(Screen):
 
     def on_quit(self):
         pgLogin.on_quit(self)
+
+'''
+    This class is to organize functions of PgStart
+'''
 
 class PgStart(Screen):
     pgLogin.load_string("start")
@@ -420,6 +481,10 @@ class PgStart(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+'''
+    This class is to organize functions of TabReset
+'''
+
 class TabReset(Screen):
     pgLogin.load_string("reset")
 
@@ -436,6 +501,10 @@ class TabReset(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+'''
+    This class is to organize functions of PgLogin
+'''
+
 class PgLogin(Screen):
     pgLogin.load_string("login")
 
@@ -449,7 +518,7 @@ class PgLogin(Screen):
         self._keyboard = None
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        if keycode[1] == 'enter':
+        if keycode[1] == "enter":
             PgLogin.on_login(self)
         return True
 
@@ -466,6 +535,10 @@ class PgLogin(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+'''
+    This class is to organize functions of PgSplash
+'''
+
 class PgSplash(Screen):
     pgLogin.load_string("splash")
 
@@ -478,11 +551,20 @@ class PgSplash(Screen):
         anim_fade = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
         anim_fade.start(self.ids["img_developer_dark"])
 
+'''
+    This part is to handle page switching and refreshing
+'''
+
 pages = [PgSplash(name="PgSplash"),
          PgLogin(name="PgLogin")]
 
 screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(PgSplash(name="PgSplash"))
+
+'''
+    This part is to configure icon, title, size and preferences of program
+    Additionally, settings for forcing run-on-top are also handled here
+'''
 
 class SeasApp(App):
     icon = "icon.ico"
@@ -490,9 +572,32 @@ class SeasApp(App):
     use_kivy_settings = False
     Window.fullscreen = "auto"
 
+    Logger.info("main: Icon, title, size and preferences successfully set")
+
     def build(self):
         screen.current = "PgSplash"
         return screen
 
+    def force(self):
+        Window.maximize()
+        Window.top = 0
+
+    Window.bind(on_cursor_leave=force)
+
+    Logger.info("main: Cursor track successfully bound")
+
+def on_keyboard_event(event):
+    if event.Key.lower() in ["lwin", "lmenu", "rmenu"]:
+        return False
+    else:
+        return True
+
 if __name__ == "__main__":
+    hm = pyHook.HookManager()
+    hm.KeyDown = on_keyboard_event
+    hm.HookKeyboard()
+
+    Logger.info("main: Blocked buttons successfully set")
+    Logger.info("main: Program successfully started")
+
     SeasApp().run()

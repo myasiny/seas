@@ -1,3 +1,4 @@
+from kivy.logger import Logger
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
@@ -6,11 +7,14 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.filechooser import FileChooserListView
 from kivy.adapters.listadapter import ListAdapter
 
-import os, sys
-sys.path.append("../..")
-
+import os
 from GUI.func import excel_to_csv
 from GUI.func import database_api
+
+'''
+    This method imports all lectures given by educator from server
+    Then, puts them into top-left dropdown menu before entering PgLects
+'''
 
 def on_pre_enter(self):
     temp_login = open("data/temp_login.seas", "r")
@@ -48,6 +52,13 @@ def on_pre_enter(self):
 
     self.add_widget(btn_main)
 
+    Logger.info("pgLects: Educator's lectures successfully imported from server and listed on GUI")
+
+'''
+    This method re-organizes page according to information of selected lecture
+    Default layout shown at first is exams
+'''
+
 def on_lect_select(self, dropdown, txt):
     dropdown.select(txt)
 
@@ -84,7 +95,14 @@ def on_lect_select(self, dropdown, txt):
     self.ids["btn_exam_delete"].opacity = 0
     self.ids["btn_exam_start_grade"].opacity = 0
 
+    Logger.info("pgLects: Educator selected lecture %s" % txt)
+
     on_exams(self)
+
+'''
+    This method tries to make exams layout visible if it is already not
+    Then, imports exams of selected lecture from server and lists on GUI
+'''
 
 def on_exams(self):
     if self.ids["layout_exams"] not in list(self.children):
@@ -103,6 +121,12 @@ def on_exams(self):
     self.ids["list_exams"].adapter = ListAdapter(data=[i[0] for i in self.data_exam_details], cls=ListItemButton,
                                                  args_converter=args_converter, allow_empty_selection=False)
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
+
+    Logger.info("pgLects: Exams of selected lecture successfully imported from server and listed on GUI")
+
+'''
+    This method re-organizes bottom-right widget and related button bindings according to information of selected exam
+'''
 
 def on_exam_selected(self):
     self.ids["img_info_top"].opacity = 0.5
@@ -126,29 +150,34 @@ def on_exam_selected(self):
 
     if self.ids["txt_status_body"].text == "Completed":
         self.ids["btn_exam_start_grade"].text = "GRADE"
-        # self.ids["btn_exam_start_grade"].bind(on_release=self...)
+        # TODO
     elif self.ids["txt_status_body"].text == "Graded":
         self.ids["btn_exam_start_grade"].text = "DOWNLOAD"
-        # self.ids["btn_exam_start_grade"].bind(on_release=self...)
+        # TODO
     elif self.ids["txt_status_body"].text == "Ready":
         self.ids["btn_exam_start_grade"].text = "PUBLISH"
-        # self.ids["btn_exam_start_grade"].bind(on_release=self...)
+        # TODO
     else:
         self.ids["btn_exam_start_grade"].text = "START"
         self.ids["btn_exam_start_grade"].bind(on_release=self.on_start_exam)
+
+'''
+    This method requests deletion of selected lecture from server and re-lists exams of selected lecture on GUI
+'''
 
 def on_exam_deleted(self):
     database_api.deleteExam(self.data_login[0].replace("\n", ""), self.ids["list_exams"].adapter.selection[0].text, self.ids["txt_lect_code"].text)
 
     self.data_exam_details = database_api.getExamsOfLecture(self.data_login[0].replace("\n", ""), self.ids["txt_lect_code"].text)
 
-    args_converter = lambda row_index, i: {"text": i,
-                                           "background_normal": "img/widget_75_black_crop.png",
-                                           "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height / 25,
-                                           "size_hint_y": None, "height": self.height / 10}
-    self.ids["list_exams"].adapter = ListAdapter(data=[i[0] for i in self.data_exam_details], cls=ListItemButton,
-                                                 args_converter=args_converter, allow_empty_selection=False)
-    self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
+    self.ids["list_exams"].adapter.data = [i[0] for i in self.data_exam_details]
+
+    Logger.info("pgLects: Exam successfully deleted")
+
+'''
+    This method tries to make participants layout visible if it is already not
+    Then, imports participants of selected lecture from server and lists on GUI
+'''
 
 def on_participants(self):
     if self.ids["layout_participants"] not in list(self.children):
@@ -177,6 +206,12 @@ def on_participants(self):
     self.ids["list_participants"].adapter.bind(on_selection_change=self.on_participant_selected)
 
     self.ids["btn_import_list"].bind(on_release=self.on_import_list)
+
+    Logger.info("pgLects: Participants of selected lecture successfully imported from server and listed on GUI")
+
+'''
+    This method re-organizes bottom-right widget and related button bindings according to information of selected student
+'''
 
 def on_participant_selected(self):
     txt_id_body = "..."
@@ -212,6 +247,10 @@ def on_participant_selected(self):
 
     self.ids["btn_student_statistics"].opacity = 1
 
+'''
+    This method requests deletion of selected student from server and re-lists participants of selected lecture on GUI
+'''
+
 def on_participant_deleted(self):
     database_api.deleteStudentFromLecture(self.data_login[0].replace("\n", ""), self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
 
@@ -227,7 +266,16 @@ def on_participant_deleted(self):
 
     self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list]
 
+    Logger.info("pgLects: Participant successfully deleted")
+
+'''
+    This method opens pop-up for importing list of students as either excel or csv
+    Accordingly, it calls on_import_list_selected or disappears
+'''
+
 def on_import_list(self):
+    Logger.info("pgLects: Educator called import list pop-up")
+
     popup_content = FloatLayout()
     self.popup = Popup(title="* Double click to select a file!",
                        content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
@@ -247,6 +295,10 @@ def on_import_list(self):
                                     on_release=self.popup.dismiss))
     self.popup.open()
 
+'''
+    This method sends imported file containing list of students to server and lists them on GUI
+'''
+
 def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.popup.dismiss()
 
@@ -264,6 +316,8 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.data_student_list = temp_student_list.readlines()
 
     self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list]
+
+    Logger.info("pgLects: Educator successfully imported list of students")
 
 def on_class_statistics(self):
     pass

@@ -1,15 +1,18 @@
 from kivy.clock import Clock
+from kivy.logger import Logger
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.listview import ListItemButton
 from kivy.adapters.listadapter import ListAdapter
 
-import sys
-sys.path.append("../..")
-
 from functools import partial
 from GUI.func import database_api
 from GUI.func.check_std_live_exam import check_std_live_exam
+
+'''
+    This method imports all lectures that student registered from server
+    Then, puts them into top-left dropdown menu before entering PgLects
+'''
 
 def on_pre_enter(self):
     temp_login = open("data/temp_login.seas", "r")
@@ -17,7 +20,7 @@ def on_pre_enter(self):
 
     self.data = []
 
-    data_lectures = database_api.getStudentCourses(self.data_login[7].replace("\n", ""), self.data_login[0].replace("\n", ""))
+    # data_lectures = TODO
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0] + "_" + i[2])
 
@@ -49,6 +52,13 @@ def on_pre_enter(self):
 
     Clock.schedule_interval(partial(check_std_live_exam, self), 5.0)
 
+    Logger.info("pgLects: Student's lectures successfully imported from server and listed on GUI")
+
+'''
+    This method re-organizes page according to information of selected lecture
+    Additionally, it imports exams of selected lecture from server and lists on GUI
+'''
+
 def on_lect_select(self, dropdown, txt):
     dropdown.select(txt)
 
@@ -67,7 +77,7 @@ def on_lect_select(self, dropdown, txt):
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
 
-    # self.data_exams = database_api...
+    # self.data_exams = TODO
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -77,6 +87,12 @@ def on_lect_select(self, dropdown, txt):
                                                  args_converter=args_converter, allow_empty_selection=False)
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
 
+    Logger.info("pgLects: Student selected lecture %s" % txt)
+
+'''
+    This method re-organizes bottom-right widget and related button bindings according to information of selected exam
+'''
+
 def on_exam_selected(self):
     self.ids["img_info_top"].opacity = 0.5
     self.ids["img_info_body"].opacity = 0.5
@@ -85,11 +101,11 @@ def on_exam_selected(self):
 
     self.ids["txt_date_head"].opacity = 1
     self.ids["txt_date_body"].opacity = 1
-    # self.ids["txt_date_body"].text = ...
+    # self.ids["txt_date_body"].text = TODO
 
     self.ids["txt_time_head"].opacity = 1
     self.ids["txt_time_body"].opacity = 1
-    # self.ids["txt_time_body"].text = ...
+    # self.ids["txt_time_body"].text = TODO
 
     self.ids["txt_options_head"].opacity = 1
     self.ids["btn_exam_statistics"].opacity = 1

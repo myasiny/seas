@@ -1,4 +1,5 @@
 from kivy.clock import Clock
+from kivy.logger import Logger
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
@@ -6,14 +7,17 @@ from kivy.uix.listview import ListItemButton
 from kivy.uix.floatlayout import FloatLayout
 from kivy.adapters.listadapter import ListAdapter
 
-import sys, collections
+import collections
 import matplotlib.pyplot as plt
-sys.path.append("../..")
 
 from functools import partial
 from GUI.func import database_api
 from GUI.func.date_time import date_time, min_timer
 from GUI.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+
+'''
+    This method updates exam information and imports participants of exam to list on GUI before entering PgLiveExam
+'''
 
 def on_pre_enter(self):
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
@@ -21,18 +25,20 @@ def on_pre_enter(self):
 
     self.ids["txt_info_head"].text = self.data_selected_lect[0].replace("\n", " ") + "- " + self.data_selected_lect[2]
 
-    # self.duration = DatabaseAPI...
+    # self.duration = TODO
     self.ids["txt_duration_clock"].text = str(self.duration)
 
     self.over = False
     Clock.schedule_interval(partial(date_time, self.ids["txt_clock"]), 1.0)
     Clock.schedule_interval(partial(min_timer, self.ids["txt_duration_clock"], self), 60.0)
 
-    # self.ids["txt_info_date"].text = DatabaseAPI...
+    # self.ids["txt_info_date"].text = TODO
 
-    # self.ids["txt_info_time"].text = DatabaseAPI...
+    # self.ids["txt_info_time"].text = TODO
 
     self.ids["txt_info_duration"].text = "%d mins" % self.duration
+
+    Logger.info("pgLiveExam: Exam information successfully imported from server")
 
     self.ids["btn_monitor_back"].disabled = True
     self.ids["btn_monitor_play"].disabled = True
@@ -46,7 +52,7 @@ def on_pre_enter(self):
     self.ids["img_monitor_forward"].opacity = 0.25
     self.ids["img_monitor_live"].opacity = 0.25
 
-    # data = DatabaseAPI.participants...
+    # data = TODO
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
@@ -65,11 +71,17 @@ def on_pre_enter(self):
                                                         allow_empty_selection=False)
     self.ids["list_participants"].adapter.bind(on_selection_change=self.on_participant_selected)
 
+    Logger.info("pgLiveExam: Participants of exam successfully imported from server")
+
+'''
+    This method creates keystroke graph and monitoring tool whenever educator selects student
+'''
+
 def on_participant_selected(self):
     def keystroke_graph():
-        # self.x_time = PeerToPeer...
-        # self.y_rate = PeerToPeer...
-        # self.z_tend = PeerToPeer...
+        # self.x_time = TODO (p2p)
+        # self.y_rate = TODO (p2p)
+        # self.z_tend = TODO (p2p)
 
         for i in range(1, len(self.y_rate)):
             self.z_tend.append((self.y_rate[i] - self.y_rate[i - 1]) / 5.0)
@@ -90,7 +102,9 @@ def on_participant_selected(self):
         self.graph_widget = FigureCanvasKivyAgg(keystroke_graph().gcf())
         self.ids["layout_rate"].add_widget(self.graph_widget)
 
-    # self.answer_dict = PeerToPeer...
+    Logger.info("pgLiveExam: Keystroke graph successfully created")
+
+    # self.answer_dict = TODO (p2p)
 
     for i, j in self.answer_dict.items():
         self.ordered_answer_dict = collections.OrderedDict(sorted(j.items()))
@@ -114,14 +128,28 @@ def on_participant_selected(self):
     self.ids["img_monitor_forward"].opacity = 1
     self.ids["img_monitor_live"].opacity = 1
 
+    Logger.info("pgLiveExam: Monitoring tool successfully created")
+
+'''
+    This method updates text shown on monitor according to time that educator watches at the moment
+'''
+
 def on_value(self, bright):
     self.ids["txt_monitor"].text = self.ordered_answer_dict.items()[int(bright)][1].replace("\t", "   ")
+
+'''
+    This method is to enable educator rewinding text shown on monitor through button
+'''
 
 def on_monitor_backward(self):
     if self.ids["slider_monitor"].value - 1 >= 0:
         self.ids["slider_monitor"].value -= 1
     else:
         self.ids["slider_monitor"].value = 0
+
+'''
+    This method is to enable educator playing text on monitor automatically
+'''
 
 def on_monitor_play(self):
     self.event = Clock.schedule_interval(self.on_monitor_forward, 0.5)
@@ -138,6 +166,10 @@ def on_monitor_play(self):
     self.ids["img_monitor_forward"].opacity = 0.25
     self.ids["img_monitor_live"].opacity = 0.25
 
+'''
+    This method is to enable educator pausing text stream on monitor through button
+'''
+
 def on_monitor_pause(self):
     self.event.cancel()
 
@@ -153,20 +185,39 @@ def on_monitor_pause(self):
     self.ids["img_monitor_forward"].opacity = 1
     self.ids["img_monitor_live"].opacity = 1
 
+'''
+    This method is to enable educator skipping forward text shown on monitor through button
+'''
+
 def on_monitor_forward(self):
     try:
         self.ids["slider_monitor"].value += 1
     except:
         self.ids["slider_monitor"].value = 0
 
+'''
+    This method ...
+'''
+
 def on_monitor_live(self):
-    pass
+    pass  # TODO (p2p)
+
+'''
+    This method adds 10 minutes to exam duration left and updates it on both GUI and server
+'''
 
 def on_add_time(self):
-    # DatabaseAPI.addtime...
-    # self.duration += DatabaseAPI...
+    self.duration += 10
+    # TODO
     self.ids["txt_info_duration"].text = "%d mins" % self.duration
     self.ids["txt_duration_clock"].text = str(self.duration)
+
+    Logger.info("pgLiveExam: Educator added 10 more minutes to exam duration")
+
+'''
+    This method asks educator to confirm whether he or she wants to finish exam or not
+    Accordingly, confirmation pop-up disappears or exam ends and directs to PgLects
+'''
 
 def on_finish_exam(self):
     popup_content = FloatLayout()
@@ -196,10 +247,20 @@ def on_finish_exam(self):
     if self.over:
         self.popup.title = "Time Expired"
         self.over = False
+
+        Logger.info("pgLiveExam: Educator informed about exam timed out, waiting for confirmation")
     else:
         self.popup.title = "Finish Exam"
+
+        Logger.info("pgLiveExam: Educator clicked on finish exam, waiting for confirmation")
     self.popup.open()
+
+'''
+    This method ...
+'''
 
 def on_lects(self):
     self.popup.dismiss()
-    # DatabaseAPI.finishexam...
+    # TODO
+
+    Logger.info("pgLiveExam: Educator successfully finished exam")
