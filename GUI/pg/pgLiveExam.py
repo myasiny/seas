@@ -20,21 +20,28 @@ from GUI.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 '''
 
 def on_pre_enter(self):
+    temp_login = open("data/temp_login.seas", "r")
+    self.data_login = temp_login.readlines()
+
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
     self.data_selected_lect = temp_selected_lect.readlines()
 
+    self.data_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
+                                          self.data_selected_lect[0].replace("\n", ""),
+                                          self.data_selected_lect[2].replace("\n", ""))
+
     self.ids["txt_info_head"].text = self.data_selected_lect[0].replace("\n", " ") + "- " + self.data_selected_lect[2]
 
-    # self.duration = TODO
+    self.duration = self.data_exam["Duration"]
     self.ids["txt_duration_clock"].text = str(self.duration)
 
     self.over = False
     Clock.schedule_interval(partial(date_time, self.ids["txt_clock"]), 1.0)
     Clock.schedule_interval(partial(min_timer, self.ids["txt_duration_clock"], self), 60.0)
 
-    # self.ids["txt_info_date"].text = TODO
+    self.ids["txt_info_date"].text = self.data_exam["Time"].split(" ")[0]
 
-    # self.ids["txt_info_time"].text = TODO
+    self.ids["txt_info_time"].text = self.data_exam["Time"].split(" ")[1]
 
     self.ids["txt_info_duration"].text = "%d mins" % self.duration
 
@@ -52,11 +59,11 @@ def on_pre_enter(self):
     self.ids["img_monitor_forward"].opacity = 0.25
     self.ids["img_monitor_live"].opacity = 0.25
 
-    # data = TODO
+    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", " "))
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
-            temp_student_list.write("{ip} | {no} | {name}".format(ip=d[2], no=str(d[1]), name=d[0]) + "\n")
+            temp_student_list.write("{no} | {name}".format(no=str(d[2]), name=d[0] + " " + d[1]) + "\n")
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
@@ -78,43 +85,46 @@ def on_pre_enter(self):
 '''
 
 def on_participant_selected(self):
-    def keystroke_graph():
-        # self.x_time = TODO (p2p)
-        # self.y_rate = TODO (p2p)
-        # self.z_tend = TODO (p2p)
-
-        for i in range(1, len(self.y_rate)):
-            self.z_tend.append((self.y_rate[i] - self.y_rate[i - 1]) / 5.0)
-
-        plt.plot(self.x_time, self.z_tend, color="green")
-        plt.xlabel("Time")
-        plt.ylabel("Keystroke")
-        plt.grid(True)
-        plt.axes().set_aspect("equal")
-        plt.tight_layout()
-        return plt
-
-    try:
-        self.ids["layout_rate"].remove_widget(self.graph_widget)
-    except:
-        pass
-    finally:
-        self.graph_widget = FigureCanvasKivyAgg(keystroke_graph().gcf())
-        self.ids["layout_rate"].add_widget(self.graph_widget)
-
-    Logger.info("pgLiveExam: Keystroke graph successfully created")
-
-    # self.answer_dict = TODO (p2p)
-
-    for i, j in self.answer_dict.items():
-        self.ordered_answer_dict = collections.OrderedDict(sorted(j.items()))
-    self.ordered_answer_dict_len = len(self.ordered_answer_dict)
-
-    self.ids["slider_monitor"].value_track = True
-    self.ids["slider_monitor"].value_track_color = (0,0,0,1)
-    self.ids["slider_monitor"].min = 0
-    self.ids["slider_monitor"].max = self.ordered_answer_dict_len - 1
-    self.ids["slider_monitor"].bind(value=self.on_value)
+    # TODO
+    # def keystroke_graph():
+    #     # self.x_time = TODO (p2p)
+    #     # self.y_rate = TODO (p2p)
+    #     # self.z_tend = TODO (p2p)
+    #
+    #     for i in range(1, len(self.y_rate)):
+    #         self.z_tend.append((self.y_rate[i] - self.y_rate[i - 1]) / 5.0)
+    #
+    #     plt.plot(self.x_time, self.z_tend, color="green")
+    #     plt.xlabel("Time")
+    #     plt.ylabel("Keystroke")
+    #     plt.grid(True)
+    #     plt.axes().set_aspect("equal")
+    #     plt.tight_layout()
+    #     return plt
+    #
+    # try:
+    #     self.ids["layout_rate"].remove_widget(self.graph_widget)
+    # except:
+    #     pass
+    # finally:
+    #     self.graph_widget = FigureCanvasKivyAgg(keystroke_graph().gcf())
+    #     self.ids["layout_rate"].add_widget(self.graph_widget)
+    #
+    # Logger.info("pgLiveExam: Keystroke graph successfully created")
+    #
+    # # self.answer_dict = TODO (p2p)
+    #
+    # for i, j in self.answer_dict.items():
+    #     self.ordered_answer_dict = collections.OrderedDict(sorted(j.items()))
+    # self.ordered_answer_dict_len = len(self.ordered_answer_dict)
+    #
+    # Logger.info("pgLiveExam: Monitoring tool successfully created")
+    #
+    # self.ids["slider_monitor"].value_track = True
+    # self.ids["slider_monitor"].value_track_color = (0,0,0,1)
+    # self.ids["slider_monitor"].min = 0
+    # self.ids["slider_monitor"].max = self.ordered_answer_dict_len - 1
+    # self.ids["slider_monitor"].bind(value=self.on_value)
 
     self.ids["btn_monitor_back"].disabled = False
     self.ids["btn_monitor_play"].disabled = False
@@ -127,8 +137,6 @@ def on_participant_selected(self):
     self.ids["img_monitor_pause"].opacity = 0.25
     self.ids["img_monitor_forward"].opacity = 1
     self.ids["img_monitor_live"].opacity = 1
-
-    Logger.info("pgLiveExam: Monitoring tool successfully created")
 
 '''
     This method updates text shown on monitor according to time that educator watches at the moment
@@ -208,11 +216,13 @@ def on_monitor_live(self):
 
 def on_add_time(self):
     self.duration += 10
-    # TODO
+    database_api.add_time_to_exam(self.data_login[8].replace("\n", ""),
+                                  self.data_selected_lect[0].replace("\n", ""),
+                                  self.data_selected_lect[2].replace("\n", ""), 10)
     self.ids["txt_info_duration"].text = "%d mins" % self.duration
     self.ids["txt_duration_clock"].text = str(self.duration)
 
-    Logger.info("pgLiveExam: Educator added 10 more minutes to exam duration")
+    Logger.info("pgLiveExam: Educator successfully added 10 more minutes to exam duration")
 
 '''
     This method asks educator to confirm whether he or she wants to finish exam or not
@@ -256,11 +266,14 @@ def on_finish_exam(self):
     self.popup.open()
 
 '''
-    This method ...
+    This method finishes exam by connecting to server and directs to PgLects
 '''
 
 def on_lects(self):
     self.popup.dismiss()
-    # TODO
+
+    database_api.change_status_of_exam(self.data_login[8].replace("\n", ""),
+                                       self.data_selected_lect[0].replace("\n", ""),
+                                       self.data_selected_lect[2].replace("\n", ""), "finished")
 
     Logger.info("pgLiveExam: Educator successfully finished exam")

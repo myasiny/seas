@@ -1,7 +1,7 @@
+from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.animation import Animation
 
-import time
 from GUI.func import database_api
 from GUI.func.round_image import round_image
 from GUI.func.barcode_png import barcode_png
@@ -80,7 +80,7 @@ def on_submit(self):
         anim_appear.start(img_wrong)
     else:
         if len(input_new_password.text) > 0 and input_new_password.disabled is False:
-            result = database_api.changePassword(self.data_login[7].replace("\n", ""),
+            result = database_api.changePassword(self.data_login[8].replace("\n", ""),
                                                  self.data_login[0].replace("\n", ""),
                                                  input_current_password.text, input_new_password.text,
                                                  isMail=False)
@@ -89,13 +89,14 @@ def on_submit(self):
 
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_done)
-                time.sleep(1)
-                self.on_logout()
+                def back_to_login(dt):
+                    self.on_logout()
+                Clock.schedule_once(back_to_login, 1)
             else:
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_failed)
         elif len(input_new_mail.text) > 0 and input_new_mail.disabled is False:
-            result = database_api.changePassword(self.data_login[7].replace("\n", ""),
+            result = database_api.changePassword(self.data_login[8].replace("\n", ""),
                                                  self.data_login[0].replace("\n", ""),
                                                  input_current_password.text, input_new_mail.text,
                                                  isMail=True)
@@ -104,8 +105,9 @@ def on_submit(self):
 
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_done)
-                time.sleep(1)
-                self.on_logout()
+                def back_to_login(dt):
+                    self.on_logout()
+                Clock.schedule_once(back_to_login, 1)
             else:
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_failed)

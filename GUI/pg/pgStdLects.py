@@ -20,9 +20,9 @@ def on_pre_enter(self):
 
     self.data = []
 
-    # data_lectures = TODO
+    data_lectures = database_api.getUserCourses(self.data_login[8].replace("\n", ""), self.data_login[0].replace("\n", ""))
     for i in data_lectures:
-        self.data.append(i[1] + "_" + i[0] + "_" + i[2])
+        self.data.append(i[1] + "_" + i[0])
 
     list_dropdown = DropDown()
 
@@ -77,13 +77,13 @@ def on_lect_select(self, dropdown, txt):
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
 
-    # self.data_exams = TODO
+    self.data_exams = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
                                            "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height / 25,
                                            "size_hint_y": None, "height": self.height / 10}
-    self.ids["list_exams"].adapter = ListAdapter(data=[i for i in self.data_exams], cls=ListItemButton,
+    self.ids["list_exams"].adapter = ListAdapter(data=[i[1] for i in self.data_exams], cls=ListItemButton,
                                                  args_converter=args_converter, allow_empty_selection=False)
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
 
@@ -101,11 +101,17 @@ def on_exam_selected(self):
 
     self.ids["txt_date_head"].opacity = 1
     self.ids["txt_date_body"].opacity = 1
-    # self.ids["txt_date_body"].text = TODO
+    for i in self.data_exams:
+        if i[1] == self.ids["list_exams"].adapter.selection[0].text:
+            self.ids["txt_date_body"].text = i[3]
+        break
 
     self.ids["txt_time_head"].opacity = 1
     self.ids["txt_time_body"].opacity = 1
-    # self.ids["txt_time_body"].text = TODO
+    for i in self.data_exams:
+        if i[1] == self.ids["list_exams"].adapter.selection[0].text:
+            self.ids["txt_time_body"].text = i[4]
+        break
 
     self.ids["txt_options_head"].opacity = 1
     self.ids["btn_exam_statistics"].opacity = 1

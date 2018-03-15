@@ -45,7 +45,7 @@
 
         Button:
             id: btn_question_remove
-            text: "REMOVE"
+            text: "QUIT"
             font_name: "font/LibelSuit.ttf"
             font_size: self.height / 3
             background_normal: "img/widget_100_red.png"
@@ -69,7 +69,7 @@
 
         Button:
             id: btn_question_save
-            text: "SAVE"
+            text: "COMPLETE"
             font_name: "font/LibelSuit.ttf"
             font_size: self.height / 3
             background_normal: "img/widget_100_green.png"
@@ -128,7 +128,7 @@
                 halign: "left"
                 multiline: True
                 font_name: "font/CaviarDreams.ttf"
-                font_size: root.height / 25
+                font_size: root.height / 35
                 text_size: self.width, None
                 size_hint_y: None
                 height: self.texture_size[1]
