@@ -101,6 +101,8 @@ class PgStdLiveExam(Screen):
 
     def on_question_remove(self):
         pgStdLiveExam.on_question_remove(self)
+        pages.append(PgStdLects(name="PgStdLects"))
+        tabReset.on_back(pages, screen)
 
     def on_question_next(self):
         if pgStdLiveExam.on_question_next(self):
@@ -109,6 +111,8 @@ class PgStdLiveExam(Screen):
 
     def on_question_save(self):
         pgStdLiveExam.on_question_save(self)
+        pages.append(PgStdLects(name="PgStdLects"))
+        tabReset.on_back(pages, screen)
 
 '''
     This class is to organize functions of PgStdLects
@@ -236,17 +240,24 @@ class PgNewQuestion(Screen):
         pgNewQuestion.on_pre_enter(self)
 
     def on_new_question_next(self):
-        pgNewQuestion.on_new_question_next(self)
-
-    def on_new_question_previous(self):
-        pgNewQuestion.on_new_question_previous(self)
-
-    def on_new_question_cancel(self):
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
+        if pgNewQuestion.on_new_question_next(self):
+            pages.append(PgNewQuestion(name="PgNewQuestion"))
+            tabReset.on_back(pages, screen)
 
     def on_new_question_complete(self):
         pgNewQuestion.on_new_question_complete(self)
+        pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
+
+    def on_new_question_previous(self):
+        if pgNewQuestion.on_new_question_previous(self):
+            pages.append(PgNewQuestion(name="PgNewQuestion"))
+            tabReset.on_back(pages, screen)
+
+    def on_new_question_cancel(self):
+        pgNewQuestion.on_new_question_cancel(self)
+        pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
 
 '''
     This class is to organize functions of PgNewExam
@@ -326,6 +337,8 @@ class PgLiveExam(Screen):
 
     def on_finish_exam(self):
         pgLiveExam.on_finish_exam(self)
+        pages.append(PgLects(name="PgLects"))
+        tabReset.on_back(pages, screen)
 
     def on_participant_selected(self, dt):
         pgLiveExam.on_participant_selected(self)

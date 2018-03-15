@@ -3,6 +3,8 @@ from kivy.animation import Animation
 from GUI.grdn.kivycalendar import CalendarWidget
 from GUI.grdn.circulardatetimepicker import CircularTimePicker
 
+from GUI.func import database_api
+
 '''
     This method updates lecture information, creates calendar and time picker widgets before entering PgNewExam
 '''
@@ -46,7 +48,14 @@ def on_new_exam_create(self):
             temp_selected_lect.write("\n%s\n%s\n%s %s" % (self.ids["input_examname"].text, self.ids["input_duration"].text, date, time))
             temp_selected_lect.close()
 
-        Logger.info("pgNewExam: Exam information given, new exam successfully created on local")
+        temp_login = open("data/temp_login.seas", "r")
+        self.data_login = temp_login.readlines()
+
+        database_api.createExam(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text,
+                                self.ids["input_examname"].text, "%s %s" % (date, time),
+                                int(self.ids["input_duration"].text))
+
+        Logger.info("pgNewExam: Exam information given, new exam successfully created on local and sent to server")
 
         return True
     else:

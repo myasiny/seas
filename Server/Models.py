@@ -554,19 +554,23 @@ class Exam:
         self.org = organization.replace(" ", "_").lower()
         self.name = Name
         self.db = db
-        self.questions = list()
-        self.get()
+
         self.course = None
         self.time = None
         self.duration = None
         self.status = None
         self.ID = None
 
+        self.get()
+
     def addQuestion(self, tip, subject, text, answer, inputs, outputs, value, tags):
-        self.questions.append(Question(tip, subject, text, answer, inputs, outputs, value, tags).save(self.db, self.course, self.org, self.ID))
+        if self.course is None:
+            return None
+        question = Question(tip, subject, text, answer, inputs, outputs, value, tags).save(self.db, self.course, self.org, self.ID)
+        return question.get
 
     def addQuestionObject(self, questionObj):
-        self.questions.append(questionObj.save(self.db, self.course, self.org, self.ID))
+        return questionObj.save(self.db, self.course, self.org, self.ID).get
 
     def save(self, CourseCode, Time, duration, status="draft"):
         """
@@ -584,9 +588,6 @@ class Exam:
                    "from courses where courses.CODE = \'%s\'" \
                    "ON DUPLICATE KEY UPDATE Name = '%s', Time='%s', Duration='%s', Status = '%s';"\
                    % (self.name, self.time, int(self.duration), self.status, self.course, self.name, self.time, self.duration, self.status)
-        print command
-        for question in self.questions:
-            command += question.save_command(self.course, self.name)
 
         db.execute(command)
         return db.execute("SELECT ExamID FROM exams WHERE Name = '%s'" % self.name)[0][0]
@@ -598,7 +599,9 @@ class Exam:
         try:
             self.time = saved[0][0]
             self.duration = saved[0][1]
-            self.course = db.execute("SELECT s.Code FROM %s.courses s, %s.exams e where s.CourseID = e.courseID and e.Name = '%s' ;" % (self.org, self.org, self.name))[0][0]
+            c = "SELECT s.Code FROM %s.courses s, %s.exams e where s.CourseID = e.courseID and e.Name = '%s' ;" % (self.org, self.org, self.name)
+            c = db.execute(c)[0][0]
+            self.course = c
             questions = self.get_questions()
             self.ID = saved[0][2]
             return{
@@ -610,8 +613,10 @@ class Exam:
                 "ID": saved[0][2]
             }
         except IndexError:
+            print "No Exam"
             return "No Exam Named as " + self.name
         except Exception as e:
+            print "Error"
             return "Unknown Error for exam " + self.name + " with " + e.message
 
     def getString(self, db):

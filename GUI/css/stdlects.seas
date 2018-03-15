@@ -269,7 +269,7 @@
 
         Label:
             id: txt_time_head
-            text: "Time:"
+            text: "Duration:"
             opacity: 0
             color: 0,0,0,0.75
             multiline: False

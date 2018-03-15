@@ -27,6 +27,7 @@ def load_string(name):
 '''
 
 def on_enter(self):
+    Clock.schedule_once(partial(check_connection, self.ids["img_connection"]))
     Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 5.0)
 
 '''

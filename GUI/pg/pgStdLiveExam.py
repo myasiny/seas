@@ -12,15 +12,27 @@ from pygments.lexers.python import PythonLexer
 '''
 
 def on_pre_enter(self):
-    # self.question_type = TODO
+    temp_login = open("data/temp_login.seas", "r")
+    self.data_login = temp_login.readlines()
 
-    # self.question_no = TODO
-    self.ids["txt_question_no"].text = "Question %d" % self.question_no
+    temp_selected_lect = open("data/temp_selected_lect.seas", "r")
+    self.data_selected_lect = temp_selected_lect.readlines()
 
-    # self.question_grade = TODO
+    self.data_detailed_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
+                                                   self.data_selected_lect[0].replace("\n", ""),
+                                                   self.data_selected_lect[2].replace("\n", ""))["Questions"]
+
+    question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]
+
+    self.question_type = question_details["type"]
+
+    self.question_no = self.data_detailed_exam.keys()[0]
+    self.ids["txt_question_no"].text = "Question %s" % self.question_no
+
+    self.question_grade = question_details["value"]
     self.ids["txt_question_grade"].text = "Grade: %d" % self.question_grade
 
-    # self.question_body = TODO
+    self.question_body = question_details["text"]
     self.ids["txt_question_body"].text = self.question_body
 
     self.correct_answer = Spinner(text="Answer", values=("A", "B", "C", "D", "E"),
@@ -73,7 +85,7 @@ def on_pre_enter(self):
         self.ids["input_short_answer"].size_hint_y = 0
         self.ids["input_short_answer"].opacity = 0
 
-    Logger.info("pgStdLiveExam: Question %d successfully imported from server" & self.question_no)
+    Logger.info("pgStdLiveExam: Question %s successfully imported from server" & self.question_no)
 
 '''
     This method is to store final answer given by student for multiple choice question
@@ -121,33 +133,55 @@ def on_run(self):
         self.run_or_pause = "run"
 
 '''
-    This method ...
+    This method TODO
 '''
 
 def on_question_previous(self):
-    pass
+    on_submit(self)
     # TODO
 
 '''
-    This method ...
+    This method TODO
+'''
+
+def on_question_next(self):
+    on_submit(self)
+    # TODO
+
+'''
+    This method submits student's answer to current question by connecting to server and directs to PgStdLects
+'''
+
+def on_question_save(self):
+    on_submit(self)
+
+'''
+    This method directs to PgStdLects without submiting student's answer to current question and student leaves exam
 '''
 
 def on_question_remove(self):
     pass
-    # TODO
 
 '''
-    This method ...
+    This method connects to server for saving student's answer
 '''
 
-def on_question_next(self):
-    pass
-    # TODO
+def on_submit(self):
+    if self.question_type == "programming":
+        database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
+                                 self.data_detailed_exam.keys()[0], self.data_login[0].replace("\n", ""),
+                                 self.ids["input_code_answer"].text)
 
-'''
-    This method ...
-'''
+        Logger.info("pgStdLiveExam: Student's answer for programming question sent to server")
+    elif self.question_type == "short_answer":
+        database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
+                                 self.data_detailed_exam.keys()[0], self.data_login[0].replace("\n", ""),
+                                 self.ids["input_short_answer"].text)
 
-def on_question_save(self):
-    pass
-    # TODO
+        Logger.info("pgStdLiveExam: Student's answer for short answer question sent to server")
+    elif self.question_type == "multiple_choice":
+        database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
+                                 self.data_detailed_exam.keys()[0], self.data_login[0].replace("\n", ""),
+                                 self.multiple_choice_answer)
+
+        Logger.info("pgStdLiveExam: Student's answer for multiple choice question sent to server")

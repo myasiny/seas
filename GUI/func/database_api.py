@@ -324,7 +324,7 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     """
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
-    with open("../img/pic_%s.png" % username, "wb") as f:
+    with open("../img/pic_current_user.png", "wb") as f:
         f.write(pickle.loads(get(url, headers={"Authorization": "Bearer " + token}).json()))
 
     return "Done"
@@ -397,3 +397,12 @@ def change_status_of_exam(token, course_code, exam_name, status, URL=server_addr
     if status not in ["draft", "finished", "published", "graded", "deactivated", "active"]:
         return "Wrong status."
     return put(url, headers={"Authorization": "Bearer " + token}, data={"status": status}).json()
+
+
+
+def addQuestionToExam(token, course_code, exam_name, question_info, organization = current_organization, URL = server_address):
+    organization = organization.replace(" ", "_").lower()
+    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
+    exam_name = re.sub(r'[^\w\s]', '_', exam_name).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/%s/addQuestion" % (organization, course_code, exam_name)
+    return put(url, headers={"Authorization": "Bearer " + token}, data={"data": json.dumps(question_info)}).json()
