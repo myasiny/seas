@@ -223,8 +223,9 @@ def addQuestionsToExam(organization, course, name):
     if not check_auth(token, "superuser", "admin", "lecturer"):
         return jsonify("Unauthorized access!")
     else:
-        return jsonify("Constraction Sİte!")
-    pass
+        info = request.form["data"]
+        rtn = Exam(name, organization, db).addQuestion(info["type"], info["subject"], info["text"], info["answer"], info["inputs"], info["outputs"], info["value"], info["tags"])
+        return jsonify(rtn)
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<question_id>/answers/<string:username>", methods=["PUT"])

@@ -397,3 +397,11 @@ def change_status_of_exam(token, course_code, exam_name, status, URL=server_addr
     if status not in ["draft", "finished", "published", "graded", "deactivated", "active"]:
         return "Wrong status."
     return put(url, headers={"Authorization": "Bearer " + token}, data={"status": status}).json()
+
+
+
+def addQuestionToExam(token, course_code, exam_name, question_info, organization = current_organization, URL = server_address):
+    organization = organization.replace(" ", "_").lower()
+    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/exams/%s/addQuestion" % (organization, course_code, exam_name)
+    return put(url, headers={"Authorization": "Bearer " + token}, data={"data": json.dumps(question_info)}).json()

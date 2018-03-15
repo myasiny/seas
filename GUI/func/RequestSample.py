@@ -1,8 +1,8 @@
 # -*- coding:UTF-8 -*-
 
 from database_api import *
-import sys
-sys.path.append("..")
+
+import threading
 
 # Since DEBUG mode is on, you can use this tokens.
 superuser_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ZmNiNmY5OC0xYTY2LTQ0ZTQtYWY3ZS01ZWRmZDUwYWUzNTMiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUxOTkwNjk3OSwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUxOTkwNjk3OSwiaWRlbnRpdHkiOlsic3VwZXJ1c2VyIiwic3VwZXJ1c2VyIiwiMjAxOC0wMy0wMSAxNToyMjo1OS40MjQwMDAiXX0.lgvPgmJQ8Ua01oxBBdabaayVdbJhO0W5D3hRBL3Nlbg"
@@ -43,7 +43,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 # print getUserCourses(student_token, "fatihgulmez")
 
-# print changePassword(lecturer_token, "alicakmak", "1234", "12345", False)
+# print changePassword(student_token, "fatihgulmez", "7P7nDyjq", "12345", False)
 
 # print deleteStudentFromLecture(lecturer_token, "EEcs 468", "213962062")
 
@@ -88,9 +88,9 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 
 ### HOW TO GET EXAM
-# print getExam(student_token,
-#                  "EECS 468",
-#                  "bioinformatic mt 2")
+print getExam(student_token,
+                 "EECS 468",
+                 "bioinformatic mt 2")
 
 # print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Ataturk")
 
