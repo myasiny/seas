@@ -173,6 +173,8 @@ def addExam(organization, course):
         questions = json.loads(request.form["questions"])
         status = request.form["status"]
         exam = Exam(name, organization, db)
+        exam.save(course, time, duration, status)
+        exam.get()
         for j in questions:
             i=questions[j]
             exam.addQuestion(
@@ -274,8 +276,6 @@ def addTimeToExam(organization, course, exam_name):
 @jwt_required
 def changeStatusOfExam(organization, course, exam_name):
     return jsonify(Exam(exam_name, organization, db).change_status(request.form["status"]))
-
-
 
 
 if __name__ == "__main__":

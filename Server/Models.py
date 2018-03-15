@@ -4,8 +4,8 @@ import sqlite3
 from flaskext.mysql import MySQL
 from passlib.apps import custom_app_context as pwd_context
 import json, csv, threading
-from Server.External_Functions.passwordGenerator import passwordGenerator
-from Server.External_Functions.sendEmail import sentMail
+from External_Functions.passwordGenerator import passwordGenerator
+from External_Functions.sendEmail import sentMail
 import os
 
 
@@ -598,7 +598,7 @@ class Exam:
         try:
             self.time = saved[0][0]
             self.duration = saved[0][1]
-            self.course = db.execute("SELECT s.Code FROM %s.courses s, %s.exams e where s.CourseID = e.courseID and e.Name = '%s' ;" % (self.org, self.org, self.name))[0]
+            self.course = db.execute("SELECT s.Code FROM %s.courses s, %s.exams e where s.CourseID = e.courseID and e.Name = '%s' ;" % (self.org, self.org, self.name))[0][0]
             questions = self.get_questions()
             self.ID = saved[0][2]
             return{

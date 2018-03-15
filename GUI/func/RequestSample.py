@@ -4,7 +4,7 @@ from database_api import *
 import sys
 sys.path.append("..")
 
-address = "10.50.81.24"
+address = "http://159.65.124.42"
 
 # Since DEBUG mode is on, you can use this tokens.
 superuser_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ZmNiNmY5OC0xYTY2LTQ0ZTQtYWY3ZS01ZWRmZDUwYWUzNTMiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUxOTkwNjk3OSwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUxOTkwNjk3OSwiaWRlbnRpdHkiOlsic3VwZXJ1c2VyIiwic3VwZXJ1c2VyIiwiMjAxOC0wMy0wMSAxNToyMjo1OS40MjQwMDAiXX0.lgvPgmJQ8Ua01oxBBdabaayVdbJhO0W5D3hRBL3Nlbg"
@@ -17,16 +17,15 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 # print testConnection()
 
 # print addOrganization(superuser_token)
-# print addOrganization(superuser_token, organization="istanbul technical university")
-
+# print addOrganization(superuser_token, organization="istanbul chnical university", URL="http://10.50.81.24:8888")
+#
 # print addUser(admin_token, "213962062", "Fatih", "gulmez", "fatihgulmez", "12345","fatihgulmez@std.sehir.edu.tr", "Computer Science", role="student")
 # print addUser(admin_token, "213955555", "Muhammed Yasin", "Yildirim", "muhammedyildirim", "12345","muhamed@std.sehir.edu.tr", "Computer Science" , role="student")
 # print addUser(admin_token, "213944444", "Ali Emre", "Oz", "alioz", "12345", "alioz@std.sehir.edu.tr", "Computer Science" ,role="student")
 # print addUser(admin_token, "000000000", "Admin", "Admin", "admin", "12345", "admin@admin.com", "admin", role="Admin")
-
-# print addUser(admin_token, "000000000", "Joe", "Doe", "joedoe", "12345", "joe@doe.com", "Computer Science", role="Student")
+#
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
-# print addUser(admin_token, "215000000", "Özkan", "Çağlar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
+# print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
 # print signIn("fatihgulmez", "12345")
 # print signIn("admin", "12345")
@@ -35,7 +34,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 # print signOut("admin")
 
-# print addCourse(admin_token, "Database Systems", "CS 350", ["alicakmak"])
+# print addCourse(admin_token, "Bioinformatics", "eecs 468", ["alicakmak"])
 # print getCourse(student_token, "eecs 468")
 
 # print registerStudent(lecturer_token, "EECS 468", True, "ornek.csv")
@@ -52,42 +51,42 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 
 #### HOW TO CREATE EXAM
 
-# print createExam(lecturer_token,
-#                  "EECS 468",
-#                  "bioinformatic mt 3",
-#                  "2018-03-15 10:30:00",
-#                  50
-#                  ,{1:
-#                       {"type": "classic",
-#                         "subject": "ataturk",
-#                         "text": "who is the founder of TR?",
-#                         "answer": "Ataturk",
-#                         "inputs": [[1,2],[2,3]],
-#                         "outputs": [(3),(5)],
-#                           "value": 50,
-#                           "tags": ["mustafa","kemal"]},
-#                  2:
-#                      {"type": "truefalse",
-#                       "subject": "history",
-#                       "text": "ottomans were muslims.",
-#                       "answer": "true",
-#                       "inputs": "",
-#                       "outputs": "",
-#                       "value": 50,
-#                       "tags": ["ottomans", "muslims"]}
-#                  ,3:
-#                      {"type": "test",
-#                       "subject": "math",
-#                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
-#                       "answer": "c",
-#                       "inputs": "",
-#                       "outputs": "",
-#                       "value": 20,
-#                       "tags": ["integers", "math"]
-#                      }
-#                   },
-#                  status="draft"
-# )
+print createExam(lecturer_token,
+                 "EECS 468",
+                 "bioinformatic mt 3",
+                 "2018-03-15 10:30:00",
+                 50
+                 ,{1:
+                      {"type": "classic",
+                        "subject": "ataturk",
+                        "text": "who is the founder of TR?",
+                        "answer": "Ataturk",
+                        "inputs": [[1,2],[2,3]],
+                        "outputs": [(3),(5)],
+                          "value": 50,
+                          "tags": ["mustafa","kemal"]},
+                 2:
+                     {"type": "truefalse",
+                      "subject": "history",
+                      "text": "ottomans were muslims.",
+                      "answer": "true",
+                      "inputs": "",
+                      "outputs": "",
+                      "value": 50,
+                      "tags": ["ottomans", "muslims"]}
+                 ,3:
+                     {"type": "test",
+                      "subject": "math",
+                      "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
+                      "answer": "c",
+                      "inputs": "",
+                      "outputs": "",
+                      "value": 20,
+                      "tags": ["integers", "math"]
+                     }
+                  },
+                 status="draft"
+)
 
 
 ### HOW TO GET EXAM
@@ -124,7 +123,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                        "bioinformatic_mt_2",
 #                        10)
 
-print change_status_of_exam(lecturer_token,
-                            "eecs 468",
-                            "bioinformatic_mt_2",
-                            "draft")
+# print change_status_of_exam(lecturer_token,
+#                             "eecs 468",
+#                             "bioinformatic_mt_2",
+#                             "active")

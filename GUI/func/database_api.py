@@ -28,8 +28,9 @@ def addOrganization(token, URL=server_address, organization=current_organization
     """
     organization = organization.replace(" ", "_").lower()
     url = URL+"/organizations"
+    print url, organization
     return put(url, data={"data": organization},
-        headers = {"Authorization": "Bearer %s" %token}).json()
+               headers={"Authorization": "Bearer %s" % token}).json()
 
 
 def addUser(token,  id, name, surname, username, password, Email, Department ,role="student", URL=server_address, organization=current_organization):
@@ -393,6 +394,6 @@ def change_status_of_exam(token, course_code, exam_name, status, URL=server_addr
     organization = organization.replace(" ", "_").lower()
     course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/%s/status" % (organization, course_code, exam_name)
-    if status not in ["draft", "finished", "published", "graded", "deactivated"]:
+    if status not in ["draft", "finished", "published", "graded", "deactivated", "active"]:
         return "Wrong status."
     return put(url, headers={"Authorization": "Bearer " + token}, data={"status": status}).json()
