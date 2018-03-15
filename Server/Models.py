@@ -564,6 +564,8 @@ class Exam:
         self.get()
 
     def addQuestion(self, tip, subject, text, answer, inputs, outputs, value, tags):
+        if self.course is None:
+            return None
         question = Question(tip, subject, text, answer, inputs, outputs, value, tags).save(self.db, self.course, self.org, self.ID)
         return question.get
 
