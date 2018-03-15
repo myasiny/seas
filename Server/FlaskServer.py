@@ -223,8 +223,8 @@ def addQuestionsToExam(organization, course, name):
     if not check_auth(token, "superuser", "admin", "lecturer"):
         return jsonify("Unauthorized access!")
     else:
-        info = request.form["data"]
-        rtn = Exam(name, organization, db).addQuestion(info["type"], info["subject"], info["text"], info["answer"], info["inputs"], info["outputs"], info["value"], info["tags"])
+        info = json.loads(request.form["data"])
+        rtn = Exam(name, organization, db=db).addQuestion(info["type"], info["subject"], info["text"], info["answer"], info["inputs"], info["outputs"], info["value"], info["tags"])
         return jsonify(rtn)
 
 
@@ -280,5 +280,6 @@ def changeStatusOfExam(organization, course, exam_name):
 
 
 if __name__ == "__main__":
+    # app.run(host="http://159.65.124.42", port=8888, threaded=True)
     app.run(host="10.50.81.24", port=8888, threaded=True)
     # print db.get_user_info("istanbul_sehir_university", "fatihgulmez")

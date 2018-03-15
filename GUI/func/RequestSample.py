@@ -54,7 +54,11 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                  "bioinformatic mt 3",
 #                  "2018-03-15 10:30:00",
 #                  50
-#                  ,{1:
+#                  ,
+#                  status="draft"
+# )
+
+#                   {1:
 #                       {"type": "classic",
 #                         "subject": "ataturk",
 #                         "text": "who is the founder of TR?",
@@ -82,15 +86,24 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                       "value": 20,
 #                       "tags": ["integers", "math"]
 #                      }
-#                   },
-#                  status="draft"
-# )
+#                   }
+
+
+print addQuestionToExam(lecturer_token, "EECS 468", "bioinformatic mt 2", {"type": "test",
+                      "subject": "math",
+                      "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
+                      "answer": "c",
+                      "inputs": "",
+                      "outputs": "",
+                      "value": 20,
+                      "tags": ["integers", "math"]
+                     })
 
 
 ### HOW TO GET EXAM
-print getExam(student_token,
-                 "EECS 468",
-                 "bioinformatic mt 2")
+# print getExam(student_token,
+#                  "EECS 468",
+#                  "bioinformatic mt 2")
 
 # print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Ataturk")
 
