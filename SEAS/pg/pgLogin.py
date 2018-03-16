@@ -28,7 +28,7 @@ def load_string(name):
 
 def on_enter(self):
     Clock.schedule_once(partial(check_connection, self.ids["img_connection"]))
-    Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 5.0)
+    self.check_connection = Clock.schedule_interval(partial(check_connection, self.ids["img_connection"]), 5.0)
 
 '''
     This method checks whether username and password are provided or not
@@ -105,7 +105,7 @@ def on_login(self, pages, screen, pgEdu, pgStd):
 
             btn_login.disabled = False
 
-            Logger.info("pgLogin: User couldn't log in due to incorrect credentials")
+            Logger.info("pgLogin: User couldn't log in due to either server failure or incorrect credentials")
 
 '''
     This method asks user to confirm whether he or she wants to quit or not
@@ -127,7 +127,7 @@ def on_quit(self):
                                     font_size=self.height / 40,
                                     background_normal="img/widget_100_green.png",
                                     background_down="img/widget_100_green_selected.png",
-                                    size_hint_x=None, width=self.width/ 11,
+                                    size_hint_x=None, width=self.width / 11,
                                     size_hint_y=None, height=self.height / 25,
                                     pos_hint={"center_x": .25, "y": .01},
                                     on_release=App.get_running_app().stop))
@@ -143,11 +143,15 @@ def on_quit(self):
     popup.open()
 
 '''
-    This method checks all clock events scheduled until it is called and cancels them to avoid undesired problems
+    This method checks clock event scheduled for connection checking and cancels it to avoid too many requests later on
 '''
 
-# def on_leave():
-#     try:
-#         [event.cancel() for event in Clock.get_events()]
-#     except:
-#         pass
+def on_leave(self):
+    # try:
+    #     [event.cancel() for event in Clock.get_events()]
+    # except:
+    #     pass
+
+    self.check_connection.cancel()
+
+    Logger.info("Process of checking connection successfully cancelled")

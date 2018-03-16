@@ -52,7 +52,7 @@ def on_pre_enter(self):
 
     self.add_widget(btn_main)
 
-    Logger.info("pgLects: Educator's lectures successfully imported from server and listed on SEAS")
+    Logger.info("pgLects: Educator's lectures successfully imported from server and listed on GUI")
 
 '''
     This method re-organizes page according to information of selected lecture
@@ -107,14 +107,14 @@ def on_lect_select(self, dropdown, txt):
 def on_exams(self):
     if self.ids["layout_exams"] not in list(self.children):
         self.add_widget(self.ids["layout_exams"])
-    # TODO: Debug here (ReferenceError: weakly-referenced object no longer exists)
+    # TODO: Debug (ReferenceError: weakly-referenced object no longer exists)
 
     self.ids["layout_exams"].opacity = 1
     self.remove_widget(self.ids["layout_participants"])
 
     self.data_exam_details = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
 
-    args_converter = lambda row_index, i: {"text": i,
+    args_converter = lambda row_index, i: {"text": i.replace("_", " ").title(),
                                            "background_normal": "img/widget_75_black_crop.png",
                                            "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height / 25,
                                            "size_hint_y": None, "height": self.height / 10}
@@ -122,7 +122,7 @@ def on_exams(self):
                                                  args_converter=args_converter, allow_empty_selection=False)
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
 
-    Logger.info("pgLects: Exams of selected lecture successfully imported from server and listed on SEAS")
+    Logger.info("pgLects: Exams of selected lecture successfully imported from server and listed on GUI")
 
 '''
     This method re-organizes bottom-right widget and related button bindings according to information of selected exam
@@ -140,9 +140,14 @@ def on_exam_selected(self):
     self.ids["txt_status_head"].opacity = 1
     self.ids["txt_status_body"].opacity = 1
     for i in self.data_exam_details:
-        if i[1] == self.ids["list_exams"].adapter.selection[0].text:
-            self.ids["txt_status_body"].text = i[5]
-            break
+        try:
+            if i[1].replace("_", " ").title() == self.ids["list_exams"].adapter.selection[0].text:
+                self.ids["txt_status_body"].text = i[5].title()
+                break
+        except:
+            if i[1].replace("_", " ").title() == self.ids["txt_info_head"].text:
+                self.ids["txt_status_body"].text = i[5].title()
+                break
 
     self.ids["txt_options_head"].opacity = 1
     self.ids["btn_exam_edit"].opacity = 1
@@ -151,13 +156,13 @@ def on_exam_selected(self):
 
     self.ids["btn_exam_delete"].bind(on_release=self.on_exam_deleted)
 
-    if self.ids["txt_status_body"].text == "finished":
+    if self.ids["txt_status_body"].text == "Finished":
         self.ids["btn_exam_start_grade"].text = "GRADE"
         # TODO
-    elif self.ids["txt_status_body"].text == "graded":
+    elif self.ids["txt_status_body"].text == "Graded":
         self.ids["btn_exam_start_grade"].text = "DOWNLOAD"
         # TODO
-    elif self.ids["txt_status_body"].text == "ready":
+    elif self.ids["txt_status_body"].text == "Ready":
         self.ids["btn_exam_start_grade"].text = "PUBLISH"
         # TODO
     else:
@@ -173,7 +178,7 @@ def on_exam_deleted(self):
 
     self.data_exam_details = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
 
-    self.ids["list_exams"].adapter.data = [i[1] for i in self.data_exam_details]
+    self.ids["list_exams"].adapter.data = [i[1].replace("_", " ").title() for i in self.data_exam_details]
 
     Logger.info("pgLects: Exam successfully deleted")
 
@@ -193,7 +198,7 @@ def on_participants(self):
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
-            temp_student_list.write(d[0] + "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
+            temp_student_list.write(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower() + "\n")
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
@@ -210,7 +215,7 @@ def on_participants(self):
 
     self.ids["btn_import_list"].bind(on_release=self.on_import_list)
 
-    Logger.info("pgLects: Participants of selected lecture successfully imported from server and listed on SEAS")
+    Logger.info("pgLects: Participants of selected lecture successfully imported from server and listed on GUI")
 
 '''
     This method re-organizes bottom-right widget and related button bindings according to information of selected student
@@ -261,7 +266,7 @@ def on_participant_deleted(self):
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
-            temp_student_list.write(d[0] + "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
+            temp_student_list.write(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower() + "\n")
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
@@ -305,15 +310,15 @@ def on_import_list(self):
 def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.popup.dismiss()
 
-    excel_to_csv.xls2csv(file_path[0], "data/perm_student_list.csv")
+    excel_to_csv.xls2csv(file_path[0], "data/temp_imported_list.csv")
     database_api.registerStudent(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text,
-                                 True, "data/perm_student_list.csv", self.data_login[0].replace("\n", ""))
+                                 True, "data/temp_imported_list.csv", self.data_login[0].replace("\n", ""))
 
     data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
-            temp_student_list.write(d[0] + "," + d[1] + "," + str(d[2]) + "," + d[3] + "\n")
+            temp_student_list.write(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower() + "\n")
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
@@ -328,8 +333,8 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
 '''
 
 def on_start_exam(self):
-    with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:
-        temp_selected_lect.write("\n" + self.ids["txt_info_head"].text)
+    with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+        temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.ids["txt_info_head"].text)
         temp_selected_lect.close()
 
     database_api.change_status_of_exam(self.data_login[8].replace("\n", ""),

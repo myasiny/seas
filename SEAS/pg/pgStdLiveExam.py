@@ -31,8 +31,8 @@ def on_pre_enter(self):
 
     self.question_type = question_details["type"]
 
-    self.question_grade = question_details["value"]
-    self.ids["txt_question_grade"].text = "Grade: %s" % str(self.question_grade)
+    self.question_grade = str(question_details["value"])
+    self.ids["txt_question_grade"].text = "Grade: %s" % self.question_grade
 
     self.question_body = question_details["text"]
     self.ids["txt_question_body"].text = self.question_body
@@ -165,7 +165,7 @@ def on_run(self):
 
 def on_question_previous(self):
     on_submit(self)
-    # TODO
+    return True
 
 '''
     This method TODO
@@ -173,7 +173,7 @@ def on_question_previous(self):
 
 def on_question_next(self):
     on_submit(self)
-    # TODO
+    return True
 
 '''
     This method submits student's answer to current question by connecting to server and directs to PgStdLects

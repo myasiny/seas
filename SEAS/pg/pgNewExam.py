@@ -44,8 +44,9 @@ def on_new_exam_create(self):
     time = "%02d:%02d:00" % (self.time.hours, self.time.minutes)
 
     if self.ids["input_examname"].text != "" and self.ids["input_duration"].text != "":
-        with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:
-            temp_selected_lect.write("\n%s\n%s\n%s %s" % (self.ids["input_examname"].text, self.ids["input_duration"].text, date, time))
+        with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+            temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" +
+                                     "%s\n%s\n%s %s" % (self.ids["input_examname"].text, self.ids["input_duration"].text, date, time))
             temp_selected_lect.close()
 
         temp_login = open("data/temp_login.seas", "r")

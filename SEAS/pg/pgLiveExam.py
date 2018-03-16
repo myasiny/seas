@@ -36,12 +36,14 @@ def on_pre_enter(self):
     self.ids["txt_duration_clock"].text = str(self.duration)
 
     self.over = False
-    Clock.schedule_interval(partial(date_time, self.ids["txt_clock"]), 1.0)
-    Clock.schedule_interval(partial(min_timer, self.ids["txt_duration_clock"], self), 60.0)
+    self.date_time = Clock.schedule_interval(partial(date_time, self.ids["txt_clock"]), 1.0)
+    self.min_timer = Clock.schedule_interval(partial(min_timer, self.ids["txt_duration_clock"], self), 60.0)
 
-    self.ids["txt_info_date"].text = self.data_exam["Time"].split(" ")[0]
+    timestamp = self.data_exam["Time"].split(" ")
 
-    self.ids["txt_info_time"].text = self.data_exam["Time"].split(" ")[1]
+    self.ids["txt_info_date"].text = timestamp[1] + " " + timestamp[2] + " " + timestamp[3]
+
+    self.ids["txt_info_time"].text = timestamp[4]
 
     self.ids["txt_info_duration"].text = "%s mins" % str(self.duration)
 
@@ -63,7 +65,7 @@ def on_pre_enter(self):
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
-            temp_student_list.write("{no} | {name}\n".format(no=str(d[2]), name=d[0] + " " + d[1]))
+            temp_student_list.write("{name} - {no}\n".format(name=d[0].title() + " " + d[1].title(), no=str(d[2])))
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
@@ -85,6 +87,7 @@ def on_pre_enter(self):
 '''
 
 def on_participant_selected(self):
+    pass
     # TODO
     # def keystroke_graph():
     #     # self.x_time = TODO (p2p)
@@ -125,18 +128,18 @@ def on_participant_selected(self):
     # self.ids["slider_monitor"].min = 0
     # self.ids["slider_monitor"].max = self.ordered_answer_dict_len - 1
     # self.ids["slider_monitor"].bind(value=self.on_value)
-
-    self.ids["btn_monitor_back"].disabled = False
-    self.ids["btn_monitor_play"].disabled = False
-    self.ids["btn_monitor_pause"].disabled = True
-    self.ids["btn_monitor_forward"].disabled = False
-    self.ids["btn_monitor_live"].disabled = False
-
-    self.ids["img_monitor_back"].opacity = 1
-    self.ids["img_monitor_play"].opacity = 1
-    self.ids["img_monitor_pause"].opacity = 0.25
-    self.ids["img_monitor_forward"].opacity = 1
-    self.ids["img_monitor_live"].opacity = 1
+    #
+    # self.ids["btn_monitor_back"].disabled = False
+    # self.ids["btn_monitor_play"].disabled = False
+    # self.ids["btn_monitor_pause"].disabled = True
+    # self.ids["btn_monitor_forward"].disabled = False
+    # self.ids["btn_monitor_live"].disabled = False
+    #
+    # self.ids["img_monitor_back"].opacity = 1
+    # self.ids["img_monitor_play"].opacity = 1
+    # self.ids["img_monitor_pause"].opacity = 0.25
+    # self.ids["img_monitor_forward"].opacity = 1
+    # self.ids["img_monitor_live"].opacity = 1
 
 '''
     This method updates text shown on monitor according to time that educator watches at the moment
@@ -164,39 +167,42 @@ def on_monitor_backward(self):
 '''
 
 def on_monitor_play(self):
-    self.event = Clock.schedule_interval(self.on_monitor_forward, 0.5)
-
-    self.ids["btn_monitor_back"].disabled = True
-    self.ids["btn_monitor_play"].disabled = True
-    self.ids["btn_monitor_pause"].disabled = False
-    self.ids["btn_monitor_forward"].disabled = True
-    self.ids["btn_monitor_live"].disabled = True
-
-    self.ids["img_monitor_back"].opacity = 0.25
-    self.ids["img_monitor_play"].opacity = 0.25
-    self.ids["img_monitor_pause"].opacity = 1
-    self.ids["img_monitor_forward"].opacity = 0.25
-    self.ids["img_monitor_live"].opacity = 0.25
+    pass
+    # TODO
+    # self.event = Clock.schedule_interval(self.on_monitor_forward, 0.5)
+    #
+    # self.ids["btn_monitor_back"].disabled = True
+    # self.ids["btn_monitor_play"].disabled = True
+    # self.ids["btn_monitor_pause"].disabled = False
+    # self.ids["btn_monitor_forward"].disabled = True
+    # self.ids["btn_monitor_live"].disabled = True
+    #
+    # self.ids["img_monitor_back"].opacity = 0.25
+    # self.ids["img_monitor_play"].opacity = 0.25
+    # self.ids["img_monitor_pause"].opacity = 1
+    # self.ids["img_monitor_forward"].opacity = 0.25
+    # self.ids["img_monitor_live"].opacity = 0.25
 
 '''
     This method is to enable educator pausing text stream on monitor through button
 '''
 
 def on_monitor_pause(self):
+    pass
     # TODO
     # self.event.cancel()
-
-    self.ids["btn_monitor_back"].disabled = False
-    self.ids["btn_monitor_play"].disabled = False
-    self.ids["btn_monitor_pause"].disabled = True
-    self.ids["btn_monitor_forward"].disabled = False
-    self.ids["btn_monitor_live"].disabled = False
-
-    self.ids["img_monitor_back"].opacity = 1
-    self.ids["img_monitor_play"].opacity = 1
-    self.ids["img_monitor_pause"].opacity = 0.25
-    self.ids["img_monitor_forward"].opacity = 1
-    self.ids["img_monitor_live"].opacity = 1
+    #
+    # self.ids["btn_monitor_back"].disabled = False
+    # self.ids["btn_monitor_play"].disabled = False
+    # self.ids["btn_monitor_pause"].disabled = True
+    # self.ids["btn_monitor_forward"].disabled = False
+    # self.ids["btn_monitor_live"].disabled = False
+    #
+    # self.ids["img_monitor_back"].opacity = 1
+    # self.ids["img_monitor_play"].opacity = 1
+    # self.ids["img_monitor_pause"].opacity = 0.25
+    # self.ids["img_monitor_forward"].opacity = 1
+    # self.ids["img_monitor_live"].opacity = 1
 
 '''
     This method is to enable educator skipping forward text shown on monitor through button
@@ -284,3 +290,11 @@ def on_lects(self):
                                        self.data_selected_lect[2].replace("\n", ""), "finished")
 
     Logger.info("pgLiveExam: Educator successfully finished exam")
+
+'''
+    This method checks clock event scheduled for connection checking and cancels it to avoid too many requests later on
+'''
+
+def on_leave(self):
+    self.date_time.cancel()
+    self.min_timer.cancel()

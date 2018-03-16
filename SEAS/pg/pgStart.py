@@ -79,6 +79,6 @@ def on_follow(name):
     elif name == "instagram":
         webbrowser.open("https://instagram.com/wivernsoft/")
     elif name == "linkedin":
-        webbrowser.open("https://linkedin.com/company/11379247/")
+        webbrowser.open("https://linkedin.com/company/wivernsoft/")
 
     Logger.info("pgStart: Educator clicked on social media link and directed to %s" % name.title())

@@ -1,7 +1,6 @@
 from kivy.logger import Logger
 from kivy.animation import Animation
 
-import time
 from SEAS.func import database_api
 
 '''
@@ -45,8 +44,13 @@ def on_reset(self):
 
             Logger.info("tabReset: Password successfully reset")
 
-            time.sleep(1)
             self.on_back()
+        else:
+            anim_status.stop(img_status)
+
+            img_status.source = "img/ico_fail.png"
+            img_status.opacity = 1
+            img_status.reload()
 
 '''
     This method switches screen to new added one and deletes current screen in order to refresh in case user comes back

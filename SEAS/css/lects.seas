@@ -451,3 +451,4 @@
             background_disabled_normal: "img/widget_75_black.png"
             size_hint: .15, .045
             pos_hint: {"center_x": .875, "y": .075}
+            on_release: root.on_class_statistics()

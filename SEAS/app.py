@@ -52,6 +52,9 @@ class PgStdStats(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
+
 '''
     This class is to organize functions of PgStats
 '''
@@ -80,6 +83,9 @@ class PgStats(Screen):
 
     def on_quit(self):
         pgLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
 
 '''
     This class is to organize functions of PgStdLiveExam
@@ -147,12 +153,19 @@ class PgStdLects(Screen):
         pages.append(PgStdLiveExam(name="PgStdLiveExam"))
         tabReset.on_back(pages, screen)
 
+    def on_personal_exam_statistics(self):
+        pgStdLects.on_personal_exam_statistics(self)
+
     def on_logout(self):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
     def on_quit(self):
         pgLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
+        pgStdLects.on_leave(self)
 
 '''
     This class is to organize functions of PgStdProfile
@@ -192,6 +205,9 @@ class PgStdProfile(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
+
 '''
     This class is to organize functions of PgStdStart
 '''
@@ -229,6 +245,9 @@ class PgStdStart(Screen):
 
     def on_quit(self):
         pgLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
 
 '''
     This class is to organize functions of PgNewQuestion
@@ -305,6 +324,9 @@ class PgNewExam(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
+
 '''
     This class is to organize functions of PgLiveExam
 '''
@@ -346,6 +368,9 @@ class PgLiveExam(Screen):
         pgLiveExam.on_lects(self)
         pages.append(PgLects(name="PgLects"))
         tabReset.on_back(pages, screen)
+
+    def on_leave(self, *args):
+        pgLiveExam.on_leave(self)
 
 '''
     This class is to organize functions of PgLects
@@ -415,6 +440,9 @@ class PgLects(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
+
 '''
     This class is to organize functions of PgProfile
 '''
@@ -452,6 +480,9 @@ class PgProfile(Screen):
 
     def on_quit(self):
         pgLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
 
 '''
     This class is to organize functions of PgStart
@@ -491,6 +522,9 @@ class PgStart(Screen):
     def on_quit(self):
         pgLogin.on_quit(self)
 
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
+
 '''
     This class is to organize functions of TabReset
 '''
@@ -510,6 +544,9 @@ class TabReset(Screen):
 
     def on_quit(self):
         pgLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
 
 '''
     This class is to organize functions of PgLogin
@@ -544,6 +581,9 @@ class PgLogin(Screen):
 
     def on_quit(self):
         pgLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        pgLogin.on_leave(self)
 
 '''
     This class is to organize functions of PgSplash
@@ -597,7 +637,7 @@ class SeasApp(App):
     Logger.info("main: Cursor track successfully bound")
 
 def on_keyboard_event(event):
-    if event.Key.lower() in ["lwin", "lmenu", "rmenu"]:
+    if event.Key.lower() in []:#"lwin", "lmenu", "rmenu"]:
         return False
     else:
         return True

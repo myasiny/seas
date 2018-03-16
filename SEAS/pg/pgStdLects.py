@@ -51,9 +51,9 @@ def on_pre_enter(self):
     self.add_widget(btn_main)
 
     Clock.schedule_once(partial(check_std_live_exam, self))
-    Clock.schedule_interval(partial(check_std_live_exam, self), 5.0)
+    self.check_std_live_exam = Clock.schedule_interval(partial(check_std_live_exam, self), 5.0)
 
-    Logger.info("pgStdLects: Student's lectures successfully imported from server and listed on SEAS")
+    Logger.info("pgStdLects: Student's lectures successfully imported from server and listed on GUI")
 
 '''
     This method re-organizes page according to information of selected lecture
@@ -80,7 +80,7 @@ def on_lect_select(self, dropdown, txt):
 
     self.data_exams = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
 
-    args_converter = lambda row_index, i: {"text": i,
+    args_converter = lambda row_index, i: {"text": i.replace("_", " ").title(),
                                            "background_normal": "img/widget_75_black_crop.png",
                                            "font_name": "font/CaviarDreams_Bold.ttf", "font_size": self.height / 25,
                                            "size_hint_y": None, "height": self.height / 10}
@@ -106,26 +106,43 @@ def on_exam_selected(self):
     self.ids["txt_date_head"].opacity = 1
     self.ids["txt_date_body"].opacity = 1
     for i in self.data_exams:
-        if i[1] == self.ids["list_exams"].adapter.selection[0].text:
-            self.ids["txt_date_body"].text = str(i[3])
-        break
+        try:
+            if i[1].replace("_", " ").title() == self.ids["list_exams"].adapter.selection[0].text:
+                self.ids["txt_date_body"].text = i[3]
+            break
+        except:
+            if i[1].replace("_", " ").title() == self.ids["txt_info_head"].text:
+                self.ids["txt_date_body"].text = i[3]
+                break
 
     self.ids["txt_time_head"].opacity = 1
     self.ids["txt_time_body"].opacity = 1
     for i in self.data_exams:
-        if i[1] == self.ids["list_exams"].adapter.selection[0].text:
-            self.ids["txt_time_body"].text = str(i[4])
-        break
+        try:
+            if i[1].replace("_", " ").title() == self.ids["list_exams"].adapter.selection[0].text:
+                self.ids["txt_time_body"].text = str(i[4])
+            break
+        except:
+            if i[1].replace("_", " ").title() == self.ids["txt_info_head"].text:
+                self.ids["txt_time_body"].text = str(i[4])
+                break
 
     self.ids["txt_options_head"].opacity = 1
     self.ids["btn_exam_statistics"].opacity = 1
 
 def on_join_exam(self):
-    with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:
-        temp_selected_lect.write("\n" + self.live_exam)
+    with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+        temp_selected_lect.write(self.ids["txt_lect_code"].text+ "\n" + self.ids["txt_info_head"].text + "\n" + self.live_exam)
         temp_selected_lect.close()
 
     Logger.info("pgStdLects: Student successfully requested to join exam")
+
+'''
+    This method checks clock event scheduled for connection checking and cancels it to avoid too many requests later on
+'''
+
+def on_leave(self):
+    self.check_std_live_exam.cancel()
 
 def on_personal_exam_statistics(self):
     pass

@@ -76,82 +76,82 @@ def on_pre_enter(self):
 
     self.ids["txt_question_no"].text = "Question"
 
-    if len(self.data_detailed_exam) > 0:
-        Logger.info("pgNewQuestion: Question %s already exists, editing mode on" % self.question_no)
-
-        self.question_no = self.data_detailed_exam.keys()[0]
-        self.ids["txt_question_no"].text = "Question %s" % self.question_no
-
-        question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]
-
-        self.ids["input_subject"].text = question_details["subject"]
-        self.ids["input_tags"].text = question_details["tags"]
-        self.ids["input_grade"].text = question_details["value"]
-        self.ids["input_question_body"].text = question_details["text"]
-
-        self.question_type = question_details["type"]
-        if self.question_type == "programming":
-            self.correct_answer.size_hint_y = 0
-            self.correct_answer.opacity = 0
-            self.ids["input_answer_a"].size_hint_y = 0
-            self.ids["input_answer_a"].opacity = 0
-            self.ids["input_answer_b"].size_hint_y = 0
-            self.ids["input_answer_b"].opacity = 0
-            self.ids["input_answer_c"].size_hint_y = 0
-            self.ids["input_answer_c"].opacity = 0
-            self.ids["input_answer_d"].size_hint_y = 0
-            self.ids["input_answer_d"].opacity = 0
-            self.ids["input_answer_e"].size_hint_y = 0
-            self.ids["input_answer_e"].opacity = 0
-            self.ids["input_short_answer"].size_hint_y = 0
-            self.ids["input_short_answer"].opacity = 0
-            self.ids["input_input"].size_hint_y = 0.3
-            self.ids["input_input"].opacity = 1
-            self.ids["input_output"].size_hint_y = 0.3
-            self.ids["input_output"].opacity = 1
-
-            self.ids["input_input"].text = question_details["inputs"]
-            self.ids["input_output"].text = question_details["outputs"]
-        elif self.question_type == "short_answer":
-            self.correct_answer.size_hint_y = 0
-            self.correct_answer.opacity = 0
-            self.ids["input_input"].size_hint_y = 0
-            self.ids["input_input"].opacity = 0
-            self.ids["input_output"].size_hint_y = 0
-            self.ids["input_output"].opacity = 0
-            self.ids["input_answer_a"].size_hint_y = 0
-            self.ids["input_answer_a"].opacity = 0
-            self.ids["input_answer_b"].size_hint_y = 0
-            self.ids["input_answer_b"].opacity = 0
-            self.ids["input_answer_c"].size_hint_y = 0
-            self.ids["input_answer_c"].opacity = 0
-            self.ids["input_answer_d"].size_hint_y = 0
-            self.ids["input_answer_d"].opacity = 0
-            self.ids["input_answer_e"].size_hint_y = 0
-            self.ids["input_answer_e"].opacity = 0
-            self.ids["input_short_answer"].size_hint_y = 0.675
-            self.ids["input_short_answer"].opacity = 1
-
-            self.ids["input_short_answer"].text = question_details["answer"]
-        else:
-            self.ids["input_input"].size_hint_y = 0
-            self.ids["input_input"].opacity = 0
-            self.ids["input_output"].size_hint_y = 0
-            self.ids["input_output"].opacity = 0
-            self.ids["input_short_answer"].size_hint_y = 0
-            self.ids["input_short_answer"].opacity = 0
-            self.ids["input_answer_a"].size_hint_y = 0.1
-            self.ids["input_answer_a"].opacity = 1
-            self.ids["input_answer_b"].size_hint_y = 0.1
-            self.ids["input_answer_b"].opacity = 1
-            self.ids["input_answer_c"].size_hint_y = 0.1
-            self.ids["input_answer_c"].opacity = 1
-            self.ids["input_answer_d"].size_hint_y = 0.1
-            self.ids["input_answer_d"].opacity = 1
-            self.ids["input_answer_e"].size_hint_y = 0.1
-            self.ids["input_answer_e"].opacity = 1
-            self.correct_answer.size_hint_y = 0.05
-            self.correct_answer.opacity = 1
+    # if len(self.data_detailed_exam) > 0:
+    #     Logger.info("pgNewQuestion: Exam already exists, editing mode on")
+    #
+    #     self.question_no = self.data_detailed_exam.keys()[0]
+    #     self.ids["txt_question_no"].text = "Question %s" % self.question_no
+    #
+    #     question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]
+    #
+    #     self.ids["input_subject"].text = question_details["subject"]
+    #     self.ids["input_tags"].text = question_details["tags"]
+    #     self.ids["input_grade"].text = str(question_details["value"])
+    #     self.ids["input_question_body"].text = question_details["text"]
+    #
+    #     self.question_type = question_details["type"]
+    #     if self.question_type == "programming":
+    #         self.correct_answer.size_hint_y = 0
+    #         self.correct_answer.opacity = 0
+    #         self.ids["input_answer_a"].size_hint_y = 0
+    #         self.ids["input_answer_a"].opacity = 0
+    #         self.ids["input_answer_b"].size_hint_y = 0
+    #         self.ids["input_answer_b"].opacity = 0
+    #         self.ids["input_answer_c"].size_hint_y = 0
+    #         self.ids["input_answer_c"].opacity = 0
+    #         self.ids["input_answer_d"].size_hint_y = 0
+    #         self.ids["input_answer_d"].opacity = 0
+    #         self.ids["input_answer_e"].size_hint_y = 0
+    #         self.ids["input_answer_e"].opacity = 0
+    #         self.ids["input_short_answer"].size_hint_y = 0
+    #         self.ids["input_short_answer"].opacity = 0
+    #         self.ids["input_input"].size_hint_y = 0.3
+    #         self.ids["input_input"].opacity = 1
+    #         self.ids["input_output"].size_hint_y = 0.3
+    #         self.ids["input_output"].opacity = 1
+    #
+    #         self.ids["input_input"].text = question_details["inputs"]
+    #         self.ids["input_output"].text = question_details["outputs"]
+    #     elif self.question_type == "short_answer":
+    #         self.correct_answer.size_hint_y = 0
+    #         self.correct_answer.opacity = 0
+    #         self.ids["input_input"].size_hint_y = 0
+    #         self.ids["input_input"].opacity = 0
+    #         self.ids["input_output"].size_hint_y = 0
+    #         self.ids["input_output"].opacity = 0
+    #         self.ids["input_answer_a"].size_hint_y = 0
+    #         self.ids["input_answer_a"].opacity = 0
+    #         self.ids["input_answer_b"].size_hint_y = 0
+    #         self.ids["input_answer_b"].opacity = 0
+    #         self.ids["input_answer_c"].size_hint_y = 0
+    #         self.ids["input_answer_c"].opacity = 0
+    #         self.ids["input_answer_d"].size_hint_y = 0
+    #         self.ids["input_answer_d"].opacity = 0
+    #         self.ids["input_answer_e"].size_hint_y = 0
+    #         self.ids["input_answer_e"].opacity = 0
+    #         self.ids["input_short_answer"].size_hint_y = 0.675
+    #         self.ids["input_short_answer"].opacity = 1
+    #
+    #         self.ids["input_short_answer"].text = question_details["answer"]
+    #     else:
+    #         self.ids["input_input"].size_hint_y = 0
+    #         self.ids["input_input"].opacity = 0
+    #         self.ids["input_output"].size_hint_y = 0
+    #         self.ids["input_output"].opacity = 0
+    #         self.ids["input_short_answer"].size_hint_y = 0
+    #         self.ids["input_short_answer"].opacity = 0
+    #         self.ids["input_answer_a"].size_hint_y = 0.1
+    #         self.ids["input_answer_a"].opacity = 1
+    #         self.ids["input_answer_b"].size_hint_y = 0.1
+    #         self.ids["input_answer_b"].opacity = 1
+    #         self.ids["input_answer_c"].size_hint_y = 0.1
+    #         self.ids["input_answer_c"].opacity = 1
+    #         self.ids["input_answer_d"].size_hint_y = 0.1
+    #         self.ids["input_answer_d"].opacity = 1
+    #         self.ids["input_answer_e"].size_hint_y = 0.1
+    #         self.ids["input_answer_e"].opacity = 1
+    #         self.correct_answer.size_hint_y = 0.05
+    #         self.correct_answer.opacity = 1
 
 
 '''
@@ -236,7 +236,7 @@ def on_correct_answer_selected(self, spinner, text):
 
 def on_new_question_next(self):
     on_submit(self)
-    # TODO
+    return True
 
 '''
     This method TODO
@@ -244,7 +244,7 @@ def on_new_question_next(self):
 
 def on_new_question_previous(self):
     on_submit(self)
-    # TODO
+    return True
 
 '''
     This method submits question information by connecting to server and directs to PgLects
