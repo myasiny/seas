@@ -5,7 +5,7 @@
 
 from kivy.logger import Logger
 
-from GUI.func import database_api
+from SEAS.func import database_api
 
 def check_std_live_exam(self, dt):
     try:

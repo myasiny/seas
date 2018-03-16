@@ -3,7 +3,7 @@ from kivy.uix.spinner import Spinner
 
 import subprocess32, psutil, code, sys, os, json
 from StringIO import StringIO
-from GUI.func import database_api
+from SEAS.func import database_api
 from functools import partial
 from pygments.lexers.python import PythonLexer
 

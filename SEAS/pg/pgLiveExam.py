@@ -11,12 +11,12 @@ import collections
 import matplotlib.pyplot as plt
 
 from functools import partial
-from GUI.func import database_api
-from GUI.func.date_time import date_time, min_timer
-from GUI.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+from SEAS.func import database_api
+from SEAS.func.date_time import date_time, min_timer
+from SEAS.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 '''
-    This method updates exam information and imports participants of exam to list on GUI before entering PgLiveExam
+    This method updates exam information and imports participants of exam to list on SEAS before entering PgLiveExam
 '''
 
 def on_pre_enter(self):
@@ -218,7 +218,7 @@ def on_monitor_live(self):
     pass  # TODO (p2p)
 
 '''
-    This method adds 10 minutes to exam duration left and updates it on both GUI and server
+    This method adds 10 minutes to exam duration left and updates it on both SEAS and server
 '''
 
 def on_add_time(self):

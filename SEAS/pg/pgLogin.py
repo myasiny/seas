@@ -9,8 +9,8 @@ from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 
 from functools import partial
-from GUI.func import database_api
-from GUI.func.check_connection import check_connection
+from SEAS.func import database_api
+from SEAS.func.check_connection import check_connection
 
 '''
     This method loads design file for given page

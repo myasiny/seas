@@ -8,8 +8,8 @@ from kivy.uix.filechooser import FileChooserListView
 from kivy.adapters.listadapter import ListAdapter
 
 import os
-from GUI.func import excel_to_csv
-from GUI.func import database_api
+from SEAS.func import excel_to_csv
+from SEAS.func import database_api
 
 '''
     This method imports all lectures given by educator from server
@@ -52,7 +52,7 @@ def on_pre_enter(self):
 
     self.add_widget(btn_main)
 
-    Logger.info("pgLects: Educator's lectures successfully imported from server and listed on GUI")
+    Logger.info("pgLects: Educator's lectures successfully imported from server and listed on SEAS")
 
 '''
     This method re-organizes page according to information of selected lecture
@@ -101,7 +101,7 @@ def on_lect_select(self, dropdown, txt):
 
 '''
     This method tries to make exams layout visible if it is already not
-    Then, imports exams of selected lecture from server and lists on GUI
+    Then, imports exams of selected lecture from server and lists on SEAS
 '''
 
 def on_exams(self):
@@ -122,7 +122,7 @@ def on_exams(self):
                                                  args_converter=args_converter, allow_empty_selection=False)
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
 
-    Logger.info("pgLects: Exams of selected lecture successfully imported from server and listed on GUI")
+    Logger.info("pgLects: Exams of selected lecture successfully imported from server and listed on SEAS")
 
 '''
     This method re-organizes bottom-right widget and related button bindings according to information of selected exam
@@ -165,7 +165,7 @@ def on_exam_selected(self):
         self.ids["btn_exam_start_grade"].bind(on_release=self.on_start_exam)
 
 '''
-    This method requests deletion of selected lecture from server and re-lists exams of selected lecture on GUI
+    This method requests deletion of selected lecture from server and re-lists exams of selected lecture on SEAS
 '''
 
 def on_exam_deleted(self):
@@ -179,7 +179,7 @@ def on_exam_deleted(self):
 
 '''
     This method tries to make participants layout visible if it is already not
-    Then, imports participants of selected lecture from server and lists on GUI
+    Then, imports participants of selected lecture from server and lists on SEAS
 '''
 
 def on_participants(self):
@@ -210,7 +210,7 @@ def on_participants(self):
 
     self.ids["btn_import_list"].bind(on_release=self.on_import_list)
 
-    Logger.info("pgLects: Participants of selected lecture successfully imported from server and listed on GUI")
+    Logger.info("pgLects: Participants of selected lecture successfully imported from server and listed on SEAS")
 
 '''
     This method re-organizes bottom-right widget and related button bindings according to information of selected student
@@ -251,7 +251,7 @@ def on_participant_selected(self):
     self.ids["btn_student_statistics"].opacity = 1
 
 '''
-    This method requests deletion of selected student from server and re-lists participants of selected lecture on GUI
+    This method requests deletion of selected student from server and re-lists participants of selected lecture on SEAS
 '''
 
 def on_participant_deleted(self):
@@ -299,7 +299,7 @@ def on_import_list(self):
     self.popup.open()
 
 '''
-    This method sends imported file containing list of students to server and lists them on GUI
+    This method sends imported file containing list of students to server and lists them on SEAS
 '''
 
 def on_import_list_selected(self, widget_name, file_path, mouse_pos):

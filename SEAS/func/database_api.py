@@ -320,7 +320,7 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     :param username: String; username of request
     :param URL: String;  server address
     :param organization: String; university
-    :return: Done, saves profile picture to GUI/img/pic_username.png
+    :return: Done, saves profile picture to SEAS/img/pic_username.png
     """
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/pic" %(organization, username)

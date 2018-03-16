@@ -6,8 +6,8 @@ from kivy.uix.listview import ListItemButton
 from kivy.adapters.listadapter import ListAdapter
 
 from functools import partial
-from GUI.func import database_api
-from GUI.func.check_std_live_exam import check_std_live_exam
+from SEAS.func import database_api
+from SEAS.func.check_std_live_exam import check_std_live_exam
 
 '''
     This method imports all lectures that student registered from server
@@ -52,11 +52,11 @@ def on_pre_enter(self):
 
     Clock.schedule_interval(partial(check_std_live_exam, self), 5.0)
 
-    Logger.info("pgStdLects: Student's lectures successfully imported from server and listed on GUI")
+    Logger.info("pgStdLects: Student's lectures successfully imported from server and listed on SEAS")
 
 '''
     This method re-organizes page according to information of selected lecture
-    Additionally, it imports exams of selected lecture from server and lists on GUI
+    Additionally, it imports exams of selected lecture from server and lists on SEAS
 '''
 
 def on_lect_select(self, dropdown, txt):

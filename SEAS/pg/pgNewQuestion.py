@@ -2,7 +2,7 @@ from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
 
 from functools import partial
-from GUI.func import database_api
+from SEAS.func import database_api
 
 '''
     This method creates multiple choice fields and makes right column invisible before entering PgNewQuestion

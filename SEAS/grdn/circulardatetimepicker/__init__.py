@@ -47,7 +47,7 @@ in Kv language:
 
 from kivy.animation import Animation
 from kivy.clock import Clock
-from GUI.grdn.circularlayout import CircularLayout  # ORIGINAL: from kivy.garden.circularlayout import CircularLayout
+from SEAS.grdn.circularlayout import CircularLayout  # ORIGINAL: from kivy.garden.circularlayout import CircularLayout
 # from kivy.garden.recycleview import RecycleView
 from kivy.graphics import Line, Color, Ellipse
 from kivy.lang import Builder

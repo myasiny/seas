@@ -7,7 +7,7 @@ from kivy.uix.floatlayout import FloatLayout
 
 import webbrowser
 from functools import partial
-from GUI.func.round_image import round_image
+from SEAS.func.round_image import round_image
 
 '''
     This method rounds user's profile picture and updates top-left image widget accordingly

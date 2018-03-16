@@ -1,8 +1,8 @@
-from GUI.grdn.matplotlib.backend_kivy import FigureCanvasKivy,\
+from SEAS.grdn.matplotlib.backend_kivy import FigureCanvasKivy,\
                                 FigureManagerKivy, RendererKivy,\
                                 GraphicsContextKivy, NavigationToolbar2Kivy,\
                                 MPLKivyApp
-from GUI.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+from SEAS.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 __all__ = (FigureCanvasKivy.__name__, FigureManagerKivy.__name__,
            RendererKivy.__name__, GraphicsContextKivy.__name__,

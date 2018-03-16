@@ -2,9 +2,9 @@ from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.animation import Animation
 
-from GUI.func import database_api
-from GUI.func.round_image import round_image
-from GUI.func.barcode_png import barcode_png
+from SEAS.func import database_api
+from SEAS.func.round_image import round_image
+from SEAS.func.barcode_png import barcode_png
 
 '''
     This method updates top-mid identity card widget according to user information before entering PgProfile

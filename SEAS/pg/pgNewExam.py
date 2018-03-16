@@ -1,9 +1,9 @@
 from kivy.logger import Logger
 from kivy.animation import Animation
-from GUI.grdn.kivycalendar import CalendarWidget
-from GUI.grdn.circulardatetimepicker import CircularTimePicker
+from SEAS.grdn.kivycalendar import CalendarWidget
+from SEAS.grdn.circulardatetimepicker import CircularTimePicker
 
-from GUI.func import database_api
+from SEAS.func import database_api
 
 '''
     This method updates lecture information, creates calendar and time picker widgets before entering PgNewExam

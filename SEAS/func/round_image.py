@@ -4,7 +4,7 @@
 
 from kivy.logger import Logger
 
-from GUI.func import database_api
+from SEAS.func import database_api
 from PIL import Image, ImageOps, ImageDraw
 
 def round_image():

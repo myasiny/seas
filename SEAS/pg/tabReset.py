@@ -2,7 +2,7 @@ from kivy.logger import Logger
 from kivy.animation import Animation
 
 import time
-from GUI.func import database_api
+from SEAS.func import database_api
 
 '''
     This method checks whether username and e-mail are provided or not
