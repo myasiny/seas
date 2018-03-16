@@ -1,7 +1,7 @@
 from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
 
-import subprocess32, psutil, code, sys, os
+import subprocess32, psutil, code, sys, os, json
 from StringIO import StringIO
 from GUI.func import database_api
 from functools import partial
@@ -21,14 +21,15 @@ def on_pre_enter(self):
 
     self.data_detailed_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
                                                    self.data_selected_lect[0].replace("\n", ""),
-                                                   self.data_selected_lect[2].replace("\n", ""))["Questions"]
+                                                   self.data_selected_lect[2].replace("\n", ""))
+    self.data_detailed_exam = self.data_detailed_exam["Questions"]
 
-    question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]
+    self.question_no = str(self.data_detailed_exam.keys()[0])
+    self.ids["txt_question_no"].text = "Question %s" % self.question_no
+
+    question_details = json.loads(self.data_detailed_exam[self.data_detailed_exam.keys()[0]])
 
     self.question_type = question_details["type"]
-
-    self.question_no = self.data_detailed_exam.keys()[0]
-    self.ids["txt_question_no"].text = "Question %s" % self.question_no
 
     self.question_grade = question_details["value"]
     self.ids["txt_question_grade"].text = "Grade: %s" % str(self.question_grade)
@@ -91,7 +92,7 @@ def on_pre_enter(self):
     for i in proc.open_files():
         self.list_progs_pre.append(i.path)
 
-    Logger.info("pgStdLiveExam: Question %s successfully imported from server" & self.question_no)
+    Logger.info("pgStdLiveExam: Question %s successfully imported from server" % self.question_no)
 
 '''
     This method is to store final answer given by student for multiple choice question

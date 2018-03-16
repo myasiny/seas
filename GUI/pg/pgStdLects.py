@@ -52,7 +52,7 @@ def on_pre_enter(self):
 
     Clock.schedule_interval(partial(check_std_live_exam, self), 5.0)
 
-    Logger.info("pgLects: Student's lectures successfully imported from server and listed on GUI")
+    Logger.info("pgStdLects: Student's lectures successfully imported from server and listed on GUI")
 
 '''
     This method re-organizes page according to information of selected lecture
@@ -87,7 +87,7 @@ def on_lect_select(self, dropdown, txt):
                                                  args_converter=args_converter, allow_empty_selection=False)
     self.ids["list_exams"].adapter.bind(on_selection_change=self.on_exam_selected)
 
-    Logger.info("pgLects: Student selected lecture %s" % txt)
+    Logger.info("pgStdLects: Student selected lecture %s" % txt)
 
 '''
     This method re-organizes bottom-right widget and related button bindings according to information of selected exam
@@ -118,6 +118,13 @@ def on_exam_selected(self):
 
     self.ids["txt_options_head"].opacity = 1
     self.ids["btn_exam_statistics"].opacity = 1
+
+def on_join_exam(self):
+    with open("data/temp_selected_lect.seas", "a+") as temp_selected_lect:
+        temp_selected_lect.write("\n" + self.live_exam)
+        temp_selected_lect.close()
+
+    Logger.info("pgStdLects: Student successfully requested to join exam")
 
 def on_personal_exam_statistics(self):
     pass

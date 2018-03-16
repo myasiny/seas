@@ -9,23 +9,25 @@ from GUI.func import database_api
 
 def check_std_live_exam(self, dt):
     try:
-        live_exam = False
+        self.live_exam = None
 
         self.data_live_exam = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
 
         for exam in self.data_live_exam:
             if exam[5] == "active":
-                live_exam = True
+                self.live_exam = exam[1]
 
+                self.ids["img_join_exam_name"].opacity = 1
                 self.ids["btn_join_exam"].disabled = False
                 self.ids["txt_join_exam_name"].color = (1,1,1,1)
-                self.ids["txt_join_exam_name"].text = "%s has started!" % exam[1]
+                self.ids["txt_join_exam_name"].text = "%s has started!" % exam[1].title()
 
                 Logger.info("check_std_live_exam: Successfully checked, there is a live exam")
 
                 break
 
-        if not live_exam:
+        if self.live_exam is None:
+            self.ids["img_join_exam_name"].opacity = 0.25
             self.ids["btn_join_exam"].disabled = True
             self.ids["txt_join_exam_name"].color = (1,1,1,0.25)
             self.ids["txt_join_exam_name"].text = "No exam started"
