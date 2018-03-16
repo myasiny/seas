@@ -124,7 +124,7 @@ def on_run(self):
                 old_stdout = sys.stdout
                 sys.stdout = StringIO()
                 redirected_output = sys.stdout
-                script = self.codeinput.text
+                script = self.ids["input_code_answer"].text
                 co = code.compile_command(script, "<stdin>", "exec")
                 exec co
                 sys.stdout = old_stdout
