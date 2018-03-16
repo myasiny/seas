@@ -50,6 +50,7 @@ def on_pre_enter(self):
 
     self.add_widget(btn_main)
 
+    Clock.schedule_once(partial(check_std_live_exam, self))
     Clock.schedule_interval(partial(check_std_live_exam, self), 5.0)
 
     Logger.info("pgStdLects: Student's lectures successfully imported from server and listed on SEAS")

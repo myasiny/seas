@@ -141,3 +141,13 @@ def on_quit(self):
                                     pos_hint={"center_x": .75, "y": .01},
                                     on_release=popup.dismiss))
     popup.open()
+
+'''
+    This method checks all clock events scheduled until it is called and cancels them to avoid undesired problems
+'''
+
+# def on_leave():
+#     try:
+#         [event.cancel() for event in Clock.get_events()]
+#     except:
+#         pass

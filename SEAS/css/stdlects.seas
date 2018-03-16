@@ -182,7 +182,7 @@
 
         Image:
             id: img_join_exam_name
-            opacity: .25
+            opacity: .1
             source: "img/btn_oval_black.png"
             keep_ratio: False
             allow_stretch: True

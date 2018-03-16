@@ -27,7 +27,7 @@ def check_std_live_exam(self, dt):
                 break
 
         if self.live_exam is None:
-            self.ids["img_join_exam_name"].opacity = 0.25
+            self.ids["img_join_exam_name"].opacity = 0.1
             self.ids["btn_join_exam"].disabled = True
             self.ids["txt_join_exam_name"].color = (1,1,1,0.25)
             self.ids["txt_join_exam_name"].text = "No exam started"
