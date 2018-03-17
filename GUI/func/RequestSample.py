@@ -89,21 +89,21 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                   }
 
 
-print addQuestionToExam(lecturer_token, "EECS 468", "bioinformatic mt 2", {"type": "test",
-                      "subject": "math",
-                      "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
-                      "answer": "c",
-                      "inputs": "",
-                      "outputs": "",
-                      "value": 20,
-                      "tags": ["integers", "math"]
-                     })
+# print addQuestionToExam(lecturer_token, "EECS 468", "aa", {"type": "test",
+#                       "subject": "math",
+#                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
+#                       "answer": "c",
+#                       "inputs": "",
+#                       "outputs": "",
+#                       "value": 20,
+#                       "tags": ["integers", "math"]
+#                      })
 
 
-### HOW TO GET EXAM
+## HOW TO GET EXAM
 # print getExam(student_token,
 #                  "EECS 468",
-#                  "bioinformatic mt 2")
+#                  "aa")
 
 # print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Ataturk")
 
@@ -117,7 +117,7 @@ print addQuestionToExam(lecturer_token, "EECS 468", "bioinformatic mt 2", {"type
 
 # print getExamsOfLecture(student_token, "eecs 468")
 
-# print edit_question(lecturer_token, "eecse 468",
+# print edit_question(lecturer_token, "eecs 468",
 #                     "bioinformatic_mt_2",
 #                     13,
 #                     {"type": "classic",
