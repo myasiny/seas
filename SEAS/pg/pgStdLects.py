@@ -137,9 +137,17 @@ def on_exam_selected(self):
     self.ids["txt_options_head"].opacity = 1
     self.ids["btn_exam_statistics"].opacity = 1
 
+'''
+    This method clears cache of temporary exam order data in order to avoid pre-enter crashes on PgStdLiveExam in future
+    Additionally, it stores selected lecture information as well as name of live exam to send request to server
+'''
+
 def on_join_exam(self):
+    with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
+        temp_exam_order.close()
+
     with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
-        temp_selected_lect.write(self.ids["txt_lect_code"].text+ "\n" + self.ids["txt_info_head"].text + "\n" + self.live_exam)
+        temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.live_exam)
         temp_selected_lect.close()
 
     Logger.info("pgStdLects: Student successfully requested to join exam")

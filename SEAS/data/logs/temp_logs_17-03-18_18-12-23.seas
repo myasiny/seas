@@ -1,0 +1,51 @@
+[INFO   ] Logger: Record log in C:\Users\myasi\Documents\Python Projects\SEAS\SEAS\data\logs\temp_logs_17-03-18_18-12-23.seas
+[INFO   ] main: Esc and right click successfully blocked
+[INFO   ] pgStdstats: Design successfully applied
+[INFO   ] pgStats: Design successfully applied
+[INFO   ] pgStdliveexam: Design successfully applied
+[INFO   ] pgStdlects: Design successfully applied
+[INFO   ] pgStdprofile: Design successfully applied
+[INFO   ] pgStdstart: Design successfully applied
+[INFO   ] pgNewquestion: Design successfully applied
+[INFO   ] pgNewexam: Design successfully applied
+[INFO   ] pgLiveexam: Design successfully applied
+[INFO   ] pgLects: Design successfully applied
+[INFO   ] pgProfile: Design successfully applied
+[INFO   ] pgStart: Design successfully applied
+[INFO   ] pgReset: Design successfully applied
+[INFO   ] pgLogin: Design successfully applied
+[INFO   ] pgSplash: Design successfully applied
+[INFO   ] GL: NPOT texture support is available
+[INFO   ] main: Icon, title, size and preferences successfully set
+[INFO   ] main: Cursor track successfully bound
+[INFO   ] main: Blocked buttons successfully set
+[INFO   ] main: Program successfully started
+[INFO   ] Base: Start application main loop
+[INFO   ] Shader: fragment shader: <WARNING: 0:7: '' :  #version directive missing>
+[INFO   ] check_connection: GUI successfully connected to server
+[INFO   ] pgLogin: User credentials successfully sent to server
+[WARNING] Call to deprecated function __init__ in D:\Python_2.7.13\lib\site-packages\kivy\uix\listview.py line 845.Called from D:\Python_2.7.13\lib\site-packages\kivy\lang\builder.py line 564 by _apply_rule().
+[WARNING] Call to deprecated function __init__ in D:\Python_2.7.13\lib\site-packages\kivy\adapters\simplelistadapter.py line 49.Called from D:\Python_2.7.13\lib\site-packages\kivy\uix\listview.py line 859 by __init__().
+[WARNING] Call to deprecated function __init__ in D:\Python_2.7.13\lib\site-packages\kivy\adapters\adapter.py line 111.Called from D:\Python_2.7.13\lib\site-packages\kivy\adapters\simplelistadapter.py line 55 by __init__().
+[WARNING] Call to deprecated function __init__ in D:\Python_2.7.13\lib\site-packages\kivy\uix\abstractview.py line 42.Called from D:\Python_2.7.13\lib\site-packages\kivy\uix\listview.py line 865 by __init__().
+[INFO   ] pgStdLects: Student's lectures successfully imported from server and listed on GUI
+[INFO   ] pgLogin: User successfully logged in
+[INFO   ] check_connection: GUI successfully connected to server
+[INFO   ] Process of checking connection successfully cancelled
+[INFO   ] check_connection: GUI successfully connected to server
+[WARNING] Call to deprecated function __init__ in D:\Python_2.7.13\lib\site-packages\kivy\adapters\listadapter.py line 185.Called from C:\Users\myasi\Documents\Python Projects\SEAS\SEAS\pg\pgStdLects.py line 93 by on_lect_select().
+[WARNING] Call to deprecated function __init__ in D:\Python_2.7.13\lib\site-packages\kivy\adapters\adapter.py line 111.Called from D:\Python_2.7.13\lib\site-packages\kivy\adapters\listadapter.py line 186 by __init__().
+[WARNING] Call to deprecated function __init__ in D:\Python_2.7.13\lib\site-packages\kivy\uix\selectableview.py line 38.Called from D:\Python_2.7.13\lib\site-packages\kivy\uix\listview.py line 593 by __init__().
+[INFO   ] pgStdLects: Student selected lecture EECS 468
+[INFO   ] check_std_live_exam: Successfully checked, there is a live exam
+[INFO   ] pgStdLects: Student successfully requested to join exam
+[INFO   ] pgStdLiveExam: Question 27 successfully imported from server
+[INFO   ] Process of checking connection successfully cancelled
+[INFO   ] pgStdLiveExam: Student's answer for short answer question sent to server
+[INFO   ] pgStdLiveExam: Question 28 successfully loaded from local
+[INFO   ] pgStdLiveExam: Student's answer for programming question sent to server
+[INFO   ] pgStdLiveExam: Exam successfully completed by student
+[INFO   ] pgStdLects: Student's lectures successfully imported from server and listed on GUI
+[INFO   ] check_connection: GUI successfully connected to server
+[INFO   ] quit: This is sad :(
+[INFO   ] Base: Leaving application in progress...

@@ -638,7 +638,7 @@ class SeasApp(App):
 
 def on_keyboard_event(event):
     if platform.system() == "Windows":
-        if event.Key.lower() in ["lwin", "lmenu", "rmenu"]:
+        if event.Key.lower() in []:  # GodMode ["lwin", "lmenu", "rmenu"]
             return False
         else:
             return True
