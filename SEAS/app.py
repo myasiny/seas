@@ -153,8 +153,8 @@ class PgStdLects(Screen):
         pages.append(PgStdLiveExam(name="PgStdLiveExam"))
         tabReset.on_back(pages, screen)
 
-    def on_personal_exam_statistics(self):
-        pgStdLects.on_personal_exam_statistics(self)
+    def on_personal_statistics(self):
+        pgStdLects.on_personal_statistics(self)
 
     def on_logout(self):
         pages.append(PgLogin(name="PgLogin"))
@@ -637,7 +637,7 @@ class SeasApp(App):
     Logger.info("main: Cursor track successfully bound")
 
 def on_keyboard_event(event):
-    if event.Key.lower() in []:#"lwin", "lmenu", "rmenu"]:
+    if event.Key.lower() in ["lwin", "lmenu", "rmenu"]:
         return False
     else:
         return True

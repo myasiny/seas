@@ -152,7 +152,7 @@ def on_run(self):
 
                 self.run_or_pause = "run"
             else:
-                self.ids["txt_code_output"].text = "CheatingError: do not be an asshole"
+                self.ids["txt_code_output"].text = "CheatingError: plagiarism or something"
     else:
         self.ids["img_run"].source = "img/ico_run.png"
         self.ids["img_run"].reload()

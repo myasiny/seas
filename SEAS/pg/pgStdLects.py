@@ -50,9 +50,6 @@ def on_pre_enter(self):
 
     self.add_widget(btn_main)
 
-    Clock.schedule_once(partial(check_std_live_exam, self))
-    self.check_std_live_exam = Clock.schedule_interval(partial(check_std_live_exam, self), 5.0)
-
     Logger.info("pgStdLects: Student's lectures successfully imported from server and listed on GUI")
 
 '''
@@ -62,6 +59,14 @@ def on_pre_enter(self):
 
 def on_lect_select(self, dropdown, txt):
     dropdown.select(txt)
+
+    try:
+        self.check_std_live_exam.cancel()
+    except:
+        pass
+    finally:
+        Clock.schedule_once(partial(check_std_live_exam, self))
+        self.check_std_live_exam = Clock.schedule_interval(partial(check_std_live_exam, self), 5.0)
 
     self.ids["btn_exams"].disabled = False
     self.ids["btn_personal_statistics"].disabled = False
@@ -108,11 +113,13 @@ def on_exam_selected(self):
     for i in self.data_exams:
         try:
             if i[1].replace("_", " ").title() == self.ids["list_exams"].adapter.selection[0].text:
-                self.ids["txt_date_body"].text = i[3]
+                timestamp = i[3].split(" ")
+                self.ids["txt_date_body"].text = timestamp[1] + " " + timestamp[2] + " " + timestamp[3]
             break
         except:
             if i[1].replace("_", " ").title() == self.ids["txt_info_head"].text:
-                self.ids["txt_date_body"].text = i[3]
+                timestamp = i[3].split(" ")
+                self.ids["txt_date_body"].text = timestamp[1] + " " + timestamp[2] + " " + timestamp[3]
                 break
 
     self.ids["txt_time_head"].opacity = 1
@@ -144,5 +151,5 @@ def on_join_exam(self):
 def on_leave(self):
     self.check_std_live_exam.cancel()
 
-def on_personal_exam_statistics(self):
+def on_personal_statistics(self):
     pass
