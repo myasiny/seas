@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import threading
 import collections
-from GUI.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
+from SEAS.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 key_dict = {}
 key_list = []
 

@@ -7,7 +7,7 @@ class Security(threading.Thread):
 
 class GUI(threading.Thread):
     def run(self):
-        os.system("python ./gui.py")
+        os.system("python ./app.py")
 
 guiThread = GUI()
 guiThread.start()
