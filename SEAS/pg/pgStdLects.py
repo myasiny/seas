@@ -149,7 +149,10 @@ def on_join_exam(self):
 '''
 
 def on_leave(self):
-    self.check_std_live_exam.cancel()
+    try:
+        self.check_std_live_exam.cancel()
+    except:
+        pass
 
 def on_personal_statistics(self):
     pass

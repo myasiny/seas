@@ -5,7 +5,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-import os, pyHook
+import os, pyHook, platform
 from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
 
 '''
@@ -637,10 +637,17 @@ class SeasApp(App):
     Logger.info("main: Cursor track successfully bound")
 
 def on_keyboard_event(event):
-    if event.Key.lower() in ["lwin", "lmenu", "rmenu"]:
-        return False
+    if platform.system() == "Windows":
+        if event.Key.lower() in ["lwin", "lmenu", "rmenu"]:
+            return False
+        else:
+            return True
+    elif platform.system() == "Linux":
+        pass
+    elif platform.system() == "Darwin":
+        pass
     else:
-        return True
+        pass
 
 if __name__ == "__main__":
     hm = pyHook.HookManager()

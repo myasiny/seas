@@ -1,8 +1,8 @@
 from kivy.logger import Logger
 from kivy.uix.image import Image
-from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
+from kivy.uix.videoplayer import VideoPlayer
 from kivy.uix.floatlayout import FloatLayout
 
 import webbrowser
@@ -43,21 +43,17 @@ def on_faq(self, no):
     popup_content.add_widget(Image(source="img/widget_75_gray.png", allow_stretch=True, keep_ratio=False,
                                    size=(self.width, self.height), pos_hint={"center_x": .5, "center_y": .5}))
     if no == 1:
-        popup_content.add_widget(Label(text="HelloWorld 1", color=(0,0,0,1),
-                                       font_name="font/CaviarDreams.ttf", font_size=self.width / 50,
-                                       pos_hint={"center_x": .5, "center_y": .5}))
+        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play", options={"allow_stretch: True"},
+                                             pos_hint={"center_x": .5, "center_y": .5}))
     elif no == 2:
-        popup_content.add_widget(Label(text="HelloWorld 2", color=(0,0,0,1),
-                                       font_name="font/CaviarDreams.ttf", font_size=self.width / 50,
-                                       pos_hint={"center_x": .5, "center_y": .5}))
+        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play", options={"allow_stretch: True"},
+                                             pos_hint={"center_x": .5, "center_y": .5}))
     elif no == 3:
-        popup_content.add_widget(Label(text="HelloWorld 3", color=(0,0,0,1),
-                                       font_name="font/CaviarDreams.ttf", font_size=self.width / 50,
-                                       pos_hint={"center_x": .5, "center_y": .5}))
+        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play", options={"allow_stretch: True"},
+                                             pos_hint={"center_x": .5, "center_y": .5}))
     else:
-        popup_content.add_widget(Label(text="HelloWorld 4", color=(0,0,0,1),
-                                       font_name="font/CaviarDreams.ttf", font_size=self.width / 50,
-                                       pos_hint={"center_x": .5, "center_y": .5}))
+        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play", options={"allow_stretch: True"},
+                                             pos_hint={"center_x": .5, "center_y": .5}))
     popup_content.add_widget(Button(text="Close",
                                     font_name="font/LibelSuit.ttf",
                                     font_size=self.height / 40,

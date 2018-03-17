@@ -12,11 +12,11 @@ def check_connection(img, dt):
         if database_api.testConnection():
             img.source = "img/ico_connection_success.png"
 
-            Logger.info("check_connection: SEAS successfully connected to server")
+            Logger.info("check_connection: GUI successfully connected to server")
         else:
             img.source = "img/ico_connection_fail.png"
 
-            Logger.error("check_connection: SEAS couldn't connect to server")
+            Logger.error("check_connection: GUI couldn't connect to server")
     except:
         img.source = "img/ico_connection_fail.png"
 
