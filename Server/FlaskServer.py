@@ -1,7 +1,11 @@
 # -*- coding:UTF-8 -*-
 
 from flask import Flask, request, jsonify
-from Models import MySQLdb, Password, Credential, Question, Exam
+from Models.MySQLdb import MySQLdb
+from Models.Password import Password
+from Models.Credential import Credential
+from Models.Question import Question
+from Models.Exam import Exam
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 import json
 import datetime
@@ -280,6 +284,4 @@ def changeStatusOfExam(organization, course, exam_name):
 
 
 if __name__ == "__main__":
-    # app.run(host="http://159.65.124.42", port=8888, threaded=True)
-    app.run(host="10.50.81.24", port=8888, threaded=True)
-    # print db.get_user_info("istanbul_sehir_university", "fatihgulmez")
+    app.run(host="localhost", port=8888, threaded=True)
