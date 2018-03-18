@@ -164,6 +164,14 @@ class MySQLdb:
 
         # command_seq.append(questionsTable.get_command())
 
+        revoked_token_table = DBTable("revoked_tokens",
+                                      [
+                                          ("token", "varchar(255)", "")
+                                      ],
+                                      primary_key="token",
+                                      database=self
+                                      )
+
         self.execute("Insert into roles(Role) values ('superuser'); "
                      "Insert into roles(Role) values ('admin'); "
                      "Insert into roles(Role) values ('lecturer');"
@@ -359,3 +367,10 @@ class MySQLdb:
     def get_exams_of_lecture(self, organization, course):
         course_id = self.execute("select CourseID from %s.courses where Code = '%s'" % (organization, course))[0][0]
         return self.execute("select * from %s.exams where CourseID = '%s'" %(organization, course_id))
+
+    def if_token_revoked(self, token):
+        result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
+        return len(result) > 0
+
+    def revoke_token(self, token):
+        return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)

@@ -30,7 +30,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 # print signIn("superuser", "12345")
 # print signIn("alicakmak", "12345")
 
-# print signOut("admin")
+
 
 # print addCourse(admin_token, "Bioinformatics", "eecs 468", ["alicakmak"])
 # print getCourse(student_token, "eecs 468")

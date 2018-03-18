@@ -84,10 +84,7 @@ def signOut(token, username, URL=server_address, organization=current_organizati
     :return: NOT IMPLEMENTED, will Deactivate access token.
     """
     url = URL + "/organizations/%s/%s/out" % (organization.replace(" ", "_").lower(), username)
-    return get(url, data={
-        "Username": username,
-    },
-        headers = {"Authorization": "Bearer %s" %token}).json()
+    return put(url, headers = {"Authorization": "Bearer %s" %token}).json()
 
 
 def addCourse(token, courseName, courseCode, lecturer_users, URL=server_address, organization=current_organization):

@@ -6,7 +6,7 @@ from Models.Password import Password
 from Models.Credential import Credential
 from Models.Question import Question
 from Models.Exam import Exam
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
 import json
 import datetime
 import pickle
@@ -16,12 +16,15 @@ db = MySQLdb("TestDB", app)
 app.config["DEBUG"] = True
 app.config["UPLOAD_FOLDER"] = "./uploads/"
 app.config["JWT_SECRET_KEY"] = "CHANGE THIS BEFORE DEPLOYMENT ! ! !"
+app.config["JWT_BLACKLIST_ENABLED"] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 if app.config["DEBUG"]:
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
 else:
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = datetime.timedelta(hours=18)
 
 jwt = JWTManager(app)
+expired_token = set()
 
 def check_auth(token, *allowed_roles):
     user, role, token_time = token
@@ -81,7 +84,7 @@ def signInUser(organization, username):
                                   "from %s.members where Username=('%s')" % (organization, username))[0])
             rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE RoleID = '%s'" % (organization, rtn[4]))[0][0]
             rtn.append(organization)
-            token = create_access_token(identity=(rtn[0], rtn[4], str(datetime.datetime.today())))
+            token = create_access_token(identity=(rtn[0], rtn[4], str(datetime.datetime.today(), rtn[7])))
             rtn.append(token)
             return jsonify(rtn)
 
@@ -91,9 +94,18 @@ def signInUser(organization, username):
         return jsonify("Wrong Username")
 
 
-@app.route("/organizations/<string:organization>/<string:username>/out", methods=["GET", "PUT"])
+@app.route("/organizations/<string:organization>/<string:username>/out", methods=["PUT"])
+@jwt_required
 def signOutUser(organization, username):
-    pass
+    token = get_raw_jwt()["jti"]
+    return jsonify({"Log out status": db.revoke_token(token) is not None})
+
+
+@jwt.token_in_blacklist_loader
+def is_revoked(token):
+    jti = token["jti"]
+    return db.if_token_revoked(jti)
+
 
 @app.route("/organizations/<string:organization>/<string:course>", methods=['PUT'])
 @jwt_required
@@ -221,7 +233,6 @@ def getExam(organization, course, name):
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/addQuestion", methods=["PUT"])
 @jwt_required
-#todo: fatihgulmez
 def addQuestionsToExam(organization, course, name):
     token = get_jwt_identity()
     if not check_auth(token, "superuser", "admin", "lecturer"):
