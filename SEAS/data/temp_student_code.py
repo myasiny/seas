@@ -1,1 +1,1 @@
-print s
+c

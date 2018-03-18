@@ -76,7 +76,7 @@ def on_pre_enter(self):
 
     self.ids["txt_question_no"].text = "Question"
 
-    # if len(self.data_detailed_exam) > 0:
+    # if len(self.data_detailed_exam) > 00:
     #     Logger.info("pgNewQuestion: Exam already exists, editing mode on")
     #
     #     self.question_no = self.data_detailed_exam.keys()[0]
@@ -231,7 +231,7 @@ def on_correct_answer_selected(self, spinner, text):
     self.multiple_choice_answer = text
 
 '''
-    This method TODO
+    This method submits question information by connecting to server and directs to PgNewQuestion again
 '''
 
 def on_new_question_next(self):
@@ -239,7 +239,7 @@ def on_new_question_next(self):
     return True
 
 '''
-    This method TODO
+    This method submits question information by connecting to server and directs to PgNewQuestion again
 '''
 
 def on_new_question_previous(self):

@@ -19,23 +19,79 @@ def on_pre_enter(self):
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
     self.data_selected_lect = temp_selected_lect.readlines()
 
-    self.data_detailed_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
-                                                   self.data_selected_lect[0].replace("\n", ""),
-                                                   self.data_selected_lect[2].replace("\n", ""))
-    self.data_detailed_exam = self.data_detailed_exam["Questions"]
+    temp_exam_order = open("data/temp_exam_order.seas", "r")
+    self.data_exam_order = temp_exam_order.readlines()
 
-    self.question_no = str(self.data_detailed_exam.keys()[0])
-    self.ids["txt_question_no"].text = "Question %s" % self.question_no
+    if len(self.data_exam_order) < 1:
+        self.data_detailed_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
+                                                       self.data_selected_lect[0].replace("\n", ""),
+                                                       self.data_selected_lect[2].replace("\n", ""))["Questions"]
 
-    question_details = json.loads(self.data_detailed_exam[self.data_detailed_exam.keys()[0]])
+        i = 0
+        with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
+            for key, value in self.data_detailed_exam.iteritems():
+                if i == 0:
+                    i += 1
+                else:
+                    value = json.loads(value)
+                    temp_exam_order.write(str(key) + "*[SEAS-NEW-LINE]*\n" +
+                                          value["type"] + "*[SEAS-NEW-LINE]*\n" +
+                                          str(value["value"]) + "*[SEAS-NEW-LINE]*\n" +
+                                          value["text"] + "*[SEAS-NEW-LINE]*\n")
+            temp_exam_order.close()
 
-    self.question_type = question_details["type"]
+        self.question_no = str(self.data_detailed_exam.keys()[0])
+        self.ids["txt_question_no"].text = "Question %s" % self.question_no
 
-    self.question_grade = str(question_details["value"])
-    self.ids["txt_question_grade"].text = "Grade: %s" % self.question_grade
+        question_details = json.loads(self.data_detailed_exam[self.data_detailed_exam.keys()[0]])
 
-    self.question_body = question_details["text"]
-    self.ids["txt_question_body"].text = self.question_body
+        self.question_type = question_details["type"]
+
+        self.question_grade = str(question_details["value"])
+        self.ids["txt_question_grade"].text = "Grade: %s" % self.question_grade
+
+        self.question_body = question_details["text"]
+        self.ids["txt_question_body"].text = self.question_body
+
+        Logger.info("pgStdLiveExam: Question %s successfully imported from server" % self.question_no)
+    else:
+        temp_exam_order = open("data/temp_exam_order.seas", "r")
+        self.data_exam_order = temp_exam_order.read().split("*[SEAS-NEW-LINE]*\n")
+
+        if "*[SEAS-EXAM]*" in self.data_exam_order[0]:
+            self.question_type = "none"
+
+            Logger.info("pgStdLiveExam: Exam successfully completed by student")
+
+            return self.on_question_save()
+
+        self.question_no = self.data_exam_order[0]
+        self.ids["txt_question_no"].text = "Question %s" % self.question_no
+
+        self.question_type = self.data_exam_order[1]
+
+        self.question_grade = self.data_exam_order[2]
+        self.ids["txt_question_grade"].text = "Grade: %s" % self.question_grade
+
+        self.question_body = self.data_exam_order[3]
+        self.ids["txt_question_body"].text = self.question_body
+
+        try:
+            is_next = self.data_exam_order[5] + self.data_exam_order[6] + self.data_exam_order[7]
+        except:
+            is_next = None
+
+            with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
+                temp_exam_order.write("*[SEAS-EXAM]*\n*[SEAS-NEW-LINE]*\n*[is]*\n*[SEAS-NEW-LINE]*\n*[SEAS-OVER]*\n")
+                temp_exam_order.close()
+
+        if is_next is not None:
+            with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
+                for line in self.data_exam_order[4:]:
+                    temp_exam_order.write(line + "*[SEAS-NEW-LINE]*\n")
+                temp_exam_order.close()
+
+        Logger.info("pgStdLiveExam: Question %s successfully loaded from local" % self.question_no)
 
     self.correct_answer = Spinner(text="Answer", values=("A", "B", "C", "D", "E"),
                                   color=(1, 1, 1, 1),
@@ -91,8 +147,6 @@ def on_pre_enter(self):
     proc = psutil.Process()
     for i in proc.open_files():
         self.list_progs_pre.append(i.path)
-
-    Logger.info("pgStdLiveExam: Question %s successfully imported from server" % self.question_no)
 
 '''
     This method is to store final answer given by student for multiple choice question
@@ -152,7 +206,7 @@ def on_run(self):
 
                 self.run_or_pause = "run"
             else:
-                self.ids["txt_code_output"].text = "CheatingError: do not be an asshole"
+                self.ids["txt_code_output"].text = "CheatingError: plagiarism or something"
     else:
         self.ids["img_run"].source = "img/ico_run.png"
         self.ids["img_run"].reload()
@@ -164,11 +218,10 @@ def on_run(self):
 '''
 
 def on_question_previous(self):
-    on_submit(self)
-    return True
+    pass
 
 '''
-    This method TODO
+    This method submits student's answer to current question by connecting to server and directs to PgStdLiveExam again
 '''
 
 def on_question_next(self):
@@ -196,19 +249,21 @@ def on_question_remove(self):
 def on_submit(self):
     if self.question_type == "programming":
         database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
-                                 self.data_detailed_exam.keys()[0], self.data_login[0].replace("\n", ""),
+                                 self.question_no, self.data_login[0].replace("\n", ""),
                                  self.ids["input_code_answer"].text)
 
         Logger.info("pgStdLiveExam: Student's answer for programming question sent to server")
     elif self.question_type == "short_answer":
         database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
-                                 self.data_detailed_exam.keys()[0], self.data_login[0].replace("\n", ""),
+                                 self.question_no, self.data_login[0].replace("\n", ""),
                                  self.ids["input_short_answer"].text)
 
         Logger.info("pgStdLiveExam: Student's answer for short answer question sent to server")
     elif self.question_type == "multiple_choice":
         database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
-                                 self.data_detailed_exam.keys()[0], self.data_login[0].replace("\n", ""),
+                                 self.question_no, self.data_login[0].replace("\n", ""),
                                  self.multiple_choice_answer)
 
         Logger.info("pgStdLiveExam: Student's answer for multiple choice question sent to server")
+    else:
+        pass
