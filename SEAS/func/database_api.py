@@ -396,10 +396,18 @@ def change_status_of_exam(token, course_code, exam_name, status, URL=server_addr
     return put(url, headers={"Authorization": "Bearer " + token}, data={"status": status}).json()
 
 
-
 def addQuestionToExam(token, course_code, exam_name, question_info, organization = current_organization, URL = server_address):
     organization = organization.replace(" ", "_").lower()
     course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
     exam_name = re.sub(r'[^\w\s]', '_', exam_name).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/%s/addQuestion" % (organization, course_code, exam_name)
     return put(url, headers={"Authorization": "Bearer " + token}, data={"data": json.dumps(question_info)}).json()
+
+
+def resetPassword(username, temp_pass = None, new_pass = None, organization = current_organization, URL = server_address):
+    organization = organization.replace(" ", "_").lower()
+    url = URL + "/organizations/%s/%s/reset_password" % (organization, username)
+    if temp_pass is None:
+        return get(url).json()
+    else:
+        return put(url, auth=(temp_pass, new_pass)).json()

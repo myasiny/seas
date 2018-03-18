@@ -5,10 +5,10 @@ from database_api import *
 import threading
 
 # Since DEBUG mode is on, you can use this tokens.
-superuser_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ZmNiNmY5OC0xYTY2LTQ0ZTQtYWY3ZS01ZWRmZDUwYWUzNTMiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUxOTkwNjk3OSwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUxOTkwNjk3OSwiaWRlbnRpdHkiOlsic3VwZXJ1c2VyIiwic3VwZXJ1c2VyIiwiMjAxOC0wMy0wMSAxNToyMjo1OS40MjQwMDAiXX0.lgvPgmJQ8Ua01oxBBdabaayVdbJhO0W5D3hRBL3Nlbg"
-admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4Y2Y5NTVjYS00YmFlLTQyOTYtOWM3Mi00MjczNjk1YjBhMjEiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUxOTkwNjk3OCwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUxOTkwNjk3OCwiaWRlbnRpdHkiOlsiYWRtaW4iLCJhZG1pbiIsIjIwMTgtMDMtMDEgMTU6MjI6NTguNjcxMDAwIl19.Althj6VLLQEAsEukPG20eF1ga7MHyqe9QmUt1gmAhg8"
-lecturer_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwMTMyYmM0NC1iYzJhLTQxOTAtOGIxYy0xZmE1YTFjMDljMTciLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUxOTkwNjUyNSwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUxOTkwNjUyNSwiaWRlbnRpdHkiOlsiYWxpY2FrbWFrIiwibGVjdHVyZXIiLCIyMDE4LTAzLTAxIDE1OjE1OjI1LjgyMDAwMCJdfQ.RNwBvbZ4iYXzf3rwTIXiIQy-Nx0uzz2RztJSoVwNkc8"
-student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2U2LTQ3NjgtYjVkZS0zZWMxYTQyNDYzOWYiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUxOTkwNjkxMSwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUxOTkwNjkxMSwiaWRlbnRpdHkiOlsiZmF0aWhndWxtZXoiLCJzdHVkZW50IiwiMjAxOC0wMy0wMSAxNToyMTo1MS4wNjQwMDAiXX0.Xfd0FoSERqGI-86L2UVmmMwfRDBU1uy9HLMcp5jfThU"
+# superuser_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ZmNiNmY5OC0xYTY2LTQ0ZTQtYWY3ZS01ZWRmZDUwYWUzNTMiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUxOTkwNjk3OSwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUxOTkwNjk3OSwiaWRlbnRpdHkiOlsic3VwZXJ1c2VyIiwic3VwZXJ1c2VyIiwiMjAxOC0wMy0wMSAxNToyMjo1OS40MjQwMDAiXX0.lgvPgmJQ8Ua01oxBBdabaayVdbJhO0W5D3hRBL3Nlbg"
+admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI4Y2Y0YzAwYi1iYjQxLTRjY2YtYjY1Yy1lMDYyNmQ3OTY5ZjIiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTQxNjc0MCwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTQxNjc0MCwiaWRlbnRpdHkiOlsiYWRtaW4iLCJhZG1pbiIsIjIwMTgtMDMtMTkgMDI6NDU6NDAuMDg5MDAwIiwiaXN0YW5idWxfc2VoaXJfdW5pdmVyc2l0eSJdfQ.SKZAbZmb1zPqNmjCu746mrnb37oLwzdle85JTIl1lYc"
+lecturer_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0NDIyYmU3MC01NGEwLTQ5NGMtYjQ4MC00MGZiMzIyMDYwNDUiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTQxNjc3MywidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTQxNjc3MywiaWRlbnRpdHkiOlsiYWxpY2FrbWFrIiwibGVjdHVyZXIiLCIyMDE4LTAzLTE5IDAyOjQ2OjEzLjc3MDAwMCIsImlzdGFuYnVsX3NlaGlyX3VuaXZlcnNpdHkiXX0.ix0hSvTZaDfjWIliyxvz2anaUrdPNmMZEBDhtagUJdg"
+student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MTg1MGFlYS0yMzBiLTQzMWUtOTBmYi00YWFlZmI4OWY4YzgiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTQxNjY4MiwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTQxNjY4MiwiaWRlbnRpdHkiOlsiZmF0aWhndWxtZXoiLCJzdHVkZW50IiwiMjAxOC0wMy0xOSAwMjo0NDo0Mi42MjEwMDAiLCJpc3RhbmJ1bF9zZWhpcl91bml2ZXJzaXR5Il19.8SwQSb41Hbquq-eLZV5p3bmkbto5KIq3JqaQQQJTnSU"
 
 ### Sample usage of API
 
@@ -25,7 +25,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-# print signIn("fatihgulmez", "12345")
+# print signIn("fatihgulmez", "123456")
 # print signIn("admin", "12345")
 # print signIn("superuser", "12345")
 # print signIn("alicakmak", "12345")
@@ -138,3 +138,9 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzNjQzNzk2ZC1lN2
 #                             "eecs 468",
 #                             "bioinformatic_mt_2",
 #                             "active")
+
+# print resetPassword("fatihgulmez")
+
+# print resetPassword("fatihgulmez", temp_pass="HIk6hx0k", new_pass="123456")
+
+# print signIn("fatihgulmez", "123456")

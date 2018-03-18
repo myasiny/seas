@@ -2,7 +2,7 @@
 import csv, threading
 from Password import  Password
 from External_Functions import passwordGenerator
-from External_Functions.sendEmail import sentMail
+from External_Functions.sendEmail import sendMailFirstLogin
 
 
 class Lecture:
@@ -76,7 +76,7 @@ class Lecture:
             if check is not None:
                 auth.append((name + " " + surname, mail, password, username))
             reg.append(student_number)
-        threading.Thread(target=sentMail, args=(auth, lecturer)).start()
+        threading.Thread(target=sendMailFirstLogin, args=(auth, lecturer)).start()
         self.register_student(reg, course, organization)
         return "Done"
 

@@ -3,7 +3,8 @@ from flaskext.mysql import MySQL
 from DBTable import DBTable
 from Password import Password
 from External_Functions.passwordGenerator import passwordGenerator
-from External_Functions.sendEmail import sentMail
+from External_Functions.sendEmail import sendMailFirstLogin, sendMailPasswordReset
+from time import gmtime, strftime
 import csv, threading, os
 
 class MySQLdb:
@@ -26,7 +27,7 @@ class MySQLdb:
             "CREATE SCHEMA %s;" %organization
         )
         self.execute(
-            "USE %s;" %organization
+            "USE %s; SET GLOBAL event_scheduler = ON;" %organization
         )
         command_seq = list()
 
@@ -164,6 +165,17 @@ class MySQLdb:
 
         # command_seq.append(questionsTable.get_command())
 
+        temporary_passwordsTable = DBTable("temporary_passwords",
+                                           [
+                                               ("UserID", "int", ""),
+                                               ("Password", "Varchar(255)", "not null")
+                                           ],
+                                           primary_key="UserID",
+                                           foreign_keys_tuple=[
+                                               ("UserID", "members", "PersonID")
+                                           ],
+                                           database=self)
+
         self.execute("Insert into roles(Role) values ('superuser'); "
                      "Insert into roles(Role) values ('admin'); "
                      "Insert into roles(Role) values ('lecturer');"
@@ -297,10 +309,38 @@ class MySQLdb:
             if check is not None:
                 auth.append((name + " " + surname, mail, password, username))
             reg.append(student_number)
-        threading.Thread(target=sentMail, args=(auth, lecturer)).start()
+        threading.Thread(target=sendMailFirstLogin, args=(auth, lecturer)).start()
         self.register_student(reg, course, organization)
         return "Done"
 
+    def resetPassword(self, organization, username):
+        p = Password()
+        password = passwordGenerator(8)
+
+        user_info = self.get_user_info(organization, username)
+        auth = ["%s %s" % (user_info[2], user_info[3]), user_info[6], password, user_info[4]]
+        password_ = p.hashPassword(password)
+        print auth
+
+        rtn = self.execute("INSERT INTO %s.temporary_passwords (UserID, Password) VALUES (%d, '%s');" % (organization, int(user_info[0]), password_))
+        self.execute("CREATE EVENT user_%d ON SCHEDULE AT date_add(now(), INTERVAL 30 MINUTE) DO DELETE FROM %s.temporary_passwords WHERE UserID = %d;" % (int(user_info[0]), organization, int(user_info[0])))
+        if rtn is None:
+            return "Your account has been reset already."
+        threading.Thread(target=sendMailPasswordReset, args=(auth,)).start()
+        return "Check your mail address for credentials."
+
+    def checkAndChangePassword(self, organization, username, temp_pass, new_pass):
+        p = Password()
+        user_info = self.get_user_info(organization, username)
+        password = self.execute("SELECT Password FROM %s.temporary_passwords WHERE UserID = %d;" %(organization, int(user_info[0])))[0][0]
+        if p.verify_password_hash(temp_pass, password):
+            self.execute("DELETE FROM %s.temporary_password WHERE UserID = %d;" % (organization, int(user_info[0])))
+            new_pass = p.hashPassword(new_pass)
+            print p.hashPassword(temp_pass), new_pass
+            c = "UPDATE %s.members SET %s.members.Password = '%s' WHERE PersonID = %d;" % (organization, organization, new_pass, int(user_info[0]))
+            print c
+            return self.execute(c)
+        return "Wrong Temporary Password!"
     def changePasswordOREmail(self, organization, username, oldPassword, newVal, email=False):
         pas = Password()
         user = self.get_user_info(organization, username)

@@ -93,7 +93,7 @@ def signInUser(organization, username):
                                   "from %s.members where Username=('%s')" % (organization, username))[0])
             rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE RoleID = '%s'" % (organization, rtn[4]))[0][0]
             rtn.append(organization)
-            token = create_access_token(identity=(rtn[0], rtn[4], str(datetime.datetime.today(), rtn[7])))
+            token = create_access_token(identity=(rtn[0], rtn[4], str(datetime.datetime.today()), rtn[7]))
             rtn.append(token)
             return jsonify(rtn)
 
@@ -330,6 +330,16 @@ def changeStatusOfExam(organization, course, exam_name):
     if role != "lecturer":
         return jsonify("Unauthorized access!")
     return jsonify(Exam(exam_name, organization, db).change_status(request.form["status"]))
+
+
+@app.route("/organizations/<string:organization>/<string:username>/reset_password", methods=["GET", "PUT"])
+def reset_password(organization, username):
+    if request.method == "GET":
+        # send an e mail with generated password.
+        return jsonify(db.resetPassword(organization, username))
+    else:
+        # accept the generated pass and new one and change password.
+        return  jsonify(db.checkAndChangePassword(organization, username, request.authorization["username"], new_pass=request.authorization["password"]))
 
 
 if __name__ == "__main__":
