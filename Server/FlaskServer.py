@@ -26,9 +26,17 @@ else:
 jwt = JWTManager(app)
 expired_token = set()
 
-def check_auth(token, *allowed_roles):
-    user, role, token_time = token
-    return role in allowed_roles
+def check_auth(token, allowed_organization, min_allowed_role):
+    role_ranks = {
+        "student": ["superuser", "admin", "lecturer", "student"],
+        "lecturer": ["superuser", "admin", "lecturer"],
+        "admin": ["superuser", "admin"],
+        "superuser": ["superuser"]
+                  }
+
+    allowed_roles = role_ranks[min_allowed_role]
+    user, role, token_time, organization = token
+    return role in allowed_roles and organization == allowed_organization
 
 @app.route("/")
 def test_connection():
@@ -38,7 +46,7 @@ def test_connection():
 @app.route("/organizations", methods=["PUT"])
 @jwt_required
 def signUpOrganization():
-    if check_auth(get_jwt_identity(), "superuser"):
+    if check_auth(get_jwt_identity(), "main", "superuser"):
         return jsonify(db.initialize_organization(request.form["data"]))
     else:
         return jsonify("Unauthorized access!")
@@ -48,7 +56,7 @@ def signUpOrganization():
 @jwt_required
 def signUpUser(organization):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin"):
+    if not check_auth(token, organization ,"admin"):
         return jsonify("Unauthorized access!")
     else:
         passwd = Password().hashPassword(request.form["Password"])
@@ -73,6 +81,7 @@ def signUpUser(organization):
 
 
 @app.route("/organizations/<string:organization>/<string:username>", methods=["GET"])
+# todo: Fatihgulmez , separate data manipulation and access from views!!!
 def signInUser(organization, username):
     organization = organization.replace(" ", "_").lower()
     username = request.authorization["username"]
@@ -97,6 +106,9 @@ def signInUser(organization, username):
 @app.route("/organizations/<string:organization>/<string:username>/out", methods=["PUT"])
 @jwt_required
 def signOutUser(organization, username):
+    identity = get_jwt_identity()
+    if username != identity[0] or organization != identity[3]:
+        return jsonify("Unauthorized access!")
     token = get_raw_jwt()["jti"]
     return jsonify({"Log out status": db.revoke_token(token) is not None})
 
@@ -111,7 +123,7 @@ def is_revoked(token):
 @jwt_required
 def addCourse(organization, course):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin"):
+    if not check_auth(token, organization, "admin"):
         return jsonify("Unauthorized access!")
     else:
         name = request.form["name"]
@@ -123,6 +135,8 @@ def addCourse(organization, course):
 @app.route("/organizations/<string:organization>/<string:course>/get", methods=['GET'])
 @jwt_required
 def getCourse(organization, course):
+    if not check_auth(get_jwt_identity(), organization, "student"):
+        return jsonify("Unauthorized Access.")
     return jsonify(db.get_course(organization, course))
 
 
@@ -130,9 +144,8 @@ def getCourse(organization, course):
 @jwt_required
 def putStudentList(organization, course, liste):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin", "lecturer"):
+    if not check_auth(token, organization, "lecturer"):
         return jsonify("Unauthorized access!")
-
     else:
         return jsonify(db.registerStudentCSV(request.files["liste"], organization, course, request.form["username"]))
 
@@ -141,6 +154,8 @@ def putStudentList(organization, course, liste):
 @jwt_required
 def getStudentList(organization, course):
     token = get_jwt_identity()
+    if not check_auth(token, organization, "lecturer"):
+        return jsonify("Unauthorized access!")
     return jsonify(db.get_course_participants(course, organization))
 
 
@@ -148,7 +163,7 @@ def getStudentList(organization, course):
 @jwt_required
 def getLecturerCourseList(organization, username):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin", "lecturer"):
+    if not check_auth(token, organization, "lecturer"):
         return jsonify(db.get_student_courses(organization, username))
     else:
         return jsonify(db.get_lecturer_courses(organization, username))
@@ -158,7 +173,7 @@ def getLecturerCourseList(organization, username):
 @jwt_required
 def deleteStudentFromLecture(organization, course):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin", "lecturer"):
+    if not check_auth(token, organization, "lecturer"):
         return jsonify("Unauthorized access!")
     else:
         return jsonify(db.delete_student_course(organization, course, request.form["Student"]))
@@ -167,7 +182,9 @@ def deleteStudentFromLecture(organization, course):
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"])
 @jwt_required
 def changePassword(organization, username):
-    user, role, tokentime = get_jwt_identity()
+    user, role, tokentime, organization_auth = get_jwt_identity()
+    if username != user or organization_auth != organization:
+        return jsonify("Unauthorized access!")
     ismail = request.form["isMail"]
     if ismail == "True":
         ismail = True
@@ -180,7 +197,7 @@ def changePassword(organization, username):
 @jwt_required
 def addExam(organization, course):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin", "lecturer"):
+    if not check_auth(token, organization, "lecturer"):
         return jsonify("Unauthorized access!")
     else:
         name = request.form["name"]
@@ -209,7 +226,7 @@ def addExam(organization, course):
 @jwt_required
 def deleteExam(organization, course, exam):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin", "lecturer"):
+    if not check_auth(token, organization, "lecturer"):
         return jsonify("Unauthorized access!")
     else:
         return jsonify(Exam(exam, organization, db).delete_exam())
@@ -217,16 +234,20 @@ def deleteExam(organization, course, exam):
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/", methods=["GET"])
 @jwt_required
+# todo: STUDENT CANNOT REACH QUESTIONS BEFORE EXAM START TIME
 def getExamsOfLecture(organization, course):
     token = get_jwt_identity()
-    # todo: STUDENT CANNOT REACH QUESTIONS BEFORE EXAM START TIME
+    if not check_auth(token, organization, "student"):
+        return jsonify("Unauthorized access!")
     return jsonify(db.get_exams_of_lecture(organization, course))
-    pass
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>", methods=["GET"])
 @jwt_required
 def getExam(organization, course, name):
+    token = get_jwt_identity()
+    if not check_auth(token, organization, "student"):
+        return jsonify("Unauthorized access!")
     exam = Exam(name, organization, db)
     return jsonify(exam.get())
 
@@ -235,7 +256,7 @@ def getExam(organization, course, name):
 @jwt_required
 def addQuestionsToExam(organization, course, name):
     token = get_jwt_identity()
-    if not check_auth(token, "superuser", "admin", "lecturer"):
+    if not check_auth(token, "lecturer"):
         return jsonify("Unauthorized access!")
     else:
         info = json.loads(request.form["data"])
@@ -246,12 +267,20 @@ def addQuestionsToExam(organization, course, name):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<question_id>/answers/<string:username>", methods=["PUT"])
 @jwt_required
 def answerExam(organization, course, question_id, username):
+    token = get_jwt_identity()
+    if token[1] != "student":
+        return jsonify("Unauthorized access!")
     return jsonify(db.add_answer(organization, question_id, username, request.form["answers"]))
 
 
 @app.route("/organizations/<string:organization>/<string:username>/pic", methods=["PUT", "GET"])
 @jwt_required
 def profilePicture(organization, username):
+    token = get_jwt_identity()
+    user = token[0]
+    orga = token[3]
+    if user != username and orga != organization:
+        return jsonify("Unauthorized access!")
     if request.method == "PUT":
         user, role, tokentime = get_jwt_identity()
         pic = request.files["pic"]
@@ -269,8 +298,8 @@ def profilePicture(organization, username):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<question_id>/answers/<string:studentUser>/grade", methods=["PUT"])
 @jwt_required
 def gradeQuestion(organization, course, question_id, studentUser):
-    user, role, tokentime = get_jwt_identity()
-    if not check_auth(get_jwt_identity(), "lecturer"):
+    user, role, tokentime, organization_auth = get_jwt_identity()
+    if not check_auth(get_jwt_identity(), organization, "lecturer"):
         return "Unauthorized Access"
     else:
         return jsonify(db.grade_answer(organization, user, studentUser, question_id, request.form["grade"]))
@@ -279,18 +308,27 @@ def gradeQuestion(organization, course, question_id, studentUser):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/<string:question_id>/edit", methods=["PUT"])
 @jwt_required
 def editQuestion(organization, course, exam_name, question_id):
+    user, role, token_time, organization = get_jwt_identity()
+    if role != "lecturer":
+        return jsonify("Unauthorized access!")
     return jsonify(Exam(exam_name, organization, db).edit_a_question(question_id, json.loads(request.form["data"])))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/more_time", methods=["PUT"])
 @jwt_required
 def addTimeToExam(organization, course, exam_name):
+    user, role, token_time, organization = get_jwt_identity()
+    if role != "lecturer":
+        return jsonify("Unauthorized access!")
     return jsonify(Exam(exam_name, organization, db).add_more_time(request.form["additional_time"]))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/status", methods=["PUT"])
 @jwt_required
 def changeStatusOfExam(organization, course, exam_name):
+    user, role, token_time, organization = get_jwt_identity()
+    if role != "lecturer":
+        return jsonify("Unauthorized access!")
     return jsonify(Exam(exam_name, organization, db).change_status(request.form["status"]))
 
 

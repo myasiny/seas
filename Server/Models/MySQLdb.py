@@ -164,14 +164,6 @@ class MySQLdb:
 
         # command_seq.append(questionsTable.get_command())
 
-        revoked_token_table = DBTable("revoked_tokens",
-                                      [
-                                          ("token", "varchar(255)", "")
-                                      ],
-                                      primary_key="token",
-                                      database=self
-                                      )
-
         self.execute("Insert into roles(Role) values ('superuser'); "
                      "Insert into roles(Role) values ('admin'); "
                      "Insert into roles(Role) values ('lecturer');"
