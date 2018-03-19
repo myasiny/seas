@@ -1,7 +1,6 @@
-import os
-import platform
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.label import Label
@@ -10,6 +9,7 @@ from kivy.animation import Animation
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 
+import os, platform
 from functools import partial
 from SEAS.func import database_api
 from SEAS.func.check_connection import check_connection
@@ -23,6 +23,13 @@ def load_string(name):
         Builder.load_string(design.read())
 
     Logger.info("pg%s: Design successfully applied" % name.title())
+
+'''
+    This method gets cipher from cache to decrypt local data
+'''
+
+def on_pre_enter(self):
+    self.cipher = Cache.get("config", "cipher")
 
 '''
     This method triggers check_connection every 5 seconds
@@ -110,14 +117,19 @@ def on_login(self, pages, screen, pgEdu, pgStd):
             Logger.info("pgLogin: User couldn't log in due to either server failure or incorrect credentials")
 
 '''
+    This method is to restore blocked keys when user quits
+'''
+
+def on_quit_yes(dt):
+    if platform.system() == "Linux":
+        os.system("sh sh/getback.sh")
+
+    App.get_running_app().stop()
+
+'''
     This method asks user to confirm whether he or she wants to quit or not
     Accordingly, program stops running or confirmation pop-up disappears
 '''
-
-def on_quit_confirm(dt):
-    if platform.system() == "Linux":
-        os.system("sh getback.sh")
-    App.get_running_app().stop()
 
 def on_quit(self):
     Logger.info("quit: This is sad :(")
@@ -137,7 +149,7 @@ def on_quit(self):
                                     size_hint_x=.5,
                                     size_hint_y=None, height=self.height / 25,
                                     pos_hint={"center_x": .25, "y": .0},
-                                    on_release=on_quit_confirm))
+                                    on_release=on_quit_yes))
     popup_content.add_widget(Button(text="No",
                                     font_name="font/LibelSuit.ttf",
                                     font_size=self.height / 40,
