@@ -76,7 +76,7 @@ def on_pre_enter(self):
 
     self.ids["txt_question_no"].text = "Question"
 
-    # if len(self.data_detailed_exam) > 00:
+    # if len(self.data_detailed_exam) > 0:
     #     Logger.info("pgNewQuestion: Exam already exists, editing mode on")
     #
     #     self.question_no = self.data_detailed_exam.keys()[0]

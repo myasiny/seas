@@ -2,6 +2,7 @@
     This method imports profile picture from server and rounds it in order to show on top menu and PgProfile
 '''
 
+from kivy.cache import Cache
 from kivy.logger import Logger
 
 from SEAS.func import database_api
@@ -9,6 +10,8 @@ from PIL import Image, ImageOps, ImageDraw
 
 def round_image():
     try:
+        cipher = Cache.get("config", "cipher")
+
         temp_login = open("data/temp_login.seas", "r")
         data_login = temp_login.readlines()
 

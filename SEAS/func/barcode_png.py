@@ -1,8 +1,8 @@
 from kivy.logger import Logger
 
 import qrcode
-# import barcode
 from PIL import Image
+# import barcode
 # from shutil import move
 # from barcode.writer import ImageWriter
 

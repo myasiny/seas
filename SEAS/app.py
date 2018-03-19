@@ -1,11 +1,13 @@
 from kivy.app import App
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-import os, pyHook, platform
+import sys, os, platform
+from cryptography.fernet import Fernet
 from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
 
 '''
@@ -21,7 +23,7 @@ Config.set("kivy", "log_dir", os.path.dirname(os.path.abspath(__file__)) + "\\da
 Config.set("kivy", "exit_on_escape", "0")
 Config.set("input", "mouse", "mouse, multitouch_on_demand")
 
-Logger.info("main: Esc and right click successfully blocked")
+Logger.info("app: Esc and right click successfully blocked")
 
 '''
     This class is to organize functions of PgStdStats
@@ -616,7 +618,7 @@ screen.add_widget(PgSplash(name="PgSplash"))
 
 '''
     This part is to configure icon, title, size and preferences of program
-    Additionally, settings for forcing run-on-top are also handled here
+    Additionally, settings for adding program to path, forcing run-on-top etc are also handled here
 '''
 
 class SeasApp(App):
@@ -625,7 +627,7 @@ class SeasApp(App):
     use_kivy_settings = False
     Window.fullscreen = "auto"
 
-    Logger.info("main: Icon, title, size and preferences successfully set")
+    Logger.info("app: Icon, title, size and preferences successfully set")
 
     def build(self):
         screen.current = "PgSplash"
@@ -638,11 +640,11 @@ class SeasApp(App):
 
     Window.bind(on_cursor_leave=force)
 
-    Logger.info("main: Cursor track successfully bound")
+    Logger.info("app: Cursor track successfully bound")
 
 def on_keyboard_event(event):
     if platform.system() == "Windows":
-        if event.Key.lower() in []:  # GodMode ["lwin", "lmenu"]
+        if event.Key.lower() in ["lwin", "lmenu", "apps"]:
             return False
         else:
             return True
@@ -650,15 +652,24 @@ def on_keyboard_event(event):
         pass
     elif platform.system() == "Darwin":
         pass
-    else:
-        pass
 
 if __name__ == "__main__":
-    hm = pyHook.HookManager()
-    hm.KeyDown = on_keyboard_event
-    hm.HookKeyboard()
+    sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
-    Logger.info("main: Blocked buttons successfully set")
-    Logger.info("main: Program successfully started")
+    Logger.info("app: Program successfully added to path")
+
+    if platform.system() == "Windows":
+        import pyHook
+
+        hm = pyHook.HookManager()
+        hm.KeyDown = on_keyboard_event
+        hm.HookKeyboard()
+
+    Logger.info("app: Keys successfully blocked for %s" % platform.system())
+
+    Cache.register("config", limit=1)
+    Cache.append("config", "cipher", Fernet(Fernet.generate_key()))
+
+    Logger.info("app: Cipher for hashing local data successfully generated and stored on cache")
 
     SeasApp().run()
