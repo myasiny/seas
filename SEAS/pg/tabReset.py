@@ -32,7 +32,7 @@ def on_reset(self):
         img_status.reload()
     else:
         try:
-            # data = TODO
+            data = ["TODO"]
 
             Logger.info("tabReset: User credentials successfully sent to server")
         except:
@@ -107,7 +107,7 @@ def on_reset_confirm(self):
     if self.input_key.text == "" or self.input_new_password.text == "":
         self.img_confirm_status.opacity = 1
     else:
-        if # TODO:
+        if "TODO":
             Logger.info("tabReset: Password successfully reset")
 
             self.popup.dismiss()

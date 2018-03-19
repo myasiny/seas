@@ -632,8 +632,9 @@ class SeasApp(App):
         return screen
 
     def force(self):
-        Window.maximize()
         Window.top = 0
+        Window.maximize()
+        Window.restore()
 
     Window.bind(on_cursor_leave=force)
 
@@ -641,7 +642,7 @@ class SeasApp(App):
 
 def on_keyboard_event(event):
     if platform.system() == "Windows":
-        if event.Key.lower() in []:  # GodMode ["lwin", "lmenu", "rmenu"]
+        if event.Key.lower() in []:  # GodMode ["lwin", "lmenu"]
             return False
         else:
             return True
