@@ -52,7 +52,7 @@ def on_login(self, pages, screen, pgEdu, pgStd):
     btn_login.disabled = True
 
     img_status = self.ids["img_status"]
-    img_status.source = "img/ico_loading.gif"
+    img_status.source = "img/ico_loading.png"
     img_status.opacity = 0
     img_status.reload()
 

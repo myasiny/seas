@@ -664,7 +664,7 @@ def on_keyboard_event(event):
             return True
 
 if __name__ == "__main__":
-    sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
+    # sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
     Logger.info("app: Program successfully added to path")
 

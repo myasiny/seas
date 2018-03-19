@@ -132,7 +132,7 @@
 
         Image:
             id: img_status
-            source: "img/ico_loading.gif"
+            source: "img/ico_loading.png"
             opacity: 0
             allow_stretch: True
             anim_loop: 0
