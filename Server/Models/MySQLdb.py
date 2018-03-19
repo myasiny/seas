@@ -3,8 +3,7 @@ from flaskext.mysql import MySQL
 from DBTable import DBTable
 from Password import Password
 from External_Functions.passwordGenerator import passwordGenerator
-from External_Functions.sendEmail import send_mail_first_login, send_mail_password_reset
-from time import gmtime, strftime
+from External_Functions.sendEmail import send_mail_first_login
 import csv, threading, os
 
 class MySQLdb:
@@ -187,76 +186,15 @@ class MySQLdb:
 
         return a
 
-    def add_course(self, org, name, code, lecturer_users):
-        command = "INSERT INTO %s.courses (NAME, CODE) VALUES ('%s', '%s');" % (org, name, code)
-        self.execute(command)
-        command = "select CourseID from %s.courses where CODE = '%s'" % (org, code)
-        lecturer_users = lecturer_users.split(":")
-        lecture_id = self.execute(command)[0][0]
-        command = ""
-        if len(lecturer_users) > 0:
-            for lecturer in lecturer_users:
-                lecturer_id = self.execute("select PersonID from %s.members where Username = '%s'" % (org, lecturer))[0][0]
-
-                command += "insert into %s.lecturers (LecturerID, CourseID) VALUES ('%s', '%s');" % (org, lecturer_id, lecture_id)
-            pass
-        self.execute(command)
-        return "Course Added!"
-
-    def get_course(self, org, code):
-        a = self.execute("SELECT * FROM %s.courses WHERE Code = '%s'" % (org,code))[0]
-        lecturer_IDs = self.execute("SELECT LecturerID FROM %s.lecturers WHERE CourseID = '%s'"%(org, a[0]))
-        lecturers = []
-        for id in lecturer_IDs:
-            lid = self.execute("SELECT Name, Surname FROM %s.members WHERE PersonID = '%s'" % (org, id[0]))[0]
-            lecturers.append(lid[0] + " " + lid[1])
-        rtn = {
-            "ID": a[0],
-            "Name": a[1],
-            "Code": a[2],
-            "Lecturers": lecturers,
-            "Participants": self.get_course_participants(a[2], org)
-        }
-        return rtn
-
-    def register_student(self, studentIDList, courseCode, organization):
-        courseID = self.execute("SELECT CourseID FROM %s.courses WHERE CODE = '%s'" % (organization, courseCode))[0][0]
-        for i in studentIDList:
-            self.execute("INSERT INTO %s.registrations (StudentID, CourseID) VALUES(%s, %s)" %(organization, i, courseID))
+    def get_organization(self):
         pass
 
-    def get_course_participants(self, code, organization):
-        c = "SELECT CourseID FROM %s.courses WHERE CODE = '%s'" %(organization, code)
-        print c
-        courseID = self.execute(c)[0][0]
-        studentIDs = self.execute("SELECT StudentID FROM %s.registrations WHERE CourseID = '%s'" %(organization, courseID))
-        students = []
-        for student in studentIDs:
-            info = self.execute("SELECT Name, Surname, PersonID, Email FROM %s.members WHERE PersonID = '%s'" % (organization, student[0]))[0]
-            students.append(info)
+    def if_token_revoked(self, token):
+        result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
+        return len(result) > 0
 
-        return students
-
-    def get_lecturer_courses(self, organization, username):
-        self.execute("USE %s" % organization)
-        command = "SELECT courses.Name, courses.CODE FROM lecturers JOIN courses ON lecturers.CourseID = courses.CourseID JOIN members ON members.PersonID = lecturers.LecturerID WHERE members.Username = '%s';" % (username)
-        lectureIDs = self.execute(command)
-        return lectureIDs
-
-    def get_student_courses(self, organization, username):
-        self.execute("USE %s" % organization)
-        command = "SELECT courses.Name, courses.CODE FROM registrations JOIN courses ON registrations.CourseID = courses.CourseID JOIN members ON members.PersonID = registrations.studentID WHERE members.Username = '%s';" % (
-            username)
-        lectureIDs = self.execute(command)
-        return lectureIDs
-
-    def get_user_info(self, organization, username):
-        """
-        :param organization:
-        :param username:
-        :return: List, [studentID, roleID, name, surname, username, password_hash, email, department, profile_pic_path]
-        """
-        return self.execute("SELECT * FROM %s.members WHERE Username='%s'" % (organization, username))[0]
+    def revoke_token(self, token):
+        return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
 
     def execute(self, command):
         a = command.replace(";", ";--").split("--")
@@ -282,132 +220,3 @@ class MySQLdb:
 
     def __commit(self):
         self.db.commit()
-
-    def get_organization(self):
-        pass
-
-    def handle_tr(self, str_):
-        str_ = str_.replace("İ", "I").replace("Ç", "C").replace("Ş", "S").replace("Ü", "U").replace("Ö", "O").replace("Ğ",
-                                                                                                                    "G")
-        str_ = str_.replace("ı", "i").replace("ç", "c").replace("ş", "s").replace("ü", "u").replace("ö", "o").replace("ğ",
-                                                                                                                    "g")
-        return str_
-
-    def register_student_csv(self, csvDataFile, organization, course, lecturer):
-        csvReader = csv.reader(csvDataFile)
-        column_names = next(csvReader, None)
-        data = list(csvReader)
-        auth = []
-        reg = []
-        for i in data:
-            name = self.handle_tr(i[0]).title()
-            surname = self.handle_tr(i[1]).title()
-            student_number = str(int(float(i[2])))
-            mail = i[3]
-            department = "UNKNOWN"
-            role = 4
-            username = name.split()[0].lower() + surname.lower()
-            pas = Password()
-            password = passwordGenerator(8)
-            check = self.execute("Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (organization, student_number, role, name, surname, username, pas.hash_password(password), mail, department))
-            if check is not None:
-                auth.append((name + " " + surname, mail, password, username))
-            reg.append(student_number)
-        threading.Thread(target=send_mail_first_login, args=(auth, lecturer)).start()
-        self.register_student(reg, course, organization)
-        return "Done"
-
-    def reset_password(self, organization, username):
-        p = Password()
-        password = passwordGenerator(8)
-
-        user_info = self.get_user_info(organization, username)
-        auth = ["%s %s" % (user_info[2], user_info[3]), user_info[6], password, user_info[4]]
-        password_ = p.hash_password(password)
-        print auth
-
-        rtn = self.execute("INSERT INTO %s.temporary_passwords (UserID, Password) VALUES (%d, '%s');" % (organization, int(user_info[0]), password_))
-        self.execute("CREATE EVENT user_%d ON SCHEDULE AT date_add(now(), INTERVAL 30 MINUTE) DO DELETE FROM %s.temporary_passwords WHERE UserID = %d;" % (int(user_info[0]), organization, int(user_info[0])))
-        if rtn is None:
-            return "Your account has been reset already."
-        threading.Thread(target=send_mail_password_reset, args=(auth,)).start()
-        return "Check your mail address for credentials."
-
-    def check_and_change_password(self, organization, username, temp_pass, new_pass):
-        p = Password()
-        user_info = self.get_user_info(organization, username)
-        password = self.execute("SELECT Password FROM %s.temporary_passwords WHERE UserID = %d;" %(organization, int(user_info[0])))[0][0]
-        if p.verify_password_hash(temp_pass, password):
-            self.execute("DELETE FROM %s.temporary_password WHERE UserID = %d;" % (organization, int(user_info[0])))
-            new_pass = p.hash_password(new_pass)
-            print p.hash_password(temp_pass), new_pass
-            c = "UPDATE %s.members SET %s.members.Password = '%s' WHERE PersonID = %d;" % (organization, organization, new_pass, int(user_info[0]))
-            print c
-            return self.execute(c)
-        return "Wrong Temporary Password!"
-
-    def change_password_or_email(self, organization, username, oldPassword, newVal, email=False):
-        pas = Password()
-        user = self.get_user_info(organization, username)
-        password = user[5]
-        if pas.verify_password_hash(oldPassword, password):
-            if email:
-                self.execute(
-                    "UPDATE %s.members SET Email='%s' WHERE Username = '%s'" % (organization, newVal, username))
-                return "Mail Changed"
-            else:
-                password = pas.hash_password(newVal)
-                self.execute("UPDATE %s.members SET Password='%s' WHERE Username = '%s'" % (organization, password, username))
-                return "Password Changed"
-        else:
-            return "Not Authorized"
-
-    def delete_student_course(self, organization, course, studentID):
-        courseID = self.execute("SELECT CourseID FROM %s.courses WHERE Code = '%s'" % (organization, course))[0][0]
-        command = "DELETE FROM %s.registrations WHERE StudentID = %d AND CourseID = %d" % (organization, int(studentID), int(courseID))
-        self.execute(command)
-        return None
-
-    def add_answer(self, organization, question_id, username, answer):
-        try:
-            student_id = self.execute("SELECT personID FROM %s.members WHERE username = '%s'" %(organization, username))[0][0]
-            command = "INSERT INTO %s.answers(questionID, studentID, answer) VALUES ('%s', '%s', '%s') ON DUPLICATE KEY UPDATE answer = '%s'" %(organization, question_id, student_id, answer, answer)
-            return self.execute(command)
-        except Exception:
-            return "Error occurred."
-
-    def allowed_file(self, filename):  # to check if file type is appropriate.
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.allowed_extensions
-
-    def upload_profile_pic(self, organization, username, pic, content, path):
-        if pic and self.allowed_file(pic.filename):
-            userID = str(self.get_user_info(organization, username)[0])
-            extension = "." + pic.filename.rsplit('.', 1)[1].lower()
-            path = path + "media/%s/profiles/" % organization + userID + extension
-            if not os.path.exists(os.path.dirname(path)):
-                os.makedirs(os.path.dirname(path))
-            with open(path, "wb") as f:
-                f.write(content)
-            self.execute("update %s.members set ProfilePic = '%s' where PersonID = '%s';" %(organization, path, userID))
-            return "Done"
-        return "Not allowed extension."
-
-    def get_profile_picture(self, organization, username):
-        path = self.execute("select ProfilePic from %s.members where Username = '%s'" %(organization, username))[0][0]
-        return path
-
-    def grade_answer(self, organization, username, student_name, question_id, grade):
-        studentID = self.get_user_info(organization, student_name)[0]
-        c = "INSERT INTO %s.answers(questionID, studentID, grade) VALUES ('%s', '%s', '%s') ON DUPLICATE KEY UPDATE grade=VALUES(grade)" % (organization, str(question_id), studentID, str(grade))
-        return self.execute(c)
-
-    def get_exams_of_lecture(self, organization, course):
-        course_id = self.execute("select CourseID from %s.courses where Code = '%s'" % (organization, course))[0][0]
-        return self.execute("select * from %s.exams where CourseID = '%s'" %(organization, course_id))
-
-    def if_token_revoked(self, token):
-        result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
-        return len(result) > 0
-
-    def revoke_token(self, token):
-        return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)

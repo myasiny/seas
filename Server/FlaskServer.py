@@ -6,6 +6,8 @@ from Models.Password import Password
 from Models.Credential import Credential
 from Models.Question import Question
 from Models.Exam import Exam
+from Models.User import *
+from Models.Course import Course
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
 import json
 import datetime
@@ -44,9 +46,9 @@ def check_auth(token, allowed_organization, min_allowed_role):
 
 def check_lecture_permision(organization, token, course):
     if token["role"] == "student":
-        courses = db.get_student_courses(organization, token["username"])
+        courses = Student(db, organization, token["username"]).get_student_courses()
     else:
-        courses = db.get_lecturer_courses(organization, token["username"])
+        courses = Lecturer(db, organization, token["username"]).get_lecturer_courses()
 
     course_dict = {}
     for value, key in courses:
@@ -105,18 +107,14 @@ def signUpUser(organization):
 def signInUser(organization, username):
     organization = organization.replace(" ", "_").lower()
     username = request.authorization["username"]
+    password = request.authorization["password"]
+    user = User(db, organization, username)
     try:
-        passwd = db.execute("select Password from %s.members where Username = '%s'"
-                            % (organization, username))[0][0]
-        if Password().verify_password_hash(request.authorization["password"], passwd):
-            rtn = list(db.execute("select Username, Name, Surname, PersonID, Role, Email, Department "
-                                  "from %s.members where Username=('%s')" % (organization, username))[0])
-            rtn[4] = db.execute("SELECT Role FROM %s.roles WHERE RoleID = '%s'" % (organization, rtn[4]))[0][0]
+        if user.verify_password(password):
+            rtn = user.get
             rtn.append(organization)
-            token = create_access_token(identity=({"username" : rtn[0], "role":rtn[4], "time": str(datetime.datetime.today()), "organization": rtn[7]}))
-            rtn.append(token)
+            rtn.append(create_access_token(identity=({"username" : user.username, "role":user.role_name, "time": str(datetime.datetime.today()), "organization": user.organization})))
             return jsonify(rtn)
-
         else:
             return jsonify("Wrong Password")
     except IndexError:
@@ -149,7 +147,8 @@ def addCourse(organization, course):
         name = request.form["name"]
         code = request.form["code"]
         lecturers = request.form["lecturers"]
-        return jsonify(db.add_course(organization, name, code, lecturers))
+        # return jsonify(db.add_course(organization, name, code, lecturers))
+        return jsonify(Course(db, organization, code, name=name, lecturers=lecturers).code)
 
 
 @app.route("/organizations/<string:organization>/<string:course>/get", methods=['GET'])
@@ -160,7 +159,7 @@ def getCourse(organization, course):
         return jsonify("Unauthorized Access.")
 
     if check_lecture_permision(organization, token, course):
-        return jsonify(db.get_course(organization, course))
+        return jsonify(Course(db, organization, course).get)
 
     return jsonify("Unauthorized access!")
 
@@ -172,7 +171,7 @@ def putStudentList(organization, course, liste):
     if not check_auth(token, organization, "lecturer"):
         return jsonify("Unauthorized access!")
     if check_lecture_permision(organization, token, course):
-        return jsonify(db.register_student_csv(request.files["liste"], organization, course, request.form["username"]))
+        return jsonify(Course(db, organization, course).register_student_csv(request.files["liste"], request.form["username"]))
     return jsonify("Unauthorized access!")
 
 
@@ -192,9 +191,11 @@ def getStudentList(organization, course):
 def getUserCourseList(organization, username):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
-        return jsonify(db.get_student_courses(organization, username))
+        user = Student(db, organization, username)
+        return jsonify(user.get_student_courses())
     else:
-        return jsonify(db.get_lecturer_courses(organization, username))
+        user = Lecturer(db, organization, username)
+        return jsonify(user.get_lecturer_courses())
 
 
 @app.route("/organizations/<string:organization>/<string:course>/delete_user", methods=['DELETE'])
@@ -214,16 +215,15 @@ def deleteStudentFromLecture(organization, course):
 @jwt_required
 def changePassword(organization, username):
     token = get_jwt_identity()
-    user = token["username"]
-    organization_auth = token["organization"]
-    if username != user or organization_auth != organization:
+    user = User(db, token["organization"], token["username"])
+    if username != user.username or user.organization != organization:
         return jsonify("Unauthorized access!")
     ismail = request.form["isMail"]
     if ismail == "True":
         ismail = True
     else:
         ismail = False
-    return jsonify(db.change_password_or_email(organization, user, request.form["Password"], request.form["newPassword"], email=ismail))
+    return jsonify(user.change_password_or_email(request.form["Password"], request.form["newPassword"], ismail))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/add", methods=["PUT"])
@@ -298,7 +298,8 @@ def answerExam(organization, course, question_id, username):
     if token["role"] != "student":
         return jsonify("Unauthorized access!")
     if check_lecture_permision(organization, token, course):
-        return jsonify(db.add_answer(organization, question_id, username, request.form["answers"]))
+        user = Student(db, organization, username)
+        return jsonify(user.add_answer(question_id, request.form["answers"]))
     return jsonify("Unauthorized access!")
 
 
@@ -306,19 +307,17 @@ def answerExam(organization, course, question_id, username):
 @jwt_required
 def profilePicture(organization, username):
     token = get_jwt_identity()
-    user = token[0]
-    orga = token[3]
-    if user != username and orga != organization:
+    user = User(db, token["organization"], token["username"])
+    if user.username != username and user.organization != organization:
         return jsonify("Unauthorized access!")
     if request.method == "PUT":
-        user, role, tokentime = get_jwt_identity()
         pic = request.files["pic"]
         cont = request.form["pic"]
         if pic.filename == "":
             return jsonify("No picture selected.")
-        return jsonify(db.upload_profile_pic(organization, user, pic, pickle.loads(cont), app.config["UPLOAD_FOLDER"]))
+        return jsonify(user.upload_profile_pic(pic, pickle.loads(cont), app.config["UPLOAD_FOLDER"]))
     else:
-        path = db.get_profile_picture(organization, username)
+        path = user.get_profile_picture()
         with open(path, "rb") as f:
             a = f.read()
         return jsonify(pickle.dumps(a))
@@ -328,11 +327,11 @@ def profilePicture(organization, username):
 @jwt_required
 def gradeQuestion(organization, course, question_id, studentUser):
     token = get_jwt_identity()
-    user = token["username"]
+    user = Lecturer(db, token["organization"], token["username"])
     if not check_auth(get_jwt_identity(), organization, "lecturer"):
         return "Unauthorized Access"
     if check_lecture_permision(organization, token, course):
-        return jsonify(db.grade_answer(organization, user, studentUser, question_id, request.form["grade"]))
+        return jsonify(user.grade_answer(question_id, request.form["grade"]))
     return jsonify("Unauthorized access!")
 
 
@@ -368,12 +367,11 @@ def changeStatusOfExam(organization, course, exam_name):
 
 @app.route("/organizations/<string:organization>/<string:username>/reset_password", methods=["GET", "PUT"])
 def reset_password(organization, username):
+    user = User(db, organization, username)
     if request.method == "GET":
-        # send an e mail with generated password.
-        return jsonify(db.reset_password(organization, username))
+        return jsonify(user.reset_password())
     else:
-        # accept the generated pass and new one and change password.
-        return  jsonify(db.check_and_change_password(organization, username, request.authorization["username"], new_pass=request.authorization["password"]))
+        return  jsonify(user.check_and_change_password(request.authorization["username"], new_pass=request.authorization["password"]))
 
 
 if __name__ == "__main__":

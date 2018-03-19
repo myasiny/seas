@@ -81,8 +81,6 @@ class Exam:
         try:
             id = self.db.execute("select ExamID from %s.exams where Name = '%s'" % (organization, exam_name))[0][0]
             c = "DELETE FROM %s.exams WHERE ExamID='%s'" %(organization, id)
-            self.db.execute("delete from %s.answers where examID = %s" %(organization, id))
-            self.db.execute("delete from %s.questions where ExamID = '%s'" %(organization, id))
             return self.db.execute(c)
         except IndexError:
             return "No such an Exam named " + exam_name

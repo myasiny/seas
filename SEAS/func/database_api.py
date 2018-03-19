@@ -101,14 +101,10 @@ def addCourse(token, courseName, courseCode, lecturer_users, URL=server_address,
     courseName = courseName.replace(" ", "_").lower()
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s" % (organization, courseCode)
-    lecturers = ""
-    lecturers += lecturer_users[0]
-    for lecturer in range(1, len(lecturer_users)):
-        lecturers = lecturers + ":" + lecturer_users[lecturer]
     return put(url, data={
         "name": courseName,
         "code": courseCode,
-        "lecturers": lecturers},
+        "lecturers": pickle.dumps(lecturer_users)},
         headers = {"Authorization": "Bearer %s" %token}
                ).json()
 

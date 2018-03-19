@@ -30,10 +30,10 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 # print signIn("superuser", "12345")
 # print signIn("alicakmak", "12345")
 
-# print addCourse(admin_token, "Bioinformatics", "eecs 468", ["alicakmak"])
-print getCourse(student_token, "eecs 468")
+# print addCourse(admin_token, "Physics", "phys 101", ["alicakmak"])
+# print getCourse(student_token, "eecs 468")
 #
-# print registerStudent(lecturer_token, "EECS 468", True, "ornek.csv")
+# print registerStudent(lecturer_token, "EECS 468", True, "ornek.csv", "alicakmak")
 
 # print getCourseStudents(lecturer_token, "Eecs 468")
 
@@ -43,7 +43,7 @@ print getCourse(student_token, "eecs 468")
 
 # print changePassword(student_token, "fatihgulmez", "7P7nDyjq", "12345", False)
 
-# print deleteStudentFromLecture(lecturer_token, "EEcs 468", "213962062")
+# print deleteStudentFromLecture(lecturer_token, "EEcs 468", "214578451")
 
 #### HOW TO CREATE EXAM
 
