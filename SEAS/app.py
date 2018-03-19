@@ -538,6 +538,9 @@ class TabReset(Screen):
     def on_reset(self):
         tabReset.on_reset(self)
 
+    def on_reset_confirm(self):
+        tabReset.on_reset_confirm(self)
+
     def on_back(self):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)

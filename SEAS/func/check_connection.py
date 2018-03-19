@@ -1,6 +1,6 @@
 '''
     This method checks whether communication with server is still alive or not
-    Accordingly, it updates the image on pages where connection status is shown (e.g. PgLogin)
+    Accordingly, it updates top-right image on pages where connection status is shown (e.g. PgLogin)
 '''
 
 from kivy.logger import Logger

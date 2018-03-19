@@ -285,7 +285,7 @@ def on_import_list(self):
     Logger.info("pgLects: Educator called import list pop-up")
 
     popup_content = FloatLayout()
-    self.popup = Popup(title="* Double click to select a file!",
+    self.popup = Popup(title="Import List Of Students",
                        content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
                        size_hint=(None, None), size=(self.width / 2, self.height / 2))
     filechooser = FileChooserListView(path=os.path.expanduser('~'),
@@ -293,13 +293,23 @@ def on_import_list(self):
                                       pos_hint={"center_x": .5, "center_y": .5})
     filechooser.bind(on_submit=self.on_import_list_selected)
     popup_content.add_widget(filechooser)
-    popup_content.add_widget(Button(text="Close",
+    popup_content.add_widget(Button(text="Upload",
                                     font_name="font/LibelSuit.ttf",
                                     font_size=self.height / 40,
-                                    background_normal="img/widget_100.png",
-                                    background_down="img/widget_100_selected.png",
+                                    background_normal="img/widget_100_green.png",
+                                    background_down="img/widget_100_green_selected.png",
+                                    size_hint_x=.5,
                                     size_hint_y=None, height=self.height / 20,
-                                    pos_hint={"center_x": .5, "y": .0},
+                                    pos_hint={"center_x": .25, "y": .0},
+                                    on_release=filechooser.on_submit))
+    popup_content.add_widget(Button(text="Cancel",
+                                    font_name="font/LibelSuit.ttf",
+                                    font_size=self.height / 40,
+                                    background_normal="img/widget_100_red.png",
+                                    background_down="img/widget_100_red_selected.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None, height=self.height / 20,
+                                    pos_hint={"center_x": .75, "y": .0},
                                     on_release=self.popup.dismiss))
     self.popup.open()
 

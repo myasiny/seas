@@ -127,18 +127,18 @@ def on_quit(self):
                                     font_size=self.height / 40,
                                     background_normal="img/widget_100_green.png",
                                     background_down="img/widget_100_green_selected.png",
-                                    size_hint_x=None, width=self.width / 11,
+                                    size_hint_x=.5,
                                     size_hint_y=None, height=self.height / 25,
-                                    pos_hint={"center_x": .25, "y": .01},
+                                    pos_hint={"center_x": .25, "y": .0},
                                     on_release=App.get_running_app().stop))
     popup_content.add_widget(Button(text="No",
                                     font_name="font/LibelSuit.ttf",
                                     font_size=self.height / 40,
                                     background_normal="img/widget_100_red.png",
                                     background_down="img/widget_100_red_selected.png",
-                                    size_hint_x=None, width=self.width/ 11,
+                                    size_hint_x=.5,
                                     size_hint_y=None, height=self.height / 25,
-                                    pos_hint={"center_x": .75, "y": .01},
+                                    pos_hint={"center_x": .75, "y": .0},
                                     on_release=popup.dismiss))
     popup.open()
 
