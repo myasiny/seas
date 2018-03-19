@@ -7,15 +7,17 @@ from kivy.uix.floatlayout import FloatLayout
 
 import webbrowser
 from functools import partial
-from SEAS.func.round_image import round_image
 
 '''
     This method rounds user's profile picture and updates top-left image widget accordingly
 '''
 
 def on_pre_enter(self):
-    round_image()
-    self.ids["img_user"].reload()
+    try:
+        self.ids["img_user"].source = "img/pic_current_user.png"
+        self.ids["img_user"].reload()
+    except:
+        self.ids["img_user"].reload()
 
 '''
     This method is to update sign placed next to FAQ button according to its current status such as clicked, closed

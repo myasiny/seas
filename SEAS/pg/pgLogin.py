@@ -12,6 +12,7 @@ from kivy.uix.floatlayout import FloatLayout
 import os, platform
 from functools import partial
 from SEAS.func import database_api
+from SEAS.func.round_image import round_render
 from SEAS.func.check_connection import check_connection
 
 '''
@@ -92,6 +93,10 @@ def on_login(self, pages, screen, pgEdu, pgStd):
                     temp_login.write(str(d) + "\n")
                 temp_login.close()
 
+            round_render()
+
+            Logger.info("pgLogin: User successfully logged in")
+
             if data[4] != "student":
                 pages.append(pgEdu(name="PgLects"))
             else:
@@ -103,8 +108,6 @@ def on_login(self, pages, screen, pgEdu, pgStd):
                 screen.current = pages[2].name
 
             del pages[1]
-
-            Logger.info("pgLogin: User successfully logged in")
         else:
             anim_status.stop(img_status)
 
@@ -122,7 +125,7 @@ def on_login(self, pages, screen, pgEdu, pgStd):
 
 def on_quit_yes(dt):
     if platform.system() == "Linux":
-        os.system("sh sh/getback.sh")
+        os.system("sh sh/restore.sh")
 
     App.get_running_app().stop()
 

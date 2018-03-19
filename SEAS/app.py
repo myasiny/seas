@@ -32,6 +32,9 @@ Logger.info("app: Esc and right click successfully blocked")
 class PgStdStats(Screen):
     pgLogin.load_string("stdstats")
 
+    def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
+
     def on_enter(self, *args):
         pgLogin.on_enter(self)
 
@@ -63,6 +66,9 @@ class PgStdStats(Screen):
 
 class PgStats(Screen):
     pgLogin.load_string("stats")
+
+    def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
 
     def on_enter(self, *args):
         pgLogin.on_enter(self)
@@ -130,6 +136,7 @@ class PgStdLects(Screen):
     pgLogin.load_string("stdlects")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgStdLects.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -177,6 +184,7 @@ class PgStdProfile(Screen):
     pgLogin.load_string("stdprofile")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgProfile.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -289,6 +297,7 @@ class PgNewExam(Screen):
     pgLogin.load_string("newexam")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgNewExam.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -382,6 +391,7 @@ class PgLects(Screen):
     pgLogin.load_string("lects")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgLects.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -453,6 +463,7 @@ class PgProfile(Screen):
     pgLogin.load_string("profile")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgProfile.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -671,6 +682,6 @@ if __name__ == "__main__":
     Cache.register("config", limit=1)
     Cache.append("config", "cipher", Fernet(Fernet.generate_key()))
 
-    Logger.info("app: Cipher for hashing local data successfully generated and stored on cache")
+    Logger.info("app: Cipher for encrypting local data successfully generated and stored on cache")
 
     SeasApp().run()

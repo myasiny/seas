@@ -32,7 +32,7 @@ from PIL import Image
     This method takes ID as input and converts to QR code. Then, it exports QR code as png
 '''
 
-def barcode_png(id):
+def qrcode_png(id):
     try:
         qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
         qr.add_data(str(id))
@@ -44,6 +44,7 @@ def barcode_png(id):
             rot = pil.rotate(90)
             res = rot.resize((128, 512), Image.LANCZOS)
             res.save("img/pic_barcode.png")
+            res.close()
 
             Logger.info("barcode_png: ID successfully saved as pic_barcode.png")
         except:

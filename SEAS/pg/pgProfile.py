@@ -3,8 +3,7 @@ from kivy.logger import Logger
 from kivy.animation import Animation
 
 from SEAS.func import database_api
-from SEAS.func.round_image import round_image
-from SEAS.func.barcode_png import barcode_png
+from SEAS.func.barcode_png import qrcode_png
 
 '''
     This method updates top-mid identity card widget according to user information before entering PgProfile
@@ -14,10 +13,13 @@ def on_pre_enter(self):
     temp_login = open("data/temp_login.seas", "r")
     self.data_login = temp_login.readlines()
 
-    round_image()
-    self.ids["img_user"].reload()
+    try:
+        self.ids["img_user_card"].source = "img/pic_current_user.png"
+        self.ids["img_user_card"].reload()
+    except:
+        self.ids["img_user_card"].reload()
 
-    barcode_png(self.data_login[3].replace("\n", ""))
+    qrcode_png(self.data_login[3].replace("\n", ""))
     self.ids["img_barcode_1"].reload()
     self.ids["img_barcode_2"].reload()
 

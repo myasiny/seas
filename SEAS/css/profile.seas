@@ -153,7 +153,7 @@
             pos_hint: {"center_x": .415, "center_y": .725}
 
         Image:
-            id: img_user
+            id: img_user_card
             source: "img/pic_user.png"
             allow_stretch: True
             size_hint: .2, .2
