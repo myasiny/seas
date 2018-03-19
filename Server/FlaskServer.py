@@ -114,6 +114,9 @@ def signInUser(organization, username):
             rtn = user.get
             rtn.append(organization)
             rtn.append(create_access_token(identity=({"username" : user.username, "role":user.role_name, "time": str(datetime.datetime.today()), "organization": user.organization})))
+            with open(user.profile_pic_path, "rb") as f:
+                pic = f.read()
+            rtn.append(pickle.dumps(pic))
             return jsonify(rtn)
         else:
             return jsonify("Wrong Password")

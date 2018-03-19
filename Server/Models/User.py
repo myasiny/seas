@@ -21,8 +21,9 @@ class User:
         :return: List, [studentID, roleID, name, surname, username, password_hash, email, department, profile_pic_path]
         """
         self.user_id, self.role, self.name, self.surname, self.username, self.hashed_pass, self.email, self.department, self.profile_pic_path = self.execute("SELECT * FROM members WHERE Username='%s'" % (self.username))[0]
-        self.role_name = self.execute("SELECT Role FROM roles WHERE Role = %s" %self.role)
-        return self.user_id, self.role_name, self.name, self.surname, self.username, self.hashed_pass, self.email, self.department, self.profile_pic_path
+        self.role_name = self.execute("SELECT Role FROM roles WHERE roleID = %s" %self.role)[0][0]
+        rtn = [self.username, self.name, self.surname, self.user_id, self.role_name, self.email, self.department]
+        return rtn
 
     def change_password_or_email(self, oldPassword, newVal, email=False):
         if self.pass_word.verify_password_hash(oldPassword, self.hashed_pass):
@@ -53,6 +54,7 @@ class User:
         return "Not allowed extension."
 
     def get_profile_picture(self,):
+        rtn = self.profile_pic_path
         return self.profile_pic_path
 
     def verify_password(self, password):

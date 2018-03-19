@@ -25,7 +25,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-# print signIn("fatihgulmez", "123456")
+print signIn("fatihgulmez", "123456")
 # print signIn("admin", "12345")
 # print signIn("superuser", "12345")
 # print signIn("alicakmak", "12345")
@@ -109,7 +109,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 
 # print uploadProfilePic(student_token, "fatihgulmez", "picc.png")
 
-# print getProfilePic(student_token, "fatihgulmez")
+# print getProfilePic(student_token, "alicakmak")
 
 # print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 60)
 

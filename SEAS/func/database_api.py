@@ -72,7 +72,10 @@ def signIn(username, password, URL=server_address, organization=current_organiza
                     String role, String email, String department, String university, String JWT token]
     """
     url = URL+"/organizations/%s/%s" %(organization.replace(" ", "_").lower(), username)
-    return get(url, auth=(username, password)).json()
+    rtn = get(url, auth=(username, password)).json()
+    with open("../img/pic_current_user.png", "wb") as f:
+        f.write(pickle.loads(rtn[-1]))
+    return rtn[:-1]
 
 
 def signOut(token, username, URL=server_address, organization=current_organization):
