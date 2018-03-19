@@ -1,3 +1,5 @@
+import os
+import platform
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.clock import Clock
@@ -112,6 +114,11 @@ def on_login(self, pages, screen, pgEdu, pgStd):
     Accordingly, program stops running or confirmation pop-up disappears
 '''
 
+def on_quit_confirm(dt):
+    if platform.system() == "Linux":
+        os.system("sh getback.sh")
+    App.get_running_app().stop()
+
 def on_quit(self):
     Logger.info("quit: This is sad :(")
 
@@ -130,7 +137,7 @@ def on_quit(self):
                                     size_hint_x=.5,
                                     size_hint_y=None, height=self.height / 25,
                                     pos_hint={"center_x": .25, "y": .0},
-                                    on_release=App.get_running_app().stop))
+                                    on_release=on_quit_confirm))
     popup_content.add_widget(Button(text="No",
                                     font_name="font/LibelSuit.ttf",
                                     font_size=self.height / 40,

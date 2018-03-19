@@ -648,17 +648,16 @@ def on_keyboard_event(event):
             return False
         else:
             return True
-    elif platform.system() == "Linux":
-        pass
-    elif platform.system() == "Darwin":
-        pass
 
 if __name__ == "__main__":
     sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
 
     Logger.info("app: Program successfully added to path")
 
-    if platform.system() == "Windows":
+    if platform.system() == "Linux":
+        os.system("sh block.sh")
+
+    elif platform.system() == "Windows":
         import pyHook
 
         hm = pyHook.HookManager()
