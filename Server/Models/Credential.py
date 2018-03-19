@@ -13,7 +13,7 @@ class Credential:
         return self.db.execute("SELECT Password FROM %s_members WHERE Username = '%s'" %(self.org, self.username))[0]
 
     def checkPassword(self):
-        return Password().verify_password_hash(Password().hashPassword(self.password), self.getPassword())
+        return Password().verify_password_hash(Password().hash_password(self.password), self.getPassword())
 
     def getRole(self):
         self.db.execute("SELECT Role FROM %s_members WHERE Username='%s'" %(self.org, self.username))

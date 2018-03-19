@@ -5,7 +5,7 @@ class Password():
     def __init__(self):
         pass
 
-    def hashPassword(self, password):
+    def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password, )
         return self.password_hash
 

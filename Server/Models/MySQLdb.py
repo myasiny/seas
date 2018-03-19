@@ -3,7 +3,7 @@ from flaskext.mysql import MySQL
 from DBTable import DBTable
 from Password import Password
 from External_Functions.passwordGenerator import passwordGenerator
-from External_Functions.sendEmail import sendMailFirstLogin, sendMailPasswordReset
+from External_Functions.sendEmail import send_mail_first_login, send_mail_password_reset
 from time import gmtime, strftime
 import csv, threading, os
 
@@ -27,7 +27,8 @@ class MySQLdb:
             "CREATE SCHEMA %s;" %organization
         )
         self.execute(
-            "USE %s; SET GLOBAL event_scheduler = ON;" %organization
+            "USE %s; "
+            "SET GLOBAL event_scheduler = ON;" %organization
         )
         command_seq = list()
 
@@ -45,17 +46,17 @@ class MySQLdb:
         memberTable = DBTable("members",
                               [
                                   ("PersonID", "int", "not null"),
-                                  ("Role", "int", "not null"),
+                                  ("Role", "int", "not null Default 4"),
                                   ("Name", "varchar(255)", "not null"),
                                   ("Surname", "varchar(255)", "not null"),
                                   ("Username", "varchar(255)", "not null"),
                                   ("Password", "varchar(255)", "not null"),
                                   ("Email", "varchar(50)", "not null"),
-                                  ("Department", "varchar(255)", "not null"),
+                                  ("Department", "varchar(255)", ""),
                                   ("ProfilePic", "varchar(255)", "")
                               ],
                               primary_key="PersonID",
-                              foreign_keys_tuple=[("Role", "roles", "RoleID")],
+                              foreign_keys_tuple=[("Role", "roles", "RoleID", "ON DELETE SET NULL")],
                               uniques=[("Name", "Surname", "Username"), ("PersonID")],
                               database=self)
 
@@ -81,8 +82,8 @@ class MySQLdb:
                                  ("RegistrationID", "int", "auto_increment")
                              ],
                              foreign_keys_tuple=[
-                                 ("StudentID", "members", "PersonID"),
-                                 ("courseID", "courses", "CourseID")
+                                 ("StudentID", "members", "PersonID", "on delete cascade"),
+                                 ("courseID", "courses", "CourseID", "on delete cascade")
                              ],
                              uniques=[
                                  ("StudentID", "CourseID")
@@ -100,8 +101,8 @@ class MySQLdb:
                                  ],
                                  foreign_keys_tuple=
                                  [
-                                     ("LecturerID", "members", "PersonID"),
-                                     ("CourseID", "courses", "CourseID")
+                                     ("LecturerID", "members", "PersonID", "on delete cascade"),
+                                     ("CourseID", "courses", "CourseID", "on delete cascade")
                                  ],
                                  primary_key="LeCorID",
                                  uniques=
@@ -124,7 +125,7 @@ class MySQLdb:
                              primary_key="ExamId",
                              foreign_keys_tuple=
                              [
-                                 ("CourseID", "courses", "CourseID")
+                                 ("CourseID", "courses", "CourseID", "on delete set null")
                              ],
                              uniques=
                              [
@@ -142,7 +143,10 @@ class MySQLdb:
                                      ("info", "JSON", "")
                                  ],
                                  primary_key="QuestionID",
-                                 foreign_keys_tuple=[("ExamID", "exams", "ExamID")],
+                                 foreign_keys_tuple=
+                                 [
+                                     ("ExamID", "exams", "ExamID", "on delete set  null")
+                                 ],
                               database=self)
 
         answersTable = DBTable("answers",
@@ -155,8 +159,8 @@ class MySQLdb:
                                ],
                                primary_key="answerID",
                                foreign_keys_tuple=[
-                                   ("questionID", "questions", "questionID"),
-                                   ("studentID", "members", "PersonID")
+                                   ("questionID", "questions", "questionID", "on delete cascade"),
+                                   ("studentID", "members", "PersonID", "on delete cascade")
                                ],
                                uniques=[
                                    ("questionID", "studentID")
@@ -172,7 +176,7 @@ class MySQLdb:
                                            ],
                                            primary_key="UserID",
                                            foreign_keys_tuple=[
-                                               ("UserID", "members", "PersonID")
+                                               ("UserID", "members", "PersonID", "on delete cascade")
                                            ],
                                            database=self)
 
@@ -279,7 +283,7 @@ class MySQLdb:
     def __commit(self):
         self.db.commit()
 
-    def getOrganization(self):
+    def get_organization(self):
         pass
 
     def handle_tr(self, str_):
@@ -289,7 +293,7 @@ class MySQLdb:
                                                                                                                     "g")
         return str_
 
-    def registerStudentCSV(self, csvDataFile, organization, course, lecturer):
+    def register_student_csv(self, csvDataFile, organization, course, lecturer):
         csvReader = csv.reader(csvDataFile)
         column_names = next(csvReader, None)
         data = list(csvReader)
@@ -305,43 +309,44 @@ class MySQLdb:
             username = name.split()[0].lower() + surname.lower()
             pas = Password()
             password = passwordGenerator(8)
-            check = self.execute("Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(organization, student_number, role, name, surname, username, pas.hashPassword(password), mail, department))
+            check = self.execute("Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (organization, student_number, role, name, surname, username, pas.hash_password(password), mail, department))
             if check is not None:
                 auth.append((name + " " + surname, mail, password, username))
             reg.append(student_number)
-        threading.Thread(target=sendMailFirstLogin, args=(auth, lecturer)).start()
+        threading.Thread(target=send_mail_first_login, args=(auth, lecturer)).start()
         self.register_student(reg, course, organization)
         return "Done"
 
-    def resetPassword(self, organization, username):
+    def reset_password(self, organization, username):
         p = Password()
         password = passwordGenerator(8)
 
         user_info = self.get_user_info(organization, username)
         auth = ["%s %s" % (user_info[2], user_info[3]), user_info[6], password, user_info[4]]
-        password_ = p.hashPassword(password)
+        password_ = p.hash_password(password)
         print auth
 
         rtn = self.execute("INSERT INTO %s.temporary_passwords (UserID, Password) VALUES (%d, '%s');" % (organization, int(user_info[0]), password_))
         self.execute("CREATE EVENT user_%d ON SCHEDULE AT date_add(now(), INTERVAL 30 MINUTE) DO DELETE FROM %s.temporary_passwords WHERE UserID = %d;" % (int(user_info[0]), organization, int(user_info[0])))
         if rtn is None:
             return "Your account has been reset already."
-        threading.Thread(target=sendMailPasswordReset, args=(auth,)).start()
+        threading.Thread(target=send_mail_password_reset, args=(auth,)).start()
         return "Check your mail address for credentials."
 
-    def checkAndChangePassword(self, organization, username, temp_pass, new_pass):
+    def check_and_change_password(self, organization, username, temp_pass, new_pass):
         p = Password()
         user_info = self.get_user_info(organization, username)
         password = self.execute("SELECT Password FROM %s.temporary_passwords WHERE UserID = %d;" %(organization, int(user_info[0])))[0][0]
         if p.verify_password_hash(temp_pass, password):
             self.execute("DELETE FROM %s.temporary_password WHERE UserID = %d;" % (organization, int(user_info[0])))
-            new_pass = p.hashPassword(new_pass)
-            print p.hashPassword(temp_pass), new_pass
+            new_pass = p.hash_password(new_pass)
+            print p.hash_password(temp_pass), new_pass
             c = "UPDATE %s.members SET %s.members.Password = '%s' WHERE PersonID = %d;" % (organization, organization, new_pass, int(user_info[0]))
             print c
             return self.execute(c)
         return "Wrong Temporary Password!"
-    def changePasswordOREmail(self, organization, username, oldPassword, newVal, email=False):
+
+    def change_password_or_email(self, organization, username, oldPassword, newVal, email=False):
         pas = Password()
         user = self.get_user_info(organization, username)
         password = user[5]
@@ -351,7 +356,7 @@ class MySQLdb:
                     "UPDATE %s.members SET Email='%s' WHERE Username = '%s'" % (organization, newVal, username))
                 return "Mail Changed"
             else:
-                password = pas.hashPassword(newVal)
+                password = pas.hash_password(newVal)
                 self.execute("UPDATE %s.members SET Password='%s' WHERE Username = '%s'" % (organization, password, username))
                 return "Password Changed"
         else:

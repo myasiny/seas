@@ -32,7 +32,8 @@ class DBTable:
             for foreign in foreign_keys_tuple:
                 col = foreign[0]
                 ref = foreign[1], foreign[2]
-                self.ForeignKey(col, ref)
+                behavior = foreign[3]
+                self.ForeignKey(col, ref, behavior)
 
         if uniques is not None:
             for unique in uniques:
@@ -44,8 +45,8 @@ class DBTable:
     def PrimaryKey(self, column):
         self.command += ", primary key (%s)" % column
 
-    def ForeignKey(self, column, referenceTuple):
-        self.command += ", foreign key (%s) references %s(%s)" % (column, referenceTuple[0], referenceTuple[1])
+    def ForeignKey(self, column, referenceTuple, behavior):
+        self.command += ", foreign key (%s) references %s(%s) %s" % (column, referenceTuple[0], referenceTuple[1], behavior)
 
     def Unique(self, columnTuple):
         if type(columnTuple) == tuple:

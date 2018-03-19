@@ -2,7 +2,7 @@
 import csv, threading
 from Password import  Password
 from External_Functions import passwordGenerator
-from External_Functions.sendEmail import sendMailFirstLogin
+from External_Functions.sendEmail import send_mail_first_login
 
 
 class Lecture:
@@ -72,11 +72,11 @@ class Lecture:
             username = name.split()[0].lower() + surname.lower()
             pas = Password()
             password = passwordGenerator(8)
-            check = self.execute("Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" %(organization, student_number, role, name, surname, username, pas.hashPassword(password), mail, department))
+            check = self.execute("Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (organization, student_number, role, name, surname, username, pas.hash_password(password), mail, department))
             if check is not None:
                 auth.append((name + " " + surname, mail, password, username))
             reg.append(student_number)
-        threading.Thread(target=sendMailFirstLogin, args=(auth, lecturer)).start()
+        threading.Thread(target=send_mail_first_login, args=(auth, lecturer)).start()
         self.register_student(reg, course, organization)
         return "Done"
 

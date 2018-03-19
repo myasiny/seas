@@ -28,7 +28,7 @@ class User:
                     "UPDATE %s.members SET Email='%s' WHERE Username = '%s'" % (organization, newVal, username))
                 return "Mail Changed"
             else:
-                password = pas.hashPassword(newVal)
+                password = pas.hash_password(newVal)
                 self.execute("UPDATE %s.members SET Password='%s' WHERE Username = '%s'" % (organization, password, username))
                 return "Password Changed"
         else:

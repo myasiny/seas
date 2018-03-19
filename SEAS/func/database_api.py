@@ -213,16 +213,13 @@ def deleteStudentFromLecture(token, courseCode, studentID, URL=server_address, o
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
-def createExam(token, courseCode, name, time, duration, questions={}, status="draft", URL=server_address, organization=current_organization):
+def createExam(token, courseCode, name, time, duration, status="draft", URL=server_address, organization=current_organization):
     """
     :param token: String; JWT Token
     :param courseCode: String; course code
     :param name: String; exam name
     :param time: String Timestamp; Start time of exam
     :param duration: Integer; duration of exam in minutes
-    :param questions: JSON; {QuestionID:{type: "question type", subject: "question subject", text: "question text",
-                    answer:"true answer for this question", inputs:"input values - list of tuples",
-                    outputs:"output values, list of tuples", value:"point of question", tags:"list of strings of tags"
     :param status: String; can be draft, completed, graded, ready
     :param URL: String; server address
     :param organization: String; university name
@@ -232,8 +229,7 @@ def createExam(token, courseCode, name, time, duration, questions={}, status="dr
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/add" % (organization, courseCode)
-    question = json.dumps(questions)
-    return put(url, data={"name": name, "time": time, "duration": duration, "questions": question, "status": status},
+    return put(url, data={"name": name, "time": time, "duration": duration, "status": status},
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 

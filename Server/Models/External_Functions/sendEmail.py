@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 
-def createTextFirstLogin(instructorName, auth):
+def create_text_first_login(instructorName, auth):
     return """\
 <center style="width: 100%; background: #222222; text-align: left;">
 <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">Your registration has successfully completed by your instructor, please check this e-mail in order to learn your username and password information.</div>
@@ -48,7 +48,7 @@ def createTextFirstLogin(instructorName, auth):
     pass
 
 
-def createTextPasswordReset(auth):
+def create_text_password_reset(auth):
     return """\
 <center style="width: 100%; background: #222222; text-align: left;">
 <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">Your registration has successfully completed by your instructor, please check this e-mail in order to learn your username and password information.</div>
@@ -93,7 +93,7 @@ def createTextPasswordReset(auth):
     pass
 
 
-def sendMailBase(mail, auth, instructorName = None, tip = "first"):
+def send_mail_base(mail, auth, instructorName = None, tip ="first"):
     # type = first or reset
     # auth = Name + Surname, email, password, username
     me = "Wivern Software"
@@ -103,9 +103,9 @@ def sendMailBase(mail, auth, instructorName = None, tip = "first"):
     msg['From'] = me
     msg['To'] = you
     if tip == "first":
-        html = createTextFirstLogin(instructorName, auth)
+        html = create_text_first_login(instructorName, auth)
     elif tip == "reset":
-        html = createTextPasswordReset(auth)
+        html = create_text_password_reset(auth)
     else:
         return "Wrong type of mail!"
     part2 = MIMEText(html, 'html')
@@ -114,27 +114,27 @@ def sendMailBase(mail, auth, instructorName = None, tip = "first"):
     print 'Email sent for %s!' % auth[0]
 
 
-def sendMailFirstLogin(auth, instructorName):
+def send_mail_first_login(auth, instructorName):
     # auth = Name + Surname, email, password, username
     mail = smtplib.SMTP('smtp.gmail.com', 587)
     mail.ehlo()
     mail.starttls()
     mail.login('wivernsoft', 'Dragos!2017')
     for i in auth:
-        sendMailBase(mail, i, instructorName, "first")
+        send_mail_base(mail, i, instructorName, "first")
     mail.quit()
 
 
-def sendMailPasswordReset(auth):
+def send_mail_password_reset(auth):
     # auth = Name + Surname, email, password, username
     mail = smtplib.SMTP('smtp.gmail.com', 587)
     mail.ehlo()
     mail.starttls()
     mail.login('wivernsoft', 'Dragos!2017')
-    sendMailBase(mail, auth, tip = "reset")
+    send_mail_base(mail, auth, tip ="reset")
     mail.quit()
 
 
 # auth = [["Muhammed Yasin Yildirim","muhammedyildirim@std.sehir.edu.tr","msj123SaL","muhammedyildirim"]]
 # instructorName = "Ali Cakmak"
-# sendMailFirstLogin(auth, instructorName)
+# send_mail_first_login(auth, instructorName)
