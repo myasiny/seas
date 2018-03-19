@@ -393,6 +393,7 @@ def change_status_of_exam(token, course_code, exam_name, status, URL=server_addr
     """
     organization = organization.replace(" ", "_").lower()
     course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
+    exam_name = re.sub(r'[^\w\s]', '_', exam_name).replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/exams/%s/status" % (organization, course_code, exam_name)
     if status not in ["draft", "finished", "published", "graded", "deactivated", "active"]:
         return "Wrong status."

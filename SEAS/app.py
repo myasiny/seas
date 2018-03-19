@@ -574,6 +574,9 @@ class PgLogin(Screen):
             PgLogin.on_login(self)
         return True
 
+    def on_pre_enter(self, *args):
+        pgLogin.on_pre_enter(self)
+
     def on_enter(self, *args):
         pgLogin.on_enter(self)
 
@@ -644,7 +647,7 @@ class SeasApp(App):
 
 def on_keyboard_event(event):
     if platform.system() == "Windows":
-        if event.Key.lower() in ["lwin", "lmenu", "apps"]:
+        if event.Key.lower() in []:#"lwin", "lmenu", "apps"]:
             return False
         else:
             return True
@@ -654,15 +657,14 @@ if __name__ == "__main__":
 
     Logger.info("app: Program successfully added to path")
 
-    if platform.system() == "Linux":
-        os.system("sh block.sh")
-
-    elif platform.system() == "Windows":
+    if platform.system() == "Windows":
         import pyHook
 
         hm = pyHook.HookManager()
         hm.KeyDown = on_keyboard_event
         hm.HookKeyboard()
+    elif platform.system() == "Linux":
+        os.system("sh sh/block.sh")
 
     Logger.info("app: Keys successfully blocked for %s" % platform.system())
 
