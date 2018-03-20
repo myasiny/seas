@@ -1,3 +1,13 @@
+#!/user/bin/env
+import sys
+sys.path.append("../")
+
+# Logger.info("app: Program successfully added to path and shebang stated")
+
+'''
+    That part is to state python shebang and add program to path in order to avoid compile or import errors on run-time
+'''
+
 from kivy.app import App
 from kivy.cache import Cache
 from kivy.clock import Clock
@@ -6,13 +16,7 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-'''
-    This part is to add program to path in order to avoid import errors on run-time
-'''
-
-import os, platform, sys
-sys.path.append('../')
-Logger.info("app: Program successfully added to path")
+import os, platform
 from cryptography.fernet import Fernet
 from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
 
@@ -664,7 +668,7 @@ class SeasApp(App):
 
 def on_keyboard_event(event):
     if platform.system() == "Windows":
-        if event.Key.lower() in []:#"lwin", "lmenu", "apps"]:
+        if event.Key.lower() in ["lwin", "lmenu", "apps"]:
             return False
         else:
             return True
