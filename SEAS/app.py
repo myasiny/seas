@@ -6,7 +6,13 @@ from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-import sys, os, platform
+'''
+    This part is to add program to path in order to avoid import errors on run-time
+'''
+
+import os, platform, sys
+sys.path.append('../')
+Logger.info("app: Program successfully added to path")
 from cryptography.fernet import Fernet
 from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
 
@@ -664,10 +670,6 @@ def on_keyboard_event(event):
             return True
 
 if __name__ == "__main__":
-    # sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)))
-
-    Logger.info("app: Program successfully added to path")
-
     if platform.system() == "Windows":
         import pyHook
 
