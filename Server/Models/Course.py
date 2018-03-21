@@ -5,67 +5,79 @@ from Password import Password
 import csv, pickle, threading
 
 class Course:
-    def __init__(self, db, organization, code, name = None, lecturers =None):
+    def __init__(self, db, organization, code):
         self.db = db
         self.execute = db.execute
         self.execute("USE %s;" % organization)
         self.organization = organization
         self.code = code
-        self.lecture_id = None
-        self.lecturers = None
-        self.name = None
-        if name is None and lecturers is None:
-            self.get_course()
-        elif name is not None and lecturers is not None:
-            self.add_course(name, lecturers)
-        else:
-            raise AttributeError("Both name and lecturer should be None or both should have values.")
 
-    def add_course(self, name, lecturer_users):
-        self.name = name
+    def add_course(self, name, lecturer_users): # 3 queries
         self.execute("INSERT INTO courses (NAME, CODE) VALUES ('%s', '%s');"%(name, self.code))
-        self.lecture_id =self.execute("select CourseID from courses where CODE = '%s'" % self.code)[0][0]
+        lecture_id = self.execute(" select CourseID from courses where CODE = '%s';" % self.code)[0][0]
         command = ""
-        self.lecturers = []
         lecturer_users = pickle.loads(lecturer_users)
         if len(lecturer_users) > 0:
             for lecturer in lecturer_users:
-                l = self.execute("SELECT Name, Surname, PersonID, Email, Username FROM members WHERE Username = '%s'" % (lecturer))[0]
-                self.lecturers.append(l)
-                command += "insert into lecturers (LecturerID, CourseID) VALUES ('%s', '%s');" % (l[2], self.lecture_id)
-        self.execute(command)
+                command += "((select PersonID from members where Username = '%s'), '%s')," % (lecturer, lecture_id)
+        self.execute("insert into lecturers (LecturerID, CourseID) VALUES " + command[:-1] + ";")
         return "Course Added!"
 
     def get_course(self):
-        a = self.execute("SELECT * FROM courses WHERE Code = '%s'" % (self.code))[0]
-        lecturer_IDs = self.execute("SELECT LecturerID FROM lecturers WHERE CourseID = '%s'"%(a[0]))
-        self.lecturers = []
-        full_name_lecturers = []
-        for id in lecturer_IDs:
-            username = self.execute("SELECT Name, Surname, PersonID, Email, Username FROM members WHERE PersonID = '%s'" % (id[0]))[0]
-            self.lecturers.append(username)
-            full_name_lecturers.append(username[0] + " " + username[1])
-        self.lecture_id = a[0]
-        self.name = a[1]
-        self.get = {
-            "ID": a[0],
-            "Name": a[1],
-            "Code": a[2],
-            "Lecturers": full_name_lecturers,
-            "Participants": self.get_course_participants()
+        course = self.execute(self.select_org + "SELECT c.CourseID, c.Name, c.Code FROM courses c Where c.Code = '%s'" % (self.code))[0]
+        people = self.execute(
+        """(SELECT 
+                CONCAT(m.Name, ' ', m.Surname) AS 'Full Name',
+                m.PersonID,
+                m.Email,
+                m.Username,
+                a.Role
+            FROM
+                members m
+            JOIN
+                (lecturers l, roles a) ON m.PersonID = l.LecturerID
+                AND l.CourseID = '3'
+                AND a.roleID = m.Role) 
+                UNION ALL 
+            (SELECT 
+                CONCAT(m.Name, ' ', m.Surname) AS 'Full Name',
+                m.PersonID,
+                m.Email,
+                m.Username,
+                a.Role
+            FROM
+                members m
+            JOIN
+                (registrations r, roles a) ON m.PersonID = r.StudentID
+                AND r.CourseID = '%s'
+                AND a.roleID = m.Role);""" %course[0]
+        )
+
+        lecturer_name = []
+        student_info = []
+        for person in people:
+            if person[-1] == "lecturer":
+                lecturer_name.append(person[0])
+            else:
+                student_info.append(person)
+        return {
+            "ID": course[0],
+            "Name": course[1],
+            "Code": course[2],
+            "Lecturers": lecturer_name,
+            "Participants": student_info
         }
 
     def register_student(self, studentIDList):
+        lecture_id = self.execute("Select c.courseID as id from courses c where c.Code = '%s';" %self.code)[0][0]
+        ids = ""
         for i in studentIDList:
-            self.execute("INSERT INTO registrations (StudentID, CourseID) VALUES(%s, %s)" %(i, self.lecture_id))
+            ids += "(%s, %s)," %(i, lecture_id)
+        ids = ids[0:-1] + ";"
+        self.execute(" INSERT INTO registrations (StudentID, CourseID) VALUES " + ids)
 
     def get_course_participants(self):
-        studentIDs = self.execute("SELECT StudentID FROM registrations WHERE CourseID = '%s'" %self.lecture_id)
-        students = []
-        for id in studentIDs:
-            info = self.execute("SELECT Name, Surname, PersonID, Email, Username FROM members WHERE PersonID = '%s'" % (id[0]))[0]
-            students.append(info)
-
+        students = self.execute("Select m.Name, m.Surname, m.PersonID, m.Email, m.Username from members m join (registrations r, courses c) on m.PersonID = r.StudentID and c.code = '%s';" %self.code)
         return students
 
     def register_student_csv(self, csvDataFile, lecturer):
@@ -92,9 +104,9 @@ class Course:
         return "Done"
 
     def delete_student_course(self, studentID):
-        command = "DELETE FROM registrations WHERE StudentID = %d AND CourseID = %d" % (
-        int(studentID), int(self.code))
+        command = "DELETE FROM registrations where StudentID = %d and CourseID = (Select courseID from courses where Code = '%s')" % (
+        int(studentID), self.code)
         return self.execute(command)
 
     def get_exams_of_lecture(self):
-        return self.execute("select * from exams where CourseID = '%s'" % (self.lecture_id))
+        return self.execute("select * from exams where CourseID = (select CourseID from courses where Code = '%s)'" % (self.code))

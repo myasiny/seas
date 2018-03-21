@@ -8,7 +8,7 @@ import csv, threading, os
 
 class MySQLdb:
     def __init__(self, dbName, app, user="tester", password="wivern@seas"):
-        mysql = MySQL()
+        self.mysql = MySQL()
         app.config['MYSQL_DATABASE_USER'] = user
         app.config['MYSQL_DATABASE_PASSWORD'] = password
         app.config['MYSQL_DATABASE_DB'] = dbName
@@ -16,9 +16,9 @@ class MySQLdb:
         app.config['MYSQL_DATABASE_PORT'] = 8000
         self.name = dbName
         self.allowed_extensions = set(['png', 'jpg', 'jpeg'])
-        mysql.init_app(app)
+        self.mysql.init_app(app)
 
-        self.db = mysql.connect()
+        self.db = self.mysql.connect()
         self.cursor = self.db.cursor()
 
     def initialize_organization(self, organization):
@@ -197,12 +197,8 @@ class MySQLdb:
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
 
     def execute(self, command):
-        a = command.replace(";", ";--").split("--")
+        self.cursor.execute(command)
         try:
-            for i in a:
-                if len(i)>5:
-                    self.cursor.execute(i)
-
             rtn = self.cursor.fetchall()
             self.__commit()
             return rtn

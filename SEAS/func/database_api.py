@@ -138,12 +138,13 @@ def registerStudent(token, courseCode, isList, students, username, URL=server_ad
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     url = URL+"/organizations/%s/%s/register/%s" %(organization, courseCode, isList)
-    students = open(students)
     if isList:
+        students = open(students)
         return put(url, files={"liste": students}, data={"username": username},
         headers = {"Authorization": "Bearer %s" %token}).json()
     else:
-        pass
+        return put(url, data={"username": username, "liste": pickle.dumps(students)},
+                   headers={"Authorization": "Bearer %s" % token}).json()
 
 
 def getCourseStudents(token, courseCode, URL=server_address, organization=current_organization):

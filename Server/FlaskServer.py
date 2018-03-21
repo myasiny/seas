@@ -1,20 +1,16 @@
 # -*- coding:UTF-8 -*-
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, g
 from Models.MySQLdb import MySQLdb
-from Models.Password import Password
-from Models.Credential import Credential
-from Models.Question import Question
 from Models.Exam import Exam
 from Models.User import *
 from Models.Course import Course
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
-import json
-import datetime
-import pickle
+import json, datetime, pickle
 
 app = Flask(__name__)
 db = MySQLdb("TestDB", app)
+
 app.config["DEBUG"] = True
 app.config["UPLOAD_FOLDER"] = "./uploads/"
 app.config["JWT_SECRET_KEY"] = "CHANGE THIS BEFORE DEPLOYMENT ! ! !"
@@ -113,7 +109,7 @@ def signInUser(organization, username):
         if user.verify_password(password):
             rtn = user.get
             rtn.append(organization)
-            rtn.append(create_access_token(identity=({"username" : user.username, "role":user.role_name, "time": str(datetime.datetime.today()), "organization": user.organization})))
+            rtn.append(create_access_token(identity=({"username" : user.username, "role":user.role_name, "time": str(datetime.datetime.today()), "organization": user.organization, "id": user.user_id})))
             with open(user.profile_pic_path, "rb") as f:
                 pic = f.read()
             rtn.append(pickle.dumps(pic))
@@ -151,7 +147,7 @@ def addCourse(organization, course):
         code = request.form["code"]
         lecturers = request.form["lecturers"]
         # return jsonify(db.add_course(organization, name, code, lecturers))
-        return jsonify(Course(db, organization, code, name=name, lecturers=lecturers).code)
+        return jsonify(Course(db, organization, code).add_course(name, lecturers))
 
 
 @app.route("/organizations/<string:organization>/<string:course>/get", methods=['GET'])
@@ -162,7 +158,7 @@ def getCourse(organization, course):
         return jsonify("Unauthorized Access.")
 
     if check_lecture_permision(organization, token, course):
-        return jsonify(Course(db, organization, course).get)
+        return jsonify(Course(db, organization, course).get_course())
 
     return jsonify("Unauthorized access!")
 
@@ -174,7 +170,11 @@ def putStudentList(organization, course, liste):
     if not check_auth(token, organization, "lecturer"):
         return jsonify("Unauthorized access!")
     if check_lecture_permision(organization, token, course):
-        return jsonify(Course(db, organization, course).register_student_csv(request.files["liste"], request.form["username"]))
+        if liste == "True":
+            return jsonify(Course(db, organization, course).register_student_csv(request.files["liste"], request.form["username"]))
+        else:
+            return jsonify(Course(db, organization, course).register_student(pickle.loads(request.form["liste"])))
+
     return jsonify("Unauthorized access!")
 
 
@@ -185,7 +185,7 @@ def getStudentList(organization, course):
     if not check_auth(token, organization, "lecturer"):
         return jsonify("Unauthorized access!")
     if check_lecture_permision(organization, token, course):
-        return jsonify(db.get_course_participants(course, organization))
+        return jsonify(Course(db, organization, course).get_course_participants())
     return jsonify("Unauthorized access!")
 
 
@@ -209,7 +209,7 @@ def deleteStudentFromLecture(organization, course):
         return jsonify("Unauthorized access!")
 
     if check_lecture_permision(organization, token, course):
-        return jsonify(db.delete_student_course(organization, course, request.form["Student"]))
+        return jsonify(Course(db, organization, course).delete_student_course(request.form["Student"]))
 
     return jsonify("Unauthorized access!")
 
