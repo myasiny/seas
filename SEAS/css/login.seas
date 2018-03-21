@@ -76,6 +76,7 @@
             padding_y: [self.height / 3, 0]
             size_hint: .2, .1
             pos_hint: {"center_x": .55, "center_y": .55}
+            on_text_validate: root.on_submit()
 
         Label:
             id: txt_password
@@ -100,6 +101,7 @@
             padding_y: [self.height / 3, 0]
             size_hint: .2, .1
             pos_hint: {"center_x": .55, "center_y": .44}
+            on_text_validate: root.on_submit()
 
         Button:
             id: btn_login

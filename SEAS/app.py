@@ -595,6 +595,9 @@ class PgLogin(Screen):
             PgLogin.on_login(self)
         return True
 
+    def on_submit(self):
+        PgLogin.on_login(self)
+
     def on_pre_enter(self, *args):
         pgLogin.on_pre_enter(self)
 
