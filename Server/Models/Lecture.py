@@ -6,9 +6,6 @@ from External_Functions.sendEmail import send_mail_first_login
 
 
 class Lecture:
-    """
-    todo: Data structure of Lectures, operations will be moved here!
-    """
     def __init__(self):
         pass
 

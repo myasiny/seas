@@ -7,14 +7,7 @@ class Exam:
         self.org = organization.replace(" ", "_").lower()
         self.name = Name
         self.db = db
-
-        self.course = None
-        self.time = None
-        self.duration = None
-        self.status = None
-        self.ID = None
-
-        self.get()
+        self.db.execute("USE %s;" % self.org)
 
     def addQuestion(self, tip, subject, text, answer, inputs, outputs, value, tags):
         if self.course is None:
@@ -26,83 +19,69 @@ class Exam:
         return questionObj.save(self.db, self.course, self.org, self.ID).get
 
     def save(self, CourseCode, Time, duration, status="draft"):
-        """
-            use istanbul_sehir_university;
-            insert into exams(Name,Time,CourseID) select 'bioinformatics mt 1', '2018-02-15 10:30:00', ID from courses where courses.CODE = 'eecs_468';
-        """
         db = self.db
-        self.course = CourseCode.replace(" ", "_").lower()
-        self.time = Time
-        self.duration = duration
-        self.status = status
-        command = "USE %s;" % self.org
+        course = CourseCode.replace(" ", "_").lower()
+        command = ""
         command += "insert into exams(Name,Time,Duration, Status, CourseID) " \
                    "select \'%s\', \'%s\', %d, '%s', CourseID " \
                    "from courses where courses.CODE = \'%s\'" \
                    "ON DUPLICATE KEY UPDATE Name = '%s', Time='%s', Duration='%s', Status = '%s';"\
-                   % (self.name, self.time, int(self.duration), self.status, self.course, self.name, self.time, self.duration, self.status)
-
+                   % (self.name, Time, int(duration), status, course, self.name, Time, duration, status)
         db.execute(command)
-        return db.execute("SELECT ExamID FROM exams WHERE Name = '%s'" % self.name)[0][0]
+        return "Done"
 
     def get(self):
         db = self.db
-        command = "select time, duration, ExamID from %s.exams where name = '%s'" %(self.org, self.name)
+        command = "select q.info, q.QuestionID, c.Code, e.* from questions q JOIN (courses c, exams e) ON c.CourseID = e.courseID AND e.Name = '%s' AND q.ExamID = e.ExamID;" %self.name
         saved = db.execute(command)
+        course, exam_id, exam_name, course_id, time, duration, status = saved[0][2:]
         try:
-            self.time = saved[0][0]
-            self.duration = saved[0][1]
-            c = "SELECT s.Code FROM %s.courses s, %s.exams e where s.CourseID = e.courseID and e.Name = '%s' ;" % (self.org, self.org, self.name)
-            c = db.execute(c)[0][0]
-            self.course = c
-            questions = self.get_questions()
-            self.ID = saved[0][2]
+            questions = {}
+            counter = 1
+            for question in saved:
+                question_info = json.loads(question[0])
+                question_info["ID"] = question[1]
+                questions[counter] = question_info
+                counter += 1
+
             return{
-                "Name": self.name,
-                "Course": self.course,
-                "Time": saved[0][0],
-                "Duration": saved[0][1],
+                "Name": exam_name,
+                "Course": course,
+                "Time": time,
+                "Duration": duration,
                 "Questions": questions,
-                "ID": saved[0][2]
+                "ID": exam_id,
+                "Status": status
             }
         except IndexError:
-            print "No Exam"
             return "No Exam Named as " + self.name
-        except Exception as e:
-            print "Error"
-            return "Unknown Error for exam " + self.name + " with " + e.message
 
     def getString(self, db):
-        return json.dumps(self.get(db))
+        return json.dumps(self.get())
 
     def delete_exam(self):
         organization = self.org
         exam_name = self.name
         try:
-            id = self.db.execute("select ExamID from %s.exams where Name = '%s'" % (organization, exam_name))[0][0]
-            c = "DELETE FROM %s.exams WHERE ExamID='%s'" %(organization, id)
+            c = "DELETE FROM %s.exams WHERE Name='%s'" %(organization, exam_name)
             return self.db.execute(c)
         except IndexError:
             return "No such an Exam named " + exam_name
 
     def change_status(self, new_status):
-        self.db.execute("Update %s.exams Set Status = '%s' where Name = '%s';" % (self.org, new_status, self.name))
+        self.db.execute("Update exams Set Status = '%s' where Name = '%s';" % (new_status, self.name))
 
     def add_more_time(self, minutes):
-        self.db.execute("Update %s.exams Set Duration = Duration + %d where Name = '%s';" % (self.org, int(minutes), self.name))
+        self.db.execute("Update exams Set Duration = Duration + %d where Name = '%s';" % (int(minutes), self.name))
 
     def get_questions(self):
-        command = "SELECT info, QuestionID FROM %s.questions join %s.exams where %s.exams.Name = '%s' and %s.questions.examID = %s.exams.examID;" % (
-        self.org, self.org, self.org, self.name, self.org, self.org)
+        command = "SELECT info, QuestionID FROM questions WHERE ExamID =  (SELECT ExamID from exams where Name = '%s');" % (self.name)
         raw_questions = self.db.execute(command)
         questions = {}
         i = 0
         for question in raw_questions:
             i = i + 1
             questions[question[1]] = question[0]
-        # for question in self.questions:
-        #     i = i + 1
-        #     questions[i] = question.get
         return questions
 
     def edit_a_question(self, question_id, info):

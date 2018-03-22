@@ -1,6 +1,6 @@
 #-*-coding:utf-8-*-
 class DBTable:
-    def __init__(self, name, columns, primary_key=None, foreign_keys_tuple=None, uniques=None, database=None):
+    def __init__(self, name, columns, primary_key=None, foreign_keys_tuple=None, uniques=None, database=None, indexes=None):
         """
         Creates SQL query codes for creating a table in MySQL DBs.
         Also Can directly create table with Database param.
@@ -19,6 +19,7 @@ class DBTable:
         self.foreign_keys = foreign_keys_tuple
         self.uniques = uniques
         self.db = database
+        self.indexes = indexes
 
         for column in columns:
             self.command += "%s %s %s, " % column
@@ -39,20 +40,32 @@ class DBTable:
             for unique in uniques:
                 self.Unique(unique)
 
+        if indexes is not None:
+            for index in indexes:
+                self.Index(index)
+
         self.command = self.command + ");\n" if self.command != "" else ""
+        print self.command
         self.db.execute(self.command)
 
     def PrimaryKey(self, column):
         self.command += ", primary key (%s)" % column
 
     def ForeignKey(self, column, referenceTuple, behavior):
-        self.command += ", foreign key (%s) references %s(%s) %s" % (column, referenceTuple[0], referenceTuple[1], behavior)
+        self.command += ", foreign key (%s) references %s (%s) %s" % (column, referenceTuple[0], referenceTuple[1], behavior)
 
     def Unique(self, columnTuple):
         if type(columnTuple) == tuple:
             self.command += ", Unique %s" % str(columnTuple).replace("\'", "")
         else:
             self.command += ", Unique (%s)" % columnTuple
+
+
+    def Index(self, columnTuple):
+        if type(columnTuple) == tuple:
+            self.command += ", Index %s" % str(columnTuple).replace("\'", "")
+        else:
+            self.command += ", Index (%s)" % columnTuple
 
     def insert(self, key_values):
         """

@@ -1,27 +1,49 @@
 #-*-coding:utf-8-*-
-from flaskext.mysql import MySQL
+import mysql.connector
 from DBTable import DBTable
+from mysql.connector import pooling, InterfaceError
+from flask import g
+from Password import Password
+from External_Functions.passwordGenerator import passwordGenerator
+from External_Functions.sendEmail import send_mail_first_login
+import csv, threading, os
+
+def connection_wrapper(func):
+    def wrapper(self, *args):
+        self.get_connection()
+        rtn = func(self, *args)
+        self.close_connection()
+        return rtn
+    return wrapper
 
 class MySQLdb:
-    def __init__(self, dbName, app, user="tester", password="wivern@seas"):
-        self.mysql = MySQL()
-        app.config['MYSQL_DATABASE_USER'] = user
-        app.config['MYSQL_DATABASE_PASSWORD'] = password
-        app.config['MYSQL_DATABASE_DB'] = dbName
-        app.config['MYSQL_DATABASE_HOST'] = '159.65.124.42'
-        app.config['MYSQL_DATABASE_PORT'] = 8000
+    def __init__(self, dbName, user="tester", password="wivern@seas"):
         self.name = dbName
         self.allowed_extensions = set(['png', 'jpg', 'jpeg'])
-        self.mysql.init_app(app)
+        dbconfig = {
+            "database": dbName,
+            "user": user,
+            "password": password,
+            "host": '159.65.124.42',
+            "port":8000
+        }
 
-        self.db = self.mysql.connect()
+        self.pool = pooling.MySQLConnectionPool(pool_name="conn",
+                                       pool_size=8,pool_reset_session=False,
+                                       **dbconfig)
+
+    def get_connection(self):
+        self.db = self.pool.get_connection()
         self.cursor = self.db.cursor()
 
+    @connection_wrapper
     def initialize_organization(self, organization):
+        self.get_connection()
         a = self.execute(
             "CREATE SCHEMA %s;" %organization
         )
-        self.execute(
+        print a
+        print self.execute(
             "USE %s; "
             "SET GLOBAL event_scheduler = ON;" %organization
         )
@@ -35,6 +57,11 @@ class MySQLdb:
                             uniques=[("Role")],
                             primary_key="RoleID",
                               database=self)
+
+        self.execute("Insert into roles(Role) values ('superuser'); "
+                     "Insert into roles(Role) values ('admin'); "
+                     "Insert into roles(Role) values ('lecturer');"
+                     "Insert into roles(Role) values ('student');")
 
         # command_seq.append(roleTable.get_command())
 
@@ -67,7 +94,7 @@ class MySQLdb:
                                primary_key="CourseID",
                                uniques=[("Name", "Code", "isActive")],
                                indexes=[("Code")],
-                              database=self)
+                               database=self)
 
         # command_seq.append(coursesTable.get_command())
 
@@ -118,7 +145,7 @@ class MySQLdb:
                                  ("Duration", "int", "not null"),
                                  ("Status", "varchar(20)", "not null Default 'draft'")
                              ],
-                             primary_key="ExamId",
+                             primary_key="ExamID",
                              foreign_keys_tuple=
                              [
                                  ("CourseID", "courses", "CourseID", "on delete set null")
@@ -176,16 +203,15 @@ class MySQLdb:
                                            ],
                                            database=self)
 
-        self.execute("Insert into roles(Role) values ('superuser'); "
-                     "Insert into roles(Role) values ('admin'); "
-                     "Insert into roles(Role) values ('lecturer');"
-                     "Insert into roles(Role) values ('student');")
 
         return a
 
+    @connection_wrapper
     def get_organization(self):
+        return self.execute("Select * from istanbul_sehir_university.members")
         pass
 
+    @connection_wrapper
     def if_token_revoked(self, token):
         result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
         return len(result) > 0
@@ -194,22 +220,20 @@ class MySQLdb:
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
 
     def execute(self, command):
-        self.cursor.execute(command)
+        try:
+            self.cursor.execute(command)
+        except InterfaceError:
+            self.cursor.execute(command, multi=True)
         try:
             rtn = self.cursor.fetchall()
             self.__commit()
             return rtn
         except:
             return None
-        # try:
-        #     self.cursor.execute(command)
-        #     print command
-        #     rtn = self.cursor.fetchone()
-        #     self.__commit()
-        #     return rtn
-        #
-        # except:
-        #     return None
 
     def __commit(self):
         self.db.commit()
+
+    def close_connection(self):
+        self.db.close()
+

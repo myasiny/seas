@@ -15,7 +15,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 # print testConnection()
 
 # print addOrganization(superuser_token)
-# print addOrganization(superuser_token, organization="istanbul chnical university", URL="http://10.50.81.24:8888")
+print addOrganization(admin_token, organization="istanbul technical university")
 #
 # print addUser(admin_token, "213962062", "Fatih", "gulmez", "fatihgulmez", "12345","fatihgulmez@std.sehir.edu.tr", "Computer Science", role="student")
 # print addUser(admin_token, "213955555", "Muhammed Yasin", "Yildirim", "muhammedyildirim", "12345","muhamed@std.sehir.edu.tr", "Computer Science" , role="student")
@@ -30,7 +30,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 # print signIn("superuser", "12345")
 # print signIn("alicakmak", "12345")
 
-print addCourse(admin_token, "Physics", "phys 101", ["alicakmak"])
+# print addCourse(admin_token, "Physics", "phys 101", ["alicakmak"])
 # print getCourse(lecturer_token, "phys_101")
 #
 # print registerStudent(lecturer_token, "EECS 468", True, "ornek.csv", "alicakmak")
@@ -103,11 +103,11 @@ print addCourse(admin_token, "Physics", "phys 101", ["alicakmak"])
 ## HOW TO GET EXAM
 # print getExam(student_token,
 #                  "EECS 468",
-#                  "aa")
+#                  "as")
 
 # print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Ataturk")
 
-# print deleteExam(lecturer_token, "bioinformatic_mt_3", "eecs_468")
+# print deleteExam(lecturer_token, "as", "eecs_468")
 
 # print uploadProfilePic(student_token, "fatihgulmez", "picc.png")
 

@@ -38,7 +38,6 @@ class Question:
 
     def load(self, db, id, organization):
         org = organization.replace(" ", "_").lower()
-        # command = "USE %s;" %org
         command = "SELECT * FROM %s.questions WHERE questionID = %d;" % (org, int(id))
 
         data = db.execute(command)[0]
@@ -50,4 +49,4 @@ class Question:
 
     def edit(self, db, id, organization):
         return db.execute("Update %s.questions Set info = '%s' where QuestionID = %d;" % (
-        organization, json.dumps(self.get), int(id)))
+        organization, self.getString(), int(id)))
