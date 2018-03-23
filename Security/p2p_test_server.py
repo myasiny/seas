@@ -22,7 +22,7 @@ class MainPage(Screen):
         while 1:
             conn, addr = sock.accept()
             # data = pickle.loads(conn.recv(1024).decode("base64"))
-            data = json.loads(conn.recv())
+            data = json.loads(conn.recv(4096))
             if data:
                 timestamp = OrderedDict(sorted(data.items())).values()[-1]
                 stdanswer = timestamp[0]

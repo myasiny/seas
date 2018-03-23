@@ -115,6 +115,9 @@ class PgStdLiveExam(Screen):
     def on_pre_enter(self, *args):
         pgStdLiveExam.on_pre_enter(self)
 
+    # def threaded_client(self):
+    #     pgStdLiveExam.threaded_client(self)
+
     def on_run(self):
         pgStdLiveExam.on_run(self)
 
@@ -366,6 +369,9 @@ class PgLiveExam(Screen):
 
     def on_pre_enter(self, *args):
         pgLiveExam.on_pre_enter(self)
+
+    # def threaded_server(self):
+    #     pgLiveExam.threaded_server(self)
 
     def on_value(self, instance, brightness):
         pgLiveExam.on_value(self, brightness)
@@ -658,7 +664,7 @@ pages = [PgSplash(name="PgSplash"),
          PgLogin(name="PgLogin")]
 
 screen = ScreenManager(transition=FadeTransition())
-screen.add_widget(PgSplash(name="PgSplash"))
+screen.add_widget(pages[0])
 
 '''
     This part is to configure icon, title, size and preferences of program
@@ -688,7 +694,7 @@ class SeasApp(App):
 
 def on_keyboard_event(event):
     if platform.system() == "Windows":
-        if event.Key.lower() in ["lwin", "lmenu", "apps"]:
+        if event.Key.lower() in []:  # ["lmenu", "lwin", "apps"]:
             return False
         else:
             return True

@@ -41,7 +41,7 @@ class MainPage(Screen):
             sock.connect(("localhost", 8888))
             # sock.sendall(pickle.dumps(data).encode("base64"))
             for key, value in data.iteritems():
-                value[0] = "".join([i if ord(i) < 128 else "" for i in value[0]])
+                value[0] = "".join([i.replace("\t", "    ") if ord(i) < 128 else "" for i in value[0]])
             sock.sendall(json.dumps(data))
             sock.close()
         Clock.schedule_interval(tcp, 5)

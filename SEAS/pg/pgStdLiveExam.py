@@ -1,7 +1,9 @@
+from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
 
-import subprocess32, psutil, code, sys, os, json
+import subprocess32, psutil, code, sys, os, json, threading, socket, time
+from keyboard import on_press
 from StringIO import StringIO
 from SEAS.func import database_api
 from functools import partial
@@ -148,6 +150,44 @@ def on_pre_enter(self):
     for i in proc.open_files():
         self.list_progs_pre.append(i.path)
 
+    # client = threading.Thread(target=self.threaded_client)
+    # client.daemon = True
+    # client.start()
+
+'''
+    This method sends amount of keys pressed and code answer written by student periodically to educator through p2p
+'''
+
+# def threaded_client(self):
+#     Logger.info("pgStdLiveExam: Peer-to-peer client successfully started")
+#
+#     data = {}
+#     data_keystroke = []
+#     timestamp = 0
+#
+#     def keystroke(event):
+#         events = ["space", "enter", "tab", "left ctrl", "right ctrl"]
+#         if event.name in events or len(event.name) == 1:
+#             data_keystroke.append(event.name)
+#
+#     def tcp(dt):
+#         self.timestamp = time.time()
+#         data[timestamp] = [self.ids["input_code_answer"].text]
+#
+#         data[timestamp].append(len(data_keystroke))
+#         del data_keystroke[:]
+#
+#         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#         sock.connect(("localhost", 8888))  # TODO: Educator's IP Address
+#         for key, value in data.iteritems():
+#             value[0] = "".join([i.replace("\t", "    ") if ord(i) < 128 else "" for i in value[0]])
+#         sock.sendall(json.dumps(data))
+#         sock.close()
+#
+#     on_press(keystroke)
+#
+#     Clock.schedule_interval(tcp, 5)
+
 '''
     This method is to store final answer given by student for multiple choice question
 '''
@@ -167,13 +207,15 @@ def on_run(self):
 
         self.run_or_pause = "pause"
 
-        to_compile = open("data/temp_student_code.py", "w")
+        to_compile = open("data/temp_student_code.py", "w+")
         to_compile.write(self.ids["input_code_answer"].text)
         to_compile.close()
 
         try:
             try:
-                temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"], stderr=subprocess32.STDOUT, timeout=10)
+                temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
+                                                        stderr=subprocess32.STDOUT,
+                                                        timeout=10)
 
                 old_stdout = sys.stdout
                 sys.stdout = StringIO()
@@ -188,7 +230,7 @@ def on_run(self):
         except:
             temp_output = "TimeoutError: infinite loop or something"
 
-            Logger.error("pgStdLiveExam: Compiling student's code took more than 10 seconds, raised timeout error")
+            Logger.error("pgStdLiveExam: Compiling student's code took more than 10 seconds, timeout error raised")
         finally:
             self.list_progs_post = []
             self.list_progs_ban = []
@@ -206,7 +248,7 @@ def on_run(self):
 
                 self.run_or_pause = "run"
             else:
-                self.ids["txt_code_output"].text = "CheatingError: plagiarism or something"
+                self.ids["txt_code_output"].text = "SuspiciousError: undesired action or something"
     else:
         self.ids["img_run"].source = "img/ico_run.png"
         self.ids["img_run"].reload()

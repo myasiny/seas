@@ -10,8 +10,10 @@ from kivy.adapters.listadapter import ListAdapter
 import collections
 import matplotlib.pyplot as plt
 
+import threading, socket, json
 from functools import partial
 from SEAS.func import database_api
+from collections import OrderedDict
 from SEAS.func.date_time import date_time, min_timer
 from SEAS.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
@@ -81,6 +83,28 @@ def on_pre_enter(self):
     self.ids["list_participants"].adapter.bind(on_selection_change=self.on_participant_selected)
 
     Logger.info("pgLiveExam: Participants of exam successfully imported from server")
+
+    # server = threading.Thread(target=self.threaded_server)
+    # server.daemon = True
+    # server.start()
+
+'''
+    This method receives amount of keys pressed and code answer written by students periodically through p2p
+'''
+
+# def threaded_server(self):
+#     Logger.info("pgLiveExam: Peer-to-peer server successfully started")
+#
+#     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#     sock.bind(("0.0.0.0", 8888))
+#     # sock.listen(1)
+#     while 1:
+#         conn, addr = sock.accept()
+#         data = json.loads(conn.recv(4096))
+#         if data:
+#             timestamp = OrderedDict(sorted(data.items())).values()[-1]
+#             stdanswer = timestamp[0]
+#             keystroke = timestamp[1]
 
 '''
     This method creates keystroke graph and monitoring tool whenever educator selects student
