@@ -10,9 +10,7 @@ class Exam:
         self.db.execute("USE %s;" % self.org)
 
     def addQuestion(self, tip, subject, text, answer, inputs, outputs, value, tags):
-        if self.course is None:
-            return None
-        question = Question(tip, subject, text, answer, inputs, outputs, value, tags).save(self.db, self.course, self.org, self.ID)
+        question = Question(tip, subject, text, answer, inputs, outputs, value, tags).save(self.db, self.org, self.name)
         return question.get
 
     def addQuestionObject(self, questionObj):

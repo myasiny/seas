@@ -13,18 +13,19 @@ class Course:
         self.code = code
 
     def add_course(self, name, lecturer_users): # 3 queries
-        self.execute("INSERT INTO courses (NAME, CODE) VALUES ('%s', '%s');"%(name, self.code))
-        lecture_id = self.execute(" select CourseID from courses where CODE = '%s';" % self.code)[0][0]
+        sql = "INSERT INTO courses (NAME, CODE) VALUES ('%s', '%s');"%(name, self.code)
         command = ""
         lecturer_users = pickle.loads(lecturer_users)
         if len(lecturer_users) > 0:
             for lecturer in lecturer_users:
-                command += "((select PersonID from members where Username = '%s'), '%s')," % (lecturer, lecture_id)
-        self.execute("insert into lecturers (LecturerID, CourseID) VALUES " + command[:-1] + ";")
+                command += "((select PersonID from members where Username = '%s'),(select CourseID from courses where CODE = '%s'))," % (lecturer, self.code)
+        c = "insert into lecturers (LecturerID, CourseID) VALUES %s;" %command[:-1]
+        self.execute(sql)
+        self.execute(c)
         return "Course Added!"
 
     def get_course(self):
-        course = self.execute(self.select_org + "SELECT c.CourseID, c.Name, c.Code FROM courses c Where c.Code = '%s'" % (self.code))[0]
+        course = self.execute("SELECT c.CourseID, c.Name, c.Code FROM courses c Where c.Code = '%s'" % (self.code))[0]
         people = self.execute(
         """(SELECT 
                 CONCAT(m.Name, ' ', m.Surname) AS 'Full Name',
@@ -36,7 +37,7 @@ class Course:
                 members m
             JOIN
                 (lecturers l, roles a) ON m.PersonID = l.LecturerID
-                AND l.CourseID = '3'
+                AND l.CourseID = '%s'
                 AND a.roleID = m.Role) 
                 UNION ALL 
             (SELECT 
@@ -50,7 +51,7 @@ class Course:
             JOIN
                 (registrations r, roles a) ON m.PersonID = r.StudentID
                 AND r.CourseID = '%s'
-                AND a.roleID = m.Role);""" %course[0]
+                AND a.roleID = m.Role);""" %(course[0], course[0])
         )
 
         lecturer_name = []

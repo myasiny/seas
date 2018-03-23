@@ -23,18 +23,12 @@ class Question:
     def getString(self):
         return json.dumps(self.get)
 
-    def save(self, db, course_code, organization, exam_code):
+    def save(self, db, organization, exam_name):
         org = organization.replace(" ", "_").lower()
-        course_code = course_code.lower().replace(" ", "_")
         command = "USE %s;" %org
-        command += "INSERT IGNORE INTO questions (info, examID) select \'%s\' , ExamID from (select exams.ExamID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.CourseID and exams.ExamID = %d) as T where T.CODE = \'%s\';" %(self.getString(), exam_code, course_code)
+        command += "INSERT IGNORE INTO questions(info, ExamID) VALUES ('%s', (SELECT e.ExamID from exams e, courses c WHERE c.CourseID = e.CourseID and e.Name = '%s'));" %(self.getString(), exam_name)
         db.execute(command)
         return self
-
-    def save_command(self, course_code, exam_name):
-        course_code = course_code.lower().replace(" ", "_")
-        command = "INSERT IGNORE INTO questions (info, ExamID) select \'%s\' , ExamID from (select exams.ExamID, exams.CourseID, courses.CODE from exams join courses where exams.CourseID = courses.CourseID and exams.Name = \'%s\') as T where T.CODE = \'%s\';" %(self.getString(), exam_name, course_code)
-        return command
 
     def load(self, db, id, organization):
         org = organization.replace(" ", "_").lower()

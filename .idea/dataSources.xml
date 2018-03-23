@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="SeasTest" uuid="04803486-786e-417a-a9f7-9bc438db6f0d">
+    <data-source source="LOCAL" name="SEAS Test - DigitalOcean" uuid="02ad2202-2e2d-4261-a5fc-0064e035d874">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://localhost:8000/</jdbc-url>
+      <jdbc-url>jdbc:mysql://159.65.124.42:8000/TestDB</jdbc-url>
       <driver-properties>
         <property name="autoReconnect" value="true" />
         <property name="zeroDateTimeBehavior" value="convertToNull" />
@@ -13,6 +13,7 @@
         <property name="characterEncoding" value="utf8" />
         <property name="characterSetResults" value="utf8" />
         <property name="yearIsDateType" value="false" />
+        <property name="allowMultiQueries" value="yes" />
       </driver-properties>
     </data-source>
   </component>

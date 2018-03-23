@@ -2,19 +2,6 @@
 import mysql.connector
 from DBTable import DBTable
 from mysql.connector import pooling, InterfaceError
-from flask import g
-from Password import Password
-from External_Functions.passwordGenerator import passwordGenerator
-from External_Functions.sendEmail import send_mail_first_login
-import csv, threading, os
-
-def connection_wrapper(func):
-    def wrapper(self, *args):
-        self.get_connection()
-        rtn = func(self, *args)
-        self.close_connection()
-        return rtn
-    return wrapper
 
 class MySQLdb:
     def __init__(self, dbName, user="tester", password="wivern@seas"):
@@ -29,21 +16,25 @@ class MySQLdb:
         }
 
         self.pool = pooling.MySQLConnectionPool(pool_name="conn",
-                                       pool_size=8,pool_reset_session=False,
+                                       pool_size=5,pool_reset_session=True,
                                        **dbconfig)
+
+    def __enter__(self):
+        self.get_connection()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close_connection()
 
     def get_connection(self):
         self.db = self.pool.get_connection()
         self.cursor = self.db.cursor()
 
-    @connection_wrapper
     def initialize_organization(self, organization):
         self.get_connection()
         a = self.execute(
             "CREATE SCHEMA %s;" %organization
         )
-        print a
-        print self.execute(
+        self.execute(
             "USE %s; "
             "SET GLOBAL event_scheduler = ON;" %organization
         )
@@ -68,7 +59,7 @@ class MySQLdb:
         memberTable = DBTable("members",
                               [
                                   ("PersonID", "int", "not null"),
-                                  ("Role", "int", "not null Default 4"),
+                                  ("Role", "int", "not null"),
                                   ("Name", "varchar(255)", "not null"),
                                   ("Surname", "varchar(255)", "not null"),
                                   ("Username", "varchar(255)", "not null"),
@@ -78,7 +69,7 @@ class MySQLdb:
                                   ("ProfilePic", "varchar(255)", "")
                               ],
                               primary_key="PersonID",
-                              foreign_keys_tuple=[("Role", "roles", "RoleID", "ON DELETE SET NULL")],
+                              foreign_keys_tuple=[("Role", "roles", "RoleID", "")],
                               uniques=[("Name", "Surname", "Username"), ("Username")],
                               database=self)
 
@@ -202,16 +193,12 @@ class MySQLdb:
                                                ("UserID", "members", "PersonID", "on delete cascade")
                                            ],
                                            database=self)
+        return "Done"
 
-
-        return a
-
-    @connection_wrapper
     def get_organization(self):
         return self.execute("Select * from istanbul_sehir_university.members")
         pass
 
-    @connection_wrapper
     def if_token_revoked(self, token):
         result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
         return len(result) > 0
@@ -220,16 +207,19 @@ class MySQLdb:
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
 
     def execute(self, command):
+        print command
         try:
             self.cursor.execute(command)
         except InterfaceError:
             self.cursor.execute(command, multi=True)
-        try:
+
+        if command.lower().startswith("select") or command.lower().startswith("(select"):
             rtn = self.cursor.fetchall()
             self.__commit()
+            print "fooo"
             return rtn
-        except:
-            return None
+        self.__commit()
+        return None
 
     def __commit(self):
         self.db.commit()

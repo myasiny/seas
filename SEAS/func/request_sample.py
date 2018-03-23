@@ -7,7 +7,7 @@ import threading
 # Since DEBUG mode is on, you can use this tokens.
 # superuser_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ZmNiNmY5OC0xYTY2LTQ0ZTQtYWY3ZS01ZWRmZDUwYWUzNTMiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUxOTkwNjk3OSwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUxOTkwNjk3OSwiaWRlbnRpdHkiOlsic3VwZXJ1c2VyIiwic3VwZXJ1c2VyIiwiMjAxOC0wMy0wMSAxNToyMjo1OS40MjQwMDAiXX0.lgvPgmJQ8Ua01oxBBdabaayVdbJhO0W5D3hRBL3Nlbg"
 admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhY2EwNDkxYy0wNWE4LTQ1MzMtODA1NC05MzIyMTNlMGM0OTIiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTQ2MTAzOCwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTQ2MTAzOCwiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJhZG1pbiIsIm9yZ2FuaXphdGlvbiI6ImlzdGFuYnVsX3NlaGlyX3VuaXZlcnNpdHkiLCJyb2xlIjoiYWRtaW4iLCJ0aW1lIjoiMjAxOC0wMy0xOSAxNTowMzo1OC43NjgwMDAifX0.QUVp_RGqrnyUMt_-UY_2qFBk1Wab1-U_7IFwLWxwVDQ"
-lecturer_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmOTliMzA4NC1iMjBiLTQwYjUtYjA0OC00ZmE2MThhNjAxZWIiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTQ2MTAwNywidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTQ2MTAwNywiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJhbGljYWttYWsiLCJvcmdhbml6YXRpb24iOiJpc3RhbmJ1bF9zZWhpcl91bml2ZXJzaXR5Iiwicm9sZSI6ImxlY3R1cmVyIiwidGltZSI6IjIwMTgtMDMtMTkgMTU6MDM6MjcuOTAyMDAwIn19.gbTw0JFNUAIXUK4cmWGEYatsCWux9kJEXcX8jaR7n-s"
+lecturer_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2ZmRjNDNkYy1lZTc2LTRhNTgtOTkwYS0wOGFjMzIwZmZlNDEiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTc4OTcxMywidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTc4OTcxMywiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJhbGljYWttYWsiLCJvcmdhbml6YXRpb24iOiJpc3RhbmJ1bF9zZWhpcl91bml2ZXJzaXR5Iiwicm9sZSI6ImxlY3R1cmVyIiwiaWQiOjEsInRpbWUiOiIyMDE4LTAzLTIzIDEwOjIxOjUzLjQzMTAwMCJ9fQ.dphHVRnX-Usg9sXlRkveP9BxNsZkOyKf5r7Tnh6iCwo"
 student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MWVkLTQyOWUtYWE1Yy0zZDA2YzM3NWRmNmQiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTQ2MTAzNywidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTQ2MTAzNywiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJmYXRpaGd1bG1leiIsIm9yZ2FuaXphdGlvbiI6ImlzdGFuYnVsX3NlaGlyX3VuaXZlcnNpdHkiLCJyb2xlIjoic3R1ZGVudCIsInRpbWUiOiIyMDE4LTAzLTE5IDE1OjAzOjU3LjIzODAwMCJ9fQ.TXsck-9VUD25Jx5zgY3svfoJZX1HMl_89_LBhc4g-N0"
 
 ### Sample usage of API
@@ -15,7 +15,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 # print testConnection()
 
 # print addOrganization(superuser_token)
-print addOrganization(admin_token, organization="istanbul technical university")
+# print addOrganization(admin_token, organization="istanbul technical university")
 #
 # print addUser(admin_token, "213962062", "Fatih", "gulmez", "fatihgulmez", "12345","fatihgulmez@std.sehir.edu.tr", "Computer Science", role="student")
 # print addUser(admin_token, "213955555", "Muhammed Yasin", "Yildirim", "muhammedyildirim", "12345","muhamed@std.sehir.edu.tr", "Computer Science" , role="student")
@@ -25,7 +25,7 @@ print addOrganization(admin_token, organization="istanbul technical university")
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-# print signIn("fatihgulmez", "123456")
+# print signIn("fatihgulmez", "12345")
 # print signIn("admin", "12345")
 # print signIn("superuser", "12345")
 # print signIn("alicakmak", "12345")
@@ -43,15 +43,15 @@ print addOrganization(admin_token, organization="istanbul technical university")
 
 # print getUserCourses(student_token, "fatihgulmez")
 
-# print changePassword(student_token, "fatihgulmez", "7P7nDyjq", "12345", False)
+# print changePassword(student_token, "fatihgulmez", "123456", "12345", False)
 
-# print deleteStudentFromLecture(lecturer_token, "EEcs 468", "214578451")
+# print deleteStudentFromLecture(lecturer_token, "Phys 101", "213962062")
 
 #### HOW TO CREATE EXAM
 
 # print createExam(lecturer_token,
-#                  "EECS 468",
-#                  "bioinformatic mt 3",
+#                  "phys 101",
+#                  "phisics mt 1",
 #                  "2018-03-15 10:30:00",
 #                  50
 #                  ,
@@ -89,7 +89,7 @@ print addOrganization(admin_token, organization="istanbul technical university")
 #                   }
 
 
-# print addQuestionToExam(lecturer_token, "EECS 468", "aa", {"type": "test",
+# print addQuestionToExam(lecturer_token, "phys 101", "phisics mt 1", {"type": "test",
 #                       "subject": "math",
 #                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
 #                       "answer": "c",
@@ -101,9 +101,9 @@ print addOrganization(admin_token, organization="istanbul technical university")
 
 
 ## HOW TO GET EXAM
-# print getExam(student_token,
-#                  "EECS 468",
-#                  "as")
+# print getExam(lecturer_token,
+#                  "phys 101",
+#                  "phisics mt 1")
 
 # print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Ataturk")
 
