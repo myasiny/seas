@@ -113,6 +113,20 @@
             pos_hint: {"center_x": .5, "center_y": .725}
 
         Image:
+            id: img_change_pic
+            source: "img/ico_change.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .35, "center_y": .65}
+
+        Button:
+            text: "btn_change_pic"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .35, "center_y": .65}
+            on_release: root.on_change_pic()
+
+        Image:
             id: img_fingerprint
             source: "img/pic_fingerprint.png"
             opacity: .25

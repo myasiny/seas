@@ -80,7 +80,7 @@ def on_pre_enter(self):
     #     Logger.info("pgNewQuestion: Exam already exists, editing mode on")
     #
     #     self.question_no = self.data_detailed_exam.keys()[0]
-    #     self.ids["txt_question_no"].text = "Question %s" % self.question_no
+    #     self.ids["txt_question_no"].text = "Question ID: %s" % self.question_no
     #
     #     question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]
     #

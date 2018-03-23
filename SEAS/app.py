@@ -212,6 +212,15 @@ class PgStdProfile(Screen):
         pages.append(PgStdStats(name="PgStdStats"))
         tabReset.on_back(pages, screen)
 
+    def on_change_pic(self):
+        pgProfile.on_change_pic(self)
+
+    def on_pic_selected(self, widget_name, file_path, mouse_pos):
+        if pgProfile.on_pic_selected(self, widget_name, file_path, mouse_pos):
+            pages.append(PgStdProfile(name="PgStdProfile"))
+            tabReset.on_back(pages, screen)
+
+
     def on_text_change(self, name):
         pgProfile.on_text_change(self, name)
 
@@ -490,6 +499,14 @@ class PgProfile(Screen):
     def on_stats(self):
         pages.append(PgStats(name="PgStats"))
         tabReset.on_back(pages, screen)
+
+    def on_change_pic(self):
+        pgProfile.on_change_pic(self)
+
+    def on_pic_selected(self, widget_name, file_path, mouse_pos):
+        if pgProfile.on_pic_selected(self, widget_name, file_path, mouse_pos):
+            pages.append(PgProfile(name="PgProfile"))
+            tabReset.on_back(pages, screen)
 
     def on_text_change(self, name):
         pgProfile.on_text_change(self, name)

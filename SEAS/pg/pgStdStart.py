@@ -44,13 +44,13 @@ def on_faq(self, no):
     else:
         popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play",
                                              pos_hint={"center_x": .5, "center_y": .5}))
-    popup_content.add_widget(Button(text="Close",
-                                    font_name="font/LibelSuit.ttf",
-                                    font_size=self.height / 40,
-                                    background_normal="img/widget_100.png",
-                                    background_down="img/widget_100_selected.png",
-                                    size_hint_y=None, height=self.height / 20,
-                                    pos_hint={"center_x": .5, "y": .0},
-                                    on_release=popup.dismiss))
+    # popup_content.add_widget(Button(text="Close",
+    #                                 font_name="font/LibelSuit.ttf",
+    #                                 font_size=self.height / 40,
+    #                                 background_normal="img/widget_100.png",
+    #                                 background_down="img/widget_100_selected.png",
+    #                                 size_hint_y=None, height=self.height / 20,
+    #                                 pos_hint={"center_x": .5, "y": .0},
+    #                                 on_release=popup.dismiss))
     popup.bind(on_dismiss=partial(faq_status, self.ids["txt_faq_%s_click" % no]))
     popup.open()

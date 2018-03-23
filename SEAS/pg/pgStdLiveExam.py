@@ -41,7 +41,7 @@ def on_pre_enter(self):
             temp_exam_order.close()
 
         self.question_no = str(self.data_detailed_exam.keys()[0])
-        self.ids["txt_question_no"].text = "Question %s" % self.question_no
+        self.ids["txt_question_no"].text = "Question ID: %s" % self.question_no
 
         question_details = json.loads(self.data_detailed_exam[self.data_detailed_exam.keys()[0]])
 
@@ -66,7 +66,7 @@ def on_pre_enter(self):
             return self.on_question_save()
 
         self.question_no = self.data_exam_order[0]
-        self.ids["txt_question_no"].text = "Question %s" % self.question_no
+        self.ids["txt_question_no"].text = "Question ID: %s" % self.question_no
 
         self.question_type = self.data_exam_order[1]
 

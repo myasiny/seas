@@ -1,9 +1,15 @@
 from kivy.clock import Clock
 from kivy.logger import Logger
+from kivy.uix.popup import Popup
 from kivy.animation import Animation
+from kivy.uix.button import Button
+from kivy.uix.filechooser import FileChooserIconView
+from kivy.uix.floatlayout import FloatLayout
 
+import os
 from SEAS.func import database_api
 from SEAS.func.barcode_png import qrcode_png
+from SEAS.func.round_image import round_render
 
 '''
     This method updates top-mid identity card widget according to user information before entering PgProfile
@@ -33,6 +39,58 @@ def on_pre_enter(self):
     self.ids["input_new_mail"].disabled = True
 
     Logger.info("pgProfile: Detailed user information successfully written onto identity card")
+
+'''
+    This method opens pop-up for loading image file as png
+    Accordingly, it calls on_pic_selected or disappears
+'''
+
+def on_change_pic(self):
+    Logger.info("pgProfile: User called change picture pop-up")
+
+    popup_content = FloatLayout()
+    self.popup = Popup(title="Change Profile Picture",
+                       content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
+                       size_hint=(None, None), size=(self.width / 2, self.height / 2))
+    filechooser = FileChooserIconView(path=os.path.expanduser('~'), filters=["*.png"],
+                                      size=(self.width, self.height),
+                                      pos_hint={"center_x": .5, "center_y": .5})
+    filechooser.bind(on_submit=self.on_pic_selected)
+    popup_content.add_widget(filechooser)
+    popup_content.add_widget(Button(text="Upload",
+                                    font_name="font/LibelSuit.ttf",
+                                    font_size=self.height / 40,
+                                    background_normal="img/widget_100_green.png",
+                                    background_down="img/widget_100_green_selected.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None, height=self.height / 20,
+                                    pos_hint={"center_x": .25, "y": .0},
+                                    on_release=filechooser.on_submit))
+    popup_content.add_widget(Button(text="Cancel",
+                                    font_name="font/LibelSuit.ttf",
+                                    font_size=self.height / 40,
+                                    background_normal="img/widget_100_red.png",
+                                    background_down="img/widget_100_red_selected.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None, height=self.height / 20,
+                                    pos_hint={"center_x": .75, "y": .0},
+                                    on_release=self.popup.dismiss))
+    self.popup.open()
+
+'''
+    This method sends uploaded image file to server and refreshes profile picture on either PgProfile or PgStdProfile
+'''
+
+def on_pic_selected(self, widget_name, file_path, mouse_pos):
+    self.popup.dismiss()
+
+    database_api.uploadProfilePic(self.data_login[8].replace("\n", ""), self.data_login[0].replace("\n", ""), file_path[0])
+
+    round_render()
+
+    Logger.info("pgProfile: User successfully imported image file")
+
+    return True
 
 '''
     This method runs every time text in current password field changes
