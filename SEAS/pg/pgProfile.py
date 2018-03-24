@@ -12,7 +12,7 @@ from SEAS.func.barcode_png import qrcode_png
 from SEAS.func.round_image import round_render
 
 '''
-    This method updates top-mid identity card widget according to user information before entering PgProfile
+    This method updates top-mid identity card widget according to user information before entering PgProfile and PgStdProfile
 '''
 
 def on_pre_enter(self):

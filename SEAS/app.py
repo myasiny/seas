@@ -60,11 +60,11 @@ class PgStdStats(Screen):
         pages.append(PgStdLects(name="PgStdLects"))
         tabReset.on_back(pages, screen)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -95,11 +95,11 @@ class PgStats(Screen):
         pages.append(PgLects(name="PgLects"))
         tabReset.on_back(pages, screen)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -178,11 +178,11 @@ class PgStdLects(Screen):
     def on_personal_statistics(self):
         pgStdLects.on_personal_statistics(self)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -230,11 +230,11 @@ class PgStdProfile(Screen):
     def on_submit(self):
         pgProfile.on_submit(self)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -271,11 +271,11 @@ class PgStdStart(Screen):
     def on_follow(self, name):
         pgStart.on_follow(name)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -350,11 +350,11 @@ class PgNewExam(Screen):
             pages.append(PgNewQuestion(name="PgNewQuestion"))
             tabReset.on_back(pages, screen)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -470,11 +470,11 @@ class PgLects(Screen):
     def on_class_statistics(self):
         pgLects.on_class_statistics(self)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -520,11 +520,11 @@ class PgProfile(Screen):
     def on_submit(self):
         pgProfile.on_submit(self)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -561,11 +561,11 @@ class PgStart(Screen):
     def on_follow(self, name):
         pgStart.on_follow(name)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -577,6 +577,9 @@ class PgStart(Screen):
 
 class TabReset(Screen):
     pgLogin.load_string("reset")
+
+    def on_pre_enter(self, *args):
+        tabReset.on_pre_enter(self)
 
     def on_enter(self, *args):
         pgLogin.on_enter(self)
@@ -591,7 +594,7 @@ class TabReset(Screen):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -634,7 +637,7 @@ class PgLogin(Screen):
         pages.append(TabReset(name="TabReset"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):

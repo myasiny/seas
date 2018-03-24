@@ -12,6 +12,7 @@ from kivy.uix.floatlayout import FloatLayout
 import os, platform
 from functools import partial
 from SEAS.func import database_api
+from SEAS.func import image_button
 from SEAS.func.round_image import round_render
 from SEAS.func.check_connection import check_connection
 
@@ -27,9 +28,14 @@ def load_string(name):
 
 '''
     This method gets cipher from cache to decrypt local data
+    Additionally, it implements necessary image buttons
 '''
 
 def on_pre_enter(self):
+    image_button.add_button(self, "img/ico_quit.png", "img/ico_quit_pressed.png",
+                            (.05, .05), {"x": .95, "center_y": .95},
+                            self.on_quit)
+
     self.cipher = Cache.get("config", "cipher")
 
 '''

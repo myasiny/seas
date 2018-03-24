@@ -7,12 +7,22 @@ from kivy.uix.floatlayout import FloatLayout
 
 import webbrowser
 from functools import partial
+from SEAS.func import image_button
 
 '''
     This method rounds user's profile picture and updates top-left image widget accordingly
+    Additionally, it implements necessary image buttons
 '''
 
 def on_pre_enter(self):
+    image_button.add_button(self, "img/ico_quit.png", "img/ico_quit_pressed.png",
+                            (.05, .05), {"x": .95, "center_y": .95},
+                            self.on_quit)
+
+    image_button.add_button(self, "img/ico_logout.png", "img/ico_logout_pressed.png",
+                            (.05, .05), {"x": .0, "center_y": .95},
+                            self.on_logout)
+
     try:
         self.ids["img_user"].source = "img/pic_current_user.png"
         self.ids["img_user"].reload()

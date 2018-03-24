@@ -6,7 +6,17 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.floatlayout import FloatLayout
 
+from SEAS.func import image_button
 from SEAS.func import database_api
+
+'''
+    This method implements necessary image buttons
+'''
+
+def on_pre_enter(self):
+    image_button.add_button(self, "img/ico_quit.png", "img/ico_quit_pressed.png",
+                            (.05, .05), {"x": .95, "center_y": .95},
+                            self.on_quit)
 
 '''
     This method checks whether username and e-mail are provided or not
