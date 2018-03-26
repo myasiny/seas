@@ -5,7 +5,6 @@ from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
-from kivy.animation import Animation
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 
@@ -14,6 +13,7 @@ from functools import partial
 from SEAS.func import database_api
 from SEAS.func import image_button
 from SEAS.func.round_image import round_render
+from SEAS.grdn.progressspinner import ProgressSpinner
 from SEAS.func.check_connection import check_connection
 
 '''
@@ -58,17 +58,22 @@ def on_login(self, pages, screen, pgEdu, pgStd):
     btn_login.disabled = True
 
     img_status = self.ids["img_status"]
-    img_status.source = "img/ico_loading.png"
-    img_status.opacity = 0
-    img_status.reload()
+    # img_status.source = "img/ico_loading.png"
+    # img_status.opacity = 0
+    # img_status.reload()
+    #
+    # anim_status = Animation(opacity=1, duration=1)
+    # anim_status.start(img_status)
 
-    anim_status = Animation(opacity=1, duration=1)
-    anim_status.start(img_status)
+    img_spinner = ProgressSpinner(size_hint=(.05, .05), pos_hint={"center_x": .65, "center_y": .8})
+    self.add_widget(img_spinner)
 
     input_username = self.ids["input_username"].text
     input_password = self.ids["input_password"].text
     if input_username == "" or input_password == "":
-        anim_status.stop(img_status)
+        # anim_status.stop(img_status)
+
+        self.remove_widget(img_spinner)
 
         img_status.source = "img/ico_warning.png"
         img_status.opacity = 1
@@ -86,7 +91,9 @@ def on_login(self, pages, screen, pgEdu, pgStd):
             Logger.error("pgLogin: Server is not reachable")
 
         if isinstance(data, list):
-            anim_status.stop(img_status)
+            # anim_status.stop(img_status)
+
+            self.remove_widget(img_spinner)
 
             img_status.source = "img/ico_success.png"
             img_status.opacity = 1
@@ -115,7 +122,9 @@ def on_login(self, pages, screen, pgEdu, pgStd):
 
             del pages[1]
         else:
-            anim_status.stop(img_status)
+            # anim_status.stop(img_status)
+
+            self.remove_widget(img_spinner)
 
             img_status.source = "img/ico_fail.png"
             img_status.opacity = 1
