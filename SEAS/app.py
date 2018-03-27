@@ -697,7 +697,7 @@ class SeasApp(App):
 
 def on_keyboard_event(event):
     if platform.system() == "Windows":
-        if event.Key.lower() in []:  # ["lmenu", "lwin", "apps"]:
+        if event.Key.lower() in ["lmenu", "lwin", "apps"]:
             return False
         else:
             return True

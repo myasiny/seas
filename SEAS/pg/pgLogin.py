@@ -191,4 +191,4 @@ def on_leave(self):
 
     self.check_connection.cancel()
 
-    Logger.info("Process of checking connection successfully cancelled")
+    Logger.info("check_connection: Process of checking connection successfully cancelled")
