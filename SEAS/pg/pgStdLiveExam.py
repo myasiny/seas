@@ -133,7 +133,7 @@ def on_pre_enter(self):
         self.ids["txt_code_output_scroll"].opacity = 0
         self.ids["txt_multiple_choices_scroll"].size_hint_y = 0
         self.ids["txt_multiple_choices_scroll"].opacity = 0
-    else:
+    elif self.question_type == "multiple_choice":
         self.ids["input_code_answer"].size_hint_y = 0
         self.ids["input_code_answer"].opacity = 0
         self.ids["img_run"].size_hint_y = 0

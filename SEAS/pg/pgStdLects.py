@@ -116,7 +116,7 @@ def on_exam_selected(self):
             if i[1].replace("_", " ").title() == self.ids["list_exams"].adapter.selection[0].text:
                 timestamp = i[3].split(" ")
                 self.ids["txt_date_body"].text = timestamp[1] + " " + timestamp[2] + " " + timestamp[3]
-            break
+                break
         except:
             if i[1].replace("_", " ").title() == self.ids["txt_info_head"].text:
                 timestamp = i[3].split(" ")
@@ -129,7 +129,7 @@ def on_exam_selected(self):
         try:
             if i[1].replace("_", " ").title() == self.ids["list_exams"].adapter.selection[0].text:
                 self.ids["txt_time_body"].text = str(i[4])
-            break
+                break
         except:
             if i[1].replace("_", " ").title() == self.ids["txt_info_head"].text:
                 self.ids["txt_time_body"].text = str(i[4])

@@ -332,12 +332,12 @@ def on_submit(self):
             else:
                 yson = {"type": self.question_type,
                         "subject": self.ids["input_subject"].text,
-                        "text": self.ids["input_question_body"].text + "\n\n" +
-                                "A)\t" + self.ids["input_answer_a"].text + "\n" +
-                                "B)\t" + self.ids["input_answer_b"].text + "\n" +
-                                "C)\t" + self.ids["input_answer_c"].text + "\n" +
-                                "D)\t" + self.ids["input_answer_d"].text + "\n" +
-                                "E)\t" + self.ids["input_answer_e"].text,
+                        "text": "{q}\n\nA) {a}\nB) {b}\nC) {c}\nD) {d}\nE) {e}".format(q=self.ids["input_question_body"].text,
+                                                                                       a=self.ids["input_answer_a"].text,
+                                                                                       b=self.ids["input_answer_b"].text,
+                                                                                       c=self.ids["input_answer_c"].text,
+                                                                                       d=self.ids["input_answer_d"].text,
+                                                                                       e=self.ids["input_answer_e"].text),
                         "answer": self.multiple_choice_answer,
                         "inputs": None,
                         "outputs": None,

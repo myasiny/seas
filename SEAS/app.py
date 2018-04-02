@@ -721,6 +721,6 @@ if __name__ == "__main__":
     Cache.register("info", limit=9)
     Cache.register("lect", limit=5)
 
-    Logger.info("app: Cache slots for storing user information, selected lecture & participants successfully registered")
+    Logger.info("app: Cache slots for storing user information, selected lecture successfully registered")
 
     SeasApp().run()

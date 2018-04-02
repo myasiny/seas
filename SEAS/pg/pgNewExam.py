@@ -53,8 +53,6 @@ def on_new_exam_create(self):
         Cache.append("lect", "code", self.ids["txt_lect_code"].text)
         Cache.append("lect", "name", self.ids["txt_lect_name"].text)
         Cache.append("lect", "exam", self.ids["input_examname"].text)
-        # Cache.append("lect", "duration", self.ids["input_duration"].text)
-        # Cache.append("lect", "time", "%s %s" % (date, time))
 
         # temp_login = open("data/temp_login.seas", "r")
         # self.data_login = temp_login.readlines()
