@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
 
@@ -62,15 +63,15 @@ def on_pre_enter(self):
 
     Logger.info("pgNewQuestion: Radio buttons and fields for various question types created")
 
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
 
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
     self.data_selected_lect = temp_selected_lect.readlines()
 
     self.question_type = "none"
 
-    self.data_detailed_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
+    self.data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
                                                    self.data_selected_lect[0].replace("\n", ""),
                                                    self.data_selected_lect[2].replace("\n", ""))["Questions"]
 
@@ -292,7 +293,7 @@ def on_submit(self):
                     "value": int(self.ids["input_grade"].text),
                     "tags": self.ids["input_tags"].text.split(",")}
 
-            database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
+            database_api.addQuestionToExam(Cache.get("info", "token"),
                                            self.data_selected_lect[0].replace("\n", ""),
                                            self.data_selected_lect[2].replace("\n", ""), yson)
 
@@ -307,7 +308,7 @@ def on_submit(self):
                     "value": int(self.ids["input_grade"].text),
                     "tags": self.ids["input_tags"].text.split(",")}
 
-            database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
+            database_api.addQuestionToExam(Cache.get("info", "token"),
                                            self.data_selected_lect[0].replace("\n", ""),
                                            self.data_selected_lect[2].replace("\n", ""), yson)
 
@@ -343,7 +344,7 @@ def on_submit(self):
                         "value": int(self.ids["input_grade"].text),
                         "tags": self.ids["input_tags"].text.split(",")}
 
-                database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
+                database_api.addQuestionToExam(Cache.get("info", "token"),
                                                self.data_selected_lect[0].replace("\n", ""),
                                                self.data_selected_lect[2].replace("\n", ""), yson)
 

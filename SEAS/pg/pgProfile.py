@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.popup import Popup
@@ -16,8 +17,8 @@ from SEAS.func.round_image import round_render
 '''
 
 def on_pre_enter(self):
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
 
     try:
         self.ids["img_user_card"].source = "img/pic_current_user.png"
@@ -25,15 +26,15 @@ def on_pre_enter(self):
     except:
         self.ids["img_user_card"].reload()
 
-    qrcode_png(self.data_login[3].replace("\n", ""))
+    qrcode_png(Cache.get("info", "id"))
     self.ids["img_barcode_1"].reload()
     self.ids["img_barcode_2"].reload()
 
-    self.ids["txt_username"].text = self.data_login[1].replace("\n", " ").replace("_", " ").title() +\
-                                    self.data_login[2].replace("\n", "").replace("_", " ").title()
-    self.ids["txt_usermail"].text = self.data_login[5].replace("\n", "")
-    self.ids["txt_userdept"].text = self.data_login[6].replace("\n", "").replace("_", " ").title()
-    self.ids["txt_useruniv"].text = self.data_login[7].replace("\n", "").replace("_", " ").title()
+    self.ids["txt_username"].text = Cache.get("info", "name").title() + " " + Cache.get("info", "surname").title()
+    self.ids["txt_usermail"].text = Cache.get("info", "mail")
+    if Cache.get("info", "dept") is not None:
+        self.ids["txt_userdept"].text = Cache.get("info", "dept").title()
+    self.ids["txt_useruniv"].text = Cache.get("info", "uni").replace("_", " ").title()
 
     self.ids["input_new_password"].disabled = True
     self.ids["input_new_mail"].disabled = True
@@ -84,7 +85,7 @@ def on_change_pic(self):
 def on_pic_selected(self, widget_name, file_path, mouse_pos):
     self.popup.dismiss()
 
-    database_api.uploadProfilePic(self.data_login[8].replace("\n", ""), self.data_login[0].replace("\n", ""), file_path[0])
+    database_api.uploadProfilePic(Cache.get("info", "token"), Cache.get("info", "nick"), file_path[0])
 
     round_render()
 
@@ -140,8 +141,8 @@ def on_submit(self):
         anim_appear.start(img_wrong)
     else:
         if len(input_new_password.text) > 0 and input_new_password.disabled is False:
-            result = database_api.changePassword(self.data_login[8].replace("\n", ""),
-                                                 self.data_login[0].replace("\n", ""),
+            result = database_api.changePassword(Cache.get("info", "token"),
+                                                 Cache.get("info", "nick"),
                                                  input_current_password.text, input_new_password.text,
                                                  isMail=False)
             if result == "Password Changed":
@@ -156,8 +157,8 @@ def on_submit(self):
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_failed)
         elif len(input_new_mail.text) > 0 and input_new_mail.disabled is False:
-            result = database_api.changePassword(self.data_login[8].replace("\n", ""),
-                                                 self.data_login[0].replace("\n", ""),
+            result = database_api.changePassword(Cache.get("info", "token"),
+                                                 Cache.get("info", "nick"),
                                                  input_current_password.text, input_new_mail.text,
                                                  isMail=True)
             if result == "Mail Changed":

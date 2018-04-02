@@ -17,7 +17,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 import os, platform
-from cryptography.fernet import Fernet
+# from cryptography.fernet import Fernet
 from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
 
 '''
@@ -222,7 +222,6 @@ class PgStdProfile(Screen):
         if pgProfile.on_pic_selected(self, widget_name, file_path, mouse_pos):
             pages.append(PgStdProfile(name="PgStdProfile"))
             tabReset.on_back(pages, screen)
-
 
     def on_text_change(self, name):
         pgProfile.on_text_change(self, name)
@@ -697,7 +696,7 @@ class SeasApp(App):
 
 def on_keyboard_event(event):
     if platform.system() == "Windows":
-        if event.Key.lower() in ["lmenu", "lwin", "apps"]:
+        if event.Key.lower() in []:  # TODO: ["lmenu", "lwin", "apps"]:
             return False
         else:
             return True
@@ -714,9 +713,13 @@ if __name__ == "__main__":
 
     Logger.info("app: Keys successfully blocked for %s" % platform.system())
 
-    Cache.register("config", limit=1)
-    Cache.append("config", "cipher", Fernet(Fernet.generate_key()))
+    # Cache.register("config", limit=1)
+    # Cache.append("config", "cipher", Fernet(Fernet.generate_key()))
+    #
+    # Logger.info("app: Cipher for encrypting local data successfully generated and stored on cache")
 
-    Logger.info("app: Cipher for encrypting local data successfully generated and stored on cache")
+    Cache.register("info", limit=9)
+
+    Logger.info("app: Cache slot for storing user information successfully registered")
 
     SeasApp().run()

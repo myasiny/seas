@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.logger import Logger
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
@@ -17,12 +18,12 @@ from SEAS.func import database_api
 '''
 
 def on_pre_enter(self):
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
 
     self.data = []
 
-    data_lectures = database_api.getUserCourses(self.data_login[8].replace("\n", ""), self.data_login[0].replace("\n", ""))
+    data_lectures = database_api.getUserCourses(Cache.get("info", "token"), Cache.get("info", "nick"))
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0])
 
@@ -111,7 +112,7 @@ def on_exams(self):
     self.ids["layout_exams"].opacity = 1
     self.remove_widget(self.ids["layout_participants"])
 
-    self.data_exam_details = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    self.data_exam_details = database_api.getExamsOfLecture(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     args_converter = lambda row_index, i: {"text": i.replace("_", " ").title(),
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -173,9 +174,9 @@ def on_exam_selected(self):
 '''
 
 def on_exam_deleted(self):
-    database_api.deleteExam(self.data_login[8].replace("\n", ""), self.ids["list_exams"].adapter.selection[0].text, self.ids["txt_lect_code"].text)
+    database_api.deleteExam(Cache.get("info", "token"), self.ids["list_exams"].adapter.selection[0].text, self.ids["txt_lect_code"].text)
 
-    self.data_exam_details = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    self.data_exam_details = database_api.getExamsOfLecture(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     self.ids["list_exams"].adapter.data = [i[1].replace("_", " ").title() for i in self.data_exam_details]
 
@@ -193,7 +194,7 @@ def on_participants(self):
     self.ids["layout_participants"].opacity = 1
     self.remove_widget(self.ids["layout_exams"])
 
-    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
@@ -259,9 +260,9 @@ def on_participant_selected(self):
 '''
 
 def on_participant_deleted(self):
-    database_api.deleteStudentFromLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
+    database_api.deleteStudentFromLecture(Cache.get("info", "token"), self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
 
-    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
@@ -320,10 +321,10 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.popup.dismiss()
 
     excel_to_csv.xls2csv(file_path[0], "data/temp_imported_list.csv")
-    database_api.registerStudent(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text,
-                                 True, "data/temp_imported_list.csv", self.data_login[0].replace("\n", ""))
+    database_api.registerStudent(Cache.get("info", "token"), self.ids["txt_lect_code"].text,
+                                 True, "data/temp_imported_list.csv", Cache.get("info", "nick"))
 
-    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
         for d in data:
@@ -346,7 +347,7 @@ def on_start_exam(self):
         temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.ids["txt_info_head"].text)
         temp_selected_lect.close()
 
-    database_api.change_status_of_exam(self.data_login[8].replace("\n", ""),
+    database_api.change_status_of_exam(Cache.get("info", "token"),
                                        self.ids["txt_lect_code"].text,
                                        self.ids["txt_info_head"].text, "active")
 

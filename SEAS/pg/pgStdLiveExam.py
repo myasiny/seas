@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
@@ -15,8 +16,8 @@ from pygments.lexers.python import PythonLexer
 '''
 
 def on_pre_enter(self):
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
 
     temp_selected_lect = open("data/temp_selected_lect.seas", "r")
     self.data_selected_lect = temp_selected_lect.readlines()
@@ -25,7 +26,7 @@ def on_pre_enter(self):
     self.data_exam_order = temp_exam_order.readlines()
 
     if len(self.data_exam_order) < 1:
-        self.data_detailed_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
+        self.data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
                                                        self.data_selected_lect[0].replace("\n", ""),
                                                        self.data_selected_lect[2].replace("\n", ""))["Questions"]
 
@@ -290,20 +291,20 @@ def on_question_remove(self):
 
 def on_submit(self):
     if self.question_type == "programming":
-        database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
-                                 self.question_no, self.data_login[0].replace("\n", ""),
+        database_api.sendAnswers(Cache.get("info", "token"), self.data_selected_lect[0].replace("\n", ""),
+                                 self.question_no, Cache.get("info", "nick"),
                                  self.ids["input_code_answer"].text)
 
         Logger.info("pgStdLiveExam: Student's answer for programming question sent to server")
     elif self.question_type == "short_answer":
-        database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
-                                 self.question_no, self.data_login[0].replace("\n", ""),
+        database_api.sendAnswers(Cache.get("info", "token"), self.data_selected_lect[0].replace("\n", ""),
+                                 self.question_no, Cache.get("info", "nick"),
                                  self.ids["input_short_answer"].text)
 
         Logger.info("pgStdLiveExam: Student's answer for short answer question sent to server")
     elif self.question_type == "multiple_choice":
-        database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
-                                 self.question_no, self.data_login[0].replace("\n", ""),
+        database_api.sendAnswers(Cache.get("info", "token"), self.data_selected_lect[0].replace("\n", ""),
+                                 self.question_no, Cache.get("info", "nick"),
                                  self.multiple_choice_answer)
 
         Logger.info("pgStdLiveExam: Student's answer for multiple choice question sent to server")

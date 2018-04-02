@@ -36,7 +36,7 @@ def on_pre_enter(self):
                             (.05, .05), {"x": .95, "center_y": .95},
                             self.on_quit)
 
-    self.cipher = Cache.get("config", "cipher")
+    # self.cipher = Cache.get("config", "cipher")
 
 '''
     This method triggers check_connection every 5 seconds
@@ -101,10 +101,15 @@ def on_login(self, pages, screen, pgEdu, pgStd):
 
             btn_login.disabled = False
 
-            with open("data/temp_login.seas", "w+") as temp_login:
-                for d in data:
-                    temp_login.write(str(d) + "\n")
-                temp_login.close()
+            # with open("data/temp_login.seas", "w+") as temp_login:
+            #     for d in data:
+            #         temp_login.write(str(d) + "\n")
+            #     temp_login.close()
+
+            slot = ["nick", "name", "surname", "id", "role", "mail", "dept", "uni", "token"]
+
+            for i in range(9):
+                Cache.append("info", slot[i], data[i])
 
             round_render()
 

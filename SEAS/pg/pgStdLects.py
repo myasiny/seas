@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.button import Button
@@ -15,12 +16,12 @@ from SEAS.func.check_std_live_exam import check_std_live_exam
 '''
 
 def on_pre_enter(self):
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
 
     self.data = []
 
-    data_lectures = database_api.getUserCourses(self.data_login[8].replace("\n", ""), self.data_login[0].replace("\n", ""))
+    data_lectures = database_api.getUserCourses(Cache.get("info", "token"), Cache.get("info", "nick"))
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0])
 
@@ -83,7 +84,7 @@ def on_lect_select(self, dropdown, txt):
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
 
-    self.data_exams = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    self.data_exams = database_api.getExamsOfLecture(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     args_converter = lambda row_index, i: {"text": i.replace("_", " ").title(),
                                            "background_normal": "img/widget_75_black_crop.png",

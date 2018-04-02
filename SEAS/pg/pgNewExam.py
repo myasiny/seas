@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.logger import Logger
 from kivy.animation import Animation
 from SEAS.grdn.kivycalendar import CalendarWidget
@@ -49,10 +50,10 @@ def on_new_exam_create(self):
                                      "%s\n%s\n%s %s" % (self.ids["input_examname"].text, self.ids["input_duration"].text, date, time))
             temp_selected_lect.close()
 
-        temp_login = open("data/temp_login.seas", "r")
-        self.data_login = temp_login.readlines()
+        # temp_login = open("data/temp_login.seas", "r")
+        # self.data_login = temp_login.readlines()
 
-        database_api.createExam(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text,
+        database_api.createExam(Cache.get("info", "token"), self.ids["txt_lect_code"].text,
                                 self.ids["input_examname"].text, "%s %s" % (date, time),
                                 int(self.ids["input_duration"].text))
 
