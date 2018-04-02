@@ -147,9 +147,13 @@ def on_join_exam(self):
     with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
         temp_exam_order.close()
 
-    with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
-        temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.live_exam)
-        temp_selected_lect.close()
+    # with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+    #     temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.live_exam)
+    #     temp_selected_lect.close()
+
+    Cache.append("lect", "code", self.ids["txt_lect_code"].text)
+    Cache.append("lect", "name", self.ids["txt_lect_name"].text)
+    Cache.append("lect", "exam", self.live_exam)
 
     Logger.info("pgStdLects: Student successfully requested to join exam")
 

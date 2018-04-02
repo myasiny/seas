@@ -77,9 +77,13 @@ def on_lect_select(self, dropdown, txt):
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
 
-            with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
-                temp_selected_lect.write(txt + "\n" + self.ids["txt_lect_name"].text)
-                temp_selected_lect.close()
+            # with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+            #     temp_selected_lect.write(txt + "\n" + self.ids["txt_lect_name"].text)
+            #     temp_selected_lect.close()
+
+            Cache.append("lect", "code", txt)
+            Cache.append("lect", "name", self.ids["txt_lect_name"].text)
+
             break
 
     self.ids["img_info_top"].opacity = 0
@@ -343,9 +347,13 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
 '''
 
 def on_start_exam(self):
-    with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
-        temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.ids["txt_info_head"].text)
-        temp_selected_lect.close()
+    # with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+    #     temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.ids["txt_info_head"].text)
+    #     temp_selected_lect.close()
+
+    Cache.append("lect", "code", self.ids["txt_lect_code"].text)
+    Cache.append("lect", "name", self.ids["txt_lect_name"].text)
+    Cache.append("lect", "exam", self.ids["txt_info_head"].text)
 
     database_api.change_status_of_exam(Cache.get("info", "token"),
                                        self.ids["txt_lect_code"].text,

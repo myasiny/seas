@@ -66,14 +66,14 @@ def on_pre_enter(self):
     # temp_login = open("data/temp_login.seas", "r")
     # self.data_login = temp_login.readlines()
 
-    temp_selected_lect = open("data/temp_selected_lect.seas", "r")
-    self.data_selected_lect = temp_selected_lect.readlines()
+    # temp_selected_lect = open("data/temp_selected_lect.seas", "r")
+    # self.data_selected_lect = temp_selected_lect.readlines()
 
     self.question_type = "none"
 
     self.data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
-                                                   self.data_selected_lect[0].replace("\n", ""),
-                                                   self.data_selected_lect[2].replace("\n", ""))["Questions"]
+                                                   Cache.get("lect", "code"),
+                                                   Cache.get("lect", "exam"))["Questions"]
 
     self.ids["txt_question_no"].text = "Question"
 
@@ -294,8 +294,8 @@ def on_submit(self):
                     "tags": self.ids["input_tags"].text.split(",")}
 
             database_api.addQuestionToExam(Cache.get("info", "token"),
-                                           self.data_selected_lect[0].replace("\n", ""),
-                                           self.data_selected_lect[2].replace("\n", ""), yson)
+                                           Cache.get("lect", "code"),
+                                           Cache.get("lect", "exam"), yson)
 
             Logger.info("pgNewQuestion: Programming question created and sent to server")
         elif self.question_type == "short_answer":
@@ -309,8 +309,8 @@ def on_submit(self):
                     "tags": self.ids["input_tags"].text.split(",")}
 
             database_api.addQuestionToExam(Cache.get("info", "token"),
-                                           self.data_selected_lect[0].replace("\n", ""),
-                                           self.data_selected_lect[2].replace("\n", ""), yson)
+                                           Cache.get("lect", "code"),
+                                           Cache.get("lect", "exam"), yson)
 
             Logger.info("pgNewQuestion: Short answer question created and sent to server")
         elif self.question_type == "multiple_choice":
@@ -345,8 +345,8 @@ def on_submit(self):
                         "tags": self.ids["input_tags"].text.split(",")}
 
                 database_api.addQuestionToExam(Cache.get("info", "token"),
-                                               self.data_selected_lect[0].replace("\n", ""),
-                                               self.data_selected_lect[2].replace("\n", ""), yson)
+                                               Cache.get("lect", "code"),
+                                               Cache.get("lect", "exam"), yson)
 
                 Logger.info("pgNewQuestion: Multiple choice question created and sent to server")
         else:

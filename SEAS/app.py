@@ -719,7 +719,8 @@ if __name__ == "__main__":
     # Logger.info("app: Cipher for encrypting local data successfully generated and stored on cache")
 
     Cache.register("info", limit=9)
+    Cache.register("lect", limit=5)
 
-    Logger.info("app: Cache slot for storing user information successfully registered")
+    Logger.info("app: Cache slots for storing user information, selected lecture & participants successfully registered")
 
     SeasApp().run()
