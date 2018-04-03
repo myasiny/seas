@@ -47,7 +47,7 @@ def on_pre_enter(self):
                                                               str(value["value"]) + "*[SEAS-NEW-LINE]*" +
                                                               str(value["text"]) + "*[SEAS-NEW-LINE]*"))
             temp_exam_order.close()
-        print "ok"
+
         self.question_no = str(self.data_detailed_exam.keys()[0])
         self.ids["txt_question_no"].text = "Question ID: %s" % self.question_no
 

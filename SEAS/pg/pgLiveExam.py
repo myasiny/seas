@@ -23,6 +23,8 @@ from SEAS.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 '''
 
 def on_pre_enter(self):
+    self.cipher = Cache.get("config", "cipher")
+
     # temp_login = open("data/temp_login.seas", "r")
     # self.data_login = temp_login.readlines()
 
@@ -67,12 +69,14 @@ def on_pre_enter(self):
     data = database_api.getCourseStudents(Cache.get("info", "token"), Cache.get("lect", "code"))
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        std = []
         for d in data:
-            temp_student_list.write("{name} - {no}\n".format(name=d[0].title() + " " + d[1].title(), no=str(d[2])))
+            std.append(d[0].title() + " " + d[1].title() + " - " + str(d[2]))
+        temp_student_list.write(self.cipher.encrypt(str("*[SEAS-NEW-LINE]*".join(std))))
         temp_student_list.close()
-
+    print "bok"
     temp_student_list = open("data/temp_student_list.seas", "r")
-    self.data_student_list = temp_student_list.readlines()
+    self.data_student_list = self.cipher.decrypt(temp_student_list.read()).split("*[SEAS-NEW-LINE]*")
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",

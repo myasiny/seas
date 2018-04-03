@@ -18,6 +18,8 @@ from SEAS.func import database_api
 '''
 
 def on_pre_enter(self):
+    self.cipher = Cache.get("config", "cipher")
+
     # temp_login = open("data/temp_login.seas", "r")
     # self.data_login = temp_login.readlines()
 
@@ -201,12 +203,14 @@ def on_participants(self):
     data = database_api.getCourseStudents(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        std = []
         for d in data:
-            temp_student_list.write(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower() + "\n")
+            std.append(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower())
+        temp_student_list.write(self.cipher.encrypt(str("*[SEAS-NEW-LINE]*".join(std))))
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
-    self.data_student_list = temp_student_list.readlines()
+    self.data_student_list = self.cipher.decrypt(temp_student_list.read()).split("*[SEAS-NEW-LINE]*")
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -269,12 +273,14 @@ def on_participant_deleted(self):
     data = database_api.getCourseStudents(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        std = []
         for d in data:
-            temp_student_list.write(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower() + "\n")
+            std.append(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower())
+        temp_student_list.write(self.cipher.encrypt(str("*[SEAS-NEW-LINE]*".join(std))))
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
-    self.data_student_list = temp_student_list.readlines()
+    self.data_student_list = self.cipher.decrypt(temp_student_list.read()).split("*[SEAS-NEW-LINE]*")
 
     self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list]
 
@@ -331,12 +337,14 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     data = database_api.getCourseStudents(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        std = []
         for d in data:
-            temp_student_list.write(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower() + "\n")
+            std.append(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower())
+        temp_student_list.write(self.cipher.encrypt(str("*[SEAS-NEW-LINE]*".join(std))))
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
-    self.data_student_list = temp_student_list.readlines()
+    self.data_student_list = self.cipher.decrypt(temp_student_list.read()).split("*[SEAS-NEW-LINE]*")
 
     self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list]
 
