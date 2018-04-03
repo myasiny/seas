@@ -16,6 +16,8 @@ from pygments.lexers.python import PythonLexer
 '''
 
 def on_pre_enter(self):
+    self.cipher = Cache.get("config", "cipher")
+
     # temp_login = open("data/temp_login.seas", "r")
     # self.data_login = temp_login.readlines()
 
@@ -23,7 +25,10 @@ def on_pre_enter(self):
     # self.data_selected_lect = temp_selected_lect.readlines()
 
     temp_exam_order = open("data/temp_exam_order.seas", "r")
-    self.data_exam_order = temp_exam_order.readlines()
+    try:
+        self.data_exam_order = self.cipher.decrypt(temp_exam_order.read()).split("*[SEAS-NEW-LINE]*")
+    except:
+        self.data_exam_order = temp_exam_order.readlines()
 
     if len(self.data_exam_order) < 1:
         self.data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
@@ -37,12 +42,12 @@ def on_pre_enter(self):
                     i += 1
                 else:
                     value = json.loads(value)
-                    temp_exam_order.write(str(key) + "*[SEAS-NEW-LINE]*\n" +
-                                          value["type"] + "*[SEAS-NEW-LINE]*\n" +
-                                          str(value["value"]) + "*[SEAS-NEW-LINE]*\n" +
-                                          value["text"] + "*[SEAS-NEW-LINE]*\n")
+                    temp_exam_order.write(self.cipher.encrypt(str(key) + "*[SEAS-NEW-LINE]*" +
+                                                              str(value["type"]) + "*[SEAS-NEW-LINE]*" +
+                                                              str(value["value"]) + "*[SEAS-NEW-LINE]*" +
+                                                              str(value["text"]) + "*[SEAS-NEW-LINE]*"))
             temp_exam_order.close()
-
+        print "ok"
         self.question_no = str(self.data_detailed_exam.keys()[0])
         self.ids["txt_question_no"].text = "Question ID: %s" % self.question_no
 
@@ -59,7 +64,7 @@ def on_pre_enter(self):
         Logger.info("pgStdLiveExam: Question %s successfully imported from server" % self.question_no)
     else:
         temp_exam_order = open("data/temp_exam_order.seas", "r")
-        self.data_exam_order = temp_exam_order.read().split("*[SEAS-NEW-LINE]*\n")
+        self.data_exam_order = self.cipher.decrypt(temp_exam_order.read()).split("*[SEAS-NEW-LINE]*")
 
         if "*[SEAS-EXAM]*" in self.data_exam_order[0]:
             self.question_type = "none"
@@ -85,13 +90,12 @@ def on_pre_enter(self):
             is_next = None
 
             with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
-                temp_exam_order.write("*[SEAS-EXAM]*\n*[SEAS-NEW-LINE]*\n*[is]*\n*[SEAS-NEW-LINE]*\n*[SEAS-OVER]*\n")
+                temp_exam_order.write(self.cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[is]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
                 temp_exam_order.close()
 
         if is_next is not None:
             with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
-                for line in self.data_exam_order[4:]:
-                    temp_exam_order.write(line + "*[SEAS-NEW-LINE]*\n")
+                temp_exam_order.write(self.cipher.encrypt("*[SEAS-NEW-LINE]*".join(self.data_exam_order)))
                 temp_exam_order.close()
 
         Logger.info("pgStdLiveExam: Question %s successfully loaded from local" % self.question_no)

@@ -20,5 +20,3 @@ def xls2csv(xls_filename, output_filename):
 
     Logger.info("excel_to_csv: Excel successfully saved as csv")
 
-    return output_filename
-

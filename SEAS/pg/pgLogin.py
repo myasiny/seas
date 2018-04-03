@@ -36,8 +36,6 @@ def on_pre_enter(self):
                             (.05, .05), {"x": .95, "center_y": .95},
                             self.on_quit)
 
-    # self.cipher = Cache.get("config", "cipher")
-
 '''
     This method triggers check_connection every 5 seconds
 '''

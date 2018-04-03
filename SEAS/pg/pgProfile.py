@@ -53,7 +53,7 @@ def on_change_pic(self):
     self.popup = Popup(title="Change Profile Picture",
                        content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
                        size_hint=(None, None), size=(self.width / 2, self.height / 2))
-    filechooser = FileChooserIconView(path=os.path.expanduser('~'), filters=["*.png"],
+    filechooser = FileChooserIconView(path=Cache.get("config", "path"), filters=["*.png"],
                                       size=(self.width, self.height),
                                       pos_hint={"center_x": .5, "center_y": .5})
     filechooser.bind(on_submit=self.on_pic_selected)
@@ -151,7 +151,7 @@ def on_submit(self):
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_done)
                 def back_to_login(dt):
-                    self.on_logout()
+                    self.on_logout(dt)
                 Clock.schedule_once(back_to_login, 1)
             else:
                 anim_appear = Animation(opacity=1, duration=1)
@@ -167,7 +167,7 @@ def on_submit(self):
                 anim_appear = Animation(opacity=1, duration=1)
                 anim_appear.start(img_change_done)
                 def back_to_login(dt):
-                    self.on_logout()
+                    self.on_logout(dt)
                 Clock.schedule_once(back_to_login, 1)
             else:
                 anim_appear = Animation(opacity=1, duration=1)

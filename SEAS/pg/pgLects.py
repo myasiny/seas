@@ -292,7 +292,7 @@ def on_import_list(self):
     self.popup = Popup(title="Import List Of Students",
                        content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
                        size_hint=(None, None), size=(self.width / 2, self.height / 2))
-    filechooser = FileChooserListView(path=os.path.expanduser('~'), filters=["*.xlsx"],
+    filechooser = FileChooserListView(path=Cache.get("config", "path"), filters=["*.xlsx"],
                                       size=(self.width, self.height),
                                       pos_hint={"center_x": .5, "center_y": .5})
     filechooser.bind(on_submit=self.on_import_list_selected)

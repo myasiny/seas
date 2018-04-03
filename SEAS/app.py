@@ -17,7 +17,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 import os, platform
-# from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet
 from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
 
 '''
@@ -702,25 +702,30 @@ def on_keyboard_event(event):
             return True
 
 if __name__ == "__main__":
+    Cache.register("config", limit=2)
+    Cache.append("config", "cipher", Fernet(Fernet.generate_key()))
+
+    Logger.info("app: Cipher for encrypting local data successfully generated and stored on cache")
+
     if platform.system() == "Windows":
         import pyHook
 
         hm = pyHook.HookManager()
         hm.KeyDown = on_keyboard_event
         hm.HookKeyboard()
+
+        Cache.append("config", "path", os.path.join(os.path.join(os.environ["USERPROFILE"]), "Desktop"))
     elif platform.system() == "Linux":
         os.system("sh sh/block.sh")
 
-    Logger.info("app: Keys successfully blocked for %s" % platform.system())
+        Cache.append("config", "path", os.path.join(os.path.join(os.path.expanduser("~")), "Desktop"))
 
-    # Cache.register("config", limit=1)
-    # Cache.append("config", "cipher", Fernet(Fernet.generate_key()))
-    #
-    # Logger.info("app: Cipher for encrypting local data successfully generated and stored on cache")
+    Logger.info("app: Keys successfully blocked for %s" % platform.system())
+    Logger.info("app: Desktop path of %s successfully stored for file browser configuration" % platform.system())
 
     Cache.register("info", limit=9)
-    Cache.register("lect", limit=5)
+    Cache.register("lect", limit=3)
 
-    Logger.info("app: Cache slots for storing user information, selected lecture successfully registered")
+    Logger.info("app: Cache slots for storing user and lecture information successfully registered")
 
     SeasApp().run()
