@@ -25,6 +25,7 @@ else:
 jwt = JWTManager(app)
 expired_token = set()
 
+
 def connection_wrapper(func):
     def get_connection_from_pool(*args, **kwargs):
         db.get_connection()
@@ -32,6 +33,7 @@ def connection_wrapper(func):
         db.close_connection()
         return rtn
     return get_connection_from_pool
+
 
 def check_auth(token, allowed_organization, min_allowed_role):
     role_ranks = {
@@ -88,6 +90,7 @@ def signUpUser(organization):
     db.get_connection()
     token = get_jwt_identity()
     if not check_auth(token, organization ,"admin"):
+        db.close_connection()
         return jsonify("Unauthorized access!")
     else:
         passwd = Password().hash_password(request.form["Password"])
@@ -258,6 +261,7 @@ def deleteStudentFromLecture(organization, course):
     db.get_connection()
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
+        db.close_connection()
         return jsonify("Unauthorized access!")
 
     if check_lecture_permision(organization, token, course):
@@ -340,6 +344,7 @@ def getExamsOfLecture(organization, course):
         rtn = jsonify(Course(db, organization, course).get_exams_of_lecture())
         db.close_connection()
         return rtn
+    db.close_connection()
     return jsonify("Unauthorized access!")
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>", methods=["GET"])
@@ -389,7 +394,7 @@ def answerExam(organization, course, question_id, username):
         user = Student(db, organization, username)
         rtn = jsonify(user.add_answer(question_id, request.form["answers"]))
         db.close_connection()
-    return jsonify("Unauthorized access!")
+        return jsonify("Unauthorized access!")
 
 
 @app.route("/organizations/<string:organization>/<string:username>/pic", methods=["PUT", "GET"])

@@ -217,7 +217,10 @@ class MySQLdb:
             rtn = self.cursor.fetchall()
             self.__commit()
             return rtn
-        self.__commit()
+        try:
+            self.__commit()
+        except InterfaceError:
+            pass
         return None
 
     def __commit(self):

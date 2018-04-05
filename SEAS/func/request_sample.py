@@ -104,7 +104,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 ## HOW TO GET EXAM
 # print getExam(lecturer_token,
 #                  "phys 101",
-#                  "phisics mt 1")
+#                  "physics Mt 3")
 
 # print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Ataturk")
 

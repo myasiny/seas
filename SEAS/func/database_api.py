@@ -264,6 +264,7 @@ def getExam(token, courseCode, name, URL=server_address, organization=current_or
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
+    print name
     url = URL + "/organizations/%s/%s/exams/%s" % (organization, courseCode, name)
     return get(url, headers = {"Authorization": "Bearer " + token}).json()
 
