@@ -110,4 +110,4 @@ class Course:
         return self.execute(command)
 
     def get_exams_of_lecture(self):
-        return self.execute("select * from exams where CourseID = (select CourseID from courses where Code = '%s)'" % (self.code))
+        return self.execute("select * from exams where CourseID = (select CourseID from courses where Code = '%s')" % (self.code))

@@ -5,6 +5,7 @@ from Models.MySQLdb_WITH_CONN_POOL import MySQLdb as PooledMySQLdb
 from Models.Exam import Exam
 from Models.User import *
 from Models.Course import Course
+from Models.Lecture import *
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
 import json, datetime, pickle
 
@@ -336,7 +337,7 @@ def getExamsOfLecture(organization, course):
         db.close_connection()
         return jsonify("Unauthorized access!")
     if check_lecture_permision(organization, token, course):
-        rtn = jsonify(db.get_exams_of_lecture(organization, course))
+        rtn = jsonify(Course(db, organization, course).get_exams_of_lecture())
         db.close_connection()
         return rtn
     return jsonify("Unauthorized access!")

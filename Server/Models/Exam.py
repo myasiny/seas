@@ -70,6 +70,8 @@ class Exam:
         self.db.execute("Update exams Set Status = '%s' where Name = '%s';" % (new_status, self.name))
 
     def add_more_time(self, minutes):
+        command = "Update exams Set Duration = Duration + %d where Name = '%s';" % (int(minutes), self.name)
+        command += ""
         self.db.execute("Update exams Set Duration = Duration + %d where Name = '%s';" % (int(minutes), self.name))
 
     def get_questions(self):

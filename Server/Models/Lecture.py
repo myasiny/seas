@@ -6,7 +6,8 @@ from External_Functions.sendEmail import send_mail_first_login
 
 
 class Lecture:
-    def __init__(self):
+    def __init__(self, db):
+        self.execute = db.execute
         pass
 
     def add_course(self, org, name, code, lecturer_users):

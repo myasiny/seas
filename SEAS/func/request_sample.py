@@ -50,13 +50,13 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 
 #### HOW TO CREATE EXAM
 
-print createExam(lecturer_token,
-                 "phys 101",
-                 "phisics mt 2",
-                 "2018-04-03 22:30:00",
-                 5,
-                 status="draft"
-)
+# print createExam(lecturer_token,
+#                  "phys 101",
+#                  "phisics mt 2",
+#                  "2018-04-03 22:30:00",
+#                  5,
+#                  status="draft"
+# )
 
 
 #                   {1:
@@ -116,7 +116,7 @@ print createExam(lecturer_token,
 
 # print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 60)
 
-# print getExamsOfLecture(student_token, "eecs 468")
+print getExamsOfLecture(student_token, "eecs 468")
 
 # print edit_question(lecturer_token, "eecs 468",
 #                     "bioinformatic_mt_2",
