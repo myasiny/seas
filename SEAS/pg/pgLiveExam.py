@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.label import Label
@@ -10,8 +11,10 @@ from kivy.adapters.listadapter import ListAdapter
 import collections
 import matplotlib.pyplot as plt
 
+import threading, socket, json
 from functools import partial
 from SEAS.func import database_api
+from collections import OrderedDict
 from SEAS.func.date_time import date_time, min_timer
 from SEAS.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
@@ -20,17 +23,19 @@ from SEAS.grdn.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 '''
 
 def on_pre_enter(self):
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    self.cipher = Cache.get("config", "cipher")
 
-    temp_selected_lect = open("data/temp_selected_lect.seas", "r")
-    self.data_selected_lect = temp_selected_lect.readlines()
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
 
-    self.data_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
-                                          self.data_selected_lect[0].replace("\n", ""),
-                                          self.data_selected_lect[2].replace("\n", ""))
+    # temp_selected_lect = open("data/temp_selected_lect.seas", "r")
+    # self.data_selected_lect = temp_selected_lect.readlines()
 
-    self.ids["txt_info_head"].text = self.data_selected_lect[0].replace("\n", "") + " - " + self.data_selected_lect[2]
+    self.data_exam = database_api.getExam(Cache.get("info", "token"),
+                                          Cache.get("lect", "code"),
+                                          Cache.get("lect", "exam"))
+
+    self.ids["txt_info_head"].text = Cache.get("lect", "code") + " - " + Cache.get("lect", "exam")
 
     self.duration = int(self.data_exam["Duration"])
     self.ids["txt_duration_clock"].text = str(self.duration)
@@ -61,15 +66,17 @@ def on_pre_enter(self):
     self.ids["img_monitor_forward"].opacity = 0.25
     self.ids["img_monitor_live"].opacity = 0.25
 
-    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""))
+    data = database_api.getCourseStudents(Cache.get("info", "token"), Cache.get("lect", "code"))
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        std = []
         for d in data:
-            temp_student_list.write("{name} - {no}\n".format(name=d[0].title() + " " + d[1].title(), no=str(d[2])))
+            std.append(d[0].title() + " " + d[1].title() + " - " + str(d[2]))
+        temp_student_list.write(self.cipher.encrypt(str("*[SEAS-NEW-LINE]*".join(std))))
         temp_student_list.close()
-
+    print "bok"
     temp_student_list = open("data/temp_student_list.seas", "r")
-    self.data_student_list = temp_student_list.readlines()
+    self.data_student_list = self.cipher.decrypt(temp_student_list.read()).split("*[SEAS-NEW-LINE]*")
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -81,6 +88,28 @@ def on_pre_enter(self):
     self.ids["list_participants"].adapter.bind(on_selection_change=self.on_participant_selected)
 
     Logger.info("pgLiveExam: Participants of exam successfully imported from server")
+
+    # server = threading.Thread(target=self.threaded_server)
+    # server.daemon = True
+    # server.start()
+
+'''
+    This method receives amount of keys pressed and code answer written by students periodically through p2p
+'''
+
+# def threaded_server(self):
+#     Logger.info("pgLiveExam: Peer-to-peer server successfully started")
+#
+#     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#     sock.bind(("0.0.0.0", 8888))
+#     # sock.listen(1)
+#     while 1:
+#         conn, addr = sock.accept()
+#         data = json.loads(conn.recv(4096))
+#         if data:
+#             timestamp = OrderedDict(sorted(data.items())).values()[-1]
+#             stdanswer = timestamp[0]
+#             keystroke = timestamp[1]
 
 '''
     This method creates keystroke graph and monitoring tool whenever educator selects student
@@ -229,9 +258,9 @@ def on_monitor_live(self):
 
 def on_add_time(self):
     self.duration += 10
-    database_api.add_time_to_exam(self.data_login[8].replace("\n", ""),
-                                  self.data_selected_lect[0].replace("\n", ""),
-                                  self.data_selected_lect[2].replace("\n", ""), 10)
+    database_api.add_time_to_exam(Cache.get("info", "token"),
+                                  Cache.get("lect", "code"),
+                                  Cache.get("lect", "exam"), 10)
     self.ids["txt_info_duration"].text = "%s mins" % str(self.duration)
     self.ids["txt_duration_clock"].text = str(self.duration)
 
@@ -285,9 +314,9 @@ def on_finish_exam(self):
 def on_lects(self):
     self.popup.dismiss()
 
-    database_api.change_status_of_exam(self.data_login[8].replace("\n", ""),
-                                       self.data_selected_lect[0].replace("\n", ""),
-                                       self.data_selected_lect[2].replace("\n", ""), "finished")
+    database_api.change_status_of_exam(Cache.get("info", "token"),
+                                       Cache.get("lect", "code"),
+                                       Cache.get("lect", "exam"), "finished")
 
     Logger.info("pgLiveExam: Educator successfully finished exam")
 

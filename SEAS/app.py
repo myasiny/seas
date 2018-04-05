@@ -1,11 +1,23 @@
+#!/user/bin/env
+import sys
+sys.path.append("../")
+
+# Logger.info("app: Program successfully added to path and shebang stated")
+
+'''
+    That part is to state python shebang and add program to path in order to avoid compile or import errors on run-time
+'''
+
 from kivy.app import App
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.animation import Animation
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-import os, pyHook, platform
+import os, platform
+from cryptography.fernet import Fernet
 from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
 
 '''
@@ -21,7 +33,7 @@ Config.set("kivy", "log_dir", os.path.dirname(os.path.abspath(__file__)) + "\\da
 Config.set("kivy", "exit_on_escape", "0")
 Config.set("input", "mouse", "mouse, multitouch_on_demand")
 
-Logger.info("main: Esc and right click successfully blocked")
+Logger.info("app: Esc and right click successfully blocked")
 
 '''
     This class is to organize functions of PgStdStats
@@ -29,6 +41,9 @@ Logger.info("main: Esc and right click successfully blocked")
 
 class PgStdStats(Screen):
     pgLogin.load_string("stdstats")
+
+    def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
 
     def on_enter(self, *args):
         pgLogin.on_enter(self)
@@ -45,11 +60,11 @@ class PgStdStats(Screen):
         pages.append(PgStdLects(name="PgStdLects"))
         tabReset.on_back(pages, screen)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -61,6 +76,9 @@ class PgStdStats(Screen):
 
 class PgStats(Screen):
     pgLogin.load_string("stats")
+
+    def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
 
     def on_enter(self, *args):
         pgLogin.on_enter(self)
@@ -77,11 +95,11 @@ class PgStats(Screen):
         pages.append(PgLects(name="PgLects"))
         tabReset.on_back(pages, screen)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -96,6 +114,9 @@ class PgStdLiveExam(Screen):
 
     def on_pre_enter(self, *args):
         pgStdLiveExam.on_pre_enter(self)
+
+    # def threaded_client(self):
+    #     pgStdLiveExam.threaded_client(self)
 
     def on_run(self):
         pgStdLiveExam.on_run(self)
@@ -128,6 +149,7 @@ class PgStdLects(Screen):
     pgLogin.load_string("stdlects")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgStdLects.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -156,11 +178,11 @@ class PgStdLects(Screen):
     def on_personal_statistics(self):
         pgStdLects.on_personal_statistics(self)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -175,6 +197,7 @@ class PgStdProfile(Screen):
     pgLogin.load_string("stdprofile")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgProfile.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -192,17 +215,25 @@ class PgStdProfile(Screen):
         pages.append(PgStdStats(name="PgStdStats"))
         tabReset.on_back(pages, screen)
 
+    def on_change_pic(self):
+        pgProfile.on_change_pic(self)
+
+    def on_pic_selected(self, widget_name, file_path, mouse_pos):
+        if pgProfile.on_pic_selected(self, widget_name, file_path, mouse_pos):
+            pages.append(PgStdProfile(name="PgStdProfile"))
+            tabReset.on_back(pages, screen)
+
     def on_text_change(self, name):
         pgProfile.on_text_change(self, name)
 
     def on_submit(self):
         pgProfile.on_submit(self)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -239,11 +270,11 @@ class PgStdStart(Screen):
     def on_follow(self, name):
         pgStart.on_follow(name)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -287,6 +318,7 @@ class PgNewExam(Screen):
     pgLogin.load_string("newexam")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgNewExam.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -317,11 +349,11 @@ class PgNewExam(Screen):
             pages.append(PgNewQuestion(name="PgNewQuestion"))
             tabReset.on_back(pages, screen)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -336,6 +368,9 @@ class PgLiveExam(Screen):
 
     def on_pre_enter(self, *args):
         pgLiveExam.on_pre_enter(self)
+
+    # def threaded_server(self):
+    #     pgLiveExam.threaded_server(self)
 
     def on_value(self, instance, brightness):
         pgLiveExam.on_value(self, brightness)
@@ -380,6 +415,7 @@ class PgLects(Screen):
     pgLogin.load_string("lects")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgLects.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -433,11 +469,11 @@ class PgLects(Screen):
     def on_class_statistics(self):
         pgLects.on_class_statistics(self)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -451,6 +487,7 @@ class PgProfile(Screen):
     pgLogin.load_string("profile")
 
     def on_pre_enter(self, *args):
+        pgStart.on_pre_enter(self)
         pgProfile.on_pre_enter(self)
 
     def on_enter(self, *args):
@@ -468,17 +505,25 @@ class PgProfile(Screen):
         pages.append(PgStats(name="PgStats"))
         tabReset.on_back(pages, screen)
 
+    def on_change_pic(self):
+        pgProfile.on_change_pic(self)
+
+    def on_pic_selected(self, widget_name, file_path, mouse_pos):
+        if pgProfile.on_pic_selected(self, widget_name, file_path, mouse_pos):
+            pages.append(PgProfile(name="PgProfile"))
+            tabReset.on_back(pages, screen)
+
     def on_text_change(self, name):
         pgProfile.on_text_change(self, name)
 
     def on_submit(self):
         pgProfile.on_submit(self)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -515,11 +560,11 @@ class PgStart(Screen):
     def on_follow(self, name):
         pgStart.on_follow(name)
 
-    def on_logout(self):
+    def on_logout(self, dt):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -532,17 +577,23 @@ class PgStart(Screen):
 class TabReset(Screen):
     pgLogin.load_string("reset")
 
+    def on_pre_enter(self, *args):
+        tabReset.on_pre_enter(self)
+
     def on_enter(self, *args):
         pgLogin.on_enter(self)
 
     def on_reset(self):
         tabReset.on_reset(self)
 
+    def on_reset_confirm(self):
+        tabReset.on_reset_confirm(self)
+
     def on_back(self):
         pages.append(PgLogin(name="PgLogin"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -569,6 +620,12 @@ class PgLogin(Screen):
             PgLogin.on_login(self)
         return True
 
+    def on_submit(self):
+        PgLogin.on_login(self)
+
+    def on_pre_enter(self, *args):
+        pgLogin.on_pre_enter(self)
+
     def on_enter(self, *args):
         pgLogin.on_enter(self)
 
@@ -579,7 +636,7 @@ class PgLogin(Screen):
         pages.append(TabReset(name="TabReset"))
         tabReset.on_back(pages, screen)
 
-    def on_quit(self):
+    def on_quit(self, dt):
         pgLogin.on_quit(self)
 
     def on_leave(self, *args):
@@ -609,11 +666,11 @@ pages = [PgSplash(name="PgSplash"),
          PgLogin(name="PgLogin")]
 
 screen = ScreenManager(transition=FadeTransition())
-screen.add_widget(PgSplash(name="PgSplash"))
+screen.add_widget(pages[0])
 
 '''
     This part is to configure icon, title, size and preferences of program
-    Additionally, settings for forcing run-on-top are also handled here
+    Additionally, settings for adding program to path, forcing run-on-top etc are also handled here
 '''
 
 class SeasApp(App):
@@ -622,39 +679,53 @@ class SeasApp(App):
     use_kivy_settings = False
     Window.fullscreen = "auto"
 
-    Logger.info("main: Icon, title, size and preferences successfully set")
+    Logger.info("app: Icon, title, size and preferences successfully set")
 
     def build(self):
         screen.current = "PgSplash"
         return screen
 
     def force(self):
-        Window.maximize()
         Window.top = 0
+        Window.maximize()
+        Window.restore()
 
     Window.bind(on_cursor_leave=force)
 
-    Logger.info("main: Cursor track successfully bound")
+    Logger.info("app: Cursor track successfully bound")
 
 def on_keyboard_event(event):
     if platform.system() == "Windows":
-        if event.Key.lower() in []:  # GodMode ["lwin", "lmenu", "rmenu"]
+        if event.Key.lower() in []:  # TODO: ["lmenu", "lwin", "apps"]:
             return False
         else:
             return True
-    elif platform.system() == "Linux":
-        pass
-    elif platform.system() == "Darwin":
-        pass
-    else:
-        pass
 
 if __name__ == "__main__":
-    hm = pyHook.HookManager()
-    hm.KeyDown = on_keyboard_event
-    hm.HookKeyboard()
+    Cache.register("config", limit=2)
+    Cache.append("config", "cipher", Fernet(Fernet.generate_key()))
 
-    Logger.info("main: Blocked buttons successfully set")
-    Logger.info("main: Program successfully started")
+    Logger.info("app: Cipher for encrypting local data successfully generated and stored on cache")
+
+    if platform.system() == "Windows":
+        import pyHook
+
+        hm = pyHook.HookManager()
+        hm.KeyDown = on_keyboard_event
+        hm.HookKeyboard()
+
+        Cache.append("config", "path", os.path.join(os.path.join(os.environ["USERPROFILE"]), "Desktop"))
+    elif platform.system() == "Linux":
+        os.system("sh sh/block.sh")
+
+        Cache.append("config", "path", os.path.join(os.path.join(os.path.expanduser("~")), "Desktop"))
+
+    Logger.info("app: Keys successfully blocked for %s" % platform.system())
+    Logger.info("app: Desktop path of %s successfully stored for file browser configuration" % platform.system())
+
+    Cache.register("info", limit=9)
+    Cache.register("lect", limit=3)
+
+    Logger.info("app: Cache slots for storing user and lecture information successfully registered")
 
     SeasApp().run()

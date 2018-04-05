@@ -1,7 +1,10 @@
+from kivy.cache import Cache
+from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
 
-import subprocess32, psutil, code, sys, os, json
+import subprocess32, psutil, code, sys, os, json, threading, socket, time
+from keyboard import on_press
 from StringIO import StringIO
 from SEAS.func import database_api
 from functools import partial
@@ -13,19 +16,24 @@ from pygments.lexers.python import PythonLexer
 '''
 
 def on_pre_enter(self):
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    self.cipher = Cache.get("config", "cipher")
 
-    temp_selected_lect = open("data/temp_selected_lect.seas", "r")
-    self.data_selected_lect = temp_selected_lect.readlines()
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
+
+    # temp_selected_lect = open("data/temp_selected_lect.seas", "r")
+    # self.data_selected_lect = temp_selected_lect.readlines()
 
     temp_exam_order = open("data/temp_exam_order.seas", "r")
-    self.data_exam_order = temp_exam_order.readlines()
+    try:
+        self.data_exam_order = self.cipher.decrypt(temp_exam_order.read()).split("*[SEAS-NEW-LINE]*")
+    except:
+        self.data_exam_order = temp_exam_order.readlines()
 
     if len(self.data_exam_order) < 1:
-        self.data_detailed_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
-                                                       self.data_selected_lect[0].replace("\n", ""),
-                                                       self.data_selected_lect[2].replace("\n", ""))["Questions"]
+        self.data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
+                                                       Cache.get("lect", "code"),
+                                                       Cache.get("lect", "exam"))["Questions"]
 
         i = 0
         with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
@@ -34,14 +42,14 @@ def on_pre_enter(self):
                     i += 1
                 else:
                     value = json.loads(value)
-                    temp_exam_order.write(str(key) + "*[SEAS-NEW-LINE]*\n" +
-                                          value["type"] + "*[SEAS-NEW-LINE]*\n" +
-                                          str(value["value"]) + "*[SEAS-NEW-LINE]*\n" +
-                                          value["text"] + "*[SEAS-NEW-LINE]*\n")
+                    temp_exam_order.write(self.cipher.encrypt(str(key) + "*[SEAS-NEW-LINE]*" +
+                                                              str(value["type"]) + "*[SEAS-NEW-LINE]*" +
+                                                              str(value["value"]) + "*[SEAS-NEW-LINE]*" +
+                                                              str(value["text"]) + "*[SEAS-NEW-LINE]*"))
             temp_exam_order.close()
 
         self.question_no = str(self.data_detailed_exam.keys()[0])
-        self.ids["txt_question_no"].text = "Question %s" % self.question_no
+        self.ids["txt_question_no"].text = "Question ID: %s" % self.question_no
 
         question_details = json.loads(self.data_detailed_exam[self.data_detailed_exam.keys()[0]])
 
@@ -56,7 +64,7 @@ def on_pre_enter(self):
         Logger.info("pgStdLiveExam: Question %s successfully imported from server" % self.question_no)
     else:
         temp_exam_order = open("data/temp_exam_order.seas", "r")
-        self.data_exam_order = temp_exam_order.read().split("*[SEAS-NEW-LINE]*\n")
+        self.data_exam_order = self.cipher.decrypt(temp_exam_order.read()).split("*[SEAS-NEW-LINE]*")
 
         if "*[SEAS-EXAM]*" in self.data_exam_order[0]:
             self.question_type = "none"
@@ -66,7 +74,7 @@ def on_pre_enter(self):
             return self.on_question_save()
 
         self.question_no = self.data_exam_order[0]
-        self.ids["txt_question_no"].text = "Question %s" % self.question_no
+        self.ids["txt_question_no"].text = "Question ID: %s" % self.question_no
 
         self.question_type = self.data_exam_order[1]
 
@@ -82,13 +90,12 @@ def on_pre_enter(self):
             is_next = None
 
             with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
-                temp_exam_order.write("*[SEAS-EXAM]*\n*[SEAS-NEW-LINE]*\n*[is]*\n*[SEAS-NEW-LINE]*\n*[SEAS-OVER]*\n")
+                temp_exam_order.write(self.cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[is]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
                 temp_exam_order.close()
 
         if is_next is not None:
             with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
-                for line in self.data_exam_order[4:]:
-                    temp_exam_order.write(line + "*[SEAS-NEW-LINE]*\n")
+                temp_exam_order.write(self.cipher.encrypt("*[SEAS-NEW-LINE]*".join(self.data_exam_order)))
                 temp_exam_order.close()
 
         Logger.info("pgStdLiveExam: Question %s successfully loaded from local" % self.question_no)
@@ -130,7 +137,7 @@ def on_pre_enter(self):
         self.ids["txt_code_output_scroll"].opacity = 0
         self.ids["txt_multiple_choices_scroll"].size_hint_y = 0
         self.ids["txt_multiple_choices_scroll"].opacity = 0
-    else:
+    elif self.question_type == "multiple_choice":
         self.ids["input_code_answer"].size_hint_y = 0
         self.ids["input_code_answer"].opacity = 0
         self.ids["img_run"].size_hint_y = 0
@@ -147,6 +154,44 @@ def on_pre_enter(self):
     proc = psutil.Process()
     for i in proc.open_files():
         self.list_progs_pre.append(i.path)
+
+    # client = threading.Thread(target=self.threaded_client)
+    # client.daemon = True
+    # client.start()
+
+'''
+    This method sends amount of keys pressed and code answer written by student periodically to educator through p2p
+'''
+
+# def threaded_client(self):
+#     Logger.info("pgStdLiveExam: Peer-to-peer client successfully started")
+#
+#     data = {}
+#     data_keystroke = []
+#     timestamp = 0
+#
+#     def keystroke(event):
+#         events = ["space", "enter", "tab", "left ctrl", "right ctrl"]
+#         if event.name in events or len(event.name) == 1:
+#             data_keystroke.append(event.name)
+#
+#     def tcp(dt):
+#         self.timestamp = time.time()
+#         data[timestamp] = [self.ids["input_code_answer"].text]
+#
+#         data[timestamp].append(len(data_keystroke))
+#         del data_keystroke[:]
+#
+#         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#         sock.connect(("localhost", 8888))  # TODO: Educator's IP Address
+#         for key, value in data.iteritems():
+#             value[0] = "".join([i.replace("\t", "    ") if ord(i) < 128 else "" for i in value[0]])
+#         sock.sendall(json.dumps(data))
+#         sock.close()
+#
+#     on_press(keystroke)
+#
+#     Clock.schedule_interval(tcp, 5)
 
 '''
     This method is to store final answer given by student for multiple choice question
@@ -167,13 +212,15 @@ def on_run(self):
 
         self.run_or_pause = "pause"
 
-        to_compile = open("data/temp_student_code.py", "w")
+        to_compile = open("data/temp_student_code.py", "w+")
         to_compile.write(self.ids["input_code_answer"].text)
         to_compile.close()
 
         try:
             try:
-                temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"], stderr=subprocess32.STDOUT, timeout=10)
+                temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
+                                                        stderr=subprocess32.STDOUT,
+                                                        timeout=10)
 
                 old_stdout = sys.stdout
                 sys.stdout = StringIO()
@@ -188,7 +235,7 @@ def on_run(self):
         except:
             temp_output = "TimeoutError: infinite loop or something"
 
-            Logger.error("pgStdLiveExam: Compiling student's code took more than 10 seconds, raised timeout error")
+            Logger.error("pgStdLiveExam: Compiling student's code took more than 10 seconds, timeout error raised")
         finally:
             self.list_progs_post = []
             self.list_progs_ban = []
@@ -206,7 +253,7 @@ def on_run(self):
 
                 self.run_or_pause = "run"
             else:
-                self.ids["txt_code_output"].text = "CheatingError: plagiarism or something"
+                self.ids["txt_code_output"].text = "SuspiciousError: undesired action or something"
     else:
         self.ids["img_run"].source = "img/ico_run.png"
         self.ids["img_run"].reload()
@@ -248,20 +295,20 @@ def on_question_remove(self):
 
 def on_submit(self):
     if self.question_type == "programming":
-        database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
-                                 self.question_no, self.data_login[0].replace("\n", ""),
+        database_api.sendAnswers(Cache.get("info", "token"), Cache.get("lect", "code"),
+                                 self.question_no, Cache.get("info", "nick"),
                                  self.ids["input_code_answer"].text)
 
         Logger.info("pgStdLiveExam: Student's answer for programming question sent to server")
     elif self.question_type == "short_answer":
-        database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
-                                 self.question_no, self.data_login[0].replace("\n", ""),
+        database_api.sendAnswers(Cache.get("info", "token"), Cache.get("lect", "code"),
+                                 self.question_no, Cache.get("info", "nick"),
                                  self.ids["input_short_answer"].text)
 
         Logger.info("pgStdLiveExam: Student's answer for short answer question sent to server")
     elif self.question_type == "multiple_choice":
-        database_api.sendAnswers(self.data_login[8].replace("\n", ""), self.data_selected_lect[0].replace("\n", ""),
-                                 self.question_no, self.data_login[0].replace("\n", ""),
+        database_api.sendAnswers(Cache.get("info", "token"), Cache.get("lect", "code"),
+                                 self.question_no, Cache.get("info", "nick"),
                                  self.multiple_choice_answer)
 
         Logger.info("pgStdLiveExam: Student's answer for multiple choice question sent to server")

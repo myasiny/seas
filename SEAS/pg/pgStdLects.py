@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.button import Button
@@ -15,12 +16,12 @@ from SEAS.func.check_std_live_exam import check_std_live_exam
 '''
 
 def on_pre_enter(self):
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
 
     self.data = []
 
-    data_lectures = database_api.getUserCourses(self.data_login[8].replace("\n", ""), self.data_login[0].replace("\n", ""))
+    data_lectures = database_api.getUserCourses(Cache.get("info", "token"), Cache.get("info", "nick"))
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0])
 
@@ -83,7 +84,7 @@ def on_lect_select(self, dropdown, txt):
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
 
-    self.data_exams = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    self.data_exams = database_api.getExamsOfLecture(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     args_converter = lambda row_index, i: {"text": i.replace("_", " ").title(),
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -115,7 +116,7 @@ def on_exam_selected(self):
             if i[1].replace("_", " ").title() == self.ids["list_exams"].adapter.selection[0].text:
                 timestamp = i[3].split(" ")
                 self.ids["txt_date_body"].text = timestamp[1] + " " + timestamp[2] + " " + timestamp[3]
-            break
+                break
         except:
             if i[1].replace("_", " ").title() == self.ids["txt_info_head"].text:
                 timestamp = i[3].split(" ")
@@ -128,7 +129,7 @@ def on_exam_selected(self):
         try:
             if i[1].replace("_", " ").title() == self.ids["list_exams"].adapter.selection[0].text:
                 self.ids["txt_time_body"].text = str(i[4])
-            break
+                break
         except:
             if i[1].replace("_", " ").title() == self.ids["txt_info_head"].text:
                 self.ids["txt_time_body"].text = str(i[4])
@@ -146,9 +147,13 @@ def on_join_exam(self):
     with open("data/temp_exam_order.seas", "w+") as temp_exam_order:
         temp_exam_order.close()
 
-    with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
-        temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.live_exam)
-        temp_selected_lect.close()
+    # with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+    #     temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.live_exam)
+    #     temp_selected_lect.close()
+
+    Cache.append("lect", "code", self.ids["txt_lect_code"].text)
+    Cache.append("lect", "name", self.ids["txt_lect_name"].text)
+    Cache.append("lect", "exam", self.live_exam)
 
     Logger.info("pgStdLects: Student successfully requested to join exam")
 

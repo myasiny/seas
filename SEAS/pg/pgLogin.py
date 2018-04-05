@@ -1,15 +1,19 @@
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.logger import Logger
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
-from kivy.animation import Animation
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 
+import os, platform
 from functools import partial
 from SEAS.func import database_api
+from SEAS.func import image_button
+from SEAS.func.round_image import round_render
+from SEAS.grdn.progressspinner import ProgressSpinner
 from SEAS.func.check_connection import check_connection
 
 '''
@@ -21,6 +25,16 @@ def load_string(name):
         Builder.load_string(design.read())
 
     Logger.info("pg%s: Design successfully applied" % name.title())
+
+'''
+    This method gets cipher from cache to decrypt local data
+    Additionally, it implements necessary image buttons
+'''
+
+def on_pre_enter(self):
+    image_button.add_button(self, "img/ico_quit.png", "img/ico_quit_pressed.png",
+                            (.05, .05), {"x": .95, "center_y": .95},
+                            self.on_quit)
 
 '''
     This method triggers check_connection every 5 seconds
@@ -42,17 +56,22 @@ def on_login(self, pages, screen, pgEdu, pgStd):
     btn_login.disabled = True
 
     img_status = self.ids["img_status"]
-    img_status.source = "img/ico_loading.gif"
-    img_status.opacity = 0
-    img_status.reload()
+    # img_status.source = "img/ico_loading.png"
+    # img_status.opacity = 0
+    # img_status.reload()
+    #
+    # anim_status = Animation(opacity=1, duration=1)
+    # anim_status.start(img_status)
 
-    anim_status = Animation(opacity=1, duration=1)
-    anim_status.start(img_status)
+    img_spinner = ProgressSpinner(size_hint=(.05, .05), pos_hint={"center_x": .65, "center_y": .8})
+    self.add_widget(img_spinner)
 
     input_username = self.ids["input_username"].text
     input_password = self.ids["input_password"].text
     if input_username == "" or input_password == "":
-        anim_status.stop(img_status)
+        # anim_status.stop(img_status)
+
+        self.remove_widget(img_spinner)
 
         img_status.source = "img/ico_warning.png"
         img_status.opacity = 1
@@ -70,7 +89,9 @@ def on_login(self, pages, screen, pgEdu, pgStd):
             Logger.error("pgLogin: Server is not reachable")
 
         if isinstance(data, list):
-            anim_status.stop(img_status)
+            # anim_status.stop(img_status)
+
+            self.remove_widget(img_spinner)
 
             img_status.source = "img/ico_success.png"
             img_status.opacity = 1
@@ -78,10 +99,19 @@ def on_login(self, pages, screen, pgEdu, pgStd):
 
             btn_login.disabled = False
 
-            with open("data/temp_login.seas", "w+") as temp_login:
-                for d in data:
-                    temp_login.write(str(d) + "\n")
-                temp_login.close()
+            # with open("data/temp_login.seas", "w+") as temp_login:
+            #     for d in data:
+            #         temp_login.write(str(d) + "\n")
+            #     temp_login.close()
+
+            slot = ["nick", "name", "surname", "id", "role", "mail", "dept", "uni", "token"]
+
+            for i in range(9):
+                Cache.append("info", slot[i], data[i])
+
+            round_render()
+
+            Logger.info("pgLogin: User successfully logged in")
 
             if data[4] != "student":
                 pages.append(pgEdu(name="PgLects"))
@@ -94,10 +124,10 @@ def on_login(self, pages, screen, pgEdu, pgStd):
                 screen.current = pages[2].name
 
             del pages[1]
-
-            Logger.info("pgLogin: User successfully logged in")
         else:
-            anim_status.stop(img_status)
+            # anim_status.stop(img_status)
+
+            self.remove_widget(img_spinner)
 
             img_status.source = "img/ico_fail.png"
             img_status.opacity = 1
@@ -106,6 +136,16 @@ def on_login(self, pages, screen, pgEdu, pgStd):
             btn_login.disabled = False
 
             Logger.info("pgLogin: User couldn't log in due to either server failure or incorrect credentials")
+
+'''
+    This method is to restore blocked keys when user quits
+'''
+
+def on_quit_yes(dt):
+    if platform.system() == "Linux":
+        os.system("sh sh/restore.sh")
+
+    App.get_running_app().stop()
 
 '''
     This method asks user to confirm whether he or she wants to quit or not
@@ -127,18 +167,18 @@ def on_quit(self):
                                     font_size=self.height / 40,
                                     background_normal="img/widget_100_green.png",
                                     background_down="img/widget_100_green_selected.png",
-                                    size_hint_x=None, width=self.width / 11,
+                                    size_hint_x=.5,
                                     size_hint_y=None, height=self.height / 25,
-                                    pos_hint={"center_x": .25, "y": .01},
-                                    on_release=App.get_running_app().stop))
+                                    pos_hint={"center_x": .25, "y": .0},
+                                    on_release=on_quit_yes))
     popup_content.add_widget(Button(text="No",
                                     font_name="font/LibelSuit.ttf",
                                     font_size=self.height / 40,
                                     background_normal="img/widget_100_red.png",
                                     background_down="img/widget_100_red_selected.png",
-                                    size_hint_x=None, width=self.width/ 11,
+                                    size_hint_x=.5,
                                     size_hint_y=None, height=self.height / 25,
-                                    pos_hint={"center_x": .75, "y": .01},
+                                    pos_hint={"center_x": .75, "y": .0},
                                     on_release=popup.dismiss))
     popup.open()
 
@@ -154,4 +194,4 @@ def on_leave(self):
 
     self.check_connection.cancel()
 
-    Logger.info("Process of checking connection successfully cancelled")
+    Logger.info("check_connection: Process of checking connection successfully cancelled")

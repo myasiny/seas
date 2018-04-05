@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.logger import Logger
 from kivy.uix.spinner import Spinner
 
@@ -62,25 +63,25 @@ def on_pre_enter(self):
 
     Logger.info("pgNewQuestion: Radio buttons and fields for various question types created")
 
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
 
-    temp_selected_lect = open("data/temp_selected_lect.seas", "r")
-    self.data_selected_lect = temp_selected_lect.readlines()
+    # temp_selected_lect = open("data/temp_selected_lect.seas", "r")
+    # self.data_selected_lect = temp_selected_lect.readlines()
 
     self.question_type = "none"
 
-    self.data_detailed_exam = database_api.getExam(self.data_login[8].replace("\n", ""),
-                                                   self.data_selected_lect[0].replace("\n", ""),
-                                                   self.data_selected_lect[2].replace("\n", ""))["Questions"]
+    self.data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
+                                                   Cache.get("lect", "code"),
+                                                   Cache.get("lect", "exam"))["Questions"]
 
     self.ids["txt_question_no"].text = "Question"
 
-    # if len(self.data_detailed_exam) > 00:
+    # if len(self.data_detailed_exam) > 0:
     #     Logger.info("pgNewQuestion: Exam already exists, editing mode on")
     #
     #     self.question_no = self.data_detailed_exam.keys()[0]
-    #     self.ids["txt_question_no"].text = "Question %s" % self.question_no
+    #     self.ids["txt_question_no"].text = "Question ID: %s" % self.question_no
     #
     #     question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]
     #
@@ -292,9 +293,9 @@ def on_submit(self):
                     "value": int(self.ids["input_grade"].text),
                     "tags": self.ids["input_tags"].text.split(",")}
 
-            database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
-                                           self.data_selected_lect[0].replace("\n", ""),
-                                           self.data_selected_lect[2].replace("\n", ""), yson)
+            database_api.addQuestionToExam(Cache.get("info", "token"),
+                                           Cache.get("lect", "code"),
+                                           Cache.get("lect", "exam"), yson)
 
             Logger.info("pgNewQuestion: Programming question created and sent to server")
         elif self.question_type == "short_answer":
@@ -307,9 +308,9 @@ def on_submit(self):
                     "value": int(self.ids["input_grade"].text),
                     "tags": self.ids["input_tags"].text.split(",")}
 
-            database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
-                                           self.data_selected_lect[0].replace("\n", ""),
-                                           self.data_selected_lect[2].replace("\n", ""), yson)
+            database_api.addQuestionToExam(Cache.get("info", "token"),
+                                           Cache.get("lect", "code"),
+                                           Cache.get("lect", "exam"), yson)
 
             Logger.info("pgNewQuestion: Short answer question created and sent to server")
         elif self.question_type == "multiple_choice":
@@ -331,21 +332,21 @@ def on_submit(self):
             else:
                 yson = {"type": self.question_type,
                         "subject": self.ids["input_subject"].text,
-                        "text": self.ids["input_question_body"].text + "\n\n" +
-                                "A)\t" + self.ids["input_answer_a"].text + "\n" +
-                                "B)\t" + self.ids["input_answer_b"].text + "\n" +
-                                "C)\t" + self.ids["input_answer_c"].text + "\n" +
-                                "D)\t" + self.ids["input_answer_d"].text + "\n" +
-                                "E)\t" + self.ids["input_answer_e"].text,
+                        "text": "{q}\n\nA) {a}\nB) {b}\nC) {c}\nD) {d}\nE) {e}".format(q=self.ids["input_question_body"].text,
+                                                                                       a=self.ids["input_answer_a"].text,
+                                                                                       b=self.ids["input_answer_b"].text,
+                                                                                       c=self.ids["input_answer_c"].text,
+                                                                                       d=self.ids["input_answer_d"].text,
+                                                                                       e=self.ids["input_answer_e"].text),
                         "answer": self.multiple_choice_answer,
                         "inputs": None,
                         "outputs": None,
                         "value": int(self.ids["input_grade"].text),
                         "tags": self.ids["input_tags"].text.split(",")}
 
-                database_api.addQuestionToExam(self.data_login[8].replace("\n", ""),
-                                               self.data_selected_lect[0].replace("\n", ""),
-                                               self.data_selected_lect[2].replace("\n", ""), yson)
+                database_api.addQuestionToExam(Cache.get("info", "token"),
+                                               Cache.get("lect", "code"),
+                                               Cache.get("lect", "exam"), yson)
 
                 Logger.info("pgNewQuestion: Multiple choice question created and sent to server")
         else:

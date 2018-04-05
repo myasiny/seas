@@ -46,34 +46,6 @@
             pos_hint: {"x": .9, "center_y": .95}
 
         Image:
-            id: img_quit
-            source: "img/ico_quit.png"
-            allow_stretch: True
-            size_hint: .05, .05
-            pos_hint: {"x": .95, "center_y": .95}
-
-        Button:
-            text: "btn_quit"
-            opacity: 0
-            size_hint: .05, .05
-            pos_hint: {"x": .95, "center_y": .95}
-            on_release: root.on_quit()
-
-        Image:
-            id: img_logout
-            source: "img/ico_logout.png"
-            allow_stretch: True
-            size_hint: .05, .05
-            pos_hint: {"x": .0, "center_y": .95}
-
-        Button:
-            text: "btn_logout"
-            opacity: 0
-            size_hint: .05, .05
-            pos_hint: {"x": .0, "center_y": .95}
-            on_release: root.on_logout()
-
-        Image:
             id: img_user
             source: "img/pic_user.png"
             allow_stretch: True
@@ -111,6 +83,20 @@
             allow_stretch: True
             size_hint: .4, .25
             pos_hint: {"center_x": .5, "center_y": .725}
+
+        Image:
+            id: img_change_pic
+            source: "img/ico_change.png"
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .35, "center_y": .65}
+
+        Button:
+            text: "btn_change_pic"
+            opacity: 0
+            size_hint: .05, .05
+            pos_hint: {"x": .35, "center_y": .65}
+            on_release: root.on_change_pic()
 
         Image:
             id: img_fingerprint
@@ -153,7 +139,7 @@
             pos_hint: {"center_x": .415, "center_y": .725}
 
         Image:
-            id: img_user
+            id: img_user_card
             source: "img/pic_user.png"
             allow_stretch: True
             size_hint: .2, .2

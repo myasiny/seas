@@ -3,6 +3,7 @@
     Accordingly, it enables or disables the text and button on PgStdLects
 '''
 
+from kivy.cache import Cache
 from kivy.logger import Logger
 
 from SEAS.func import database_api
@@ -11,7 +12,7 @@ def check_std_live_exam(self, dt):
     try:
         self.live_exam = None
 
-        self.data_live_exam = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+        self.data_live_exam = database_api.getExamsOfLecture(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
         for exam in self.data_live_exam:
             if exam[5] == "active":

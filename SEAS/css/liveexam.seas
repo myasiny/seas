@@ -125,7 +125,7 @@
 
         Label:
             id: txt_info_time_title
-            text: "Hour:"
+            text: "Time:"
             color: 0,0,0,1
             multiline: True
             font_name: "font/CaviarDreams_Bold.ttf"

@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.logger import Logger
 from kivy.animation import Animation
 from SEAS.grdn.kivycalendar import CalendarWidget
@@ -10,11 +11,11 @@ from SEAS.func import database_api
 '''
 
 def on_pre_enter(self):
-    temp_selected_lect = open("data/temp_selected_lect.seas", "r")
-    self.data_selected_lect = temp_selected_lect.readlines()
+    # temp_selected_lect = open("data/temp_selected_lect.seas", "r")
+    # self.data_selected_lect = temp_selected_lect.readlines()
 
-    self.ids["txt_lect_code"].text = self.data_selected_lect[0].replace("\n", "")
-    self.ids["txt_lect_name"].text = self.data_selected_lect[1]
+    self.ids["txt_lect_code"].text = Cache.get("lect", "code")
+    self.ids["txt_lect_name"].text = Cache.get("lect", "name")
 
     self.calendar = CalendarWidget(size_hint=(.3, .3),
                                    pos_hint={"center_x": .525, "y": .15})
@@ -44,15 +45,19 @@ def on_new_exam_create(self):
     time = "%02d:%02d:00" % (self.time.hours, self.time.minutes)
 
     if self.ids["input_examname"].text != "" and self.ids["input_duration"].text != "":
-        with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
-            temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" +
-                                     "%s\n%s\n%s %s" % (self.ids["input_examname"].text, self.ids["input_duration"].text, date, time))
-            temp_selected_lect.close()
+        # with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+        #     temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" +
+        #                              "%s\n%s\n%s %s" % (self.ids["input_examname"].text, self.ids["input_duration"].text, date, time))
+        #     temp_selected_lect.close()
 
-        temp_login = open("data/temp_login.seas", "r")
-        self.data_login = temp_login.readlines()
+        Cache.append("lect", "code", self.ids["txt_lect_code"].text)
+        Cache.append("lect", "name", self.ids["txt_lect_name"].text)
+        Cache.append("lect", "exam", self.ids["input_examname"].text)
 
-        database_api.createExam(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text,
+        # temp_login = open("data/temp_login.seas", "r")
+        # self.data_login = temp_login.readlines()
+
+        database_api.createExam(Cache.get("info", "token"), self.ids["txt_lect_code"].text,
                                 self.ids["input_examname"].text, "%s %s" % (date, time),
                                 int(self.ids["input_duration"].text))
 

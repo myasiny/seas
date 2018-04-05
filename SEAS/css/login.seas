@@ -15,20 +15,6 @@
             pos_hint: {"x": .9, "center_y": .95}
 
         Image:
-            id: img_quit
-            source: "img/ico_quit.png"
-            allow_stretch: True
-            size_hint: .05, .05
-            pos_hint: {"x": .95, "center_y": .95}
-
-        Button:
-            text: "btn_quit"
-            opacity: 0
-            size_hint: .05, .05
-            pos_hint: {"x": .95, "center_y": .95}
-            on_release: root.on_quit()
-
-        Image:
             id: img_widget_75_gray
             source: "img/widget_75_gray.png"
             opacity: .5
@@ -76,6 +62,7 @@
             padding_y: [self.height / 3, 0]
             size_hint: .2, .1
             pos_hint: {"center_x": .55, "center_y": .55}
+            on_text_validate: root.on_submit()
 
         Label:
             id: txt_password
@@ -100,6 +87,7 @@
             padding_y: [self.height / 3, 0]
             size_hint: .2, .1
             pos_hint: {"center_x": .55, "center_y": .44}
+            on_text_validate: root.on_submit()
 
         Button:
             id: btn_login
@@ -132,7 +120,7 @@
 
         Image:
             id: img_status
-            source: "img/ico_loading.gif"
+            source: "img/ico_loading.png"
             opacity: 0
             allow_stretch: True
             anim_loop: 0

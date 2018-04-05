@@ -1,3 +1,4 @@
+from kivy.cache import Cache
 from kivy.logger import Logger
 from kivy.uix.popup import Popup
 from kivy.uix.button import Button
@@ -17,12 +18,14 @@ from SEAS.func import database_api
 '''
 
 def on_pre_enter(self):
-    temp_login = open("data/temp_login.seas", "r")
-    self.data_login = temp_login.readlines()
+    self.cipher = Cache.get("config", "cipher")
+
+    # temp_login = open("data/temp_login.seas", "r")
+    # self.data_login = temp_login.readlines()
 
     self.data = []
 
-    data_lectures = database_api.getUserCourses(self.data_login[8].replace("\n", ""), self.data_login[0].replace("\n", ""))
+    data_lectures = database_api.getUserCourses(Cache.get("info", "token"), Cache.get("info", "nick"))
     for i in data_lectures:
         self.data.append(i[1] + "_" + i[0])
 
@@ -76,9 +79,13 @@ def on_lect_select(self, dropdown, txt):
             self.ids["txt_lect_code"].text = txt
             self.ids["txt_lect_name"].text = " ".join(lect.split("_")[2:]).title()
 
-            with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
-                temp_selected_lect.write(txt + "\n" + self.ids["txt_lect_name"].text)
-                temp_selected_lect.close()
+            # with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+            #     temp_selected_lect.write(txt + "\n" + self.ids["txt_lect_name"].text)
+            #     temp_selected_lect.close()
+
+            Cache.append("lect", "code", txt)
+            Cache.append("lect", "name", self.ids["txt_lect_name"].text)
+
             break
 
     self.ids["img_info_top"].opacity = 0
@@ -107,12 +114,11 @@ def on_lect_select(self, dropdown, txt):
 def on_exams(self):
     if self.ids["layout_exams"] not in list(self.children):
         self.add_widget(self.ids["layout_exams"])
-    # TODO: Debug (ReferenceError: weakly-referenced object no longer exists)
 
     self.ids["layout_exams"].opacity = 1
     self.remove_widget(self.ids["layout_participants"])
 
-    self.data_exam_details = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    self.data_exam_details = database_api.getExamsOfLecture(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     args_converter = lambda row_index, i: {"text": i.replace("_", " ").title(),
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -174,9 +180,9 @@ def on_exam_selected(self):
 '''
 
 def on_exam_deleted(self):
-    database_api.deleteExam(self.data_login[8].replace("\n", ""), self.ids["list_exams"].adapter.selection[0].text, self.ids["txt_lect_code"].text)
+    database_api.deleteExam(Cache.get("info", "token"), self.ids["list_exams"].adapter.selection[0].text, self.ids["txt_lect_code"].text)
 
-    self.data_exam_details = database_api.getExamsOfLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    self.data_exam_details = database_api.getExamsOfLecture(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     self.ids["list_exams"].adapter.data = [i[1].replace("_", " ").title() for i in self.data_exam_details]
 
@@ -194,15 +200,17 @@ def on_participants(self):
     self.ids["layout_participants"].opacity = 1
     self.remove_widget(self.ids["layout_exams"])
 
-    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        std = []
         for d in data:
-            temp_student_list.write(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower() + "\n")
+            std.append(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower())
+        temp_student_list.write(self.cipher.encrypt(str("*[SEAS-NEW-LINE]*".join(std))))
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
-    self.data_student_list = temp_student_list.readlines()
+    self.data_student_list = self.cipher.decrypt(temp_student_list.read()).split("*[SEAS-NEW-LINE]*")
 
     args_converter = lambda row_index, i: {"text": i,
                                            "background_normal": "img/widget_75_black_crop.png",
@@ -260,17 +268,19 @@ def on_participant_selected(self):
 '''
 
 def on_participant_deleted(self):
-    database_api.deleteStudentFromLecture(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
+    database_api.deleteStudentFromLecture(Cache.get("info", "token"), self.ids["txt_lect_code"].text, self.ids["txt_id_body"].text)
 
-    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        std = []
         for d in data:
-            temp_student_list.write(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower() + "\n")
+            std.append(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower())
+        temp_student_list.write(self.cipher.encrypt(str("*[SEAS-NEW-LINE]*".join(std))))
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
-    self.data_student_list = temp_student_list.readlines()
+    self.data_student_list = self.cipher.decrypt(temp_student_list.read()).split("*[SEAS-NEW-LINE]*")
 
     self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list]
 
@@ -285,21 +295,31 @@ def on_import_list(self):
     Logger.info("pgLects: Educator called import list pop-up")
 
     popup_content = FloatLayout()
-    self.popup = Popup(title="* Double click to select a file!",
+    self.popup = Popup(title="Import List Of Students",
                        content=popup_content, separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
                        size_hint=(None, None), size=(self.width / 2, self.height / 2))
-    filechooser = FileChooserListView(path=os.path.expanduser('~'),
+    filechooser = FileChooserListView(path=Cache.get("config", "path"), filters=["*.xlsx"],
                                       size=(self.width, self.height),
                                       pos_hint={"center_x": .5, "center_y": .5})
     filechooser.bind(on_submit=self.on_import_list_selected)
     popup_content.add_widget(filechooser)
-    popup_content.add_widget(Button(text="Close",
+    popup_content.add_widget(Button(text="Upload",
                                     font_name="font/LibelSuit.ttf",
                                     font_size=self.height / 40,
-                                    background_normal="img/widget_100.png",
-                                    background_down="img/widget_100_selected.png",
+                                    background_normal="img/widget_100_green.png",
+                                    background_down="img/widget_100_green_selected.png",
+                                    size_hint_x=.5,
                                     size_hint_y=None, height=self.height / 20,
-                                    pos_hint={"center_x": .5, "y": .0},
+                                    pos_hint={"center_x": .25, "y": .0},
+                                    on_release=filechooser.on_submit))
+    popup_content.add_widget(Button(text="Cancel",
+                                    font_name="font/LibelSuit.ttf",
+                                    font_size=self.height / 40,
+                                    background_normal="img/widget_100_red.png",
+                                    background_down="img/widget_100_red_selected.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None, height=self.height / 20,
+                                    pos_hint={"center_x": .75, "y": .0},
                                     on_release=self.popup.dismiss))
     self.popup.open()
 
@@ -311,18 +331,20 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
     self.popup.dismiss()
 
     excel_to_csv.xls2csv(file_path[0], "data/temp_imported_list.csv")
-    database_api.registerStudent(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text,
-                                 True, "data/temp_imported_list.csv", self.data_login[0].replace("\n", ""))
+    database_api.registerStudent(Cache.get("info", "token"), self.ids["txt_lect_code"].text,
+                                 True, "data/temp_imported_list.csv", Cache.get("info", "nick"))
 
-    data = database_api.getCourseStudents(self.data_login[8].replace("\n", ""), self.ids["txt_lect_code"].text)
+    data = database_api.getCourseStudents(Cache.get("info", "token"), self.ids["txt_lect_code"].text)
 
     with open("data/temp_student_list.seas", "w+") as temp_student_list:
+        std = []
         for d in data:
-            temp_student_list.write(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower() + "\n")
+            std.append(d[0].title() + "," + d[1].title() + "," + str(d[2]) + "," + d[3].lower())
+        temp_student_list.write(self.cipher.encrypt(str("*[SEAS-NEW-LINE]*".join(std))))
         temp_student_list.close()
 
     temp_student_list = open("data/temp_student_list.seas", "r")
-    self.data_student_list = temp_student_list.readlines()
+    self.data_student_list = self.cipher.decrypt(temp_student_list.read()).split("*[SEAS-NEW-LINE]*")
 
     self.ids["list_participants"].adapter.data = [i.split(",")[0] + " " + i.split(",")[1] for i in self.data_student_list]
 
@@ -333,11 +355,15 @@ def on_import_list_selected(self, widget_name, file_path, mouse_pos):
 '''
 
 def on_start_exam(self):
-    with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
-        temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.ids["txt_info_head"].text)
-        temp_selected_lect.close()
+    # with open("data/temp_selected_lect.seas", "w+") as temp_selected_lect:
+    #     temp_selected_lect.write(self.ids["txt_lect_code"].text + "\n" + self.ids["txt_lect_name"].text + "\n" + self.ids["txt_info_head"].text)
+    #     temp_selected_lect.close()
 
-    database_api.change_status_of_exam(self.data_login[8].replace("\n", ""),
+    Cache.append("lect", "code", self.ids["txt_lect_code"].text)
+    Cache.append("lect", "name", self.ids["txt_lect_name"].text)
+    Cache.append("lect", "exam", self.ids["txt_info_head"].text)
+
+    database_api.change_status_of_exam(Cache.get("info", "token"),
                                        self.ids["txt_lect_code"].text,
                                        self.ids["txt_info_head"].text, "active")
 

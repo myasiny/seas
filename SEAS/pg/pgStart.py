@@ -7,15 +7,27 @@ from kivy.uix.floatlayout import FloatLayout
 
 import webbrowser
 from functools import partial
-from SEAS.func.round_image import round_image
+from SEAS.func import image_button
 
 '''
     This method rounds user's profile picture and updates top-left image widget accordingly
+    Additionally, it implements necessary image buttons
 '''
 
 def on_pre_enter(self):
-    round_image()
-    self.ids["img_user"].reload()
+    image_button.add_button(self, "img/ico_quit.png", "img/ico_quit_pressed.png",
+                            (.05, .05), {"x": .95, "center_y": .95},
+                            self.on_quit)
+
+    image_button.add_button(self, "img/ico_logout.png", "img/ico_logout_pressed.png",
+                            (.05, .05), {"x": .0, "center_y": .95},
+                            self.on_logout)
+
+    try:
+        self.ids["img_user"].source = "img/pic_current_user.png"
+        self.ids["img_user"].reload()
+    except:
+        self.ids["img_user"].reload()
 
 '''
     This method is to update sign placed next to FAQ button according to its current status such as clicked, closed
@@ -43,25 +55,25 @@ def on_faq(self, no):
     popup_content.add_widget(Image(source="img/widget_75_gray.png", allow_stretch=True, keep_ratio=False,
                                    size=(self.width, self.height), pos_hint={"center_x": .5, "center_y": .5}))
     if no == 1:
-        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play", options={"allow_stretch: True"},
+        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play",
                                              pos_hint={"center_x": .5, "center_y": .5}))
     elif no == 2:
-        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play", options={"allow_stretch: True"},
+        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play",
                                              pos_hint={"center_x": .5, "center_y": .5}))
     elif no == 3:
-        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play", options={"allow_stretch: True"},
+        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play",
                                              pos_hint={"center_x": .5, "center_y": .5}))
     else:
-        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play", options={"allow_stretch: True"},
+        popup_content.add_widget(VideoPlayer(source="img/vid/trailer.avi", state="play",
                                              pos_hint={"center_x": .5, "center_y": .5}))
-    popup_content.add_widget(Button(text="Close",
-                                    font_name="font/LibelSuit.ttf",
-                                    font_size=self.height / 40,
-                                    background_normal="img/widget_100.png",
-                                    background_down="img/widget_100_selected.png",
-                                    size_hint_y=None, height=self.height / 20,
-                                    pos_hint={"center_x": .5, "y": .0},
-                                    on_release=popup.dismiss))
+    # popup_content.add_widget(Button(text="Close",
+    #                                 font_name="font/LibelSuit.ttf",
+    #                                 font_size=self.height / 40,
+    #                                 background_normal="img/widget_100.png",
+    #                                 background_down="img/widget_100_selected.png",
+    #                                 size_hint_y=None, height=self.height / 20,
+    #                                 pos_hint={"center_x": .5, "y": .0},
+    #                                 on_release=popup.dismiss))
     popup.bind(on_dismiss=partial(faq_status, self.ids["txt_faq_%s_click" % no]))
     popup.open()
 

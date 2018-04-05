@@ -4,8 +4,7 @@
 
 from kivy.logger import Logger
 
-import xlrd
-import unicodecsv
+import xlrd, unicodecsv
 
 def xls2csv(xls_filename, output_filename):
     wb = xlrd.open_workbook(xls_filename)
@@ -20,6 +19,4 @@ def xls2csv(xls_filename, output_filename):
     fh.close()
 
     Logger.info("excel_to_csv: Excel successfully saved as csv")
-
-    return output_filename
 
