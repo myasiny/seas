@@ -73,6 +73,8 @@ def signIn(username, password, URL=server_address, organization=current_organiza
     """
     url = URL+"/organizations/%s/%s" %(organization.replace(" ", "_").lower(), username)
     rtn = get(url, auth=(username, password)).json()
+    if rtn == "Wrong Password":
+        return rtn
     if rtn[-1] is not None:
         with open("../img/pic_current_user.png", "wb") as f:
             f.write(pickle.loads(rtn[-1]))

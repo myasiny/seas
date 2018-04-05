@@ -1,6 +1,6 @@
 #-*-coding:utf-8-*-
 from Question import Question
-import json
+import json, threading
 
 class Exam:
     def __init__(self, Name, organization, db=None):
@@ -19,12 +19,12 @@ class Exam:
     def save(self, CourseCode, Time, duration, status="draft"):
         db = self.db
         course = CourseCode.replace(" ", "_").lower()
-        command = ""
-        command += "insert into exams(Name,Time,Duration, Status, CourseID) " \
-                   "select \'%s\', \'%s\', %d, '%s', CourseID " \
-                   "from courses where courses.CODE = \'%s\'" \
-                   "ON DUPLICATE KEY UPDATE Name = '%s', Time='%s', Duration='%s', Status = '%s';"\
-                   % (self.name, Time, int(duration), status, course, self.name, Time, duration, status)
+        proc = "%s.create_exam" % self.org
+        db.cursor.callproc(str(proc), args=(self.name, course, Time, duration, status,))
+        command = "DROP EVENT IF EXISTS %s_start; DROP EVENT IF EXISTS %s_stop;" %(self.name, self.name)
+        command +="CREATE EVENT %s_start ON SCHEDULE AT date_add('%s', INTERVAL 0 MINUTE) DO UPDATE exams SET Status='active' WHERE exams.Name='%s';" \
+                  "CREATE EVENT %s_stop ON SCHEDULE AT date_add('%s', INTERVAL %d MINUTE )DO UPDATE exams SET Status='not graded' WHERE exams.Name='%s';" \
+        % (self.name, Time, self.name, self.name, Time, int(duration), self.name)
         db.execute(command)
         return "Done"
 

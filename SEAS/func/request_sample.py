@@ -25,15 +25,16 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-# print signIn("fatihgulmez", "12345")
+# print signIn("fatihgulmez", "123456")
 # print signIn("admin", "12345")
 # print signIn("superuser", "12345")
 # print signIn("alicakmak", "12345")
 
-# print addCourse(admin_token, "Physics", "phys 101", ["alicakmak"])
+# print addCourse(admin_token, "Data Science", "data 101", ["alicakmak"])
 # print getCourse(lecturer_token, "phys_101")
 #
 # print registerStudent(lecturer_token, "EECS 468", True, "ornek.csv", "alicakmak")
+
 # print registerStudent(lecturer_token, "phys 101", False, [213962062, 212011111, 212980975, 213860387], "alicakmak")
 
 
@@ -49,14 +50,14 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 
 #### HOW TO CREATE EXAM
 
-# print createExam(lecturer_token,
-#                  "phys 101",
-#                  "phisics mt 1",
-#                  "2018-03-15 10:30:00",
-#                  50
-#                  ,
-#                  status="draft"
-# )
+print createExam(lecturer_token,
+                 "phys 101",
+                 "phisics mt 2",
+                 "2018-04-03 22:30:00",
+                 5,
+                 status="draft"
+)
+
 
 #                   {1:
 #                       {"type": "classic",
@@ -139,8 +140,8 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 #                             "bioinformatic_mt_2",
 #                             "active")
 
-# print reset_password("fatihgulmez")
+# print resetPassword("alioz")
 
-# print reset_password("fatihgulmez", temp_pass="HIk6hx0k", new_pass="123456")
+# print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
 
 # print signIn("fatihgulmez", "123456")

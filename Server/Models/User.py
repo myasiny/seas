@@ -3,6 +3,7 @@ import os, threading
 from Password import Password
 from External_Functions.passwordGenerator import passwordGenerator
 from External_Functions.sendEmail import send_mail_first_login, send_mail_password_reset
+from mysql.connector import IntegrityError
 
 
 class User:
@@ -62,14 +63,16 @@ class User:
 
     def reset_password(self):
         password = passwordGenerator(8)
-        auth = ["%s %s" % (self.name, self.surname), self.email, password, self.username]
-        password_ = self.pass_word.hash_password(password)
-        rtn = self.execute("INSERT INTO temporary_passwords (UserID, Password) VALUES (%d, '%s');" % (int(self.user_id), password_))
-        self.execute("CREATE EVENT user_%d ON SCHEDULE AT date_add(now(), INTERVAL 30 MINUTE) DO DELETE FROM temporary_passwords WHERE UserID = %d;" % (int(self.user_id), int(self.user_id)))
-        if rtn is None:
+        try:
+            password_ = self.pass_word.hash_password(password)
+            rtn = self.execute("INSERT INTO temporary_passwords (UserID, Password) VALUES (%d, '%s');" % (int(self.user_id), password_))
+            self.execute("CREATE EVENT user_%d ON SCHEDULE AT date_add(now(), INTERVAL 30 MINUTE) DO DELETE FROM temporary_passwords WHERE UserID = %d;" % (int(self.user_id), int(self.user_id)))
+            auth = ["%s %s" % (self.name, self.surname), self.email, password, self.username]
+            threading.Thread(target=send_mail_password_reset, args=(auth,)).start()
+            return "Check your mail address for credentials."
+        except IntegrityError:
             return "Your account has been reset already."
-        threading.Thread(target=send_mail_password_reset, args=(auth,)).start()
-        return "Check your mail address for credentials."
+
 
     def check_and_change_password(self, temp_pass, new_pass):
         password = self.execute("SELECT Password FROM temporary_passwords WHERE UserID = %d;" %(int(self.user_id)))[0][0]

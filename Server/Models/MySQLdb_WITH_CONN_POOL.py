@@ -16,7 +16,7 @@ class MySQLdb:
         }
 
         self.pool = pooling.MySQLConnectionPool(pool_name="conn",
-                                       pool_size=5,pool_reset_session=True,
+                                       pool_size=2,pool_reset_session=True,
                                        **dbconfig)
 
     def __enter__(self):
@@ -27,7 +27,7 @@ class MySQLdb:
 
     def get_connection(self):
         self.db = self.pool.get_connection()
-        self.cursor = self.db.cursor()
+        self.cursor = self.db.cursor(buffered=True)
 
     def initialize_organization(self, organization):
         self.get_connection()
@@ -207,23 +207,21 @@ class MySQLdb:
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
 
     def execute(self, command):
-        print command
         try:
             self.cursor.execute(command)
         except InterfaceError:
             self.cursor.execute(command, multi=True)
 
+
         if command.lower().startswith("select") or command.lower().startswith("(select"):
             rtn = self.cursor.fetchall()
             self.__commit()
-            print "fooo"
             return rtn
         self.__commit()
         return None
 
     def __commit(self):
-        self.db.commit()
-
+        return self.db.commit()
     def close_connection(self):
         self.db.close()
 

@@ -302,7 +302,6 @@ def addExam(organization, course):
         duration = request.form["duration"]
         status = request.form["status"]
         exam = Exam(name, organization, db)
-        exam.save(course, time, duration, status)
         rtn = jsonify(exam.save(course, time, duration, status))
         db.close_connection()
         return rtn
