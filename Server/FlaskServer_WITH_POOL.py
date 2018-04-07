@@ -495,4 +495,4 @@ def reset_password(organization, username):
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=8888, threaded=True)
+    app.run(host="localhost", port=8888, threaded=False)
