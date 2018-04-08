@@ -132,7 +132,7 @@ class MySQLdb:
                                  ("ExamID", "int", "auto_increment"),
                                  ("Name", "varchar(255)", "not null"),
                                  ("CourseID", "int", ""),
-                                 ("Time", "timestamp", ""),
+                                 ("Time", "Varchar(50)", "not null"),
                                  ("Duration", "int", "not null"),
                                  ("Status", "varchar(20)", "not null Default 'draft'")
                              ],
@@ -220,7 +220,9 @@ class MySQLdb:
         try:
             self.__commit()
         except InterfaceError:
-            pass
+            for result in self.db.cmd_query_iter(command):
+                print result
+            self.__commit()
         return None
 
     def __commit(self):

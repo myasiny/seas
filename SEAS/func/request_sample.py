@@ -52,13 +52,16 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 
 # print createExam(lecturer_token,
 #                  "phys 101",
-#                  "phisics mt 2",
-#                  "2018-04-03 22:30:00",
+#                  "phisics mt 3",
+#                  "2018-04-09 22:30:00",
 #                  5,
 #                  status="draft"
 # )
 
-
+# print add_time_to_exam(lecturer_token,
+#                        "phys 101",
+#                        "phisics_mt_2",
+#                        10)
 #                   {1:
 #                       {"type": "classic",
 #                         "subject": "ataturk",
@@ -102,9 +105,9 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 
 
 ## HOW TO GET EXAM
-# print getExam(lecturer_token,
-#                  "phys 101",
-#                  "physics Mt 3")
+print getExam(lecturer_token,
+                 "phys 101",
+                 "phisics Mt 3")
 
 # print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Ataturk")
 
@@ -116,7 +119,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 
 # print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 60)
 
-print getExamsOfLecture(student_token, "eecs 468")
+# print getExamsOfLecture(student_token, "eecs 468")
 
 # print edit_question(lecturer_token, "eecs 468",
 #                     "bioinformatic_mt_2",
@@ -130,10 +133,7 @@ print getExamsOfLecture(student_token, "eecs 468")
 #                     "value": 30,
 #                     "tags": ["mustapha","kemal"]})
 
-# print add_time_to_exam(lecturer_token,
-#                        "eecs 468",
-#                        "bioinformatic_mt_2",
-#                        10)
+
 
 # print change_status_of_exam(lecturer_token,
 #                             "eecs 468",

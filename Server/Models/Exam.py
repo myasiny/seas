@@ -16,16 +16,19 @@ class Exam:
     def addQuestionObject(self, questionObj):
         return questionObj.save(self.db, self.course, self.org, self.ID).get
 
-    def save(self, CourseCode, Time, duration, status="draft"):
+    def save(self, CourseCode, Time, duration, status="draft", timezone="+03:00"):
         db = self.db
         course = CourseCode.replace(" ", "_").lower()
         proc = "%s.create_exam" % self.org
-        db.cursor.callproc(str(proc), args=(self.name, course, Time, duration, status,))
-        command = "DROP EVENT IF EXISTS %s_start; DROP EVENT IF EXISTS %s_stop;" %(self.name, self.name)
+        db.cursor.callproc(str(proc), args=(self.name, course, Time, duration, status,timezone,))
+        command = "DROP EVENT IF EXISTS %s_start;DROP EVENT IF EXISTS %s_stop;" %(self.name, self.name)
         command +="CREATE EVENT %s_start ON SCHEDULE AT date_add('%s', INTERVAL 0 MINUTE) DO UPDATE exams SET Status='active' WHERE exams.Name='%s';" \
                   "CREATE EVENT %s_stop ON SCHEDULE AT date_add('%s', INTERVAL %d MINUTE )DO UPDATE exams SET Status='not graded' WHERE exams.Name='%s';" \
         % (self.name, Time, self.name, self.name, Time, int(duration), self.name)
-        db.execute(command)
+
+        for com in command.split(";"):
+            if len(com)>=1:
+                db.execute(com+";")
         return "Done"
 
     def get(self):
@@ -33,12 +36,12 @@ class Exam:
         try:
             command = "select q.info, q.QuestionID, c.Code, e.* from questions q JOIN (courses c, exams e) ON c.CourseID = e.courseID AND e.Name = '%s' AND q.ExamID = e.ExamID;" %self.name
             saved = db.execute(command)
-            course, exam_id, exam_name, course_id, time, duration, status = saved[0][2:]
+            course, exam_id, exam_name, course_id, time, duration, status, timezone = saved[0][2:]
         except IndexError:
             command = "SELECT c.Code, e.* FROM exams e, courses c WHERE e.Name = '%s' and e.CourseID = c.CourseID" %self.name
             saved = db.execute(command)
             print saved
-            course, exam_id, exam_name, course_id, time, duration, status = saved[0][:7]
+            course, exam_id, exam_name, course_id, time, duration, status, timezone = saved[0][:8]
             saved = []
 
         try:
@@ -57,7 +60,8 @@ class Exam:
                 "Duration": duration,
                 "Questions": questions,
                 "ID": exam_id,
-                "Status": status
+                "Status": status,
+                "Timezone": timezone
             }
         except IndexError:
             return "No Exam Named as " + self.name
@@ -78,9 +82,10 @@ class Exam:
         self.db.execute("Update exams Set Status = '%s' where Name = '%s';" % (new_status, self.name))
 
     def add_more_time(self, minutes):
-        command = "Update exams Set Duration = Duration + %d where Name = '%s';" % (int(minutes), self.name)
-        command += ""
         self.db.execute("Update exams Set Duration = Duration + %d where Name = '%s';" % (int(minutes), self.name))
+        start, dur = self.db.execute("Select Time, Duration from exams where Name = '%s'" %self.name)[0]
+        print start, dur
+        self.db.execute("alter event %s_stop ON SCHEDULE AT date_add('%s', INTERVAL %d MINUTE);" %(self.name, start, int(dur)))
 
     def get_questions(self):
         command = "SELECT info, QuestionID FROM questions WHERE ExamID =  (SELECT ExamID from exams where Name = '%s');" % (self.name)
