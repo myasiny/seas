@@ -121,6 +121,6 @@ class Student(User):
 
     def add_answer(self, question_id, answer):
         try:
-            return self.execute("INSERT INTO answers(questionID, studentID, answer) VALUES ('%s', '%s', '%s') ON DUPLICATE KEY UPDATE answer = '%s'" %(question_id, self.user_id, answer, answer))
+            return self.execute("INSERT INTO answers(questionID, studentID, answer) select %d, %d, '%s' where (Select Status from exams where ExamID = (Select ExamId from questions Where QuestionID=%d))='active' ON DUPLICATE KEY UPDATE answer = '%s';" %(int(question_id), int(self.user_id), answer, int(question_id), answer))
         except Exception:
             return "Error occurred."

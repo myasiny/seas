@@ -397,6 +397,7 @@ def answerExam(organization, course, question_id, username):
         return jsonify("Unauthorized access!")
     if check_lecture_permision(organization, token, course):
         user = Student(db, organization, username)
+        print request.form["answers"]
         rtn = jsonify(user.add_answer(question_id, request.form["answers"]))
         db.close_connection()
         return jsonify("Done")

@@ -109,7 +109,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 #                  "data 101",
 #                  "data Mt 1")
 
-# print sendAnswers(student_token,"data 101", 45, "fatihgulmez", "A")
+print sendAnswers(student_token,"data 101", 45, "fatihgulmez", "A")
 
 # print deleteExam(lecturer_token, "data mt 1", "data_101")
 
