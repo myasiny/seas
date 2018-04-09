@@ -76,7 +76,7 @@ def signIn(username, password, URL=server_address, organization=current_organiza
     if rtn == "Wrong Password":
         return rtn
     if rtn[-1] is not None:
-        with open("../img/pic_current_user.png", "wb") as f:
+        with open("../img/pic_user_current.png", "wb") as f:
             f.write(pickle.loads(rtn[-1]))
     return rtn[:-1]
 
@@ -317,11 +317,11 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     :param username: String; username of request
     :param URL: String;  server address
     :param organization: String; university
-    :return: Done, saves profile picture to SEAS/img/pic_username.png
+    :return: Done, saves profile picture to SEAS/img/pic_user_current.png
     """
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
-    with open("../img/pic_current_user.png", "wb") as f:
+    with open("../img/pic_user_current.png", "wb") as f:
         f.write(pickle.loads(get(url, headers={"Authorization": "Bearer " + token}).json()))
 
     return "Done"
