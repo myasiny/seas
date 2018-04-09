@@ -321,7 +321,7 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     """
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
-    with open("img/pic_current_user.png", "wb") as f:
+    with open("../img/pic_current_user.png", "wb") as f:
         f.write(pickle.loads(get(url, headers={"Authorization": "Bearer " + token}).json()))
 
     return "Done"

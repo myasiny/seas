@@ -78,7 +78,7 @@ class Course:
         self.execute(" INSERT INTO registrations (StudentID, CourseID) VALUES " + ids)
 
     def get_course_participants(self):
-        students = self.execute("Select m.Name, m.Surname, m.PersonID, m.Email, m.Username from members m join (registrations r, courses c) on m.PersonID = r.StudentID and c.code = '%s';" %self.code)
+        students = self.execute("Select m.Name, m.Surname, m.PersonID, m.Email, m.Username from members m, registrations r where m.PersonID = r.StudentID and r.CourseID =(Select CourseID from courses where courses.Code = '%s')" %self.code)
         return students
 
     def register_student_csv(self, csvDataFile, lecturer):
@@ -96,7 +96,7 @@ class Course:
             role = 4
             username = name.split()[0].lower() + surname.lower()
             password = passwordGenerator(8)
-            check = self.execute("Insert into members(PersonID, Role, Name, Surname, Username, Password, Email) values(%s, '%s', '%s', '%s', '%s', '%s', '%s');" % (student_number, role, name, surname, username, pas.hash_password(password), mail))
+            check = self.execute("INSERT IGNORE INTO members(PersonID, Role, Name, Surname, Username, Password, Email) values(%s, '%s', '%s', '%s', '%s', '%s', '%s');" % (student_number, role, name, surname, username, pas.hash_password(password), mail))
             if check is not None:
                 auth.append((name + " " + surname, mail, password, username))
             reg.append(student_number)

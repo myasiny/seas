@@ -134,6 +134,8 @@ def signInUser(organization, username):
                 rtn.append(pickle.dumps(pic))
             except IOError:
                 rtn.append(None)
+            except TypeError:
+                rtn.append(None)
             db.close_connection()
             return jsonify(rtn)
         else:
@@ -142,6 +144,9 @@ def signInUser(organization, username):
     except IndexError:
         db.close_connection()
         return jsonify("Wrong Username")
+    except:
+        db.close_connection()
+        return jsonify("An error occurred")
 
 
 @app.route("/organizations/<string:organization>/<string:username>/out", methods=["PUT"])
@@ -219,7 +224,7 @@ def putStudentList(organization, course, liste):
             rtn = jsonify(Course(db, organization, course).register_student(pickle.loads(request.form["liste"])))
             db.close_connection()
             return rtn
-
+    db.close_connection()
     return jsonify("Unauthorized access!")
 
 
@@ -235,6 +240,7 @@ def getStudentList(organization, course):
         rtn = jsonify(Course(db, organization, course).get_course_participants())
         db.close_connection()
         return rtn
+    db.close_connection()
     return jsonify("Unauthorized access!")
 
 
@@ -390,11 +396,13 @@ def answerExam(organization, course, question_id, username):
         db.close_connection()
         return jsonify("Unauthorized access!")
     if check_lecture_permision(organization, token, course):
-        db.get_connection()
         user = Student(db, organization, username)
         rtn = jsonify(user.add_answer(question_id, request.form["answers"]))
         db.close_connection()
-        return jsonify("Unauthorized access!")
+        return jsonify("Done")
+    db.close_connection()
+    return jsonify("Unauthorized access!")
+
 
 
 @app.route("/organizations/<string:organization>/<string:username>/pic", methods=["PUT", "GET"])

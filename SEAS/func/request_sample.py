@@ -27,41 +27,41 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 
 # print signIn("fatihgulmez", "123456")
 # print signIn("admin", "12345")
-# print signIn("superuser", "12345")
+# # print signIn("superuser", "12345")
 # print signIn("alicakmak", "12345")
 
 # print addCourse(admin_token, "Data Science", "data 101", ["alicakmak"])
 # print getCourse(lecturer_token, "phys_101")
 #
-# print registerStudent(lecturer_token, "EECS 468", True, "ornek.csv", "alicakmak")
+# print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
 
-# print registerStudent(lecturer_token, "phys 101", False, [213962062, 212011111, 212980975, 213860387], "alicakmak")
+# print registerStudent(lecturer_token, "data 101", False, [213962062, 212011111, 212980975, 213860387], "alicakmak")
 
-
-# print getCourseStudents(lecturer_token, "Eecs 468")
+# print getCourseStudents(lecturer_token, "phys 101")
 
 # print getUserCourses(lecturer_token, "alicakmak")
 
 # print getUserCourses(student_token, "fatihgulmez")
 
-# print changePassword(student_token, "fatihgulmez", "123456", "12345", False)
+# print changePassword(student_token, "fatihgulmez", "12345", "123456", False)
 
-# print deleteStudentFromLecture(lecturer_token, "Phys 101", "213962062")
+# print deleteStudentFromLecture(lecturer_token, "Data 101", "213962062")
 
 #### HOW TO CREATE EXAM
 
 # print createExam(lecturer_token,
-#                  "phys 101",
-#                  "phisics mt 3",
+#                  "data 101",
+#                  "data mt 1",
 #                  "2018-04-09 22:30:00",
 #                  5,
 #                  status="draft"
 # )
 
 # print add_time_to_exam(lecturer_token,
-#                        "phys 101",
-#                        "phisics_mt_2",
+#                        "data 101",
+#                        "data_mt_1",
 #                        10)
+
 #                   {1:
 #                       {"type": "classic",
 #                         "subject": "ataturk",
@@ -93,7 +93,7 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 #                   }
 
 
-# print addQuestionToExam(lecturer_token, "phys 101", "phisics mt 1", {"type": "test",
+# print addQuestionToExam(lecturer_token, "data 101", "data mt 1", {"type": "test",
 #                       "subject": "math",
 #                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
 #                       "answer": "c",
@@ -105,13 +105,13 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 
 
 ## HOW TO GET EXAM
-print getExam(lecturer_token,
-                 "phys 101",
-                 "phisics Mt 3")
+# print getExam(lecturer_token,
+#                  "data 101",
+#                  "data Mt 1")
 
-# print sendAnswers(student_token,"EECS 468", 13, "fatihgulmez", "Ataturk")
+# print sendAnswers(student_token,"data 101", 45, "fatihgulmez", "A")
 
-# print deleteExam(lecturer_token, "as", "eecs_468")
+# print deleteExam(lecturer_token, "data mt 1", "data_101")
 
 # print uploadProfilePic(student_token, "fatihgulmez", "picc.png")
 
@@ -119,7 +119,7 @@ print getExam(lecturer_token,
 
 # print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 60)
 
-# print getExamsOfLecture(student_token, "eecs 468")
+# print getExamsOfLecture(lecturer_token, "data 101")
 
 # print edit_question(lecturer_token, "eecs 468",
 #                     "bioinformatic_mt_2",
@@ -136,12 +136,10 @@ print getExam(lecturer_token,
 
 
 # print change_status_of_exam(lecturer_token,
-#                             "eecs 468",
-#                             "bioinformatic_mt_2",
-#                             "active")
+#                             "data 101",
+#                             "data_mt_1",
+#                             "draft")
 
 # print resetPassword("alioz")
 
 # print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
-
-# print signIn("fatihgulmez", "123456")

@@ -30,7 +30,6 @@ class MySQLdb:
         self.cursor = self.db.cursor(buffered=True)
 
     def initialize_organization(self, organization):
-        self.get_connection()
         a = self.execute(
             "CREATE SCHEMA %s;" %organization
         )
@@ -200,8 +199,11 @@ class MySQLdb:
         pass
 
     def if_token_revoked(self, token):
-        result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
-        return len(result) > 0
+        try:
+            result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
+            return len(result) > 0
+        except InterfaceError:
+            return False
 
     def revoke_token(self, token):
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
@@ -221,7 +223,7 @@ class MySQLdb:
             self.__commit()
         except InterfaceError:
             for result in self.db.cmd_query_iter(command):
-                print result
+                pass
             self.__commit()
         return None
 

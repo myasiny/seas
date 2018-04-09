@@ -3,7 +3,7 @@ import os, threading
 from Password import Password
 from External_Functions.passwordGenerator import passwordGenerator
 from External_Functions.sendEmail import send_mail_first_login, send_mail_password_reset
-from mysql.connector import IntegrityError
+from mysql.connector import IntegrityError, InterfaceError
 
 
 class User:
@@ -21,10 +21,13 @@ class User:
         """
         :return: List, [studentID, roleID, name, surname, username, password_hash, email, department, profile_pic_path]
         """
-        self.user_id, self.role, self.name, self.surname, self.username, self.hashed_pass, self.email, self.department, self.profile_pic_path = self.execute("SELECT * FROM members WHERE Username='%s'" % (self.username))[0]
-        self.role_name = self.execute("SELECT Role FROM roles WHERE roleID = %s" %self.role)[0][0]
-        rtn = [self.username, self.name, self.surname, self.user_id, self.role_name, self.email, self.department]
-        return rtn
+        try:
+            self.user_id, self.role, self.name, self.surname, self.username, self.hashed_pass, self.email, self.department, self.profile_pic_path = self.execute("SELECT * FROM members WHERE Username='%s'" % (self.username))[0]
+            self.role_name = self.execute("SELECT Role FROM roles WHERE roleID = %s" %self.role)[0][0]
+            rtn = [self.username, self.name, self.surname, self.user_id, self.role_name, self.email, self.department]
+            return rtn
+        except InterfaceError:
+            return "No such a question!"
 
     def change_password_or_email(self, oldPassword, newVal, email=False):
         if self.pass_word.verify_password_hash(oldPassword, self.hashed_pass):
@@ -45,7 +48,7 @@ class User:
     def upload_profile_pic(self, pic, content, path):
         if pic and self.allowed_file(pic.filename):
             extension = "." + pic.filename.rsplit('.', 1)[1].lower()
-            path = path + "media/%s/profiles/" % self.organization + self.user_id + extension
+            path = path + "media/%s/profiles/" % self.organization + str(self.user_id) + extension
             if not os.path.exists(os.path.dirname(path)):
                 os.makedirs(os.path.dirname(path))
             with open(path, "wb") as f:
