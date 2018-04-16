@@ -74,7 +74,7 @@ def on_pre_enter(self):
             std.append(d[0].title() + " " + d[1].title() + " - " + str(d[2]))
         temp_student_list.write(self.cipher.encrypt(str("*[SEAS-NEW-LINE]*".join(std))))
         temp_student_list.close()
-    print "bok"
+
     temp_student_list = open("data/temp_student_list.seas", "r")
     self.data_student_list = self.cipher.decrypt(temp_student_list.read()).split("*[SEAS-NEW-LINE]*")
 

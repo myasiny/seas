@@ -27,7 +27,7 @@ class User:
             rtn = [self.username, self.name, self.surname, self.user_id, self.role_name, self.email, self.department]
             return rtn
         except InterfaceError:
-            return "No such a question!"
+            return "No such a person!"
 
     def change_password_or_email(self, oldPassword, newVal, email=False):
         if self.pass_word.verify_password_hash(oldPassword, self.hashed_pass):
@@ -93,7 +93,7 @@ class Lecturer(User):
         self.execute("USE %s" % organization)
         self.username = username
         self.organization = organization
-        self.allowed_extensions = set(['png', 'jpg', 'jpeg'])
+        self.allowed_extensions = {'png', 'jpg', 'jpeg'}
         self.pass_word = Password()
         self.get = self.get_user_info()
 

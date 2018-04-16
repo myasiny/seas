@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 import mysql.connector
 from DBTable import DBTable
-from mysql.connector import pooling, InterfaceError
+from mysql.connector import pooling, InterfaceError, PoolError
 
 class MySQLdb:
     def __init__(self, dbName, user="tester", password="wivern@seas"):
@@ -16,14 +16,20 @@ class MySQLdb:
         }
 
         self.pool = pooling.MySQLConnectionPool(pool_name="conn",
-                                       pool_size=2,pool_reset_session=True,
+                                       pool_size=4,pool_reset_session=True,
                                        **dbconfig)
 
     def __enter__(self):
-        self.get_connection()
+        try:
+            self.get_connection()
+        except PoolError:
+            self.close_connection()
+            self.get_connection()
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close_connection()
+        print "disconnected"
 
     def get_connection(self):
         self.db = self.pool.get_connection()
@@ -231,4 +237,3 @@ class MySQLdb:
         return self.db.commit()
     def close_connection(self):
         self.db.close()
-

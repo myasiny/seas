@@ -2,13 +2,24 @@
 
 from database_api import *
 
-import threading
+def get_token(role):
+    if role == "student":
+        username, password = "fatihgulmez", "123456"
+    elif role == "lecturer":
+        username, password = "alicakmak", "12345"
+    else: #Admin
+        username, password = "admin", "12345"
 
-# Since DEBUG mode is on, you can use this tokens.
-# superuser_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1ZmNiNmY5OC0xYTY2LTQ0ZTQtYWY3ZS01ZWRmZDUwYWUzNTMiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUxOTkwNjk3OSwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUxOTkwNjk3OSwiaWRlbnRpdHkiOlsic3VwZXJ1c2VyIiwic3VwZXJ1c2VyIiwiMjAxOC0wMy0wMSAxNToyMjo1OS40MjQwMDAiXX0.lgvPgmJQ8Ua01oxBBdabaayVdbJhO0W5D3hRBL3Nlbg"
-admin_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhY2EwNDkxYy0wNWE4LTQ1MzMtODA1NC05MzIyMTNlMGM0OTIiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTQ2MTAzOCwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTQ2MTAzOCwiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJhZG1pbiIsIm9yZ2FuaXphdGlvbiI6ImlzdGFuYnVsX3NlaGlyX3VuaXZlcnNpdHkiLCJyb2xlIjoiYWRtaW4iLCJ0aW1lIjoiMjAxOC0wMy0xOSAxNTowMzo1OC43NjgwMDAifX0.QUVp_RGqrnyUMt_-UY_2qFBk1Wab1-U_7IFwLWxwVDQ"
-lecturer_token ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2ZmRjNDNkYy1lZTc2LTRhNTgtOTkwYS0wOGFjMzIwZmZlNDEiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTc4OTcxMywidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTc4OTcxMywiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJhbGljYWttYWsiLCJvcmdhbml6YXRpb24iOiJpc3RhbmJ1bF9zZWhpcl91bml2ZXJzaXR5Iiwicm9sZSI6ImxlY3R1cmVyIiwiaWQiOjEsInRpbWUiOiIyMDE4LTAzLTIzIDEwOjIxOjUzLjQzMTAwMCJ9fQ.dphHVRnX-Usg9sXlRkveP9BxNsZkOyKf5r7Tnh6iCwo"
-student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MWVkLTQyOWUtYWE1Yy0zZDA2YzM3NWRmNmQiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMTQ2MTAzNywidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMTQ2MTAzNywiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJmYXRpaGd1bG1leiIsIm9yZ2FuaXphdGlvbiI6ImlzdGFuYnVsX3NlaGlyX3VuaXZlcnNpdHkiLCJyb2xlIjoic3R1ZGVudCIsInRpbWUiOiIyMDE4LTAzLTE5IDE1OjAzOjU3LjIzODAwMCJ9fQ.TXsck-9VUD25Jx5zgY3svfoJZX1HMl_89_LBhc4g-N0"
+    auth = signIn(username, password)
+    print auth
+    return auth[-1]
+
+# student_token = get_token("student")
+# print student_token
+# lecturer_token = get_token("lecturer")
+# print lecturer_token
+# admin_token = get_token("admin")
+# print admin_token
 
 ### Sample usage of API
 
@@ -16,7 +27,8 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 
 # print addOrganization(superuser_token)
 # print addOrganization(admin_token, organization="istanbul technical university")
-#
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJhOGVjMDExZS1mNjk0LTRlMTgtYTBiYy0zY2YxYmY0NDI5YTYiLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMzY0MzQ1MiwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMzY0MzQ1MiwiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJmYXRpaGd1bG1leiIsIm9yZ2FuaXphdGlvbiI6ImlzdGFuYnVsX3NlaGlyX3VuaXZlcnNpdHkiLCJyb2xlIjoic3R1ZGVudCIsImlkIjoyMTM5NjIwNjIsInRpbWUiOiIyMDE4LTA0LTEzIDIxOjE3OjMyLjExMzA1NCJ9fQ.v2FNUOoNQ8UneNsT4iRY_u1pSDzybmeoK8ZQO00Pw-s
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ZGIxMWU2My03Y2Y0LTRhZTAtYWZmMi0wNWU5NjQ4ZGM0ZjciLCJmcmVzaCI6ZmFsc2UsImlhdCI6MTUyMzY0MzQ4NSwidHlwZSI6ImFjY2VzcyIsIm5iZiI6MTUyMzY0MzQ4NSwiaWRlbnRpdHkiOnsidXNlcm5hbWUiOiJmYXRpaGd1bG1leiIsIm9yZ2FuaXphdGlvbiI6ImlzdGFuYnVsX3NlaGlyX3VuaXZlcnNpdHkiLCJyb2xlIjoic3R1ZGVudCIsImlkIjoyMTM5NjIwNjIsInRpbWUiOiIyMDE4LTA0LTEzIDIxOjE4OjA1LjEwNDgyNSJ9fQ.15WVY0UQCQMd-OCsi6S6onP_-Yt36ZTA1klu3qCFrkg
 # print addUser(admin_token, "213962062", "Fatih", "gulmez", "fatihgulmez", "12345","fatihgulmez@std.sehir.edu.tr", "Computer Science", role="student")
 # print addUser(admin_token, "213955555", "Muhammed Yasin", "Yildirim", "muhammedyildirim", "12345","muhamed@std.sehir.edu.tr", "Computer Science" , role="student")
 # print addUser(admin_token, "213944444", "Ali Emre", "Oz", "alioz", "12345", "alioz@std.sehir.edu.tr", "Computer Science" ,role="student")
@@ -25,23 +37,20 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-# print signIn("fatihgulmez", "123456")
-# print signIn("admin", "12345")
-# # print signIn("superuser", "12345")
-# print signIn("alicakmak", "12345")
-
-# print addCourse(admin_token, "Data Science", "data 101", ["alicakmak"])
+# print addCourse(admin_token, "Data Analytics", "data 102", ["alicakmak"])
 # print getCourse(lecturer_token, "phys_101")
 #
 # print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
 
 # print registerStudent(lecturer_token, "data 101", False, [213962062, 212011111, 212980975, 213860387], "alicakmak")
 
-# print getCourseStudents(lecturer_token, "phys 101")
+# print getCourseStudents(lecturer_token, "data 101")
 
 # print getUserCourses(lecturer_token, "alicakmak")
 
 # print getUserCourses(student_token, "fatihgulmez")
+
+
 
 # print changePassword(student_token, "fatihgulmez", "12345", "123456", False)
 
@@ -109,13 +118,13 @@ student_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MmM2NzQyMi01MW
 #                  "data 101",
 #                  "data Mt 1")
 
-print sendAnswers(student_token,"data 101", 45, "fatihgulmez", "A")
+# print sendAnswers(student_token,"data 101", 45, "fatihgulmez", "A")
 
 # print deleteExam(lecturer_token, "data mt 1", "data_101")
 
 # print uploadProfilePic(student_token, "fatihgulmez", "picc.png")
 
-# print getProfilePic(student_token, "fatihgulmez")
+# print getProfilePic(lecturer_token, "alicakmak")
 
 # print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 60)
 
@@ -143,3 +152,7 @@ print sendAnswers(student_token,"data 101", 45, "fatihgulmez", "A")
 # print resetPassword("alioz")
 
 # print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
+
+# print signOut(lecturer_token, "alicakmak")
+# print signOut(student_token, "fatihgulmez")
+# print signOut(admin_token, "admin")

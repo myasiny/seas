@@ -75,7 +75,7 @@ class Course:
         for i in studentIDList:
             ids += "(%s, %s)," %(i, lecture_id)
         ids = ids[0:-1] + ";"
-        self.execute(" INSERT INTO registrations (StudentID, CourseID) VALUES " + ids)
+        self.execute(" INSERT IGNORE INTO registrations (StudentID, CourseID) VALUES " + ids)
 
     def get_course_participants(self):
         students = self.execute("Select m.Name, m.Surname, m.PersonID, m.Email, m.Username from members m, registrations r where m.PersonID = r.StudentID and r.CourseID =(Select CourseID from courses where courses.Code = '%s')" %self.code)
