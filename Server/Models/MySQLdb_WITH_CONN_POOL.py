@@ -235,5 +235,6 @@ class MySQLdb:
 
     def __commit(self):
         return self.db.commit()
+
     def close_connection(self):
         self.db.close()

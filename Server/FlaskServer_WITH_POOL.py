@@ -99,7 +99,7 @@ def signUpUser(organization):
             return rtn
 
 
-@app.route("/organizations/<string:organization>/<string:username>", methods=["GET"])
+@app.route(" ", methods=["GET"])
 # todo: Fatihgulmez , separate data manipulation and access from views!!!
 def signInUser(organization, username):
     with db:
@@ -148,7 +148,6 @@ def is_revoked(token):
         rtn = db.if_token_revoked(jti)
         return rtn
 
-# @connection_wrapper
 @app.route("/organizations/<string:organization>/<string:course>", methods=['PUT'])
 @jwt_required
 
@@ -359,9 +358,12 @@ def profilePicture(organization, username):
             return rtn
         else:
             path = user.get_profile_picture()
-            with open(path, "rb") as f:
-                a = f.read()
-            return jsonify(pickle.dumps(a))
+            try:
+                with open(path, "rb") as f:
+                    a = f.read()
+                    return jsonify(pickle.dumps(a))
+            except TypeError:
+                return jsonify(None)
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<question_id>/answers/<string:studentUser>/grade", methods=["PUT"])
