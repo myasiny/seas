@@ -1,25 +1,29 @@
-'''
-    This method checks whether communication with server is still alive or not
-    Accordingly, it updates top-right image on pages where connection status is shown (e.g. PgLogin)
-'''
+"""
+check_connection
+================
 
-from kivy.logger import Logger
+`check_connection` checks status of communication with server and updates image widget accordingly.
+"""
 
-from SEAS.func import database_api
+from func import database_api
 
-def check_connection(img, dt):
+__author__ = "Muhammed Yasin Yildirim"
+
+
+def is_alive(img, dt):
+    """
+    This method checks if that server is alive and updates image shown on given widget accordingly.
+    :param img: It is image widget updated according to status of server communication.
+    :param dt: It is for handling callback input.
+    :return:
+    """
+
     try:
         if database_api.testConnection():
-            img.source = "img/ico_connection_success.png"
-
-            Logger.info("check_connection: GUI successfully connected to server")
+            img.source = "data/img/ico_connection_success.png"
         else:
-            img.source = "img/ico_connection_fail.png"
-
-            Logger.error("check_connection: GUI couldn't connect to server")
+            img.source = "data/img/ico_connection_fail.png"
     except:
-        img.source = "img/ico_connection_fail.png"
-
-        Logger.error("check_connection: Server is not reachable")
+        img.source = "data/img/ico_connection_wait.png"
     finally:
         img.reload()

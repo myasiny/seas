@@ -1,0 +1,307 @@
+<EduQuestion>:
+    FloatLayout:
+        id: layout_page
+
+        canvas:
+            Rectangle:
+                source: "data/img/bg_screen_light.png"
+                size: self.size
+                pos: self.pos
+
+        FloatLayout:
+            id: layout_menubar
+            size_hint_y: .075
+            pos_hint: {"x": 0, "y": .925}
+
+            canvas:
+                Rectangle:
+                    source: "data/img/bg_menubar.png"
+                    size: self.size
+                    pos: self.pos
+
+            Image:
+                source: "data/img/bg_menubar_round_light.png"
+                opacity: .25
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .25, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Image:
+                source: "data/img/ico_seas.png"
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .075, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Button:
+                id: btn_question_cancel
+                text: "CANCEL"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 3
+                background_normal: "data/img/widget_red.png"
+                background_down: "data/img/widget_red_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .1, .8
+                pos_hint: {"center_x": .25, "y": .15}
+                on_release: root.on_question_cancel()
+
+            Button:
+                id: btn_question_complete
+                text: "COMPLETE"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 3
+                background_normal: "data/img/widget_green.png"
+                background_down: "data/img/widget_green_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .1, .8
+                pos_hint: {"center_x": .75,"y": .15}
+                on_release: root.on_question_add("complete")
+
+            Button:
+                id: btn_question_add
+                text: "New Question >"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 3
+                background_normal: "data/img/widget_purple_75.png"
+                background_down: "data/img/widget_purple_75_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .15, .8
+                pos_hint: {"x": .85,"y": .15}
+                on_release: root.on_question_add("add")
+
+        Image:
+            id: img_top
+            source: "data/img/widget_black_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .125
+            pos_hint: {"center_x": .5, "center_y": .8}
+
+        Image:
+            id: img_body
+            source: "data/img/widget_gray_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .825
+            pos_hint: {"center_x": .5, "center_y": .45}
+
+        Label:
+            id: txt_question_no
+            text: "Question"
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .8}
+
+        GridLayout:
+            cols: 6
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .8}
+
+            CheckBox:
+                id: check_1
+                group: "type"
+                size_hint_x: .25
+
+            Label:
+                text: "Programming"
+                multiline: False
+                font_name: "data/font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 6
+
+            CheckBox:
+                id: check_2
+                group: "type"
+                size_hint_x: .25
+
+            Label:
+                text: "Short Answer"
+                multiline: False
+                font_name: "data/font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 6
+
+            CheckBox:
+                id: check_3
+                group: "type"
+                size_hint_x: .25
+
+            Label:
+                text: "Multiple Choice"
+                multiline: False
+                font_name: "data/font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 6
+
+        TextInput:
+            id: input_subject
+            hint_text: "Subject"
+            write_tab: False
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .675}
+
+        TextInput:
+            id: input_tags
+            hint_text: "Tags"
+            write_tab: False
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .55}
+
+        TextInput:
+            id: input_grade
+            hint_text: "Grade"
+            write_tab: False
+            multiline: False
+            input_type: "number"
+            input_filter: "int"
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .425}
+
+        TextInput:
+            id: input_question_body
+            hint_text: "Question"
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 9
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 9, 0]
+            size_hint: .4, .3
+            pos_hint: {"center_x": .25, "center_y": .2}
+
+        TextInput:
+            id: input_short_answer
+            hint_text: "Answer"
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 20.25
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 20.25, 0]
+            size_hint: .4, .675
+            pos_hint: {"center_x": .75, "center_y": .3875}
+
+        TextInput:
+            id: input_input
+            hint_text: "Input"
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 9
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 9, 0]
+            size_hint: .4, .3
+            pos_hint: {"center_x": .75, "center_y": .575}
+
+        TextInput:
+            id: input_output
+            hint_text: "Output"
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 9
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 9, 0]
+            size_hint: .4, .3
+            pos_hint: {"center_x": .75, "center_y": .2}
+
+        TextInput:
+            id: input_answer_a
+            hint_text: "A"
+            write_tab: False
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .675}
+
+        TextInput:
+            id: input_answer_b
+            hint_text: "B"
+            write_tab: False
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .55}
+
+        TextInput:
+            id: input_answer_c
+            hint_text: "C"
+            write_tab: False
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .425}
+
+        TextInput:
+            id: input_answer_d
+            hint_text: "D"
+            write_tab: False
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .3}
+
+        TextInput:
+            id: input_answer_e
+            hint_text: "E"
+            write_tab: False
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .175}
+
+        Image:
+            id: ico_status
+            source: "data/img/ico_status_warning.png"
+            opacity: 0
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .9375, "center_y": .8}

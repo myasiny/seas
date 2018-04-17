@@ -42,7 +42,7 @@ def get_token(role):
 #
 # print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
 
-# print registerStudent(lecturer_token, "data 101", False, [213962062, 212011111, 212980975, 213860387], "alicakmak")
+# print registerStudent(lecturer_token, "engr 468", False, [213860387, 212011111, 212980975, 213860387], "alicakmak")
 
 # print getCourseStudents(lecturer_token, "data 101")
 

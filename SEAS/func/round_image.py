@@ -1,41 +1,55 @@
-'''
-    This method imports profile picture from server and rounds it in order to show on top menu and PgProfile
-'''
+"""
+round_image
+===========
 
-from kivy.cache import Cache
-from kivy.logger import Logger
+`round_image` imports profile picture of user from server and renders it.
+"""
 
-from SEAS.func import database_api
 from PIL import Image, ImageOps, ImageDraw
 
-def round_render():
-    def render(filename):
-        try:
-            size = (512, 512)
-            mask = Image.new("L", size, 0)
-            draw = ImageDraw.Draw(mask)
-            draw.ellipse((0, 0) + size, fill=255)
-            img = Image.open("img/pic_%s.png" % filename)
-            output = ImageOps.fit(img, mask.size, centering=(0.5, 0.5))
-            output.putalpha(mask)
-            output.save("img/pic_%s.png" % filename)
-            output.close()
+from kivy.cache import Cache
 
-            Logger.info("round_image: Profile picture successfully rounded on local")
-        except:
-            Logger.error("round_image: Profile picture couldn't rounded on local")
+from func import database_api
+
+__author__ = "Muhammed Yasin Yildirim"
+__credits__ = ["Ali Emre Oz"]
+
+
+def render_image():
+    """
+    This method resizes and crops image roundly.
+    :return:
+    """
+
+    size = (512, 512)
+    mask = Image.new("L",
+                     size,
+                     0
+                     )
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0) + size,
+                 fill=255
+                 )
+    img = Image.open("data/img/pic_user_current.png")
+    output = ImageOps.fit(img,
+                          mask.size,
+                          centering=(0.5, 0.5)
+                          )
+    output.putalpha(mask)
+    output.save("data/img/pic_user_current.png")
+    output.close()
+
+
+def update_image():
+    """
+    This method tries to get profile picture of user from server for rendering.
+    :return: It is for declaring that user has profile picture.
+    """
 
     try:
-        # temp_login = open("data/temp_login.seas", "r")
-        # data_login = temp_login.readlines()
-
         if database_api.getProfilePic(Cache.get("info", "token"), Cache.get("info", "nick")) == "Done":
-            Logger.info("round_image: Profile picture successfully imported from server")
+            render_image()
 
-            render("current_user")
-        else:
-            Logger.info("round_image: Profile picture couldn't get imported from server, default one used in case")
-
-            render("user")
+            return True
     except:
-        Logger.error("round_image: Profile picture neither imported from server nor rounded on local")
+        return False

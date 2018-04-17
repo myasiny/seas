@@ -28,7 +28,6 @@ def addOrganization(token, URL=server_address, organization=current_organization
     """
     organization = organization.replace(" ", "_").lower()
     url = URL+"/organizations"
-    print url, organization
     return put(url, data={"data": organization},
                headers={"Authorization": "Bearer %s" % token}).json()
 
@@ -76,7 +75,7 @@ def signIn(username, password, URL=server_address, organization=current_organiza
     if rtn == "Wrong Password":
         return rtn
     if rtn[-1] is not None:
-        with open("../img/pic_user_current.png", "wb") as f:
+        with open("data/img/pic_user_current.png", "wb") as f:
             f.write(pickle.loads(rtn[-1]))
     return rtn[:-1]
 
@@ -264,7 +263,6 @@ def getExam(token, courseCode, name, URL=server_address, organization=current_or
     organization = organization.replace(" ", "_").lower()
     courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
     name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
-    print name
     url = URL + "/organizations/%s/%s/exams/%s" % (organization, courseCode, name)
     return get(url, headers = {"Authorization": "Bearer " + token}).json()
 
@@ -317,11 +315,11 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     :param username: String; username of request
     :param URL: String;  server address
     :param organization: String; university
-    :return: Done, saves profile picture to SEAS/img/pic_user_current.png
+    :return: Done, saves profile picture to SEAS/img/pic_username.png
     """
     organization = organization.replace(" ", "_").lower()
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
-    with open("../img/pic_user_current.png", "wb") as f:
+    with open("data/img/pic_user_current.png", "wb") as f:
         f.write(pickle.loads(get(url, headers={"Authorization": "Bearer " + token}).json()))
 
     return "Done"

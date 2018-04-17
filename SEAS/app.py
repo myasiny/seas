@@ -1,711 +1,597 @@
 #!/user/bin/env
+
+"""
+SEAS
+====
+
+`SEAS` provides a computer-based examination system. Thus, educators get the opportunity to prevent cheating issues,
+save time spent on exam evaluation and access exam data remotely. On the other hand, students benefit from the system
+by having a chance to test their codes on programming questions during exams. It also provides statistics and analyses
+in order to increase lecture efficiencies.
+"""
+
+import os
+import platform
 import sys
-sys.path.append("../")
 
-# Logger.info("app: Program successfully added to path and shebang stated")
-
-'''
-    That part is to state python shebang and add program to path in order to avoid compile or import errors on run-time
-'''
-
+from cryptography.fernet import Fernet
+from kivy.animation import Animation
 from kivy.app import App
 from kivy.cache import Cache
 from kivy.clock import Clock
-from kivy.logger import Logger
-from kivy.animation import Animation
+from kivy.config import Config
 from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
-import os, platform
-from cryptography.fernet import Fernet
-from pg import pgLogin, tabReset, pgStart, pgProfile, pgLects, pgLiveExam, pgNewExam, pgNewQuestion, pgStats, pgStdStart, pgStdLects, pgStdLiveExam, pgStdStats
+from func import database_api
+from pg import appLogin, appReset, eduLects, eduProfile, eduExam, eduQuestion, eduLive, stdLects
 
-'''
-    This part is to block esc for preventing quick exit and right click for preventing red dots on screen
-    Additionally, enabling file logging is also handled here
-'''
+__authors__ = ["Muhammed Yasin Yildirim", "Fatih Cagatay Gulmez", "Ali Emre Oz"]
+__credits__ = ["Ali Cakmak"]
+__version__ = "1.0.0"
+__status__ = "Prototype"
 
-from kivy.config import Config
-Config.set("kivy", "log_enable", "1")
-Config.set("kivy", "log_maxfiles", "-1")
-Config.set("kivy", "log_name", "temp_logs_%d-%m-%y_%H-%M-%S.seas")
-Config.set("kivy", "log_dir", os.path.dirname(os.path.abspath(__file__)) + "\\data\\logs\\")
+sys.path.append("../")
+
 Config.set("kivy", "exit_on_escape", "0")
 Config.set("input", "mouse", "mouse, multitouch_on_demand")
+# Config.set("kivy", "log_enable", "1")
+# Config.set("kivy", "log_maxfiles", "-1")
+# Config.set("kivy", "log_name", "seas_%d-%m-%y_%H-%M-%S.fay")
+# Config.set("kivy", "log_dir", os.path.dirname(os.path.abspath(__file__)) + "\\data\\log\\")
 
-Logger.info("app: Esc and right click successfully blocked")
 
-'''
-    This class is to organize functions of PgStdStats
-'''
+class StdStats(Screen):
+    pass
 
-class PgStdStats(Screen):
-    pgLogin.load_string("stdstats")
+
+class StdLive(Screen):
+    pass
+
+
+class StdProfile(Screen):
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_enter, on_pic_change, on_text_change, on_submit, on_quit, on_leave
+    """
+
+    appLogin.load_string("std_profile")
 
     def on_pre_enter(self, *args):
-        pgStart.on_pre_enter(self)
+        eduLects.load_buttons(self)
+        eduProfile.on_pre_enter(self)
 
     def on_enter(self, *args):
-        pgLogin.on_enter(self)
+        appLogin.on_enter(self)
 
-    def on_profile(self):
-        pages.append(PgStdProfile(name="PgStdProfile"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_profile(dt):
+        pages.append(StdProfile(name="StdProfile"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_start(self):
-        pages.append(PgStdStart(name="PgStdStart"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_lects():
+        pages.append(StdLects(name="StdLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_lects(self):
-        pages.append(PgStdLects(name="PgStdLects"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_stats():
+        pages.append(StdStats(name="StdStats"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_logout(self, dt):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
-
-    def on_quit(self, dt):
-        pgLogin.on_quit(self)
-
-    def on_leave(self, *args):
-        pgLogin.on_leave(self)
-
-'''
-    This class is to organize functions of PgStats
-'''
-
-class PgStats(Screen):
-    pgLogin.load_string("stats")
-
-    def on_pre_enter(self, *args):
-        pgStart.on_pre_enter(self)
-
-    def on_enter(self, *args):
-        pgLogin.on_enter(self)
-
-    def on_profile(self):
-        pages.append(PgProfile(name="PgProfile"))
-        tabReset.on_back(pages, screen)
-
-    def on_start(self):
-        pages.append(PgStart(name="PgStart"))
-        tabReset.on_back(pages, screen)
-
-    def on_lects(self):
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
-
-    def on_logout(self, dt):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
-
-    def on_quit(self, dt):
-        pgLogin.on_quit(self)
-
-    def on_leave(self, *args):
-        pgLogin.on_leave(self)
-
-'''
-    This class is to organize functions of PgStdLiveExam
-'''
-
-class PgStdLiveExam(Screen):
-    pgLogin.load_string("stdliveexam")
-
-    def on_pre_enter(self, *args):
-        pgStdLiveExam.on_pre_enter(self)
-
-    # def threaded_client(self):
-    #     pgStdLiveExam.threaded_client(self)
-
-    def on_run(self):
-        pgStdLiveExam.on_run(self)
-
-    def on_question_previous(self):
-        if pgStdLiveExam.on_question_previous(self):
-            pages.append(PgStdLiveExam(name="PgStdLiveExam"))
-            tabReset.on_back(pages, screen)
-
-    def on_question_remove(self):
-        pgStdLiveExam.on_question_remove(self)
-        pages.append(PgStdLects(name="PgStdLects"))
-        tabReset.on_back(pages, screen)
-
-    def on_question_next(self):
-        if pgStdLiveExam.on_question_next(self):
-            pages.append(PgStdLiveExam(name="PgStdLiveExam"))
-            tabReset.on_back(pages, screen)
-
-    def on_question_save(self):
-        pgStdLiveExam.on_question_save(self)
-        pages.append(PgStdLects(name="PgStdLects"))
-        tabReset.on_back(pages, screen)
-
-'''
-    This class is to organize functions of PgStdLects
-'''
-
-class PgStdLects(Screen):
-    pgLogin.load_string("stdlects")
-
-    def on_pre_enter(self, *args):
-        pgStart.on_pre_enter(self)
-        pgStdLects.on_pre_enter(self)
-
-    def on_enter(self, *args):
-        pgLogin.on_enter(self)
-
-    def on_profile(self):
-        pages.append(PgStdProfile(name="PgStdProfile"))
-        tabReset.on_back(pages, screen)
-
-    def on_start(self):
-        pages.append(PgStdStart(name="PgStdStart"))
-        tabReset.on_back(pages, screen)
-
-    def on_stats(self):
-        pages.append(PgStdStats(name="PgStdStats"))
-        tabReset.on_back(pages, screen)
-
-    def on_exam_selected(self, dt):
-        pgStdLects.on_exam_selected(self)
-
-    def on_join_exam(self):
-        pgStdLects.on_join_exam(self)
-        pages.append(PgStdLiveExam(name="PgStdLiveExam"))
-        tabReset.on_back(pages, screen)
-
-    def on_personal_statistics(self):
-        pgStdLects.on_personal_statistics(self)
-
-    def on_logout(self, dt):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
-
-    def on_quit(self, dt):
-        pgLogin.on_quit(self)
-
-    def on_leave(self, *args):
-        pgLogin.on_leave(self)
-        pgStdLects.on_leave(self)
-
-'''
-    This class is to organize functions of PgStdProfile
-'''
-
-class PgStdProfile(Screen):
-    pgLogin.load_string("stdprofile")
-
-    def on_pre_enter(self, *args):
-        pgStart.on_pre_enter(self)
-        pgProfile.on_pre_enter(self)
-
-    def on_enter(self, *args):
-        pgLogin.on_enter(self)
-
-    def on_start(self):
-        pages.append(PgStdStart(name="PgStdStart"))
-        tabReset.on_back(pages, screen)
-
-    def on_lects(self):
-        pages.append(PgStdLects(name="PgStdLects"))
-        tabReset.on_back(pages, screen)
-
-    def on_stats(self):
-        pages.append(PgStdStats(name="PgStdStats"))
-        tabReset.on_back(pages, screen)
-
-    def on_change_pic(self):
-        pgProfile.on_change_pic(self)
-
-    def on_pic_selected(self, widget_name, file_path, mouse_pos):
-        if pgProfile.on_pic_selected(self, widget_name, file_path, mouse_pos):
-            pages.append(PgStdProfile(name="PgStdProfile"))
-            tabReset.on_back(pages, screen)
+    def on_pic_change(self, dt):
+        eduProfile.on_pic_change(self)
 
     def on_text_change(self, name):
-        pgProfile.on_text_change(self, name)
+        eduProfile.on_text_change(self, name)
 
     def on_submit(self):
-        pgProfile.on_submit(self)
+        eduProfile.on_submit(self)
 
-    def on_logout(self, dt):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
-
-    def on_quit(self, dt):
-        pgLogin.on_quit(self)
-
-    def on_leave(self, *args):
-        pgLogin.on_leave(self)
-
-'''
-    This class is to organize functions of PgStdStart
-'''
-
-class PgStdStart(Screen):
-    pgLogin.load_string("stdstart")
-
-    def on_pre_enter(self, *args):
-        pgStart.on_pre_enter(self)
-
-    def on_enter(self, *args):
-        pgLogin.on_enter(self)
-
-    def on_profile(self):
-        pages.append(PgStdProfile(name="PgStdProfile"))
-        tabReset.on_back(pages, screen)
-
-    def on_lects(self):
-        pages.append(PgStdLects(name="PgStdLects"))
-        tabReset.on_back(pages, screen)
-
-    def on_stats(self):
-        pages.append(PgStdStats(name="PgStdStats"))
-        tabReset.on_back(pages, screen)
-
-    def on_faq(self, no):
-        pgStdStart.on_faq(self, no)
-
-    def on_follow(self, name):
-        pgStart.on_follow(name)
-
-    def on_logout(self, dt):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_logout(dt):
+        EduLects.on_logout(dt)
 
     def on_quit(self, dt):
-        pgLogin.on_quit(self)
+        appLogin.on_quit(self)
 
     def on_leave(self, *args):
-        pgLogin.on_leave(self)
+        appLogin.on_leave(self)
 
-'''
-    This class is to organize functions of PgNewQuestion
-'''
 
-class PgNewQuestion(Screen):
-    pgLogin.load_string("newquestion")
+class StdLects(Screen):
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_enter, on_lect_select, on_exam_join, on_quit, on_leave
+    """
 
-    def on_pre_enter(self, *args):
-        pgNewQuestion.on_pre_enter(self)
-
-    def on_new_question_next(self):
-        if pgNewQuestion.on_new_question_next(self):
-            pages.append(PgNewQuestion(name="PgNewQuestion"))
-            tabReset.on_back(pages, screen)
-
-    def on_new_question_complete(self):
-        pgNewQuestion.on_new_question_complete(self)
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
-
-    def on_new_question_previous(self):
-        if pgNewQuestion.on_new_question_previous(self):
-            pages.append(PgNewQuestion(name="PgNewQuestion"))
-            tabReset.on_back(pages, screen)
-
-    def on_new_question_cancel(self):
-        pgNewQuestion.on_new_question_cancel(self)
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
-
-'''
-    This class is to organize functions of PgNewExam
-'''
-
-class PgNewExam(Screen):
-    pgLogin.load_string("newexam")
+    appLogin.load_string("std_lects")
 
     def on_pre_enter(self, *args):
-        pgStart.on_pre_enter(self)
-        pgNewExam.on_pre_enter(self)
+        eduLects.load_buttons(self)
+        eduLects.on_pre_enter(self)
 
     def on_enter(self, *args):
-        pgLogin.on_enter(self)
+        appLogin.on_enter(self)
 
-    def on_profile(self):
-        pages.append(PgProfile(name="PgProfile"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_profile(dt):
+        pages.append(StdProfile(name="StdProfile"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_start(self):
-        pages.append(PgStart(name="PgStart"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_lects():
+        pages.append(StdLects(name="StdLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_lects(self):
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_stats():
+        pages.append(StdStats(name="StdStats"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_stats(self):
-        pages.append(PgStats(name="PgStats"))
-        tabReset.on_back(pages, screen)
+    def on_lect_select(self, dt, dropdown, txt):
+        stdLects.on_lect_select(self, dropdown, txt)
 
-    def on_new_exam_cancel(self):
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
+    def on_exam_join(self):
+        if stdLects.on_exam_join(self):
+            pages.append(StdLive(name="StdLive"))
+            appReset.on_back(pages,
+                             screen
+                             )
 
-    def on_new_exam_create(self):
-        if pgNewExam.on_new_exam_create(self):
-            pages.append(PgNewQuestion(name="PgNewQuestion"))
-            tabReset.on_back(pages, screen)
-
-    def on_logout(self, dt):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_logout(dt):
+        EduLects.on_logout(dt)
 
     def on_quit(self, dt):
-        pgLogin.on_quit(self)
+        appLogin.on_quit(self)
 
     def on_leave(self, *args):
-        pgLogin.on_leave(self)
+        stdLects.on_leave(self)
+        appLogin.on_leave(self)
 
-'''
-    This class is to organize functions of PgLiveExam
-'''
 
-class PgLiveExam(Screen):
-    pgLogin.load_string("liveexam")
+class EduStats(Screen):
+    pass
+
+
+class EduLive(Screen):
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_time_add, on_exam_finish, on_leave
+    """
+
+    appLogin.load_string("edu_live")
 
     def on_pre_enter(self, *args):
-        pgLiveExam.on_pre_enter(self)
+        eduLive.on_pre_enter(self)
 
-    # def threaded_server(self):
-    #     pgLiveExam.threaded_server(self)
+    @staticmethod
+    def on_lects():
+        pages.append(EduLects(name="EduLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_value(self, instance, brightness):
-        pgLiveExam.on_value(self, brightness)
+    def on_time_add(self):
+        eduLive.on_time_add(self)
 
-    def on_monitor_backward(self):
-        pgLiveExam.on_monitor_backward(self)
-
-    def on_monitor_play(self):
-        pgLiveExam.on_monitor_play(self)
-
-    def on_monitor_pause(self):
-        pgLiveExam.on_monitor_pause(self)
-
-    def on_monitor_forward(self, dt):
-        pgLiveExam.on_monitor_forward(self)
-
-    def on_monitor_live(self):
-        pgLiveExam.on_monitor_live(self)
-
-    def on_add_time(self):
-        pgLiveExam.on_add_time(self)
-
-    def on_finish_exam(self):
-        pgLiveExam.on_finish_exam(self)
-
-    def on_participant_selected(self, dt):
-        pgLiveExam.on_participant_selected(self)
-
-    def on_lects(self, dt):
-        pgLiveExam.on_lects(self)
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
+    def on_exam_finish(self):
+        eduLive.on_exam_finish(self)
 
     def on_leave(self, *args):
-        pgLiveExam.on_leave(self)
+        eduLive.on_leave(self)
 
-'''
-    This class is to organize functions of PgLects
-'''
 
-class PgLects(Screen):
-    pgLogin.load_string("lects")
+class EduQuestion(Screen):
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_submit, on_question_add
+    """
+
+    appLogin.load_string("edu_question")
 
     def on_pre_enter(self, *args):
-        pgStart.on_pre_enter(self)
-        pgLects.on_pre_enter(self)
+        eduQuestion.on_pre_enter(self)
+
+    def on_submit(self):
+        eduQuestion.on_submit(self)
+
+    def on_question_add(self, command):
+        if self.on_submit():
+            if command == "complete":
+                self.on_question_cancel()
+            else:
+                pages.append(EduQuestion(name="EduQuestion"))
+                appReset.on_back(pages,
+                                 screen
+                                 )
+
+    @staticmethod
+    def on_question_cancel():
+        pages.append(EduLects(name="EduLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+
+class EduExam(Screen):
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_enter, on_exam_create, on_quit, on_leave
+    """
+
+    appLogin.load_string("edu_exam")
+
+    def on_pre_enter(self, *args):
+        eduLects.load_buttons(self)
+        eduExam.on_pre_enter(self)
 
     def on_enter(self, *args):
-        pgLogin.on_enter(self)
+        appLogin.on_enter(self)
 
-    def on_profile(self):
-        pages.append(PgProfile(name="PgProfile"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_profile(dt):
+        pages.append(EduProfile(name="EduProfile"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_start(self):
-        pages.append(PgStart(name="PgStart"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_lects():
+        pages.append(EduLects(name="EduLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_stats(self):
-        pages.append(PgStats(name="PgStats"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_stats():
+        pages.append(EduStats(name="EduStats"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_add_exam(self):
-        pages.append(PgNewExam(name="PgNewExam"))
-        tabReset.on_back(pages, screen)
+    def on_exam_create(self):
+        eduExam.on_exam_create(self)
+
+    @staticmethod
+    def on_question_add():
+        pages.append(EduQuestion(name="EduQuestion"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    @staticmethod
+    def on_logout(dt):
+        EduLects.on_logout(dt)
+
+    def on_quit(self, dt):
+        appLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        appLogin.on_leave(self)
+
+
+class EduProfile(Screen):
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_enter, on_pic_change, on_text_change, on_submit, on_quit, on_leave
+    """
+
+    appLogin.load_string("edu_profile")
+
+    def on_pre_enter(self, *args):
+        eduLects.load_buttons(self)
+        eduProfile.on_pre_enter(self)
+
+    def on_enter(self, *args):
+        appLogin.on_enter(self)
+
+    @staticmethod
+    def on_profile(dt):
+        pages.append(EduProfile(name="EduProfile"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    @staticmethod
+    def on_lects():
+        pages.append(EduLects(name="EduLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    @staticmethod
+    def on_stats():
+        pages.append(EduStats(name="EduStats"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    def on_pic_change(self, dt):
+        eduProfile.on_pic_change(self)
+
+    def on_text_change(self, name):
+        eduProfile.on_text_change(self, name)
+
+    def on_submit(self):
+        eduProfile.on_submit(self)
+
+    @staticmethod
+    def on_logout(dt):
+        EduLects.on_logout(dt)
+
+    def on_quit(self, dt):
+        appLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        appLogin.on_leave(self)
+
+
+class EduLects(Screen):
+    """
+    @group Design: on_pre_enter, on_exams, on_participants
+    @group Functionality: on_enter, on_lect_select, on_quit, on_leave
+    """
+
+    appLogin.load_string("edu_lects")
+
+    def on_pre_enter(self, *args):
+        eduLects.load_buttons(self)
+        eduLects.on_pre_enter(self)
+
+    def on_enter(self, *args):
+        appLogin.on_enter(self)
+
+    @staticmethod
+    def on_profile(dt):
+        pages.append(EduProfile(name="EduProfile"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    @staticmethod
+    def on_lects():
+        pages.append(EduLects(name="EduLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    @staticmethod
+    def on_stats():
+        pages.append(EduStats(name="EduStats"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    def on_lect_select(self, dt, dropdown, txt):
+        eduLects.on_lect_select(self, dropdown, txt)
+
+    @staticmethod
+    def on_exam_add():
+        pages.append(EduExam(name="EduExam"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
     def on_exams(self):
-        pgLects.on_exams(self)
-
-    def on_exam_selected(self, dt):
-        pgLects.on_exam_selected(self)
-
-    def on_exam_deleted(self, dt):
-        pgLects.on_exam_deleted(self)
-
-    def on_start_exam(self, dt):
-        pgLects.on_start_exam(self)
-        pages.append(PgLiveExam(name="PgLiveExam"))
-        tabReset.on_back(pages, screen)
+        eduLects.on_exams(self)
 
     def on_participants(self):
-        pgLects.on_participants(self)
+        eduLects.on_participants(self)
 
-    def on_participant_selected(self, dt):
-        pgLects.on_participant_selected(self)
+    @staticmethod
+    def on_live():
+        pages.append(EduLive(name="EduLive"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
-    def on_participant_deleted(self, dt):
-        pgLects.on_participant_deleted(self)
-
-    def on_import_list(self, dt):
-        pgLects.on_import_list(self)
-
-    def on_import_list_selected(self, widget_name, file_path, mouse_pos):
-        pgLects.on_import_list_selected(self, widget_name, file_path, mouse_pos)
-
-    def on_class_statistics(self):
-        pgLects.on_class_statistics(self)
-
-    def on_logout(self, dt):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
-
-    def on_quit(self, dt):
-        pgLogin.on_quit(self)
-
-    def on_leave(self, *args):
-        pgLogin.on_leave(self)
-
-'''
-    This class is to organize functions of PgProfile
-'''
-
-class PgProfile(Screen):
-    pgLogin.load_string("profile")
-
-    def on_pre_enter(self, *args):
-        pgStart.on_pre_enter(self)
-        pgProfile.on_pre_enter(self)
-
-    def on_enter(self, *args):
-        pgLogin.on_enter(self)
-
-    def on_start(self):
-        pages.append(PgStart(name="PgStart"))
-        tabReset.on_back(pages, screen)
-
-    def on_lects(self):
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
-
-    def on_stats(self):
-        pages.append(PgStats(name="PgStats"))
-        tabReset.on_back(pages, screen)
-
-    def on_change_pic(self):
-        pgProfile.on_change_pic(self)
-
-    def on_pic_selected(self, widget_name, file_path, mouse_pos):
-        if pgProfile.on_pic_selected(self, widget_name, file_path, mouse_pos):
-            pages.append(PgProfile(name="PgProfile"))
-            tabReset.on_back(pages, screen)
-
-    def on_text_change(self, name):
-        pgProfile.on_text_change(self, name)
-
-    def on_submit(self):
-        pgProfile.on_submit(self)
-
-    def on_logout(self, dt):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_logout(dt):
+        database_api.signOut(Cache.get("info",
+                                       "token"
+                                       ),
+                             Cache.get("info",
+                                       "nick"
+                                       )
+                             )
+        pages.append(AppLogin(name="AppLogin"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
     def on_quit(self, dt):
-        pgLogin.on_quit(self)
+        appLogin.on_quit(self)
 
     def on_leave(self, *args):
-        pgLogin.on_leave(self)
+        appLogin.on_leave(self)
 
-'''
-    This class is to organize functions of PgStart
-'''
 
-class PgStart(Screen):
-    pgLogin.load_string("start")
+class AppReset(Screen):
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_enter, on_reset, on_quit, on_leave
+    """
 
-    def on_pre_enter(self, *args):
-        pgStart.on_pre_enter(self)
-
-    def on_enter(self, *args):
-        pgLogin.on_enter(self)
-
-    def on_profile(self):
-        pages.append(PgProfile(name="PgProfile"))
-        tabReset.on_back(pages, screen)
-
-    def on_lects(self):
-        pages.append(PgLects(name="PgLects"))
-        tabReset.on_back(pages, screen)
-
-    def on_stats(self):
-        pages.append(PgStats(name="PgStats"))
-        tabReset.on_back(pages, screen)
-
-    def on_faq(self, no):
-        pgStart.on_faq(self, no)
-
-    def on_follow(self, name):
-        pgStart.on_follow(name)
-
-    def on_logout(self, dt):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
-
-    def on_quit(self, dt):
-        pgLogin.on_quit(self)
-
-    def on_leave(self, *args):
-        pgLogin.on_leave(self)
-
-'''
-    This class is to organize functions of TabReset
-'''
-
-class TabReset(Screen):
-    pgLogin.load_string("reset")
+    appLogin.load_string("app_reset")
 
     def on_pre_enter(self, *args):
-        tabReset.on_pre_enter(self)
+        appReset.on_pre_enter(self)
 
     def on_enter(self, *args):
-        pgLogin.on_enter(self)
+        appLogin.on_enter(self)
 
     def on_reset(self):
-        tabReset.on_reset(self)
+        appReset.on_reset(self)
 
-    def on_reset_confirm(self):
-        tabReset.on_reset_confirm(self)
-
-    def on_back(self):
-        pages.append(PgLogin(name="PgLogin"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_back(dt):
+        pages.append(AppLogin(name="AppLogin"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
     def on_quit(self, dt):
-        pgLogin.on_quit(self)
+        appLogin.on_quit(self)
 
     def on_leave(self, *args):
-        pgLogin.on_leave(self)
+        appLogin.on_leave(self)
 
-'''
-    This class is to organize functions of PgLogin
-'''
 
-class PgLogin(Screen):
-    pgLogin.load_string("login")
+class AppLogin(Screen):
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_enter, on_login, on_quit, on_leave
+    """
 
-    def __init__(self, **kwargs):
-        super(PgLogin, self).__init__(**kwargs)
-        self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self._on_keyboard_down)
-
-    def _keyboard_closed(self):
-        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-        self._keyboard = None
-
-    def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        if keycode[1] == "enter":
-            PgLogin.on_login(self)
-        return True
-
-    def on_submit(self):
-        PgLogin.on_login(self)
+    appLogin.load_string("app_login")
 
     def on_pre_enter(self, *args):
-        pgLogin.on_pre_enter(self)
+        appLogin.on_pre_enter(self)
 
     def on_enter(self, *args):
-        pgLogin.on_enter(self)
+        appLogin.on_enter(self)
 
     def on_login(self):
-        pgLogin.on_login(self, pages, screen, PgLects, PgStdLects)
+        appLogin.on_login(self,
+                          pages,
+                          screen,
+                          EduLects,
+                          StdLects
+                          )
 
-    def on_reset(self):
-        pages.append(TabReset(name="TabReset"))
-        tabReset.on_back(pages, screen)
+    @staticmethod
+    def on_reset(dt):
+        pages.append(AppReset(name="AppReset"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
     def on_quit(self, dt):
-        pgLogin.on_quit(self)
+        appLogin.on_quit(self)
 
     def on_leave(self, *args):
-        pgLogin.on_leave(self)
+        appLogin.on_leave(self)
 
-'''
-    This class is to organize functions of PgSplash
-'''
 
-class PgSplash(Screen):
-    pgLogin.load_string("splash")
+class AppSplash(Screen):
+    """
+    @group Design: on_enter
+    @group Functionality: skip
+    """
 
-    def skip(self, dt):
+    appLogin.load_string("app_splash")
+
+    @staticmethod
+    def skip(dt):
+        """
+        This method switches current screen to specified one.
+        :param dt: It is for handling callback input.
+        :return:
+        """
+
         screen.switch_to(pages[1])
 
     def on_enter(self, *args):
-        Clock.schedule_once(self.skip, 2)
+        """
+        This method schedules trigger for given callback. Meanwhile, it reveals specified image.
+        :param args: It is for handling Kivy.
+        :return:
+        """
+
+        Clock.schedule_once(self.skip,
+                            2
+                            )
 
         anim_fade = Animation(opacity=1, duration=1) + Animation(opacity=0, duration=1)
-        anim_fade.start(self.ids["img_developer_dark"])
+        anim_fade.start(self.ids["ico_wivern_round"])
 
-'''
-    This part is to handle page switching and refreshing
-'''
 
-pages = [PgSplash(name="PgSplash"),
-         PgLogin(name="PgLogin")]
+pages = [AppSplash(name="AppSplash"),
+         AppLogin(name="AppLogin")
+         ]
 
 screen = ScreenManager(transition=FadeTransition())
 screen.add_widget(pages[0])
 
-'''
-    This part is to configure icon, title, size and preferences of program
-    Additionally, settings for adding program to path, forcing run-on-top etc are also handled here
-'''
 
-class SeasApp(App):
+class SEASApp(App):
+    """
+    @group Design: build
+    @group Functionality: force
+    """
+
     icon = "icon.ico"
     title = "Smart Exam Administration System"
     use_kivy_settings = False
+
     Window.fullscreen = "auto"
 
-    Logger.info("app: Icon, title, size and preferences successfully set")
+    @staticmethod
+    def force(dt):
+        """
+        This method keeps window maximized and positioned.
+        :param dt: It is for handling callback input.
+        :return:
+        """
 
-    def build(self):
-        screen.current = "PgSplash"
-        return screen
-
-    def force(self):
         Window.top = 0
         Window.maximize()
         Window.restore()
 
-    Window.bind(on_cursor_leave=force)
+    def build(self):
+        """
+        This method binds given method to cursor event triggered when cursor leaves window and specifies current screen.
+        :return: It is screen manager that shows specified page.
+        """
 
-    Logger.info("app: Cursor track successfully bound")
+        Window.bind(on_cursor_leave=self.force)
+
+        screen.current = "AppSplash"
+        return screen
+
 
 def on_keyboard_event(event):
-    if platform.system() == "Windows":
-        if event.Key.lower() in []:  # TODO: ["lmenu", "lwin", "apps"]:
-            return False
-        else:
-            return True
+    """
+    This method checks if pressed key is banned or not.
+    :param event: It is information held for activated keyboard event.
+    :return: It is boolean depending on that key is banned or not.
+    """
+
+    if event.Key.lower() in []:  # TODO: "lmenu", "lwin", "apps"
+        return False
+    else:
+        return True
+
 
 if __name__ == "__main__":
-    Cache.register("config", limit=2)
-    Cache.append("config", "cipher", Fernet(Fernet.generate_key()))
+    Cache.register("info",
+                   limit=10
+                   )
+    Cache.register("lect",
+                   limit=3
+                   )
+    Cache.register("config",
+                   limit=2
+                   )
 
-    Logger.info("app: Cipher for encrypting local data successfully generated and stored on cache")
+    Cache.append("config",
+                 "cipher",
+                 Fernet(Fernet.generate_key())
+                 )
 
     if platform.system() == "Windows":
         import pyHook
@@ -714,18 +600,21 @@ if __name__ == "__main__":
         hm.KeyDown = on_keyboard_event
         hm.HookKeyboard()
 
-        Cache.append("config", "path", os.path.join(os.path.join(os.environ["USERPROFILE"]), "Desktop"))
-    elif platform.system() == "Linux":
-        os.system("sh sh/block.sh")
+        Cache.append("config",
+                     "path",
+                     os.path.join(os.path.join(os.environ["USERPROFILE"]),
+                                  "Desktop"
+                                  )
+                     )
+    else:
+        if platform.system() == "Linux":
+            os.system("sh sh/block.sh")
 
-        Cache.append("config", "path", os.path.join(os.path.join(os.path.expanduser("~")), "Desktop"))
+        Cache.append("config",
+                     "path",
+                     os.path.join(os.path.join(os.path.expanduser("~")),
+                                  "Desktop"
+                                  )
+                     )
 
-    Logger.info("app: Keys successfully blocked for %s" % platform.system())
-    Logger.info("app: Desktop path of %s successfully stored for file browser configuration" % platform.system())
-
-    Cache.register("info", limit=9)
-    Cache.register("lect", limit=3)
-
-    Logger.info("app: Cache slots for storing user and lecture information successfully registered")
-
-    SeasApp().run()
+    SEASApp().run()

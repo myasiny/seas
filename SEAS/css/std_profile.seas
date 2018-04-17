@@ -1,0 +1,314 @@
+<StdProfile>:
+    FloatLayout:
+        id: layout_page
+
+        canvas:
+            Rectangle:
+                source: "data/img/bg_screen_light.png"
+                size: self.size
+                pos: self.pos
+
+        FloatLayout:
+            id: layout_menubar
+            size_hint_y: .075
+            pos_hint: {"x": 0, "y": .925}
+
+            canvas:
+                Rectangle:
+                    source: "data/img/bg_menubar.png"
+                    size: self.size
+                    pos: self.pos
+
+            Image:
+                id: ico_connection
+                source: "data/img/ico_connection_wait.png"
+                keep_ratio: False
+                allow_stretch: True
+                size_hint_x: .075
+                pos_hint: {"x": .85, "y": 0}
+
+            Image:
+                source: "data/img/bg_menubar_round_light.png"
+                opacity: .25
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .25, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Image:
+                source: "data/img/ico_seas.png"
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .075, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Button:
+                id: btn_lects
+                text: "Lectures"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 2.5
+                background_normal: "data/img/widget_purple_75.png"
+                background_down: "data/img/widget_purple_75_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .15, .9
+                pos_hint: {"center_x": .25, "y": .1}
+                on_release: root.on_lects()
+
+            Button:
+                id: btn_stats
+                text: "Statistics"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 2.5
+                background_normal: "data/img/widget_purple_75.png"
+                background_down: "data/img/widget_purple_75_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .15, .9
+                pos_hint: {"center_x": .75, "y": .1}
+                on_release: root.on_stats()
+
+        Image:
+            id: img_widget_card
+            source: "data/img/widget_card.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .4, .25
+            pos_hint: {"center_x": .5, "center_y": .725}
+
+        Image:
+            id: img_fingerprint
+            source: "data/img/img_fingerprint.png"
+            opacity: .25
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .24, .24
+            pos_hint: {"x": .315, "center_y": .725}
+
+        Image:
+            id: img_qr_bg
+            source: "data/img/widget_black_75.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .027, .21
+            pos_hint: {"x": .314, "center_y": .725}
+
+        Image:
+            id: img_qr_1
+            source: "data/img/img_qr.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .025, .1
+            pos_hint: {"x": .315, "center_y": .775}
+
+        Image:
+            id: img_qr_2
+            source: "data/img/img_qr.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .025, .1
+            pos_hint: {"x": .315, "center_y": .675}
+
+        Image:
+            id: img_user_bg
+            source: "data/img/widget_black_75_round.png"
+            allow_stretch: True
+            size_hint: .205, .205
+            pos_hint: {"center_x": .415, "center_y": .725}
+
+        Image:
+            id: img_user_card
+            source: "data/img/pic_user.png"
+            allow_stretch: True
+            size_hint: .2, .2
+            pos_hint: {"center_x": .415, "center_y": .725}
+
+        Label:
+            id: txt_username
+            text: "..."
+            color: 0, 0, 0, 1
+            multiline: False
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 2
+            size_hint: .175, .05
+            pos_hint: {"x": .515, "y": .775}
+
+        Label:
+            id: txt_usermail
+            text: "..."
+            color: 0, 0, 0, 1
+            multiline: False
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 2
+            size_hint: .175, .05
+            pos_hint: {"x": .515, "y": .725}
+
+        Label:
+            id: txt_userdept
+            text: "..."
+            color: 0, 0, 0, 1
+            multiline: False
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 2
+            size_hint: .175, .05
+            pos_hint: {"x": .515, "y": .675}
+
+        Label:
+            id: txt_useruniv
+            text: "..."
+            color: 0, 0, 0, 1
+            multiline: False
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 2
+            size_hint: .175, .05
+            pos_hint: {"x": .515, "y": .625}
+
+        Image:
+            id: img_mid_top
+            source: "data/img/widget_black_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .3, .1
+            pos_hint: {"center_x": .5, "center_y": .5}
+
+        Image:
+            id: img_mid_body
+            source: "data/img/widget_gray_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .3, .5
+            pos_hint: {"center_x": .5, "center_y": .3}
+
+        Label:
+            id: txt_settings_head
+            text: "Personal Settings"
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 3
+            size_hint: .3, .1
+            pos_hint: {"center_x": .5, "center_y": .5}
+
+        TextInput:
+            id: input_current_password
+            hint_text: "Current Password"
+            password: True
+            write_tab: False
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .275, .075
+            pos_hint: {"center_x": .5, "y": .35}
+            on_text: root.on_text_change("current_password")
+
+        Image:
+            id: ico_status
+            source: "data/img/ico_status_warning.png"
+            opacity: 0
+            allow_stretch: True
+            size_hint: .05, .05
+            pos_hint: {"x": .5875, "y": .3625}
+
+        TextInput:
+            id: input_new_password
+            hint_text: "New Password"
+            password: True
+            write_tab: False
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .275, .075
+            pos_hint: {"center_x": .5, "y": .26}
+            on_text: root.on_text_change("new_password")
+
+        TextInput:
+            id: input_new_mail
+            hint_text: "New E-mail"
+            write_tab: False
+            multiline: False
+            input_type: "mail"
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 3, 0]
+            size_hint: .275, .075
+            pos_hint: {"center_x": .5, "y": .17}
+            on_text: root.on_text_change("new_mail")
+
+        Button:
+            id: btn_submit
+            text: "SUBMIT"
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 3
+            background_normal: "data/img/widget_purple_75.png"
+            background_down: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            size_hint: .275, .075
+            pos_hint: {"center_x": .5, "y": .075}
+            on_release: root.on_submit()
+
+        Image:
+            id: img_left_top
+            source: "data/img/widget_black_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .3, .1
+            pos_hint: {"center_x": .175, "center_y": .5}
+
+        Image:
+            id: img_left_body
+            source: "data/img/widget_gray_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .3, .5
+            pos_hint: {"center_x": .175, "center_y": .3}
+
+        Label:
+            id: txt_left_head
+            text: "Latest Activities"
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 3
+            size_hint: .3, .1
+            pos_hint: {"center_x": .175, "center_y": .5}
+
+        Image:
+            id: img_right_top
+            source: "data/img/widget_black_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .3, .1
+            pos_hint: {"center_x": .825, "center_y": .5}
+
+        Image:
+            id: img_right_body
+            source: "data/img/widget_gray_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .3, .5
+            pos_hint: {"center_x": .825, "center_y": .3}
+
+        Label:
+            id: txt_right_head
+            text: "Last Logins"
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 3
+            size_hint: .3, .1
+            pos_hint: {"center_x": .825, "center_y": .5}
