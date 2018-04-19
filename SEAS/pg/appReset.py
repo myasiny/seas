@@ -14,7 +14,7 @@ from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
 
-from func import image_button, text_button
+from func import image_button, text_button, database_api
 from func.garden.progressspinner import ProgressSpinner
 
 __author__ = "Muhammed Yasin Yildirim"
@@ -53,22 +53,24 @@ def on_reset(s):
 
     def on_reset_confirm(self=s):
         """
-        This method TODO
+        This method asks user to provide key sent to his or her e-mail for resetting password.
         :return:
         """
 
-        # ico_status_confirm.opacity = 0
-        #
-        # if not (input_key.text.strip() or input_new_password.text.strip()):
-        #     ico_status_confirm.opacity = 1
-        # else:
-        #     if TODO:
-        #         popup.dismiss()
-        #         self.on_back()
-        #     else:
-        #         ico_status_confirm.opacity = 1
+        self.ico_status_confirm.opacity = 0
 
-        pass
+        if not (self.input_key.text.strip() or self.input_new_password.text.strip()):
+            self.ico_status_confirm.opacity = 1
+        else:
+            is_ok = database_api.resetPassword(self.ids["input_username"].text,
+                                               self.input_key.text,
+                                               self.input_new_password.text
+                                               )
+            if is_ok == "Check your mail address for credentials.":
+                self.popup.dismiss()
+                self.on_back()
+            else:
+                self.ico_status_confirm.opacity = 1
 
     @mainthread
     def authorize(self=s):
@@ -100,11 +102,11 @@ def on_reset(s):
             btn_reset.disabled = False
         else:
             try:
-                data = None  # TODO
+                data = database_api.resetPassword(self.ids["input_username"].text)
             except:
                 data = None
 
-            if isinstance(data, list):
+            if data is not None:
                 self.remove_widget(ico_spinner)
 
                 ico_status.source = "data/img/ico_status_success.png"
@@ -114,46 +116,46 @@ def on_reset(s):
                 btn_reset.disabled = False
 
                 popup_content = FloatLayout()
-                popup = Popup(title="Reset Password",
-                              content=popup_content,
-                              separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
-                              size_hint=(None, None),
-                              size=(self.width / 3, self.height / 3)
-                              )
-                input_key = TextInput(hint_text="Confirmation Key",
-                                      write_tab=False,
-                                      multiline=False,
-                                      font_name="data/font/CaviarDreams_Bold.ttf",
-                                      font_size=self.height / 36,
-                                      background_normal="data/img/widget_gray_75.png",
-                                      background_active="data/img/widget_purple_75_select.png",
-                                      background_disabled_normal="data/img/widget_black_75.png",
-                                      padding_y=[self.height / 36, 0],
-                                      size_hint=(.9, .3),
-                                      pos_hint={"center_x": .5, "center_y": .8}
-                                      )
-                popup_content.add_widget(input_key)
-                input_new_password = TextInput(hint_text="New Password",
-                                               write_tab=False,
-                                               multiline=False,
-                                               password=True,
-                                               font_name="data/font/CaviarDreams_Bold.ttf",
-                                               font_size=self.height / 36,
-                                               background_normal="data/img/widget_gray_75.png",
-                                               background_active="data/img/widget_purple_75_select.png",
-                                               background_disabled_normal="data/img/widget_black_75.png",
-                                               padding_y=[self.height / 36, 0],
-                                               size_hint=(.9, .3),
-                                               pos_hint={"center_x": .5, "center_y": .4}
-                                               )
-                popup_content.add_widget(input_new_password)
-                ico_status_confirm = Image(source="data/img/ico_status_wrong.png",
-                                           allow_stretch=True,
-                                           opacity=0,
-                                           size_hint=(.15, .15),
-                                           pos_hint={"center_x": .9, "center_y": .8}
+                self.popup = Popup(title="Reset Password",
+                                   content=popup_content,
+                                   separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
+                                   size_hint=(None, None),
+                                   size=(self.width / 3, self.height / 3)
+                                   )
+                self.input_key = TextInput(hint_text="Confirmation Key",
+                                           write_tab=False,
+                                           multiline=False,
+                                           font_name="data/font/CaviarDreams_Bold.ttf",
+                                           font_size=self.height / 36,
+                                           background_normal="data/img/widget_gray_75.png",
+                                           background_active="data/img/widget_purple_75_select.png",
+                                           background_disabled_normal="data/img/widget_black_75.png",
+                                           padding_y=[self.height / 36, 0],
+                                           size_hint=(.9, .3),
+                                           pos_hint={"center_x": .5, "center_y": .8}
                                            )
-                popup_content.add_widget(ico_status_confirm)
+                popup_content.add_widget(self.input_key)
+                self.input_new_password = TextInput(hint_text="New Password",
+                                                    write_tab=False,
+                                                    multiline=False,
+                                                    password=True,
+                                                    font_name="data/font/CaviarDreams_Bold.ttf",
+                                                    font_size=self.height / 36,
+                                                    background_normal="data/img/widget_gray_75.png",
+                                                    background_active="data/img/widget_purple_75_select.png",
+                                                    background_disabled_normal="data/img/widget_black_75.png",
+                                                    padding_y=[self.height / 36, 0],
+                                                    size_hint=(.9, .3),
+                                                    pos_hint={"center_x": .5, "center_y": .4}
+                                                    )
+                popup_content.add_widget(self.input_new_password)
+                self.ico_status_confirm = Image(source="data/img/ico_status_wrong.png",
+                                                allow_stretch=True,
+                                                opacity=0,
+                                                size_hint=(.15, .15),
+                                                pos_hint={"center_x": .9, "center_y": .8}
+                                                )
+                popup_content.add_widget(self.ico_status_confirm)
                 popup_content.add_widget(Button(text="Submit",
                                                 font_name="data/font/LibelSuit.ttf",
                                                 font_size=self.height / 40,
@@ -174,9 +176,9 @@ def on_reset(s):
                                                 size_hint_y=None,
                                                 height=self.height / 20,
                                                 pos_hint={"center_x": .75, "y": .0},
-                                                on_release=popup.dismiss)
+                                                on_release=self.popup.dismiss)
                                          )
-                popup.open()
+                self.popup.open()
             else:
                 self.remove_widget(ico_spinner)
 

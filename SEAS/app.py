@@ -24,7 +24,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 from func import database_api
-from pg import appLogin, appReset, eduLects, eduProfile, eduExam, eduQuestion, eduLive, stdLects
+from pg import appLogin, appReset, eduLects, eduProfile, eduExam, eduQuestion, eduLive, stdLects, stdLive
 
 __authors__ = ["Muhammed Yasin Yildirim", "Fatih Cagatay Gulmez", "Ali Emre Oz"]
 __credits__ = ["Ali Cakmak"]
@@ -46,7 +46,32 @@ class StdStats(Screen):
 
 
 class StdLive(Screen):
-    pass
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_submit, on_leave
+    """
+
+    appLogin.load_string("std_live")
+
+    def on_pre_enter(self, *args):
+        stdLive.on_pre_enter(self)
+
+    @staticmethod
+    def on_lects():
+        pages.append(StdLects(name="StdLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    def on_submit(self):
+        if stdLive.on_submit(self):
+            pages.append(StdLive(name="StdLive"))
+            appReset.on_back(pages,
+                             screen
+                             )
+
+    def on_leave(self, *args):
+        stdLive.on_leave(self)
 
 
 class StdProfile(Screen):
@@ -571,7 +596,7 @@ def on_keyboard_event(event):
     :return: It is boolean depending on that key is banned or not.
     """
 
-    if event.Key.lower() in []:  # TODO: "lmenu", "lwin", "apps"
+    if event.Key.lower() in []:  # TODO: "lmenu", "lwin", "rwin", "apps"
         return False
     else:
         return True

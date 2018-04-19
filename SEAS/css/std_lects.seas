@@ -137,7 +137,7 @@
 
         Image:
             id: img_exam_join_name
-            source: "data/img/img_gradient.png"
+            source: "data/img/widget_black_75.png"
             opacity: .75
             keep_ratio: False
             allow_stretch: True

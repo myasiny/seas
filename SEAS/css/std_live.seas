@@ -1,0 +1,183 @@
+<StdLive>:
+    FloatLayout:
+        id: layout_page
+
+        canvas:
+            Rectangle:
+                source: "data/img/bg_screen_light.png"
+                size: self.size
+                pos: self.pos
+
+        FloatLayout:
+            id: layout_menubar
+            size_hint_y: .075
+            pos_hint: {"x": 0, "y": .925}
+
+            canvas:
+                Rectangle:
+                    source: "data/img/bg_menubar.png"
+                    size: self.size
+                    pos: self.pos
+
+            Image:
+                source: "data/img/bg_menubar_round_light.png"
+                opacity: .25
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .25, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Image:
+                source: "data/img/ico_seas.png"
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .075, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Button:
+                id: btn_exam_leave
+                text: "LEAVE"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 3
+                background_normal: "data/img/widget_red.png"
+                background_down: "data/img/widget_red_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .1, .8
+                pos_hint: {"center_x": .25, "y": .15}
+                on_release: root.on_lects()
+
+            Button:
+                id: btn_exam_complete
+                text: "SUBMIT"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 3
+                background_normal: "data/img/widget_green.png"
+                background_down: "data/img/widget_green_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .1, .8
+                pos_hint: {"center_x": .75,"y": .15}
+                on_release: root.on_submit()
+
+            Label:
+                id: txt_clock
+                color: 1, 1, 1, 1
+                multiline: False
+                font_name: "data/font/GetDigital.ttf"
+                font_size: self.height / 2
+                size_hint: .1, .9
+                pos_hint: {"x": .9, "y": .1}
+
+        Image:
+            id: img_top
+            source: "data/img/widget_black_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .125
+            pos_hint: {"center_x": .5, "center_y": .8}
+
+        Image:
+            id: img_body
+            source: "data/img/widget_gray_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .825
+            pos_hint: {"center_x": .5, "center_y": .45}
+
+        Label:
+            id: txt_question_no
+            text: "Question"
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .8}
+
+        Label:
+            id: txt_question_grade
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/CaviarDreams.ttf"
+            font_size: self.height / 3
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .8}
+
+        ScrollView:
+            size_hint: .4, .675
+            pos_hint: {"center_x": .25, "center_y": .3875}
+
+            Label:
+                id: txt_question_body
+                color: 0, 0, 0, 1
+                halign: "left"
+                multiline: True
+                font_name: "data/font/CaviarDreams.ttf"
+                font_size: root.height / 35
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+
+        CodeInput:
+            id: input_code_answer
+            hint_text: "Code"
+            font_name: "data/font/AndaleMono.ttf"
+            font_size: self.height / 20
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_gray_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 20.25, 0]
+            size_hint: .4, .5
+            pos_hint: {"center_x": .75, "center_y": .475}
+
+        Image:
+            id: img_code_output_bg
+            source: "data/img/widget_black_75.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .4, .16
+            pos_hint: {"center_x": .75, "center_y": .125}
+
+        ScrollView:
+            id: txt_code_output_scroll
+            size_hint: .39, .15
+            pos_hint: {"center_x": .75, "center_y": .125}
+
+            Label:
+                id: txt_code_output
+                color: 1, 1, 1, 1
+                halign: "left"
+                multiline: True
+                font_name: "data/font/AndaleMono.ttf"
+                font_size: root.height / 40
+                size_hint: None, None
+                size: self.texture_size
+
+        TextInput:
+            id: input_short_answer
+            hint_text: "Answer"
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 20.25
+            background_normal: "data/img/widget_gray_75.png"
+            background_active: "data/img/widget_gray_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
+            padding_y: [self.height / 20.25, 0]
+            size_hint: .4, .675
+            pos_hint: {"center_x": .75, "center_y": .3875}
+
+        ScrollView:
+            id: txt_multiple_choices_scroll
+            size_hint: .4, .5
+            pos_hint: {"center_x": .75, "center_y": .475}
+
+            Label:
+                id: txt_multiple_choices
+                color: 0, 0, 0, 1
+                halign: "left"
+                multiline: True
+                font_name: "data/font/CaviarDreams.ttf"
+                font_size: root.height / 25
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
