@@ -118,7 +118,7 @@ def on_pre_enter(self):
 
     self.btn_run = image_button.add_button("data/img/ico_monitor_play.png",
                                            "data/img/ico_monitor_play_select.png",
-                                           .025,
+                                           (.025, True),
                                            {"x": .95, "y": .7},
                                            partial(on_run,
                                                    self
@@ -201,10 +201,11 @@ def on_correct_answer_select(self, spinner, text):
     self.multiple_choice_answer = text
 
 
-def on_run(self):
+def on_run(self, dt):
     """
     This method runs student's answer in the background and prints its output.
     :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
     :return:
     """
 

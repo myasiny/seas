@@ -207,10 +207,10 @@ def on_submit(self):
                                                                          "*[SEAS-SLASH-N]*"
                                                                          ),
                     "answer": None,
-                    "inputs": [self.ids["input_input"].text.split(",")],
-                    "outputs": [self.ids["input_output"].text.split(",")],
+                    "inputs": [self.ids["input_input"].text.split("*[SEAS-DELIMITER]*")],
+                    "outputs": [self.ids["input_output"].text.split("*[SEAS-DELIMITER]*")],
                     "value": int(self.ids["input_grade"].text),
-                    "tags": self.ids["input_tags"].text.split(",")
+                    "tags": self.ids["input_tags"].text.split("*[SEAS-DELIMITER]*")
                     }
 
             database_api.addQuestionToExam(Cache.get("info", "token"),
@@ -232,7 +232,7 @@ def on_submit(self):
                     "inputs": None,
                     "outputs": None,
                     "value": int(self.ids["input_grade"].text),
-                    "tags": self.ids["input_tags"].text.split(",")
+                    "tags": self.ids["input_tags"].text.split("*[SEAS-DELIMITER]*")
                     }
 
             database_api.addQuestionToExam(Cache.get("info", "token"),
@@ -284,7 +284,7 @@ def on_submit(self):
                         "inputs": None,
                         "outputs": None,
                         "value": int(self.ids["input_grade"].text),
-                        "tags": self.ids["input_tags"].text.split(",")
+                        "tags": self.ids["input_tags"].text.split("*[SEAS-DELIMITER]*")
                         }
 
                 database_api.addQuestionToExam(Cache.get("info", "token"),
