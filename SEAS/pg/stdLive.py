@@ -60,7 +60,6 @@ def on_pre_enter(self):
                 if i == 0:
                     i += 1
                 else:
-                    value = json.loads(value)
                     questions.write(self.cipher.encrypt(str(key) + "*[SEAS-NEW-LINE]*" +
                                                         str(value["type"]) + "*[SEAS-NEW-LINE]*" +
                                                         str(value["value"]) + "*[SEAS-NEW-LINE]*" +
@@ -72,7 +71,7 @@ def on_pre_enter(self):
         self.question_no = str(self.data_detailed_exam.keys()[0])
         self.ids["txt_question_no"].text = "Question ID: {id}".format(id=self.question_no)
 
-        question_details = json.loads(self.data_detailed_exam[self.data_detailed_exam.keys()[0]])
+        question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]
 
         self.question_type = question_details["type"]
 
