@@ -100,9 +100,8 @@ class Lecturer(User):
     def get_lecturer_courses(self):
         return self.execute("SELECT courses.Name, courses.CODE FROM lecturers JOIN courses ON lecturers.CourseID = courses.CourseID JOIN members ON members.PersonID = lecturers.LecturerID WHERE members.Username = '%s';" % (self.username))
 
-    def grade_answer(self, question_id, grade):
-        studentID = self.user_id
-        return self.execute("INSERT INTO answers(questionID, studentID, grade) VALUES ('%s', '%s', '%s') ON DUPLICATE KEY UPDATE grade=VALUES(grade)" % (str(question_id), studentID, str(grade)))
+    def grade_answer(self, question_id, student, grade):
+        return self.execute("INSERT INTO answers(questionID, studentID, grade) VALUES ('%s', (SELECT PersonID from members where Username = '%s') , '%s') ON DUPLICATE KEY UPDATE grade=VALUES(grade)" % (str(question_id), student, str(grade)))
 
 
 class Student(User):

@@ -16,8 +16,8 @@ def get_token(role):
 
 # student_token = get_token("student")
 # print student_token
-# lecturer_token = get_token("lecturer")
-# print lecturer_token
+lecturer_token = get_token("lecturer")
+print lecturer_token
 # admin_token = get_token("admin")
 # print admin_token
 
@@ -126,7 +126,7 @@ def get_token(role):
 
 # print getProfilePic(lecturer_token, "alicakmak")
 
-# print grade_answer(lecturer_token, "eecs 468", 1, "fatihgulmez", 60)
+print grade_answer(lecturer_token,"data 101", 45, "fatihgulmez", 25)
 
 # print getExamsOfLecture(lecturer_token, "data 101")
 
@@ -153,6 +153,6 @@ def get_token(role):
 
 # print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
 
-# print signOut(lecturer_token, "alicakmak")
+print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")

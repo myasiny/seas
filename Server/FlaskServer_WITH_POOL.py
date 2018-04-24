@@ -99,7 +99,7 @@ def signUpUser(organization):
             return rtn
 
 
-@app.route(" ", methods=["GET"])
+@app.route("/organizations/<string:organization>/<string:username>", methods=["GET"])
 # todo: Fatihgulmez , separate data manipulation and access from views!!!
 def signInUser(organization, username):
     with db:
@@ -375,7 +375,7 @@ def gradeQuestion(organization, course, question_id, studentUser):
         if not check_auth(get_jwt_identity(), organization, "lecturer"):
             return "Unauthorized Access"
         if check_lecture_permision(organization, token, course):
-            rtn = jsonify(user.grade_answer(question_id, request.form["grade"]))
+            rtn = jsonify(user.grade_answer(question_id, studentUser,request.form["grade"]))
             return rtn
         return jsonify("Unauthorized access!")
 
