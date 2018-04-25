@@ -222,6 +222,7 @@ def on_run(self, dt):
             try:
                 temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
                                                         stderr=subprocess32.STDOUT,
+                                                        shell=True,
                                                         timeout=10
                                                         )
                 old_stdout = sys.stdout
