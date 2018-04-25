@@ -1,7 +1,7 @@
 #-*-coding:utf-8-*-
 import mysql.connector
 from DBTable import DBTable
-from mysql.connector import pooling, InterfaceError, PoolError
+from mysql.connector import pooling, InterfaceError, PoolError, OperationalError
 
 class MySQLdb:
     def __init__(self, dbName, user="tester", password="wivern@seas"):
@@ -16,7 +16,7 @@ class MySQLdb:
         }
 
         self.pool = pooling.MySQLConnectionPool(pool_name="conn",
-                                       pool_size=4,pool_reset_session=True,
+                                       pool_size=4,pool_reset_session=True, buffered=True,
                                        **dbconfig)
 
     def __enter__(self):
@@ -28,8 +28,10 @@ class MySQLdb:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close_connection()
-        print "disconnected"
+        try:
+            self.close_connection()
+        except OperationalError:
+            print "already disconnected"
 
     def get_connection(self):
         self.db = self.pool.get_connection()
@@ -221,18 +223,23 @@ class MySQLdb:
             self.cursor.execute(command, multi=True)
 
 
-        if command.lower().startswith("select") or command.lower().startswith("(select"):
-            rtn = self.cursor.fetchall()
-            self.__commit()
-            return rtn
+        # if command.lower().startswith("select") or command.lower().startswith("(select"):
+        #     rtn = self.cursor.fetchall()
+        #     self.__commit()
+        #     return rtn
+        # try:
+        #     self.__commit()
+        # except InterfaceError:
+        #     for result in self.db.cmd_query_iter(command):
+        #         pass
+        #     self.__commit()
+        # return None
         try:
-            self.__commit()
+            rtn = self.cursor.fetchall()
         except InterfaceError:
-            for result in self.db.cmd_query_iter(command):
-                pass
-            self.__commit()
-        return None
-
+            rtn = None
+        self.__commit()
+        return rtn
     def __commit(self):
         return self.db.commit()
 

@@ -320,7 +320,8 @@ def addQuestionsToExam(organization, course, name):
             return jsonify("Unauthorized access!")
         if check_lecture_permision(organization, token, course):
             info = json.loads(request.form["data"])
-            rtn = Exam(name, organization, db=db).addQuestion(info["type"], info["subject"], info["text"], info["answer"], info["inputs"], info["outputs"], info["value"], info["tags"])
+            rtn = Exam(name, organization, db=db).addQuestion(info["type"], info["subject"], info["text"], info["answer"], info["inputs"], info["outputs"], info["value"], info["t"
+                                                                                                                                                                                "ags"])
             return jsonify(rtn)
         return jsonify("Unauthorized access!")
 
