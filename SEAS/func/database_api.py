@@ -90,10 +90,7 @@ def signIn(username, password, URL=server_address, organization=current_organiza
     rtn = get(url, auth=(username, password)).json()
     if rtn == "Wrong Password":
         return rtn
-    if rtn[-1] is not None:
-        with open("data/img/pic_user_current.png", "wb") as f:
-            f.write(pickle.loads(rtn[-1]))
-    return rtn[:-1]
+    return rtn
 
 
 @server_check
@@ -352,7 +349,7 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
     try:
-        with open("../data/img/pic_user_current.png", "wb") as f:
+        with open("data/img/pic_user_current.png", "wb") as f:
             f.write(pickle.loads(get(url, headers={"Authorization": "Bearer " + token}).json()))
     except TypeError:
         pass
