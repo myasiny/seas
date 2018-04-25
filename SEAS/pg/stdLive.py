@@ -59,6 +59,7 @@ def on_pre_enter(self):
             for key, value in self.data_detailed_exam.iteritems():
                 if i == 0:
                     i += 1
+                    questions.write(self.cipher.encrypt("*[SEAS-EXAM]*"))
                 else:
                     questions.write(self.cipher.encrypt(str(key) + "*[SEAS-NEW-LINE]*" +
                                                         str(value["type"]) + "*[SEAS-NEW-LINE]*" +
@@ -222,6 +223,7 @@ def on_run(self, dt):
             try:
                 temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
                                                         stderr=subprocess32.STDOUT,
+                                                        shell=True,
                                                         timeout=10
                                                         )
                 old_stdout = sys.stdout

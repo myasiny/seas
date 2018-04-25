@@ -65,7 +65,7 @@
                 font_name: "data/font/GetDigital.ttf"
                 font_size: self.height / 2
                 size_hint: .1, .9
-                pos_hint: {"x": .9, "y": .1}
+                pos_hint: {"x": .85, "y": .1}
 
         Image:
             id: img_top

@@ -8,6 +8,7 @@ eduLects
 import imghdr
 from functools import partial
 
+from kivy.adapters.dictadapter import DictAdapter
 from kivy.adapters.listadapter import ListAdapter
 from kivy.cache import Cache
 from kivy.uix.button import Button
@@ -15,7 +16,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.filechooser import FileChooserListView
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
-from kivy.uix.listview import ListItemButton
+from kivy.uix.listview import ListItemButton, ListItemLabel, CompositeListItem
 from kivy.uix.popup import Popup
 
 from func import database_api, excel_to_csv, image_button
@@ -215,7 +216,9 @@ def on_exams(self):
                                                             )
 
     args_converter = lambda row_index, x: {"text": x.replace("_", " ").title(),
-                                           "background_normal": "data/img/widget_black_75_crop.png",
+                                           "selected_color": (.361, .694, .188, 1),
+                                           "deselected_color": (.57, .67, .68, 1),
+                                           "background_down": "data/img/widget_green_select.png",
                                            "font_name": "data/font/CaviarDreams_Bold.ttf",
                                            "font_size": self.height / 25,
                                            "size_hint_y": None,
@@ -272,15 +275,18 @@ def on_exam_select(self, dt):
     # TODO
 
     self.ids["btn_exam_start_grade"].opacity = 1
-    if self.ids["txt_status_body"].text == "Finished":
-        self.ids["btn_exam_start_grade"].text = "GRADE"
-        # TODO
-    elif self.ids["txt_status_body"].text == "Graded":
+    if self.ids["txt_status_body"].text == "Graded":
         self.ids["btn_exam_start_grade"].text = "DOWNLOAD"
         # TODO
     elif self.ids["txt_status_body"].text == "Ready":
         self.ids["btn_exam_start_grade"].text = "PUBLISH"
         # TODO
+    elif self.ids["txt_status_body"].text == "Finished":
+        self.ids["btn_exam_start_grade"].text = "GRADE"
+        self.ids["btn_exam_start_grade"].bind(on_release=partial(on_exam_grade,
+                                                                 self
+                                                                 )
+                                              )
     else:
         self.ids["btn_exam_start_grade"].text = "START"
         self.ids["btn_exam_start_grade"].bind(on_release=partial(on_exam_start,
@@ -345,6 +351,53 @@ def on_exam_start(self, dt):
     return self.on_live()
 
 
+def on_exam_grade(s):
+    """
+    This method creates pop-up that lists students and their grades.
+    :param s: It is for handling class structure.
+    :return:
+    """
+
+    def on_exam_grade_select(self=s):
+        """
+        This method redirects to grading screen for selected student.
+        :return:
+        """
+
+        self.popup.dismiss()
+
+    popup_content = FloatLayout()
+    s.popup = Popup(title="Evaluate Exam",
+                    content=popup_content,
+                    separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
+                    size_hint=(None, None),
+                    size=(s.width / 2, s.height / 2)
+                    )
+    popup_content.add_widget(Button(text="Complete",
+                                    font_name="data/font/LibelSuit.ttf",
+                                    font_size=s.height / 40,
+                                    background_normal="data/img/widget_green.png",
+                                    background_down="data/img/widget_green_select.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None,
+                                    height=s.height / 20,
+                                    pos_hint={"center_x": .25, "y": .0},
+                                    on_release=on_exam_grade_select)  # TODO
+                             )
+    popup_content.add_widget(Button(text="Close",
+                                    font_name="data/font/LibelSuit.ttf",
+                                    font_size=s.height / 40,
+                                    background_normal="data/img/widget_red.png",
+                                    background_down="data/img/widget_red_select.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None,
+                                    height=s.height / 20,
+                                    pos_hint={"center_x": .75, "y": .0},
+                                    on_release=s.popup.dismiss)
+                             )
+    s.popup.open()
+
+
 def on_participants(self):
     """
     This method brings participants tab into screen and lists all participants registered for selected course.
@@ -378,7 +431,9 @@ def on_participants(self):
     self.data_student_list = self.cipher.decrypt(participants.read()).split("*[SEAS-NEW-LINE]*")
 
     args_converter = lambda row_index, x: {"text": x,
-                                           "background_normal": "data/img/widget_black_75_crop.png",
+                                           "selected_color": (.361, .694, .188, 1),
+                                           "deselected_color": (.57, .67, .68, 1),
+                                           "background_down": "data/img/widget_green_select.png",
                                            "font_name": "data/font/CaviarDreams_Bold.ttf",
                                            "font_size": self.height / 50,
                                            "size_hint_y": None,
