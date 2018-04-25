@@ -6,6 +6,7 @@ from Models.Exam import Exam
 from Models.User import *
 from Models.Course import Course
 from Models.Lecture import *
+from Models.External_Functions.decimalEncoder import DecimalEncoder
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
 import json, datetime, pickle
 
@@ -427,6 +428,11 @@ def reset_password(organization, username):
             rtn = jsonify(user.check_and_change_password(request.authorization["username"], new_pass=request.authorization["password"]))
         return rtn
 
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/get_grades/<string:student_id>")
+def get_grades(organization, course, exam_name, student_id):
+    with db:
+        return DecimalEncoder().encode(Exam(exam_name, organization, db).get_grades(student_id))
 
 if __name__ == "__main__":
     app.run(host="localhost", port=8888, threaded=False)

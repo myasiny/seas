@@ -7,6 +7,19 @@ import re
 import pickle
 from config import *
 
+def __normalize(word):
+    word =  re.sub(r'[^\w\s]', '_', word).replace(" ", "_").lower()
+    return word
+
+def server_check(func):
+    def wrapper(*args):
+        try:
+            return func(*args)
+        except ValueError:
+            return "500 - Internal Error"
+    return wrapper
+
+@server_check
 def testConnection(URL=server_address):
     """
     :param URL: String; server address with port number.
@@ -19,6 +32,7 @@ def testConnection(URL=server_address):
         return False
 
 
+@server_check
 def addOrganization(token, URL=server_address, organization=current_organization):
     """
     :param token: String ;JWT User token, superuser token needed.
@@ -26,12 +40,13 @@ def addOrganization(token, URL=server_address, organization=current_organization
     :param Organization: String; university name
     :return: [] if organization added, NONE otherwise
     """
-    organization = organization.replace(" ", "_").lower()
+    organization = __normalize(organization)
     url = URL+"/organizations"
     return put(url, data={"data": organization},
                headers={"Authorization": "Bearer %s" % token}).json()
 
 
+@server_check
 def addUser(token,  id, name, surname, username, password, Email, Department ,role="student", URL=server_address, organization=current_organization):
     """
     :param token: String; JWT Token
@@ -47,7 +62,7 @@ def addUser(token,  id, name, surname, username, password, Email, Department ,ro
     :param organization: String; university name
     :return: [] if successfully added, NONE otherwise or already added.
     """
-    url = URL+"/organizations/%s" %organization.replace(" ", "_").lower()
+    url = URL+"/organizations/%s" %__normalize(organization)
     return put(url,data={
                         "ID": id,
                         "Name": name,
@@ -61,6 +76,7 @@ def addUser(token,  id, name, surname, username, password, Email, Department ,ro
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
+@server_check
 def signIn(username, password, URL=server_address, organization=current_organization):
     """
     :param username: String; username for sign in
@@ -70,7 +86,7 @@ def signIn(username, password, URL=server_address, organization=current_organiza
     :return: List; [String username, String name, String surname, String user id,
                     String role, String email, String department, String university, String JWT token]
     """
-    url = URL+"/organizations/%s/%s" %(organization.replace(" ", "_").lower(), username)
+    url = URL+"/organizations/%s/%s" %(__normalize(organization), username)
     rtn = get(url, auth=(username, password)).json()
     if rtn == "Wrong Password":
         return rtn
@@ -80,6 +96,7 @@ def signIn(username, password, URL=server_address, organization=current_organiza
     return rtn[:-1]
 
 
+@server_check
 def signOut(token, username, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -88,10 +105,11 @@ def signOut(token, username, URL=server_address, organization=current_organizati
     :param organization: String; university name
     :return: NOT IMPLEMENTED, will Deactivate access token.
     """
-    url = URL + "/organizations/%s/%s/out" % (organization.replace(" ", "_").lower(), username)
+    url = URL + "/organizations/%s/%s/out" % (__normalize(organization), username)
     return put(url, headers = {"Authorization": "Bearer %s" %token}).json()
 
 
+@server_check
 def addCourse(token, courseName, courseCode, lecturer_users, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT Token
@@ -102,9 +120,9 @@ def addCourse(token, courseName, courseCode, lecturer_users, URL=server_address,
     :param lecturer_users: List of Strings; usernames of lecturers of the course
     :return: Course Added if successful.
     """
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
-    courseName = courseName.replace(" ", "_").lower()
-    organization = organization.replace(" ", "_").lower()
+    courseCode = __normalize(courseCode)
+    courseName = __normalize(courseName)
+    organization = __normalize(organization)
     url = URL + "/organizations/%s/%s" % (organization, courseCode)
     return put(url, data={
         "name": courseName,
@@ -114,11 +132,13 @@ def addCourse(token, courseName, courseCode, lecturer_users, URL=server_address,
                ).json()
 
 
+@server_check
 # todo: @fatihgulmez
 def addLecturerToCourse():
     pass
 
 
+@server_check
 def getCourse(token, courseCode, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -128,17 +148,18 @@ def getCourse(token, courseCode, URL=server_address, organization=current_organi
     :return: JSON; { "Participants": List of lists of all students' data, "Lecturers": List of Strings of Lecturer full Names.
                     "Code": String course code, "ID": Course ID, "Name": Course Name
     """
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
-    organization = organization.replace(" ", "_").lower()
+    courseCode = __normalize(courseCode)
+    organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/get" % (organization, courseCode)
     return get(url, data={
     },
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 # todo: one student registration
+@server_check
 def registerStudent(token, courseCode, isList, students, username, URL=server_address, organization=current_organization):
-    organization = organization.replace(" ", "_").lower()
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    courseCode = __normalize(courseCode)
     url = URL+"/organizations/%s/%s/register/%s" %(organization, courseCode, isList)
     if isList:
         students = open(students)
@@ -149,6 +170,7 @@ def registerStudent(token, courseCode, isList, students, username, URL=server_ad
                    headers={"Authorization": "Bearer %s" % token}).json()
 
 
+@server_check
 def getCourseStudents(token, courseCode, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT Token
@@ -157,13 +179,14 @@ def getCourseStudents(token, courseCode, URL=server_address, organization=curren
     :param organization: String; university name
     :return: List of Lists of students' name, surname, ID, email.
     """
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
-    organization = organization.replace(" ", "_").lower()
+    courseCode =__normalize(courseCode)
+    organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/register" % (organization, courseCode)
     return get(url,
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
+@server_check
 def getUserCourses(token, username, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT Token
@@ -172,12 +195,13 @@ def getUserCourses(token, username, URL=server_address, organization=current_org
     :param organization: String; university name
     :return: List of lists of course name and course code.
     """
-    organization = organization.replace(" ", "_").lower()
+    organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/courses/role=lecturer" % (organization, username)
     return get(url,
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
+@server_check
 def changePassword(token, username, password, newpass, isMail=False, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -189,7 +213,7 @@ def changePassword(token, username, password, newpass, isMail=False, URL=server_
     :param organization: String; university name
     :return: String; Mail Changed or Password Change if successful, Not authorized if password is wrong.
     """
-    organization = organization.replace(" ", "_").lower()
+    organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/edit_password" % (organization, username)
     return put(url, data={
         "Password": password,
@@ -199,6 +223,7 @@ def changePassword(token, username, password, newpass, isMail=False, URL=server_
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
+@server_check
 def deleteStudentFromLecture(token, courseCode, studentID, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -208,13 +233,14 @@ def deleteStudentFromLecture(token, courseCode, studentID, URL=server_address, o
     :param organization: String; university name
     :return: NONE
     """
-    organization = organization.replace(" ", "_").lower()
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    organization =__normalize(organization)
+    courseCode = __normalize(courseCode)
     url = URL + "/organizations/%s/%s/delete_user" % (organization, courseCode)
     return delete(url, data={"Student": studentID},
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
+@server_check
 def createExam(token, courseCode, name, time, duration, status="draft", URL=server_address, organization=current_organization):
     """
     :param token: String; JWT Token
@@ -227,14 +253,15 @@ def createExam(token, courseCode, name, time, duration, status="draft", URL=serv
     :param organization: String; university name
     :return: Integer, ExamID
     """
-    organization = organization.replace(" ", "_").lower()
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
-    name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    courseCode = __normalize(courseCode)
+    name = __normalize(name)
     url = URL + "/organizations/%s/%s/exams/add" % (organization, courseCode)
     return put(url, data={"name": name, "time": time, "duration": duration, "status": status},
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
+@server_check
 def getExamsOfLecture(token, courseCode, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT Token
@@ -243,13 +270,14 @@ def getExamsOfLecture(token, courseCode, URL=server_address, organization=curren
     :param organization: String; university name
     :return: List of Lists of exams data (ID, name, lecture id, timestamp start time, integer duration (min), status)
     """
-    organization = organization.replace(" ", "_").lower()
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    courseCode = __normalize(courseCode)
     url = URL + "/organizations/%s/%s/exams/" % (organization, courseCode)
     return get(url,
         headers = {"Authorization": "Bearer %s" %token}).json()
 
 
+@server_check
 def getExam(token, courseCode, name, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -260,13 +288,14 @@ def getExam(token, courseCode, name, URL=server_address, organization=current_or
     :return: JSON; Name: String exam name, Course: String course code, Questions: JSON(see create exam questions structure),
                 Time: String Timestamp starting time, Duration: Integer exam duration in minutes, ID: Integer exam id
     """
-    organization = organization.replace(" ", "_").lower()
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
-    name = re.sub(r'[^\w\s]', '_', name).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    courseCode = __normalize(courseCode)
+    name = __normalize(name)
     url = URL + "/organizations/%s/%s/exams/%s" % (organization, courseCode, name)
     return get(url, headers = {"Authorization": "Bearer " + token}).json()
 
 
+@server_check
 def sendAnswers(token, courseCode, questionID, username, answer, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -278,12 +307,13 @@ def sendAnswers(token, courseCode, questionID, username, answer, URL=server_addr
     :param organization: String; university name
     :return: [] if success, NONE otherwise
     """
-    organization = organization.replace(" ", "_").lower()
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    courseCode = __normalize(courseCode)
     url = URL + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, courseCode, str(questionID), username)
     return put(url, data={"answers" : json.dumps(answer)}, headers={"Authorization": "Bearer " + token}).json()
 
 
+@server_check
 def deleteExam(token, examName, courseCode, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -293,22 +323,24 @@ def deleteExam(token, examName, courseCode, URL=server_address, organization=cur
     :param organization: String; university name
     :return: [] if successful
     """
-    organization = organization.replace(" ", "_").lower()
-    courseCode = re.sub(r'[^\w\s]', '_', courseCode).replace(" ", "_").lower()
-    examName = re.sub(r'[^\w\s]', '_', examName).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    courseCode = __normalize(courseCode)
+    examName = __normalize(examName)
     url = URL + "/organizations/%s/%s/exams/%s/delete" % (organization, courseCode, examName)
     return delete(url,
                headers={"Authorization": "Bearer %s" % token}).json()
 
 
+@server_check
 def uploadProfilePic(token, username, pic, URL=server_address, organization=current_organization):
-    organization = organization.replace(" ", "_").lower()
+    organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
     with open(pic, "rb") as f:
         cont = f.read()
     return put(url, headers={"Authorization": "Bearer " + token}, data = {"pic": pickle.dumps(cont)}, files = {"pic": open(pic)}).json()
 
 
+@server_check
 def getProfilePic(token, username, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -317,7 +349,7 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     :param organization: String; university
     :return: Done, saves profile picture to SEAS/img/pic_username.png
     """
-    organization = organization.replace(" ", "_").lower()
+    organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
     try:
         with open("../data/img/pic_user_current.png", "wb") as f:
@@ -328,6 +360,7 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     return "Done"
 
 
+@server_check
 def grade_answer(token, course_code, question_id, student_user, grade, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -339,12 +372,13 @@ def grade_answer(token, course_code, question_id, student_user, grade, URL=serve
     :param organization: String; university name
     :return: [] if successful.
     """
-    organization = organization.replace(" ", "_").lower()
-    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    course_code = __normalize(course_code)
     url = URL + "/organizations/%s/%s/exams/%s/answers/%s/grade" % (organization, course_code, str(question_id), student_user)
     return put(url, headers={"Authorization": "Bearer " + token}, data={"grade": grade}).json()
 
 
+@server_check
 def edit_question(token, course_code, exam_name, question_id, info, URL=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -356,13 +390,15 @@ def edit_question(token, course_code, exam_name, question_id, info, URL=server_a
     :param organization: String; university name
     :return: [] if successful.
     """
-    organization = organization.replace(" ", "_").lower()
-    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    course_code = __normalize(course_code)
+    exam_name = __normalize(exam_name)
     url = URL + "/organizations/%s/%s/exams/%s/%s/edit" % (
     organization, course_code, exam_name, str(question_id))
     return put(url, headers={"Authorization": "Bearer " + token}, data={"data":json.dumps(info)}).json()
 
 
+@server_check
 def add_time_to_exam(token, course_code, exam_name, additional_time, URL=server_address, organization=current_organization):
     """
     :param token:
@@ -373,13 +409,14 @@ def add_time_to_exam(token, course_code, exam_name, additional_time, URL=server_
     :param organization:
     :return: [] if success
     """
-    organization = organization.replace(" ", "_").lower()
-    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
-    exam_name = re.sub(r'[^\w\s]', '_', exam_name).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    course_code = __normalize(course_code)
+    exam_name = __normalize(exam_name)
     url = URL + "/organizations/%s/%s/exams/%s/more_time" % (organization, course_code, exam_name)
     return put(url, headers={"Authorization": "Bearer " + token}, data={"additional_time": additional_time}).json()
 
 
+@server_check
 def change_status_of_exam(token, course_code, exam_name, status, URL=server_address, organization=current_organization):
     """
     :param token:
@@ -390,27 +427,43 @@ def change_status_of_exam(token, course_code, exam_name, status, URL=server_addr
     :param organization:
     :return: [] if success
     """
-    organization = organization.replace(" ", "_").lower()
-    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
-    exam_name = re.sub(r'[^\w\s]', '_', exam_name).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    course_code = __normalize(course_code)
+    exam_name = __normalize(exam_name)
     url = URL + "/organizations/%s/%s/exams/%s/status" % (organization, course_code, exam_name)
     if status not in ["draft", "finished", "published", "graded", "deactivated", "active"]:
         return "Wrong status."
     return put(url, headers={"Authorization": "Bearer " + token}, data={"status": status}).json()
 
 
+@server_check
 def addQuestionToExam(token, course_code, exam_name, question_info, organization = current_organization, URL = server_address):
-    organization = organization.replace(" ", "_").lower()
-    course_code = re.sub(r'[^\w\s]', '_', course_code).replace(" ", "_").lower()
-    exam_name = re.sub(r'[^\w\s]', '_', exam_name).replace(" ", "_").lower()
+    organization = __normalize(organization)
+    course_code = __normalize(course_code)
+    exam_name = __normalize(exam_name)
     url = URL + "/organizations/%s/%s/exams/%s/addQuestion" % (organization, course_code, exam_name)
     return put(url, headers={"Authorization": "Bearer " + token}, data={"data": json.dumps(question_info)}).json()
 
 
+@server_check
 def resetPassword(username, temp_pass = None, new_pass = None, organization = current_organization, URL = server_address):
-    organization = organization.replace(" ", "_").lower()
+    organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/reset_password" % (organization, username)
     if temp_pass is None:
         return get(url).json()
     else:
         return put(url, auth=(temp_pass, new_pass)).json()
+
+
+@server_check
+def getGradesOfExam(token, course_code, exam_name, student_id="ALL", organization = current_organization, URL = server_address):
+    organization = __normalize(organization)
+    course_code = __normalize(course_code)
+    exam_name = __normalize(exam_name)
+    if student_id != "ALL":
+        try:
+            student_id = int(student_id)
+        except:
+            return "Invalid student ID."
+    url = URL + "/organizations/%s/%s/exams/%s/get_grades/%s" %(organization, course_code, exam_name, student_id)
+    return get(url, headers={"Authorization": "Bearer " + token}).json()

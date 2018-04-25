@@ -4,7 +4,7 @@ from database_api import *
 
 def get_token(role):
     if role == "student":
-        username, password = "fatihgulmez", "12345"
+        username, password = "alioz", "1"
     elif role == "lecturer":
         username, password = "alicakmak", "12345"
     else: #Admin
@@ -16,7 +16,7 @@ def get_token(role):
 
 # student_token = get_token("student")
 # print student_token
-# lecturer_token = get_token("lecturer")
+lecturer_token = get_token("lecturer")
 # print lecturer_token
 # admin_token = get_token("admin")
 # print admin_token
@@ -116,7 +116,11 @@ def get_token(role):
 #                  "data 101",
 #                  "fcg test")
 
-# print sendAnswers(student_token,"data 101", 45, "fatihgulmez", "A")
+# print sendAnswers(student_token,"EECS 468", 53, "alioz", "A")
+# print sendAnswers(student_token,"EECS 468", 54, "alioz", "A")
+# print sendAnswers(student_token,"EECS 468", 55, "alioz", "A")
+# print sendAnswers(student_token,"EECS 468", 56, "alioz", "A")
+# print sendAnswers(student_token,"EECS 468", 57, "alioz", "A")
 
 # print deleteExam(lecturer_token, "fcg test", "data_101")
 
@@ -124,7 +128,11 @@ def get_token(role):
 
 # print getProfilePic(lecturer_token, "alicakmak")
 
-# print grade_answer(lecturer_token,"data 101", 45, "fatihgulmez", 45)
+# print grade_answer(lecturer_token,"eecs 468", 53, "alioz", 2)
+# print grade_answer(lecturer_token,"eecs 468", 54, "alioz", 2)
+# print grade_answer(lecturer_token,"eecs 468", 55, "alioz", 2)
+# print grade_answer(lecturer_token,"eecs 468", 56, "alioz", 2)
+# print grade_answer(lecturer_token,"eecs 468", 57, "alioz", 2)
 
 # print getExamsOfLecture(lecturer_token, "data 101")
 
@@ -151,6 +159,9 @@ def get_token(role):
 
 # print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
 
-# print signOut(lecturer_token, "alicakmak")
-# print signOut(student_token, "fatihgulmez")
+print getGradesOfExam(lecturer_token, "eecs 468", "test 2")
+
+
+print signOut(lecturer_token, "alicakmak")
+# print signOut(student_token, "alioz")
 # print signOut(admin_token, "admin")

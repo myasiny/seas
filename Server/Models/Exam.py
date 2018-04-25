@@ -23,7 +23,7 @@ class Exam:
         db.cursor.callproc(str(proc), args=(self.name, course, Time, duration, status,timezone,))
         command = "DROP EVENT IF EXISTS %s_start;DROP EVENT IF EXISTS %s_stop;" %(self.name, self.name)
         command +="CREATE EVENT %s_start ON SCHEDULE AT date_add('%s', INTERVAL 0 MINUTE) DO UPDATE exams SET Status='active' WHERE exams.Name='%s';" \
-                  "CREATE EVENT %s_stop ON SCHEDULE AT date_add('%s', INTERVAL %d MINUTE )DO UPDATE exams SET Status='not graded' WHERE exams.Name='%s';" \
+                  "CREATE EVENT %s_stop ON SCHEDULE AT date_add('%s', INTERVAL %d MINUTE )DO UPDATE exams SET Status='finished' WHERE exams.Name='%s';" \
         % (self.name, Time, self.name, self.name, Time, int(duration), self.name)
 
         for com in command.split(";"):
@@ -104,3 +104,10 @@ class Exam:
 
         except KeyError as k:
             return k.message
+
+    def get_grades(self, student_id):
+        if student_id == "ALL":
+            rtn = self.db.execute("select any_value(m.Username) as Username, sum(a.grade) as Grade from answers a, questions q, members m, exams e where e.Name='%s' and q.ExamID = e.ExamID and q.QuestionID = a.questionID and m.PersonID = a.studentID GROUP BY studentID;" %self.name)
+        else:
+            rtn = self.db.execute("select any_value(m.Username) as Username, sum(a.grade) as Grade from answers a, questions q, members m, exams e where e.Name='%s' and a.studentId = %d and q.ExamID = e.ExamID and q.QuestionID = a.questionID and m.PersonID = a.studentID GROUP BY a.studentID;" % (self.name, int(student_id)))
+        return rtn
