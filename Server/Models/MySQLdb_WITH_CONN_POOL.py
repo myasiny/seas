@@ -210,13 +210,18 @@ class MySQLdb:
         try:
             result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
             return len(result) > 0
-        except InterfaceError:
+        except InterfaceError or TypeError:
             return False
 
     def revoke_token(self, token):
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
 
     def execute(self, command):
+        try:
+            self.cursor.fetchall()
+        except:
+            pass
+
         try:
             self.cursor.execute(command)
         except InterfaceError:

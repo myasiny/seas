@@ -4,7 +4,7 @@ from database_api import *
 
 def get_token(role):
     if role == "student":
-        username, password = "fatihgulmez", "123456"
+        username, password = "fatihgulmez", "12345"
     elif role == "lecturer":
         username, password = "alicakmak", "12345"
     else: #Admin
@@ -16,8 +16,8 @@ def get_token(role):
 
 # student_token = get_token("student")
 # print student_token
-lecturer_token = get_token("lecturer")
-print lecturer_token
+# lecturer_token = get_token("lecturer")
+# print lecturer_token
 # admin_token = get_token("admin")
 # print admin_token
 
@@ -38,37 +38,35 @@ print lecturer_token
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
 # print addCourse(admin_token, "Data Analytics", "data 102", ["alicakmak"])
-# print getCourse(lecturer_token, "phys_101")
+# print getCourse(lecturer_token, "data_101")
 #
 # print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
 
-# print registerStudent(lecturer_token, "engr 468", False, [213860387, 212011111, 212980975, 213860387], "alicakmak")
+# print registerStudent(lecturer_token, "data 101", False, [213860387, 212011111, 212980975, 213860387], "alicakmak")
 
 # print getCourseStudents(lecturer_token, "data 101")
 
 # print getUserCourses(lecturer_token, "alicakmak")
 
 # print getUserCourses(student_token, "fatihgulmez")
+#
+# print changePassword(student_token, "fatihgulmez", "a", "123456", False)
 
-
-
-# print changePassword(student_token, "fatihgulmez", "12345", "123456", False)
-
-# print deleteStudentFromLecture(lecturer_token, "Data 101", "213962062")
+# print deleteStudentFromLecture(lecturer_token, "Data 101", "210111111")
 
 #### HOW TO CREATE EXAM
 
 # print createExam(lecturer_token,
 #                  "data 101",
-#                  "data mt 1",
-#                  "2018-04-09 22:30:00",
+#                  "FCG TEST",
+#                  "2018-04-26 22:30:00",
 #                  5,
 #                  status="draft"
 # )
-
+#
 # print add_time_to_exam(lecturer_token,
 #                        "data 101",
-#                        "data_mt_1",
+#                        "fcg test",
 #                        10)
 
 #                   {1:
@@ -101,8 +99,8 @@ print lecturer_token
 #                      }
 #                   }
 
-
-# print addQuestionToExam(lecturer_token, "data 101", "data mt 1", {"type": "test",
+#
+# print addQuestionToExam(lecturer_token, "data 101", "fcg test", {"type": "test",
 #                       "subject": "math",
 #                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
 #                       "answer": "c",
@@ -116,17 +114,17 @@ print lecturer_token
 ## HOW TO GET EXAM
 # print getExam(lecturer_token,
 #                  "data 101",
-#                  "data Mt 1")
+#                  "fcg test")
 
 # print sendAnswers(student_token,"data 101", 45, "fatihgulmez", "A")
 
-# print deleteExam(lecturer_token, "data mt 1", "data_101")
+# print deleteExam(lecturer_token, "fcg test", "data_101")
 
 # print uploadProfilePic(student_token, "fatihgulmez", "picc.png")
 
 # print getProfilePic(lecturer_token, "alicakmak")
 
-print grade_answer(lecturer_token,"data 101", 45, "fatihgulmez", 25)
+# print grade_answer(lecturer_token,"data 101", 45, "fatihgulmez", 45)
 
 # print getExamsOfLecture(lecturer_token, "data 101")
 
@@ -153,6 +151,6 @@ print grade_answer(lecturer_token,"data 101", 45, "fatihgulmez", 25)
 
 # print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
 
-print signOut(lecturer_token, "alicakmak")
+# print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")
