@@ -235,7 +235,7 @@ class EduQuestion(Screen):
         eduQuestion.on_submit(self)
 
     def on_question_add(self, command):
-        if self.on_submit():
+        if eduQuestion.on_submit(self):
             if command == "complete":
                 self.on_question_cancel()
             else:
