@@ -88,8 +88,6 @@ def signIn(username, password, URL=server_address, organization=current_organiza
     """
     url = URL+"/organizations/%s/%s" %(__normalize(organization), username)
     rtn = get(url, auth=(username, password)).json()
-    if rtn == "Wrong Password":
-        return rtn
     return rtn
 
 
