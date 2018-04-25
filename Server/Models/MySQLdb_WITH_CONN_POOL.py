@@ -210,7 +210,7 @@ class MySQLdb:
         try:
             result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
             return len(result) > 0
-        except InterfaceError or TypeError:
+        except InterfaceError or TypeError  :
             return False
 
     def revoke_token(self, token):
