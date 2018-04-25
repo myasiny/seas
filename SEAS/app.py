@@ -24,7 +24,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 from func import database_api
-from pg import appLogin, appReset, eduLects, eduProfile, eduExam, eduQuestion, eduLive, stdLects, stdLive
+from pg import appLogin, appReset, eduLects, eduProfile, eduExam, eduQuestion, eduLive, eduGrade, stdLects, stdLive
 
 __authors__ = ["Muhammed Yasin Yildirim", "Fatih Cagatay Gulmez", "Ali Emre Oz"]
 __credits__ = ["Ali Cakmak"]
@@ -190,6 +190,15 @@ class StdLects(Screen):
 
 class EduStats(Screen):
     pass
+
+
+class EduGrade(Screen):
+    """
+    @group Design: TODO
+    @group Functionality: TODO
+    """
+
+    appLogin.load_string("edu_grade")
 
 
 class EduLive(Screen):

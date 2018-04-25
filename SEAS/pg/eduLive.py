@@ -134,7 +134,9 @@ def on_pre_enter(self):
     self.data_student_list = self.cipher.decrypt(participants.read()).split("*[SEAS-NEW-LINE]*")
 
     args_converter = lambda row_index, i: {"text": i,
-                                           "background_normal": "data/img/widget_black_75_crop.png",
+                                           "selected_color": (.361, .694, .188, 1),
+                                           "deselected_color": (.57, .67, .68, 1),
+                                           "background_down": "data/img/widget_green_select.png",
                                            "font_name": "data/font/CaviarDreams_Bold.ttf",
                                            "font_size": self.height / 50,
                                            "size_hint_y": None,

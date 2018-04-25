@@ -59,6 +59,7 @@ def on_pre_enter(self):
             for key, value in self.data_detailed_exam.iteritems():
                 if i == 0:
                     i += 1
+                    questions.write(self.cipher.encrypt("*[SEAS-EXAM]*"))
                 else:
                     questions.write(self.cipher.encrypt(str(key) + "*[SEAS-NEW-LINE]*" +
                                                         str(value["type"]) + "*[SEAS-NEW-LINE]*" +
