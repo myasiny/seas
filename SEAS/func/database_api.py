@@ -12,9 +12,9 @@ def __normalize(word):
     return word
 
 def server_check(func):
-    def wrapper(*args):
+    def wrapper(*args, **kwargs):
         try:
-            return func(*args)
+            return func(*args, **kwargs)
         except ValueError:
             return "500 - Internal Error"
     return wrapper
@@ -347,7 +347,7 @@ def getProfilePic(token, username, URL=server_address, organization=current_orga
     organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
     try:
-        with open("data/img/pic_user_current.png", "wb") as f:
+        with open("../data/img/pic_user_current.png", "wb") as f:
             f.write(pickle.loads(get(url, headers={"Authorization": "Bearer " + token}).json()))
     except TypeError:
         pass

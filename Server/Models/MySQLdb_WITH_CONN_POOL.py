@@ -11,8 +11,8 @@ class MySQLdb:
             "database": dbName,
             "user": user,
             "password": password,
-            "host": '159.65.124.42',
-            "port":8000
+            "host": '35.205.88.46',
+            "port":3306
         }
 
         self.pool = pooling.MySQLConnectionPool(pool_name="conn",
@@ -226,25 +226,29 @@ class MySQLdb:
             self.cursor.execute(command)
         except InterfaceError:
             self.cursor.execute(command, multi=True)
+            print "Interface error 1"
 
 
-        # if command.lower().startswith("select") or command.lower().startswith("(select"):
-        #     rtn = self.cursor.fetchall()
-        #     self.__commit()
-        #     return rtn
-        # try:
-        #     self.__commit()
-        # except InterfaceError:
-        #     for result in self.db.cmd_query_iter(command):
-        #         pass
-        #     self.__commit()
-        # return None
-        try:
+        if command.lower().startswith("select") or command.lower().startswith("(select"):
             rtn = self.cursor.fetchall()
+            self.__commit()
+            print "**"
+            return rtn
+        try:
+            self.__commit()
         except InterfaceError:
-            rtn = None
-        self.__commit()
-        return rtn
+            print "****"
+            for result in self.db.cmd_query_iter(command):
+                pass
+            self.__commit()
+        return None
+        # try:
+        #     rtn = self.cursor.fetchall()
+        # except InterfaceError:
+        #     print "Interface error 2"
+        #     rtn = None
+        # self.__commit()
+        # return rtn
     def __commit(self):
         return self.db.commit()
 
