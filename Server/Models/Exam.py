@@ -4,7 +4,7 @@ import json, threading
 
 class Exam:
     def __init__(self, Name, organization, db=None):
-        self.org = organization.replace(" ", "_").lower()
+        self.org = organization
         self.name = Name
         self.db = db
         self.db.execute("USE %s;" % self.org)
@@ -38,11 +38,14 @@ class Exam:
             saved = db.execute(command)
             course, exam_id, exam_name, course_id, time, duration, status, timezone = saved[0][2:]
         except IndexError:
-            command = "SELECT c.Code, e.* FROM exams e, courses c WHERE e.Name = '%s' and e.CourseID = c.CourseID" %self.name
-            saved = db.execute(command)
-            print saved
-            course, exam_id, exam_name, course_id, time, duration, status, timezone = saved[0][:8]
-            saved = []
+            try:
+                command = "SELECT c.Code, e.* FROM exams e, courses c WHERE e.Name = '%s' and e.CourseID = c.CourseID" %self.name
+                saved = db.execute(command)
+                print saved
+                course, exam_id, exam_name, course_id, time, duration, status, timezone = saved[0][:8]
+                saved = []
+            except IndexError:
+                return "No Exam."
 
         try:
             questions = {}

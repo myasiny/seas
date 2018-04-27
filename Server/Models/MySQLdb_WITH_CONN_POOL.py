@@ -4,7 +4,7 @@ from DBTable import DBTable
 from mysql.connector import pooling, InterfaceError, PoolError, OperationalError
 
 class MySQLdb:
-    def __init__(self, dbName, user="tester", password="wivern@seas"):
+    def __init__(self, dbName, user="root", password="Dragos!2017"):
         self.name = dbName
         self.allowed_extensions = set(['png', 'jpg', 'jpeg'])
         dbconfig = {
@@ -232,15 +232,13 @@ class MySQLdb:
         if command.lower().startswith("select") or command.lower().startswith("(select"):
             rtn = self.cursor.fetchall()
             self.__commit()
-            print "**"
             return rtn
         try:
             self.__commit()
         except InterfaceError:
-            print "****"
             for result in self.db.cmd_query_iter(command):
-                pass
-            self.__commit()
+                print "cmd_query_iter: ", result
+                self.__commit()
         return None
         # try:
         #     rtn = self.cursor.fetchall()

@@ -126,7 +126,8 @@ def signInUser(organization, username):
                 return jsonify("Wrong Password")
         except IndexError:
             return jsonify("Wrong Username")
-        except:
+        except Exception as e:
+            # e.message
             return jsonify("An error occurred")
 
 
@@ -336,7 +337,6 @@ def answerExam(organization, course, question_id, username):
             return jsonify("Unauthorized access!")
         if check_lecture_permision(organization, token, course):
             user = Student(db, organization, username)
-            print request.form["answers"]
             user.add_answer(question_id, request.form["answers"])
             return jsonify("Done")
         return jsonify("Unauthorized access!")
