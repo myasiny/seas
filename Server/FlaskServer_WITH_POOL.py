@@ -126,8 +126,7 @@ def signInUser(organization, username):
                 return jsonify("Wrong Password")
         except IndexError:
             return jsonify("Wrong Username")
-        except Exception as e:
-            # e.message
+        except:
             return jsonify("An error occurred")
 
 

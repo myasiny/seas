@@ -16,22 +16,24 @@ class MySQLdb:
         }
 
         self.pool = pooling.MySQLConnectionPool(pool_name="conn",
-                                       pool_size=4,pool_reset_session=True, buffered=True,
+                                       pool_size=1,pool_reset_session=True, buffered=True,
                                        **dbconfig)
 
     def __enter__(self):
-        try:
-            self.get_connection()
-        except PoolError:
-            self.close_connection()
-            self.get_connection()
+        self.get_connection()
+        # try:
+        #     self.get_connection()
+        # except PoolError:
+        #     self.close_connection()
+        #     self.get_connection()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        try:
-            self.close_connection()
-        except OperationalError:
-            print "already disconnected"
+        self.db.close()
+        # try:
+        #     self.close_connection()
+        # except OperationalError:
+        #     print "already disconnected"
 
     def get_connection(self):
         self.db = self.pool.get_connection()
@@ -207,11 +209,16 @@ class MySQLdb:
         pass
 
     def if_token_revoked(self, token):
-        try:
-            result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
-            return len(result) > 0
-        except InterfaceError or TypeError  :
-            return False
+        # try:
+        result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
+        print result
+        return len(result) > 0
+        # except InterfaceError:
+        #     print "1"
+        #     return False
+        # except  TypeError:
+        #     print "2"
+        #     return False
 
     def revoke_token(self, token):
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
@@ -249,6 +256,3 @@ class MySQLdb:
         # return rtn
     def __commit(self):
         return self.db.commit()
-
-    def close_connection(self):
-        self.db.close()

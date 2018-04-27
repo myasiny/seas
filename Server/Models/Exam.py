@@ -41,10 +41,9 @@ class Exam:
             try:
                 command = "SELECT c.Code, e.* FROM exams e, courses c WHERE e.Name = '%s' and e.CourseID = c.CourseID" %self.name
                 saved = db.execute(command)
-                print saved
                 course, exam_id, exam_name, course_id, time, duration, status, timezone = saved[0][:8]
                 saved = []
-            except IndexError:
+            except IndexError: #
                 return "No Exam."
 
         try:
@@ -87,7 +86,6 @@ class Exam:
     def add_more_time(self, minutes):
         self.db.execute("Update exams Set Duration = Duration + %d where Name = '%s';" % (int(minutes), self.name))
         start, dur = self.db.execute("Select Time, Duration from exams where Name = '%s'" %self.name)[0]
-        print start, dur
         self.db.execute("alter event %s_stop ON SCHEDULE AT date_add('%s', INTERVAL %d MINUTE);" %(self.name, start, int(dur)))
 
     def get_questions(self):
