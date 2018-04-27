@@ -8,16 +8,16 @@ class MySQLdb:
         self.name = dbName
         self.allowed_extensions = set(['png', 'jpg', 'jpeg'])
         dbconfig = {
+            "pool_name": "conn",
             "database": dbName,
             "user": user,
             "password": password,
             "host": '35.205.88.46',
-            "port":3306
+            "port":3306,
+            "pool_size": 1
         }
 
-        self.pool = pooling.MySQLConnectionPool(pool_name="conn",
-                                       pool_size=1,pool_reset_session=True, buffered=True,
-                                       **dbconfig)
+        self.pool = pooling.MySQLConnectionPool(**dbconfig)
 
     def __enter__(self):
         self.get_connection()
@@ -208,26 +208,19 @@ class MySQLdb:
         pass
 
     def if_token_revoked(self, token):
-        # try:
-        result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
-        print result
-        return len(result) > 0
-        # except InterfaceError:
-        #     print "1"
-        #     return False
-        # except  TypeError:
-        #     print "2"
-        #     return False
+        try:
+            result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
+            print result
+            return len(result) > 0
+        except InterfaceError:
+            return False
+        except  TypeError:
+            return False
 
     def revoke_token(self, token):
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
 
     def execute(self, command):
-        try:
-            self.cursor.fetchall()
-        except:
-            pass
-
         try:
             self.cursor.execute(command)
         except InterfaceError:

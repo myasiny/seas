@@ -306,8 +306,7 @@ def getExam(organization, course, name):
         if not check_auth(token, organization, "student"):
             return jsonify("Unauthorized access!")
         if check_lecture_permision(organization, token, course):
-            exam = Exam(name, organization, db)
-            rtn = jsonify(exam.get())
+            rtn = jsonify(Exam(name, organization, db).get())
             return rtn
         return jsonify("Unauthorized access!")
 
