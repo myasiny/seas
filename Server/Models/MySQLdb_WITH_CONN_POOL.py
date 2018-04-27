@@ -29,11 +29,10 @@ class MySQLdb:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.db.close()
-        # try:
-        #     self.close_connection()
-        # except OperationalError:
-        #     print "already disconnected"
+        try:
+            self.db.close()
+        except OperationalError:
+            print "already disconnected"
 
     def get_connection(self):
         self.db = self.pool.get_connection()
