@@ -173,6 +173,14 @@
             pos_hint: {"center_x": .5, "center_y": .3}
 
         Image:
+            id: img_filter
+            source: "data/img/widget_black_75.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .02, .18
+            pos_hint: {"center_x": .2375, "center_y": .46}
+
+        Image:
             id: img_info_top
             source: "data/img/widget_black_75.png"
             opacity: 0

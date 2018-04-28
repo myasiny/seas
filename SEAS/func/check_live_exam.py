@@ -33,7 +33,7 @@ def is_active(self, dt):
             self.ids["txt_info_head"].text = self.live_exam.title()
 
             self.ids["btn_exam_join"].disabled = False
-            self.ids["img_exam_join_name"].opacity = .75
+            self.ids["img_exam_join_name"].source = "data/img/img_container_green.png"
             self.ids["txt_exam_join_name"].color = (1, 1, 1, 1)
             self.ids["txt_exam_join_name"].text = "{exam} has started!".format(exam=self.ids["txt_info_head"].text)
 
@@ -43,6 +43,6 @@ def is_active(self, dt):
 
     if self.live_exam is None:
         self.ids["btn_exam_join"].disabled = True
-        self.ids["img_exam_join_name"].opacity = .1
+        self.ids["img_exam_join_name"].source = "data/img/img_container_gray.png"
         self.ids["txt_exam_join_name"].color = (1, 1, 1, .25)
         self.ids["txt_exam_join_name"].text = "No exam started"

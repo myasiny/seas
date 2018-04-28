@@ -243,27 +243,27 @@ def on_submit(self):
 
             return True
         elif self.question_type == "multiple_choice":
-            if self.ids["input_answer_a"].text.strip():
+            if not self.ids["input_answer_a"].text.strip():
                 ico_status.opacity = 1
                 ico_status.pos_hint = {"x": .9375, "center_y": .675}
 
                 return False
-            elif self.ids["input_answer_b"].text.strip():
+            elif not self.ids["input_answer_b"].text.strip():
                 ico_status.opacity = 1
                 ico_status.pos_hint = {"x": .9375, "center_y": .55}
 
                 return False
-            elif self.ids["input_answer_c"].text.strip():
+            elif not self.ids["input_answer_c"].text.strip():
                 ico_status.opacity = 1
                 ico_status.pos_hint = {"x": .9375, "center_y": .425}
 
                 return False
-            elif self.ids["input_answer_d"].text.strip():
+            elif not self.ids["input_answer_d"].text.strip():
                 ico_status.opacity = 1
                 ico_status.pos_hint = {"x": .9375, "center_y": .3}
 
                 return False
-            elif self.ids["input_answer_e"].text.strip():
+            elif not self.ids["input_answer_e"].text.strip():
                 ico_status.opacity = 1
                 ico_status.pos_hint = {"x": .9375, "center_y": .175}
 

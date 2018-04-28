@@ -16,7 +16,8 @@ def server_check(func):
         try:
             return func(*args, **kwargs)
         except ValueError:
-            return "500 - Internal Error"
+            raise ValueError
+            # return "500 - Internal Error"
     return wrapper
 
 @server_check

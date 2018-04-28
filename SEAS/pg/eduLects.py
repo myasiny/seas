@@ -215,16 +215,40 @@ def on_exams(self):
                                                             self.ids["txt_lect_code"].text
                                                             )
 
-    args_converter = lambda row_index, x: {"text": x.replace("_", " ").title(),
-                                           "selected_color": (.361, .694, .188, 1),
+    data_exam_filter = {"green": [],
+                        "yellow": [],
+                        "red": []
+                        }
+
+    def color(x):
+        """
+        This method determines color name and thereby, category for given exam according to its status .
+        :param x: It is data of exam.
+        :return: It is name of color.
+        """
+
+        if x[5] == "graded":
+            name = "green"
+        elif x[5] == "finished":
+            name = "yellow"
+        else:
+            name = "red"
+
+        data_exam_filter[name].append(x)
+
+        return name
+
+    args_converter = lambda row_index, x: {"text": x[1].replace("_", " ").title(),
+                                           "selected_color": (.843, .82, .82, 1),
                                            "deselected_color": (.57, .67, .68, 1),
-                                           "background_down": "data/img/widget_green_select.png",
+                                           "background_down": "data/img/widget_gray_75.png",
+                                           "background_normal": "data/img/widget_list_{x5}.png".format(x5=color(x)),
                                            "font_name": "data/font/CaviarDreams_Bold.ttf",
                                            "font_size": self.height / 25,
                                            "size_hint_y": None,
                                            "height": self.height / 10
                                            }
-    self.ids["list_exams"].adapter = ListAdapter(data=[i[1] for i in self.data_exam_details],
+    self.ids["list_exams"].adapter = ListAdapter(data=[i for i in self.data_exam_details],
                                                  cls=ListItemButton,
                                                  args_converter=args_converter,
                                                  allow_empty_selection=False
@@ -232,6 +256,54 @@ def on_exams(self):
     self.ids["list_exams"].adapter.bind(on_selection_change=partial(on_exam_select,
                                                                     self
                                                                     )
+                                        )
+
+    def on_filter(clr, dt):
+        """
+        This method reloads exam list according to selected filter.
+        :param clr: It is name of selected color.
+        :param dt: It is for handling callback input.
+        :return:
+        """
+
+        if clr != "all":
+            set_exam_filter = set(map(tuple,
+                                      data_exam_filter[clr]
+                                      )
+                                  )
+            clr_exam_filter = map(list,
+                                  set_exam_filter
+                                  )
+            self.ids["list_exams"].adapter.data = [exam for exam in list(reversed(clr_exam_filter))]
+        else:
+            self.ids["list_exams"].adapter.data = [exam for exam in self.data_exam_details]
+
+    for key in data_exam_filter.iterkeys():
+        if key == "green":
+            pos_y = .4725
+        elif key == "yellow":
+            pos_y = .4225
+        else:
+            pos_y = .3725
+
+        self.ids["layout_exams"].add_widget(image_button.add_button("data/img/widget_{x5}.png".format(x5=key),
+                                                                    "data/img/widget_{x5}_select.png".format(x5=key),
+                                                                    (.025, True),
+                                                                    {"x": .225, "y": pos_y},
+                                                                    partial(on_filter,
+                                                                            key
+                                                                            )
+                                                                    )
+                                            )
+
+    self.ids["layout_exams"].add_widget(image_button.add_button("data/img/widget_gray_75.png",
+                                                                "data/img/widget_gray_75_select.png",
+                                                                (.025, True),
+                                                                {"x": .225, "y": .5225},
+                                                                partial(on_filter,
+                                                                        "all"
+                                                                        )
+                                                                )
                                         )
 
 
@@ -277,9 +349,6 @@ def on_exam_select(self, dt):
     self.ids["btn_exam_start_grade"].opacity = 1
     if self.ids["txt_status_body"].text == "Graded":
         self.ids["btn_exam_start_grade"].text = "DOWNLOAD"
-        # TODO
-    elif self.ids["txt_status_body"].text == "Ready":
-        self.ids["btn_exam_start_grade"].text = "PUBLISH"
         # TODO
     elif self.ids["txt_status_body"].text == "Finished":
         self.ids["btn_exam_start_grade"].text = "GRADE"
@@ -431,9 +500,9 @@ def on_participants(self):
     self.data_student_list = self.cipher.decrypt(participants.read()).split("*[SEAS-NEW-LINE]*")
 
     args_converter = lambda row_index, x: {"text": x,
-                                           "selected_color": (.361, .694, .188, 1),
+                                           "selected_color": (.843, .82, .82, 1),
                                            "deselected_color": (.57, .67, .68, 1),
-                                           "background_down": "data/img/widget_green_select.png",
+                                           "background_down": "data/img/widget_gray_75.png",
                                            "font_name": "data/font/CaviarDreams_Bold.ttf",
                                            "font_size": self.height / 50,
                                            "size_hint_y": None,
