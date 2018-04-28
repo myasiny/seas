@@ -4,32 +4,33 @@ from DBTable import DBTable
 from mysql.connector import pooling, InterfaceError, PoolError, OperationalError
 
 class MySQLdb:
-    def __init__(self, dbName, user="tester", password="wivern@seas"):
+    def __init__(self, dbName, user="root", password="Dragos!2017"):
         self.name = dbName
         self.allowed_extensions = set(['png', 'jpg', 'jpeg'])
         dbconfig = {
+            "pool_name": "conn",
             "database": dbName,
             "user": user,
             "password": password,
             "host": '35.205.88.46',
-            "port":3306
+            "port":3306,
+            "pool_size": 1
         }
 
-        self.pool = pooling.MySQLConnectionPool(pool_name="conn",
-                                       pool_size=4,pool_reset_session=True, buffered=True,
-                                       **dbconfig)
+        self.pool = pooling.MySQLConnectionPool(**dbconfig)
 
     def __enter__(self):
-        try:
-            self.get_connection()
-        except PoolError:
-            self.close_connection()
-            self.get_connection()
+        self.get_connection()
+        # try:
+        #     self.get_connection()
+        # except PoolError:
+        #     self.close_connection()
+        #     self.get_connection()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         try:
-            self.close_connection()
+            self.db.close()
         except OperationalError:
             print "already disconnected"
 
@@ -209,19 +210,17 @@ class MySQLdb:
     def if_token_revoked(self, token):
         try:
             result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
+            print result
             return len(result) > 0
-        except InterfaceError or TypeError  :
+        except InterfaceError:
+            return False
+        except  TypeError:
             return False
 
     def revoke_token(self, token):
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
 
     def execute(self, command):
-        try:
-            self.cursor.fetchall()
-        except:
-            pass
-
         try:
             self.cursor.execute(command)
         except InterfaceError:
@@ -232,15 +231,13 @@ class MySQLdb:
         if command.lower().startswith("select") or command.lower().startswith("(select"):
             rtn = self.cursor.fetchall()
             self.__commit()
-            print "**"
             return rtn
         try:
             self.__commit()
         except InterfaceError:
-            print "****"
             for result in self.db.cmd_query_iter(command):
-                pass
-            self.__commit()
+                print "cmd_query_iter: ", result
+                self.__commit()
         return None
         # try:
         #     rtn = self.cursor.fetchall()
@@ -251,6 +248,3 @@ class MySQLdb:
         # return rtn
     def __commit(self):
         return self.db.commit()
-
-    def close_connection(self):
-        self.db.close()

@@ -16,8 +16,9 @@ def server_check(func):
         try:
             return func(*args, **kwargs)
         except ValueError:
-            raise ValueError
-            # return "500 - Internal Error"
+            return "500 - Internal Error"
+        except ConnectionError:
+            return "404 - Server is not reachable."
     return wrapper
 
 @server_check

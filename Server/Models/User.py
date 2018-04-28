@@ -98,7 +98,8 @@ class Lecturer(User):
         self.get = self.get_user_info()
 
     def get_lecturer_courses(self):
-        return self.execute("SELECT courses.Name, courses.CODE FROM lecturers JOIN courses ON lecturers.CourseID = courses.CourseID JOIN members ON members.PersonID = lecturers.LecturerID WHERE members.Username = '%s';" % (self.username))
+        rtn=self.execute("SELECT courses.Name, courses.CODE FROM lecturers JOIN courses ON lecturers.CourseID = courses.CourseID JOIN members ON members.PersonID = lecturers.LecturerID WHERE members.Username = '%s';" % (self.username))
+        return rtn
 
     def grade_answer(self, question_id, student, grade):
         return self.execute("INSERT INTO answers(questionID, studentID, grade) VALUES ('%s', (SELECT PersonID from members where Username = '%s') , '%s') ON DUPLICATE KEY UPDATE grade=VALUES(grade)" % (str(question_id), student, str(grade)))
@@ -116,7 +117,8 @@ class Student(User):
         self.get = self.get_user_info()
 
     def get_student_courses(self):
-        return self.execute("SELECT courses.Name, courses.CODE FROM registrations JOIN courses ON registrations.CourseID = courses.CourseID JOIN members ON members.PersonID = registrations.studentID WHERE members.Username = '%s';" % (self.username))
+        rtn =  self.execute("SELECT courses.Name, courses.CODE FROM registrations JOIN courses ON registrations.CourseID = courses.CourseID JOIN members ON members.PersonID = registrations.studentID WHERE members.Username = '%s';" % (self.username))
+        return rtn
 
     def add_answer(self, question_id, answer):
         try:
