@@ -80,22 +80,6 @@ def on_pre_enter(self):
     :return:
     """
 
-    # self.add_widget(image_button.add_button("data/img/ico_help.png",
-    #                                         "data/img/ico_help_select.png",
-    #                                         (.1, True),
-    #                                         {"x": 0, "y": 0},
-    #                                         on_help
-    #                                         )
-    #                 )
-    #
-    # self.add_widget(image_button.add_button("data/img/ico_contact.png",
-    #                                         "data/img/ico_contact_select.png",
-    #                                         (.1, True),
-    #                                         {"x": .1, "y": 0},
-    #                                         on_contact
-    #                                         )
-    #                 )
-
     self.cipher = Cache.get("config", "cipher")
 
     self.data = []
@@ -195,6 +179,8 @@ def on_lect_select(self, dropdown, txt):
     self.ids["btn_exam_delete"].opacity = 0
     self.ids["btn_exam_start_grade"].opacity = 0
 
+    self.ids["img_filter"].source = "data/img/widget_gray_75.png"
+
     return on_exams(self)
 
 
@@ -215,16 +201,40 @@ def on_exams(self):
                                                             self.ids["txt_lect_code"].text
                                                             )
 
-    args_converter = lambda row_index, x: {"text": x.replace("_", " ").title(),
-                                           "selected_color": (.361, .694, .188, 1),
+    self.data_exam_filter = {"green": [],
+                             "yellow": [],
+                             "red": []
+                             }
+
+    def color(x):
+        """
+        This method determines color name and thereby, category for given exam according to its status.
+        :param x: It is data of exam.
+        :return: It is name of color.
+        """
+
+        if x[5] == "graded":
+            name = "green"
+        elif x[5] == "finished":
+            name = "yellow"
+        else:
+            name = "red"
+
+        self.data_exam_filter[name].append(x)
+
+        return name
+
+    args_converter = lambda row_index, x: {"text": x[1].replace("_", " ").title(),
+                                           "selected_color": (.843, .82, .82, 1),
                                            "deselected_color": (.57, .67, .68, 1),
-                                           "background_down": "data/img/widget_green_select.png",
+                                           "background_down": "data/img/widget_gray_75.png",
+                                           "background_normal": "data/img/widget_list_{x5}.png".format(x5=color(x)),
                                            "font_name": "data/font/CaviarDreams_Bold.ttf",
                                            "font_size": self.height / 25,
                                            "size_hint_y": None,
                                            "height": self.height / 10
                                            }
-    self.ids["list_exams"].adapter = ListAdapter(data=[i[1] for i in self.data_exam_details],
+    self.ids["list_exams"].adapter = ListAdapter(data=[i for i in self.data_exam_details],
                                                  cls=ListItemButton,
                                                  args_converter=args_converter,
                                                  allow_empty_selection=False
@@ -233,6 +243,62 @@ def on_exams(self):
                                                                     self
                                                                     )
                                         )
+
+    def on_filter(clr, dt):
+        """
+        This method reloads exam list according to selected filter.
+        :param clr: It is name of selected color.
+        :param dt: It is for handling callback input.
+        :return:
+        """
+
+        if clr != "all":
+            set_exam_filter = set(map(tuple,
+                                      self.data_exam_filter[clr]
+                                      )
+                                  )
+            clr_exam_filter = map(list,
+                                  set_exam_filter
+                                  )
+            self.ids["list_exams"].adapter.data = [exam for exam in list(reversed(clr_exam_filter))]
+
+            self.ids["img_filter"].source = "data/img/widget_{x5}.png".format(x5=clr)
+        else:
+            self.ids["list_exams"].adapter.data = [exam for exam in self.data_exam_details]
+
+            self.ids["img_filter"].source = "data/img/widget_gray_75.png"
+
+    try:
+        if self.btn_filter_all in list(self.ids["layout_exams"].children):
+            pass
+    except:
+        for key in self.data_exam_filter.iterkeys():
+            if key == "green":
+                pos_y = .4725
+            elif key == "yellow":
+                pos_y = .4225
+            else:
+                pos_y = .3725
+
+            self.ids["layout_exams"].add_widget(image_button.add_button("data/img/widget_{x5}.png".format(x5=key),
+                                                                        "data/img/widget_{x5}_select.png".format(x5=key),
+                                                                        (.025, True),
+                                                                        {"x": .225, "y": pos_y},
+                                                                        partial(on_filter,
+                                                                                key
+                                                                                )
+                                                                        )
+                                                )
+
+        self.btn_filter_all = image_button.add_button("data/img/widget_gray_75.png",
+                                                      "data/img/widget_gray_75_select.png",
+                                                      (.025, True),
+                                                      {"x": .225, "y": .5225},
+                                                      partial(on_filter,
+                                                              "all"
+                                                              )
+                                                      )
+        self.ids["layout_exams"].add_widget(self.btn_filter_all)
 
 
 def on_exam_select(self, dt):
@@ -278,9 +344,6 @@ def on_exam_select(self, dt):
     if self.ids["txt_status_body"].text == "Graded":
         self.ids["btn_exam_start_grade"].text = "DOWNLOAD"
         # TODO
-    elif self.ids["txt_status_body"].text == "Ready":
-        self.ids["btn_exam_start_grade"].text = "PUBLISH"
-        # TODO
     elif self.ids["txt_status_body"].text == "Finished":
         self.ids["btn_exam_start_grade"].text = "GRADE"
         self.ids["btn_exam_start_grade"].bind(on_release=partial(on_exam_grade,
@@ -300,7 +363,7 @@ def on_exam_delete(self, dt):
     This method deletes selected exam through server and refreshes list of exams.
     :param self: It is for handling class structure.
     :param dt: It is for handling callback input.
-    :return:
+    :return: It is for updating both exam list and categories when exam is deleted.
     """
 
     try:
@@ -314,11 +377,7 @@ def on_exam_delete(self, dt):
                                 self.ids["txt_lect_code"].text
                                 )
 
-    self.data_exam_details = database_api.getExamsOfLecture(Cache.get("info", "token"),
-                                                            self.ids["txt_lect_code"].text
-                                                            )
-
-    self.ids["list_exams"].adapter.data = [i[1].replace("_", " ").title() for i in self.data_exam_details]
+    return on_exams(self)
 
 
 def on_exam_start(self, dt):
@@ -431,9 +490,9 @@ def on_participants(self):
     self.data_student_list = self.cipher.decrypt(participants.read()).split("*[SEAS-NEW-LINE]*")
 
     args_converter = lambda row_index, x: {"text": x,
-                                           "selected_color": (.361, .694, .188, 1),
+                                           "selected_color": (.843, .82, .82, 1),
                                            "deselected_color": (.57, .67, .68, 1),
-                                           "background_down": "data/img/widget_green_select.png",
+                                           "background_down": "data/img/widget_gray_75.png",
                                            "font_name": "data/font/CaviarDreams_Bold.ttf",
                                            "font_size": self.height / 50,
                                            "size_hint_y": None,
@@ -631,3 +690,11 @@ def on_list_import(s, dt):
                                     on_release=s.popup.dismiss)
                              )
     s.popup.open()
+
+
+def on_help(s):
+    pass
+
+
+def on_contact(s):
+    pass

@@ -137,7 +137,7 @@
 
         Image:
             id: img_exam_join_name
-            source: "data/img/img_container.png"
+            source: "data/img/img_container_gray.png"
             opacity: .75
             keep_ratio: False
             allow_stretch: True

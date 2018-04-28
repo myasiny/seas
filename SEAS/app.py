@@ -377,7 +377,7 @@ class EduProfile(Screen):
 class EduLects(Screen):
     """
     @group Design: on_pre_enter, on_exams, on_participants
-    @group Functionality: on_enter, on_lect_select, on_quit, on_leave
+    @group Functionality: on_enter, on_lect_select, on_help, on_contact, on_quit, on_leave
     """
 
     appLogin.load_string("edu_lects")
@@ -425,6 +425,12 @@ class EduLects(Screen):
 
     def on_participants(self):
         eduLects.on_participants(self)
+
+    def on_help(self):
+        eduLects.on_help(self)
+
+    def on_contact(self):
+        eduLects.on_contact(self)
 
     @staticmethod
     def on_live():

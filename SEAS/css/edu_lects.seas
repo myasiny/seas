@@ -144,6 +144,36 @@
             size_hint: .85, .1
             pos_hint: {"center_x": .6, "y": .725}
 
+        Button:
+            id: btn_help
+            text: "Help"
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 4
+            background_normal: "data/img/widget_black_75.png"
+            background_down: "data/img/widget_gray_75_select.png"
+            size_hint: .1, .075
+            pos_hint: {"x": 0, "y": 0}
+            on_release: root.on_help()
+
+        Button:
+            id: btn_contact
+            text: "Contact"
+            font_name: "data/font/LibelSuit.ttf"
+            font_size: self.height / 4
+            background_normal: "data/img/widget_black_75.png"
+            background_down: "data/img/widget_gray_75_select.png"
+            size_hint: .1, .075
+            pos_hint: {"x": .1, "y": 0}
+            on_release: root.on_contact()
+
+        Image:
+            source: "data/img/widget_purple_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .0025, .05
+            pos_hint: {"center_x": .1, "center_y": .0375}
+
     FloatLayout:
         id: layout_exams
         opacity: 0
@@ -171,6 +201,14 @@
             id: list_exams
             size_hint: .5, .5
             pos_hint: {"center_x": .5, "center_y": .3}
+
+        Image:
+            id: img_filter
+            source: "data/img/widget_gray_75.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .0025, .1475
+            pos_hint: {"center_x": .2375, "y": .375}
 
         Image:
             id: img_info_top
