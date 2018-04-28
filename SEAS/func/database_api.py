@@ -14,7 +14,10 @@ def __normalize(word):
 def server_check(func):
     def wrapper(*args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            rtn = func(*args, **kwargs)
+            if isinstance(rtn, list) and len(rtn) == 1 and rtn[0] == "":
+                return []
+            return rtn
         except ValueError:
             return "500 - Internal Error"
         except ConnectionError:

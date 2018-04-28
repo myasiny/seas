@@ -58,7 +58,6 @@ class User:
         return "Not allowed extension."
 
     def get_profile_picture(self,):
-        rtn = self.profile_pic_path
         return self.profile_pic_path
 
     def verify_password(self, password):
