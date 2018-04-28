@@ -80,22 +80,6 @@ def on_pre_enter(self):
     :return:
     """
 
-    # self.add_widget(image_button.add_button("data/img/ico_help.png",
-    #                                         "data/img/ico_help_select.png",
-    #                                         (.1, True),
-    #                                         {"x": 0, "y": 0},
-    #                                         on_help
-    #                                         )
-    #                 )
-    #
-    # self.add_widget(image_button.add_button("data/img/ico_contact.png",
-    #                                         "data/img/ico_contact_select.png",
-    #                                         (.1, True),
-    #                                         {"x": .1, "y": 0},
-    #                                         on_contact
-    #                                         )
-    #                 )
-
     self.cipher = Cache.get("config", "cipher")
 
     self.data = []
@@ -195,6 +179,8 @@ def on_lect_select(self, dropdown, txt):
     self.ids["btn_exam_delete"].opacity = 0
     self.ids["btn_exam_start_grade"].opacity = 0
 
+    self.ids["img_filter"].source = "data/img/widget_gray_75.png"
+
     return on_exams(self)
 
 
@@ -222,7 +208,7 @@ def on_exams(self):
 
     def color(x):
         """
-        This method determines color name and thereby, category for given exam according to its status .
+        This method determines color name and thereby, category for given exam according to its status.
         :param x: It is data of exam.
         :return: It is name of color.
         """
@@ -275,8 +261,12 @@ def on_exams(self):
                                   set_exam_filter
                                   )
             self.ids["list_exams"].adapter.data = [exam for exam in list(reversed(clr_exam_filter))]
+
+            self.ids["img_filter"].source = "data/img/widget_{x5}.png".format(x5=clr)
         else:
             self.ids["list_exams"].adapter.data = [exam for exam in self.data_exam_details]
+
+            self.ids["img_filter"].source = "data/img/widget_gray_75.png"
 
     try:
         if self.btn_filter_all in list(self.ids["layout_exams"].children):
@@ -700,3 +690,11 @@ def on_list_import(s, dt):
                                     on_release=s.popup.dismiss)
                              )
     s.popup.open()
+
+
+def on_help(s):
+    pass
+
+
+def on_contact(s):
+    pass
