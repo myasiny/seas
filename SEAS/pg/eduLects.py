@@ -215,10 +215,10 @@ def on_exams(self):
                                                             self.ids["txt_lect_code"].text
                                                             )
 
-    data_exam_filter = {"green": [],
-                        "yellow": [],
-                        "red": []
-                        }
+    self.data_exam_filter = {"green": [],
+                             "yellow": [],
+                             "red": []
+                             }
 
     def color(x):
         """
@@ -234,7 +234,7 @@ def on_exams(self):
         else:
             name = "red"
 
-        data_exam_filter[name].append(x)
+        self.data_exam_filter[name].append(x)
 
         return name
 
@@ -268,7 +268,7 @@ def on_exams(self):
 
         if clr != "all":
             set_exam_filter = set(map(tuple,
-                                      data_exam_filter[clr]
+                                      self.data_exam_filter[clr]
                                       )
                                   )
             clr_exam_filter = map(list,
@@ -278,33 +278,37 @@ def on_exams(self):
         else:
             self.ids["list_exams"].adapter.data = [exam for exam in self.data_exam_details]
 
-    for key in data_exam_filter.iterkeys():
-        if key == "green":
-            pos_y = .4725
-        elif key == "yellow":
-            pos_y = .4225
-        else:
-            pos_y = .3725
+    try:
+        if self.btn_filter_all in list(self.ids["layout_exams"].children):
+            pass
+    except:
+        for key in self.data_exam_filter.iterkeys():
+            if key == "green":
+                pos_y = .4725
+            elif key == "yellow":
+                pos_y = .4225
+            else:
+                pos_y = .3725
 
-        self.ids["layout_exams"].add_widget(image_button.add_button("data/img/widget_{x5}.png".format(x5=key),
-                                                                    "data/img/widget_{x5}_select.png".format(x5=key),
-                                                                    (.025, True),
-                                                                    {"x": .225, "y": pos_y},
-                                                                    partial(on_filter,
-                                                                            key
-                                                                            )
-                                                                    )
-                                            )
-
-    self.ids["layout_exams"].add_widget(image_button.add_button("data/img/widget_gray_75.png",
-                                                                "data/img/widget_gray_75_select.png",
-                                                                (.025, True),
-                                                                {"x": .225, "y": .5225},
-                                                                partial(on_filter,
-                                                                        "all"
+            self.ids["layout_exams"].add_widget(image_button.add_button("data/img/widget_{x5}.png".format(x5=key),
+                                                                        "data/img/widget_{x5}_select.png".format(x5=key),
+                                                                        (.025, True),
+                                                                        {"x": .225, "y": pos_y},
+                                                                        partial(on_filter,
+                                                                                key
+                                                                                )
                                                                         )
-                                                                )
-                                        )
+                                                )
+
+        self.btn_filter_all = image_button.add_button("data/img/widget_gray_75.png",
+                                                      "data/img/widget_gray_75_select.png",
+                                                      (.025, True),
+                                                      {"x": .225, "y": .5225},
+                                                      partial(on_filter,
+                                                              "all"
+                                                              )
+                                                      )
+        self.ids["layout_exams"].add_widget(self.btn_filter_all)
 
 
 def on_exam_select(self, dt):
@@ -369,7 +373,7 @@ def on_exam_delete(self, dt):
     This method deletes selected exam through server and refreshes list of exams.
     :param self: It is for handling class structure.
     :param dt: It is for handling callback input.
-    :return:
+    :return: It is for updating both exam list and categories when exam is deleted.
     """
 
     try:
@@ -383,11 +387,7 @@ def on_exam_delete(self, dt):
                                 self.ids["txt_lect_code"].text
                                 )
 
-    self.data_exam_details = database_api.getExamsOfLecture(Cache.get("info", "token"),
-                                                            self.ids["txt_lect_code"].text
-                                                            )
-
-    self.ids["list_exams"].adapter.data = [i[1].replace("_", " ").title() for i in self.data_exam_details]
+    return on_exams(self)
 
 
 def on_exam_start(self, dt):
