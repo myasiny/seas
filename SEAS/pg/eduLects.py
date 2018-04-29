@@ -6,9 +6,11 @@ eduLects
 """
 
 import imghdr
+import smtplib
+from datetime import datetime
+from email.mime.text import MIMEText
 from functools import partial
 
-from kivy.adapters.dictadapter import DictAdapter
 from kivy.adapters.listadapter import ListAdapter
 from kivy.cache import Cache
 from kivy.uix.button import Button
@@ -16,10 +18,11 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.filechooser import FileChooserListView
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
-from kivy.uix.listview import ListItemButton, ListItemLabel, CompositeListItem
+from kivy.uix.listview import ListItemButton
 from kivy.uix.popup import Popup
 
 from func import database_api, excel_to_csv, image_button
+from kivy.uix.textinput import TextInput
 
 __author__ = "Muhammed Yasin Yildirim"
 
@@ -417,9 +420,11 @@ def on_exam_grade(s):
     :return:
     """
 
-    def on_exam_grade_select(self=s):
+    def on_exam_grade_select(self, dt):
         """
         This method redirects to grading screen for selected student.
+        :param self: It is for handling class structure.
+        :param dt: It is for handling callback input.
         :return:
         """
 
@@ -441,7 +446,10 @@ def on_exam_grade(s):
                                     size_hint_y=None,
                                     height=s.height / 20,
                                     pos_hint={"center_x": .25, "y": .0},
-                                    on_release=on_exam_grade_select)  # TODO
+                                    on_release=partial(on_exam_grade_select,
+                                                       s
+                                                       )
+                                    )
                              )
     popup_content.add_widget(Button(text="Close",
                                     font_name="data/font/LibelSuit.ttf",
@@ -608,9 +616,10 @@ def on_list_import(s, dt):
     :return:
     """
 
-    def on_list_import_confirm(widget_name, file_path, mouse_pos, self=s):
+    def on_list_import_confirm(self, widget_name, file_path, mouse_pos):
         """
         This method converts uploaded excel file to csv and updates participants through server.
+        :param self: It is for handling class structure.
         :param widget_name: It is for handling file chooser input.
         :param file_path: It is path of selected file.
         :param mouse_pos: It is for handling file chooser input.
@@ -665,7 +674,10 @@ def on_list_import(s, dt):
                                       size=(s.width, s.height),
                                       pos_hint={"center_x": .5, "center_y": .5}
                                       )
-    filechooser.bind(on_submit=on_list_import_confirm)
+    filechooser.bind(on_submit=partial(on_list_import_confirm,
+                                       s
+                                       )
+                     )
     popup_content.add_widget(filechooser)
     popup_content.add_widget(Button(text="Upload",
                                     font_name="data/font/LibelSuit.ttf",
@@ -693,8 +705,127 @@ def on_list_import(s, dt):
 
 
 def on_help(s):
-    pass
+    pass  # TODO
 
 
 def on_contact(s):
-    pass
+    """
+    This method creates pop-up for sending e-mails through form.
+    :param s: It is for handling class structure.
+    :return:
+    """
+
+    def on_contact_send(self, dt):
+        """
+        This method sends e-mail to specified e-mail address.
+        :param self: It is for handling class structure.
+        :param dt: It is for handling callback input.
+        :return:
+        """
+
+        self.ico_status_contact.opacity = 0
+
+        try:
+            if self.input_message.text.strip():
+                server = smtplib.SMTP("smtp.zoho.com",
+                                      587
+                                      )
+                server.starttls()
+                server.login("contact@wivernsoftware.com",
+                             "Dragos!2017"
+                             )
+
+                send_time = datetime.now().strftime("%d %B %Y, %I:%M%p")
+
+                message = MIMEText("{nick} ({mail}) on {date} via SEAS:\n\n{msg}".format(nick=Cache.get("info", "nick"),
+                                                                                         mail=Cache.get("info", "mail"),
+                                                                                         date=send_time,
+                                                                                         msg=self.input_message.text
+                                                                                         )
+                                   )
+                message["Subject"] = "SEAS: {about}".format(about=self.input_subject.text)
+
+                server.sendmail("contact@wivernsoftware.com",
+                                ["wivernsoft@gmail.com",
+                                 "alioz@std.sehir.edu.tr",
+                                 "fatihgulmez@std.sehir.edu.tr",
+                                 "muhammedyildirim@std.sehir.edu.tr"],
+                                message.as_string()
+                                )
+                server.quit()
+
+                self.ico_status_contact.source = "data/img/ico_status_success.png"
+                self.ico_status_contact.opacity = 1
+            else:
+                self.ico_status_contact.source = "data/img/ico_status_warning.png"
+                self.ico_status_contact.opacity = 1
+        except smtplib.SMTPException:
+            self.ico_status_contact.source = "data/img/ico_status_fail.png"
+            self.ico_status_contact.opacity = 1
+        finally:
+            self.popup.dismiss()
+
+    popup_content = FloatLayout()
+    s.popup = Popup(title="Contact Us",
+                    content=popup_content,
+                    separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
+                    size_hint=(None, None),
+                    size=(s.width / 2, s.height / 2)
+                    )
+    s.input_subject = TextInput(hint_text="Subject",
+                                write_tab=False,
+                                multiline=False,
+                                font_name="data/font/CaviarDreams_Bold.ttf",
+                                font_size=s.height / 36,
+                                background_normal="data/img/widget_gray_75.png",
+                                background_active="data/img/widget_purple_75_select.png",
+                                background_disabled_normal="data/img/widget_black_75.png",
+                                padding_y=[s.height / 36, 0],
+                                size_hint=(.9, .2),
+                                pos_hint={"center_x": .5, "center_y": .85}
+                                )
+    popup_content.add_widget(s.input_subject)
+    s.input_message = TextInput(hint_text="Message",
+                                font_name="data/font/CaviarDreams_Bold.ttf",
+                                font_size=s.height / 36,
+                                background_normal="data/img/widget_gray_75.png",
+                                background_active="data/img/widget_purple_75_select.png",
+                                background_disabled_normal="data/img/widget_black_75.png",
+                                padding_y=[s.height / 36, 0],
+                                size_hint=(.9, .5),
+                                pos_hint={"center_x": .5, "center_y": .45}
+                                )
+    popup_content.add_widget(s.input_message)
+    s.ico_status_contact = Image(source="data/img/ico_status_warning.png",
+                                 allow_stretch=True,
+                                 opacity=0,
+                                 size_hint=(.15, .15),
+                                 pos_hint={"center_x": .9, "center_y": .85}
+                                 )
+    popup_content.add_widget(s.ico_status_contact)
+    popup_content.add_widget(Button(text="Send",
+                                    font_name="data/font/LibelSuit.ttf",
+                                    font_size=s.height / 40,
+                                    background_normal="data/img/widget_green.png",
+                                    background_down="data/img/widget_green_select.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None,
+                                    height=s.height / 20,
+                                    pos_hint={"center_x": .25, "y": .0},
+                                    on_release=partial(on_contact_send,
+                                                       s
+                                                       )
+                                    )
+                             )
+    popup_content.add_widget(Button(text="Cancel",
+                                    font_name="data/font/LibelSuit.ttf",
+                                    font_size=s.height / 40,
+                                    background_normal="data/img/widget_red.png",
+                                    background_down="data/img/widget_red_select.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None,
+                                    height=s.height / 20,
+                                    pos_hint={"center_x": .75, "y": .0},
+                                    on_release=s.popup.dismiss)
+                             )
+    s.popup.open()

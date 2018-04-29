@@ -6,6 +6,7 @@ appReset
 """
 
 import threading
+from functools import partial
 
 from kivy.clock import mainthread
 from kivy.uix.button import Button
@@ -51,9 +52,11 @@ def on_reset(s):
     :return:
     """
 
-    def on_reset_confirm(self=s):
+    def on_reset_confirm(self, dt):
         """
         This method asks user to provide key sent to his or her e-mail for resetting password.
+        :param self: It is for handling class structure.
+        :param dt: It is for handling callback input.
         :return:
         """
 
@@ -149,7 +152,7 @@ def on_reset(s):
                                                     pos_hint={"center_x": .5, "center_y": .4}
                                                     )
                 popup_content.add_widget(self.input_new_password)
-                self.ico_status_confirm = Image(source="data/img/ico_status_wrong.png",
+                self.ico_status_confirm = Image(source="data/img/ico_status_warning.png",
                                                 allow_stretch=True,
                                                 opacity=0,
                                                 size_hint=(.15, .15),
@@ -165,7 +168,10 @@ def on_reset(s):
                                                 size_hint_y=None,
                                                 height=self.height / 20,
                                                 pos_hint={"center_x": .25, "y": .0},
-                                                on_release=on_reset_confirm)
+                                                on_release=partial(on_reset_confirm,
+                                                                   s
+                                                                   )
+                                                )
                                          )
                 popup_content.add_widget(Button(text="Cancel",
                                                 font_name="data/font/LibelSuit.ttf",

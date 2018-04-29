@@ -327,9 +327,11 @@ def on_exam_finish(s):
     :return:
     """
 
-    def on_exam_finish_confirm(self=s):
+    def on_exam_finish_confirm(self, dt):
         """
         This method changes exam's status to finished through server.
+        :param self: It is for handling class structure.
+        :param dt: It is for handling callback input.
         :return: It is for switching page back to lectures page.
         """
 
@@ -366,7 +368,9 @@ def on_exam_finish(s):
                                     size_hint_y=None,
                                     height=s.height / 25,
                                     pos_hint={"center_x": .25, "y": .01},
-                                    on_release=on_exam_finish_confirm
+                                    on_release=partial(on_exam_finish_confirm,
+                                                       s
+                                                       )
                                     )
                              )
     popup_content.add_widget(Button(text="No",

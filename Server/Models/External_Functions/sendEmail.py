@@ -67,12 +67,12 @@ def create_text_password_reset(auth):
 </tr>
 <tr>
 <td style="padding: 40px 40px 20px; text-align: center;" bgcolor="#ffffff">
-<h1 style="margin: 0; font-family: sans-serif; font-size: 24px; line-height: 125%; color: #333333; font-weight: normal;">Welcome to SEAS, """+auth[0]+"""!</h1>
+<h1 style="margin: 0; font-family: sans-serif; font-size: 24px; line-height: 125%; color: #333333; font-weight: normal;">Hello, """+auth[0]+"""!</h1>
 </td>
 </tr>
 <tr>
 <td style="padding: 0 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555; text-align: center;" bgcolor="#ffffff">
-<p style="margin: 0;">Your account has successfully reset. <br /><br />Use the credentials stated below in order to access your account again. <br /><br /><strong>Username:&nbsp;</strong>"""+auth[-1]+"""<br /><strong>Password:&nbsp;</strong>"""+auth[-2]+""" <br /><br />Regards!<br/><br/></p>
+<p style="margin: 0;">Your password has been successfully requested to reset. <br /><br />Use the credentials stated below in order to change your password. <br /><br /><strong>Username:&nbsp;</strong>"""+auth[-1]+"""<br /><strong>Confirmation Key:&nbsp;</strong>"""+auth[-2]+""" <br /><br />Regards!<br/><br/></p>
 <a href="https://www.wivernsoftware.com"><img  src="http://pichoster.net/images/2018/03/16/0d92de1a3925937304d51cf872cd646b.png" alt="Wivern Software" width="200" height="50" border="0" /></a></td>
 </tr>
 <tr>
