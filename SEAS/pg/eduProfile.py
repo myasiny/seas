@@ -4,6 +4,7 @@ eduProfile
 
 `eduProfile` is a toolbox for main app, it contains necessary methods that EduProfile page requires.
 """
+from functools import partial
 
 from kivy.animation import Animation
 from kivy.cache import Cache
@@ -72,9 +73,10 @@ def on_pic_change(s):
     :return:
     """
 
-    def on_pic_select(widget_name, file_path, mouse_pos, self=s):
+    def on_pic_select(self, widget_name, file_path, mouse_pos):
         """
         This method uploads selected picture to server and updates related widgets on GUI.
+        :param self: It is for handling class structure.
         :param widget_name: It is for handling file chooser input.
         :param file_path: It is path of selected file.
         :param mouse_pos: It is for handling file chooser input.
@@ -113,7 +115,10 @@ def on_pic_change(s):
                                       size=(s.width, s.height),
                                       pos_hint={"center_x": .5, "center_y": .5}
                                       )
-    filechooser.bind(on_submit=on_pic_select)
+    filechooser.bind(on_submit=partial(on_pic_select,
+                                       s
+                                       )
+                     )
     popup_content.add_widget(filechooser)
     popup_content.add_widget(Button(text="Upload",
                                     font_name="data/font/LibelSuit.ttf",
