@@ -12,7 +12,7 @@ import json, datetime, pickle
 
 app = Flask(__name__)
 db = PooledMySQLdb("TestDB")
-
+memory_log = open("memory.log", "w+")
 app.config["DEBUG"] = True
 app.config["UPLOAD_FOLDER"] = "./uploads/"
 app.config["JWT_SECRET_KEY"] = "CHANGE THIS BEFORE DEPLOYMENT ! ! !"
@@ -57,13 +57,13 @@ def check_lecture_permision(organization, token, course):
 
 
 @app.route("/", endpoint="alive")
-@profile
+@profile(stream=memory_log)
 def test_connection():
     return jsonify("I am alive!")
 
 
 @app.route("/organizations", methods=["PUT"], endpoint="register_organization")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def signUpOrganization():
     with db:
@@ -74,7 +74,7 @@ def signUpOrganization():
 
 
 @app.route("/organizations/<string:organization>", methods = ["PUT"], endpoint="register_user")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def signUpUser(organization):
     with db:
@@ -104,7 +104,7 @@ def signUpUser(organization):
 
 
 @app.route("/organizations/<string:organization>/<string:username>", methods=["GET"], endpoint="sign_in")
-@profile
+@profile(stream=memory_log)
 def signInUser(organization, username):
     with db:
         organization = organization.replace(" ", "_").lower()
@@ -134,7 +134,7 @@ def signInUser(organization, username):
 
 
 @app.route("/organizations/<string:organization>/<string:username>/out", methods=["PUT"], endpoint="sign_out")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def signOutUser(organization, username):
     with db:
@@ -147,7 +147,7 @@ def signOutUser(organization, username):
 
 
 @jwt.token_in_blacklist_loader
-@profile
+@profile(stream=memory_log)
 def is_revoked(token):
     with db:
         jti = token["jti"]
@@ -155,7 +155,7 @@ def is_revoked(token):
         return rtn
 
 @app.route("/organizations/<string:organization>/<string:course>", methods=['PUT'], endpoint="add_course")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def addCourse(organization, course):
     with db:
@@ -171,7 +171,7 @@ def addCourse(organization, course):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/get", methods=['GET'], endpoint="get_course")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def getCourse(organization, course):
     with db:
@@ -185,7 +185,7 @@ def getCourse(organization, course):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/register/<string:liste>", methods=['PUT'], endpoint="register_student_list")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def putStudentList(organization, course, liste):
     with db:
@@ -203,7 +203,7 @@ def putStudentList(organization, course, liste):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/register", methods=['GET'], endpoint="get_student_list")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def getStudentList(organization, course):
     with db:
@@ -217,7 +217,7 @@ def getStudentList(organization, course):
 
 
 @app.route("/organizations/<string:organization>/<string:username>/courses/role=lecturer", methods=["GET"], endpoint="get_courses")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def getUserCourseList(organization, username):
     with db:
@@ -233,7 +233,7 @@ def getUserCourseList(organization, username):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/delete_user", methods=['DELETE'], endpoint="delete_from_course")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def deleteStudentFromLecture(organization, course):
     with db:
@@ -248,7 +248,7 @@ def deleteStudentFromLecture(organization, course):
 
 
 @app.route("/organizations/<string:organization>/<string:username>/edit_password", methods=["PUT"], endpoint="change_password")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def changePassword(organization, username):
     with db:
@@ -266,7 +266,7 @@ def changePassword(organization, username):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/add", methods=["PUT"], endpoint="create_exam")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def addExam(organization, course):
     with db:
@@ -285,7 +285,7 @@ def addExam(organization, course):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/delete", methods=["DELETE"], endpoint="delete_exam")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def deleteExam(organization, course, exam):
     with db:
@@ -299,7 +299,7 @@ def deleteExam(organization, course, exam):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/", methods=["GET"], endpoint="get_exams_of_lecture")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 # todo: STUDENT CANNOT REACH QUESTIONS BEFORE EXAM START TIME
 def getExamsOfLecture(organization, course):
@@ -313,7 +313,7 @@ def getExamsOfLecture(organization, course):
         return jsonify("Unauthorized access!")
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>", methods=["GET"], endpoint="get_exam")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def getExam(organization, course, name):
     with db:
@@ -327,7 +327,7 @@ def getExam(organization, course, name):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/addQuestion", methods=["PUT"], endpoint="add_question")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def addQuestionsToExam(organization, course, name):
     with db:
@@ -343,7 +343,7 @@ def addQuestionsToExam(organization, course, name):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<question_id>/answers/<string:username>", methods=["PUT"], endpoint="send_answer")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def answerExam(organization, course, question_id, username):
     with db:
@@ -359,7 +359,7 @@ def answerExam(organization, course, question_id, username):
 
 
 @app.route("/organizations/<string:organization>/<string:username>/pic", methods=["PUT", "GET"], endpoint="profile_picture")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def profilePicture(organization, username):
     with db:
@@ -385,7 +385,7 @@ def profilePicture(organization, username):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<question_id>/answers/<string:studentUser>/grade", methods=["PUT"], endpoint="grade_answer")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def gradeQuestion(organization, course, question_id, studentUser):
     with db:
@@ -400,7 +400,7 @@ def gradeQuestion(organization, course, question_id, studentUser):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/<string:question_id>/edit", methods=["PUT"], endpoint="edit_question")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def editQuestion(organization, course, exam_name, question_id):
     with db:
@@ -413,7 +413,7 @@ def editQuestion(organization, course, exam_name, question_id):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/more_time", methods=["PUT"], endpoint="add_time_exam")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def addTimeToExam(organization, course, exam_name):
     with db:
@@ -426,7 +426,7 @@ def addTimeToExam(organization, course, exam_name):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/status", methods=["PUT"], endpoint="change_status_exam")
-@profile
+@profile(stream=memory_log)
 @jwt_required
 def changeStatusOfExam(organization, course, exam_name):
     with db:
@@ -439,7 +439,7 @@ def changeStatusOfExam(organization, course, exam_name):
 
 
 @app.route("/organizations/<string:organization>/<string:username>/reset_password", methods=["GET", "PUT"], endpoint="reset_password")
-@profile
+@profile(stream=memory_log)
 def reset_password(organization, username):
     with db:
         user = User(db, organization, username)
@@ -451,7 +451,7 @@ def reset_password(organization, username):
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/get_grades/<string:student_id>", endpoint="get_grades")
-@profile
+@profile(stream=memory_log)
 def get_grades(organization, course, exam_name, student_id):
     with db:
         return DecimalEncoder().encode(Exam(exam_name, organization, db).get_grades(student_id))
