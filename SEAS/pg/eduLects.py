@@ -18,7 +18,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.filechooser import FileChooserListView
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
-from kivy.uix.listview import ListItemButton
+from kivy.uix.listview import ListItemButton, ListView
 from kivy.uix.popup import Popup
 
 from func import database_api, excel_to_csv, image_button
@@ -413,10 +413,11 @@ def on_exam_start(self, dt):
     return self.on_live()
 
 
-def on_exam_grade(s):
+def on_exam_grade(s, dt):
     """
     This method creates pop-up that lists students and their grades.
     :param s: It is for handling class structure.
+    :param dt: It is for handling callback input.
     :return:
     """
 
@@ -431,12 +432,55 @@ def on_exam_grade(s):
         self.popup.dismiss()
 
     popup_content = FloatLayout()
-    s.popup = Popup(title="Evaluate Exam",
+    s.popup = Popup(title="Grades",
                     content=popup_content,
                     separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
                     size_hint=(None, None),
                     size=(s.width / 2, s.height / 2)
                     )
+
+    data_students_joined = database_api.getCourseStudents(Cache.get("info", "token"),
+                                                          s.ids["txt_lect_code"].text
+                                                          )
+
+    data_students_graded = database_api.getGradesOfExam(Cache.get("info", "token"),
+                                                        s.ids["txt_lect_code"].text,
+                                                        s.ids["list_exams"].adapter.selection[0].text
+                                                        )
+    data_students_merged = {}
+
+    for std in data_students_joined:
+        std_name = "{name} {surname}".format(name=std[0].title(),
+                                             surname=std[1].title()
+                                             )
+
+        data_students_merged[std[4]] = [std_name, "None"]
+
+        for grade in data_students_graded:
+            if grade[0] == std[4]:
+                data_students_merged[std[4]] = [std_name, grade[1]]
+                break
+
+    list_grades = ListView(size_hint=(.9, .8),
+                           pos_hint={"center_x": .5, "center_y": .55}
+                           )
+    args_converter = lambda row_index, x: {"text": " ".join(x),
+                                           "selected_color": (.843, .82, .82, 1),
+                                           "deselected_color": (.57, .67, .68, 1),
+                                           "background_down": "data/img/widget_gray_75.png",
+                                           "font_name": "data/font/CaviarDreams_Bold.ttf",
+                                           "font_size": s.height / 50,
+                                           "size_hint_y": None,
+                                           "height": s.height / 20
+                                           }
+    list_grades.adapter = ListAdapter(data=[i for i in data_students_merged.itervalues()],
+                                      cls=ListItemButton,
+                                      args_converter=args_converter,
+                                      allow_empty_selection=False
+                                      )
+    # list_grades.adapter.bind(on_selection_change=partial( ,s)
+    popup_content.add_widget(list_grades)
+
     popup_content.add_widget(Button(text="Complete",
                                     font_name="data/font/LibelSuit.ttf",
                                     font_size=s.height / 40,
@@ -508,7 +552,7 @@ def on_participants(self):
                                            }
     self.ids["list_participants"].adapter = ListAdapter(data=["{i0} {i1}".format(i0=i.split(",")[0],
                                                                                  i1=i.split(",")[1]
-                                                                                 ) for i in self.data_student_list],
+                                                                                 ) for i in self.data_student_list if len(i) > 0],
                                                         cls=ListItemButton,
                                                         args_converter=args_converter,
                                                         allow_empty_selection=False
@@ -605,7 +649,7 @@ def on_participant_delete(self, dt):
 
     self.ids["list_participants"].adapter.data = ["{i0} {i1}".format(i0=i.split(",")[0],
                                                                      i1=i.split(",")[1]
-                                                                     ) for i in self.data_student_list]
+                                                                     ) for i in self.data_student_list if len(i) > 0]
 
 
 def on_list_import(s, dt):

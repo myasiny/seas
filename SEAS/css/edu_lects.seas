@@ -279,8 +279,8 @@
             font_name: "data/font/LibelSuit.ttf"
             font_size: self.height / 2
             background_normal: "data/img/widget_purple_75.png"
-            background_down: "img/widget_purple_75_select.png"
-            background_disabled_normal: "img/widget_black_75.png"
+            background_down: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .15, .045
             pos_hint: {"center_x": .875, "y": .175}
 
@@ -291,8 +291,8 @@
             font_name: "data/font/LibelSuit.ttf"
             font_size: self.height / 2
             background_normal: "data/img/widget_red.png"
-            background_down: "img/widget_red_select.png"
-            background_disabled_normal: "img/widget_black_75.png"
+            background_down: "data/img/widget_red_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .15, .045
             pos_hint: {"center_x": .875, "y": .125}
 
@@ -303,8 +303,8 @@
             font_name: "data/font/LibelSuit.ttf"
             font_size: self.height / 2
             background_normal: "data/img/widget_green.png"
-            background_down: "img/widget_green_select.png"
-            background_disabled_normal: "img/widget_black_75.png"
+            background_down: "data/img/widget_green_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .15, .045
             pos_hint: {"center_x": .875, "y": .075}
 
@@ -426,8 +426,8 @@
             font_name: "data/font/LibelSuit.ttf"
             font_size: self.height / 2
             background_normal: "data/img/widget_red.png"
-            background_down: "img/widget_red_select.png"
-            background_disabled_normal: "img/widget_black_75.png"
+            background_down: "data/img/widget_red_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .15, .045
             pos_hint: {"center_x": .875, "y": .125}
 
@@ -438,8 +438,8 @@
             font_name: "data/font/LibelSuit.ttf"
             font_size: self.height / 2
             background_normal: "data/img/widget_purple_75.png"
-            background_down: "img/widget_purple_75_select.png"
-            background_disabled_normal: "img/widget_black_75.png"
+            background_down: "data/img/widget_purple_75_select.png"
+            background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .15, .045
             pos_hint: {"center_x": .875, "y": .075}
             on_release: root.on_stats()
