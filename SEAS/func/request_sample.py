@@ -6,7 +6,7 @@ def get_token(role):
     if role == "student":
         username, password = "fatihgulmez", "12345"
     elif role == "lecturer":
-        username, password = "alicakmak", "12345"
+        username, password = "alicakmak", "1"
     else: #Admin
         username, password = "admin", "12345"
 
@@ -38,7 +38,7 @@ lecturer_token = get_token("lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
 # print addCourse(admin_token, "Data Analytics", "data 102", ["alicakmak"])
-print "get course", getCourse(lecturer_token, "data_101")
+# print "get course", getCourse(lecturer_token, "data_101")
 #
 # print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
 
@@ -46,7 +46,7 @@ print "get course", getCourse(lecturer_token, "data_101")
 
 # print "get course students",getCourseStudents(lecturer_token, "data 101")
 
-print "get user courses",getUserCourses(lecturer_token, "alicakmak")
+# print "get user courses",getUserCourses(lecturer_token, "alicakmak")
 
 # print getUserCourses(student_token, "fatihgulmez")
 #
@@ -55,19 +55,19 @@ print "get user courses",getUserCourses(lecturer_token, "alicakmak")
 # print "delete student from lecture", deleteStudentFromLecture(lecturer_token, "Data 101", "210111111")
 
 #### HOW TO CREATE EXAM
-
-print "create exam", createExam(lecturer_token,
-                 "data 101",
-                 "FCG TEST",
-                 "2018-12-31 22:30:00",
-                 5,
-                 status="draft"
-)
 #
-print "add time to exam", add_time_to_exam(lecturer_token,
-                       "data 101",
-                       "fcg test",
-                       10)
+# print "create exam", createExam(lecturer_token,
+#                  "data 101",
+#                  "FCG TEST",
+#                  "2018-12-31 22:30:00",
+#                  5,
+#                  status="draft"
+# )
+#
+# print "add time to exam", add_time_to_exam(lecturer_token,
+#                        "data 101",
+#                        "fcg test",
+#                        10)
 
 #                   {1:
 #                       {"type": "classic",
@@ -80,21 +80,21 @@ print "add time to exam", add_time_to_exam(lecturer_token,
 #                           "tags": ["mustafa","kemal"]},
 
 #
-print "add question to exam", addQuestionToExam(lecturer_token, "data 101", "fcg test", {"type": "test",
-                      "subject": "math",
-                      "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
-                      "answer": "c",
-                      "inputs": "",
-                      "outputs": "",
-                      "value": 20,
-                      "tags": ["integers", "math"]
-                     })
+# print "add question to exam", addQuestionToExam(lecturer_token, "data 101", "fcg test", {"type": "test",
+#                       "subject": "math",
+#                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
+#                       "answer": "c",
+#                       "inputs": "",
+#                       "outputs": "",
+#                       "value": 20,
+#                       "tags": ["integers", "math"]
+#                      })
 
 
 ## HOW TO GET EXAM
-print "get exam", getExam(lecturer_token,
-                 "data 101",
-                 "fcg test")
+# print "get exam", getExam(lecturer_token,
+#                  "data 101",
+#                  "fcg test")
 
 # print getExam(student_token, "data 101", "fcg test 2")
 # print sendAnswers(student_token,"Data 101", 97, "fatihgulmez", "A")
@@ -107,42 +107,42 @@ print "get exam", getExam(lecturer_token,
 
 # print uploadProfilePic(student_token, "fatihgulmez", "picc.png")
 
-print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
+# print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 
-print grade_answer(lecturer_token,"data 101", 97, "fatihgulmez", 28)
+# print grade_answer(lecturer_token,"data 101", 97, "fatihgulmez", 28)
 # print grade_answer(lecturer_token,"eecs 468", 54, "alioz", 2)
 # print grade_answer(lecturer_token,"eecs 468", 55, "alioz", 2)
 # print grade_answer(lecturer_token,"eecs 468", 56, "alioz", 2)
 # print grade_answer(lecturer_token,"eecs 468", 57, "alioz", 2)
 
-print "get exams of lecture", getExamsOfLecture(lecturer_token, "data 101")
+# print "get exams of lecture", getExamsOfLecture(lecturer_token, "data 101")
 
-print edit_question(lecturer_token, "data 101",
-                    "fcg test 2",
-                    97,
-                    {"type": "classic",
-                    "subject": "ataturk",
-                    "text": "who is the founder of Turkey?",
-                    "answer": "Atatürk",
-                    "inputs": [[111,222],[222,333]],
-                    "outputs": [(3),(5)],
-                    "value": 30,
-                    "tags": ["mustapha","kemal"]})
+# print edit_question(lecturer_token, "data 101",
+#                     "fcg test 2",
+#                     97,
+#                     {"type": "classic",
+#                     "subject": "ataturk",
+#                     "text": "who is the founder of Turkey?",
+#                     "answer": "Atatürk",
+#                     "inputs": [[111,222],[222,333]],
+#                     "outputs": [(3),(5)],
+#                     "value": 30,
+#                     "tags": ["mustapha","kemal"]})
 
 
 
-print "change status of exam", change_status_of_exam(lecturer_token,
-                            "data 101",
-                            "fcg test 2",
-                            "graded")
+# print "change status of exam", change_status_of_exam(lecturer_token,
+#                             "data 101",
+#                             "fcg test 2",
+#                             "graded")
 
 # print resetPassword("alioz")
 
 # print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
+# print getGradesOfExam(lecturer_token, "data 101", "test 3")
 
-print getGradesOfExam(lecturer_token, "data 101", "fcg test 2")
-
-
+print get_last_activities(lecturer_token, "alicakmak", sign_in=True)
+print get_last_activities(lecturer_token, "alicakmak")
 print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")

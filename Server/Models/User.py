@@ -75,7 +75,6 @@ class User:
         except IntegrityError:
             return "Your account has been reset already."
 
-
     def check_and_change_password(self, temp_pass, new_pass):
         password = self.execute("SELECT Password FROM temporary_passwords WHERE UserID = %d;" %(int(self.user_id)))[0][0]
         if self.pass_word.verify_password_hash(temp_pass, password):
@@ -83,6 +82,13 @@ class User:
             new_pass = self.pass_word.hash_password(new_pass)
             return self.execute("UPDATE members SET members.Password = '%s' WHERE PersonID = %d;" % (new_pass, int(self.user_id)))
         return "Wrong Temporary Password!"
+
+    def get_last_activity(self, endpoint):
+        if endpoint=="sign_in":
+            rtn = self.execute("SELECT Api_Endpoint, Time, IP FROM istanbul_sehir_university.last_activities where username = '%s' and Api_Endpoint = 'sign_in' order by Time DESC limit 5;" %self.username)
+        else:
+            rtn = self.execute("SELECT Api_Endpoint, Time, IP FROM istanbul_sehir_university.last_activities where username = '%s' order by Time DESC limit 5;" %self.username)
+        return rtn
 
 
 class Lecturer(User):

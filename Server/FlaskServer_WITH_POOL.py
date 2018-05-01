@@ -56,6 +56,11 @@ def check_lecture_permision(organization, token, course):
     return True
 
 
+def log_activity(ip, username, endpoint):
+    db.execute(
+        "INSERT INTO last_activities(Username, IP, Api_Endpoint) VALUES ('%s', '%s', '%s');" % (username, ip, endpoint))
+    return
+
 @app.route("/", endpoint="alive")
 @profile(stream=memory_log)
 def test_connection():
@@ -107,7 +112,6 @@ def signUpUser(organization):
 @profile(stream=memory_log)
 def signInUser(organization, username):
     with db:
-        organization = organization.replace(" ", "_").lower()
         username = request.authorization["username"]
         password = request.authorization["password"]
         user = User(db, organization, username)
@@ -116,14 +120,7 @@ def signInUser(organization, username):
                 rtn = user.get
                 rtn.append(organization)
                 rtn.append(create_access_token(identity=({"username" : user.username, "role":user.role_name, "time": str(datetime.datetime.today()), "organization": user.organization, "id": user.user_id})))
-                # try:
-                #     with open(user.profile_pic_path, "rb") as f:
-                #         pic = f.read()
-                #     rtn.append(pickle.dumps(pic))
-                # except IOError:
-                #     rtn.append(None)
-                # except TypeError:
-                #     rtn.append(None)
+                log_activity(request.remote_addr, username, request.endpoint)
                 return jsonify(rtn)
             else:
                 return jsonify("Wrong Password")
@@ -143,6 +140,7 @@ def signOutUser(organization, username):
             return jsonify("Unauthorized access!")
         token = get_raw_jwt()["jti"]
         rtn = jsonify({"Log out status": db.revoke_token(token) is None})
+        log_activity(request.remote_addr, username, request.endpoint)
         return rtn
 
 
@@ -167,6 +165,7 @@ def addCourse(organization, course):
             code = request.form["code"]
             lecturers = request.form["lecturers"]
             rtn =  jsonify(Course(db, organization, code).add_course(name, lecturers))
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
 
 
@@ -180,6 +179,7 @@ def getCourse(organization, course):
             return jsonify("Unauthorized Access.")
         if check_lecture_permision(organization, token, course):
             rtn = jsonify(Course(db, organization, course).get_course())
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         return jsonify("Unauthorized access!")
 
@@ -195,10 +195,10 @@ def putStudentList(organization, course, liste):
         if check_lecture_permision(organization, token, course):
             if liste == "True":
                 rtn = jsonify(Course(db, organization, course).register_student_csv(request.files["liste"], request.form["username"]))
-                return rtn
             else:
                 rtn = jsonify(Course(db, organization, course).register_student(pickle.loads(request.form["liste"])))
-                return rtn
+            log_activity(request.remote_addr, token["username"], request.endpoint)
+            return rtn
         return jsonify("Unauthorized access!")
 
 
@@ -212,6 +212,7 @@ def getStudentList(organization, course):
             return jsonify("Unauthorized access!")
         if check_lecture_permision(organization, token, course):
             rtn = jsonify(Course(db, organization, course).get_course_participants())
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         return jsonify("Unauthorized access!")
 
@@ -225,11 +226,11 @@ def getUserCourseList(organization, username):
         if not check_auth(token, organization, "lecturer"):
             user = Student(db, organization, username)
             rtn = jsonify(user.get_student_courses())
-            return rtn
         else:
             user = Lecturer(db, organization, username)
             rtn = jsonify(user.get_lecturer_courses())
-            return rtn
+        log_activity(request.remote_addr, token["username"], request.endpoint)
+        return rtn
 
 
 @app.route("/organizations/<string:organization>/<string:course>/delete_user", methods=['DELETE'], endpoint="delete_from_course")
@@ -243,6 +244,7 @@ def deleteStudentFromLecture(organization, course):
 
         if check_lecture_permision(organization, token, course):
             rtn = jsonify(Course(db, organization, course).delete_student_course(request.form["Student"]))
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         return jsonify("Unauthorized access!")
 
@@ -262,6 +264,7 @@ def changePassword(organization, username):
         else:
             ismail = False
         rtn = jsonify(user.change_password_or_email(request.form["Password"], request.form["newPassword"], ismail))
+        log_activity(request.remote_addr, token["username"], request.endpoint)
         return rtn
 
 
@@ -280,6 +283,7 @@ def addExam(organization, course):
             status = request.form["status"]
             exam = Exam(name, organization, db)
             rtn = jsonify(exam.save(course, time, duration, status))
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         return jsonify("Unauthorized access!")
 
@@ -294,6 +298,7 @@ def deleteExam(organization, course, exam):
             return jsonify("Unauthorized access!")
         if check_lecture_permision(organization, token, course):
             rtn = jsonify(Exam(exam, organization, db).delete_exam())
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         return jsonify("Unauthorized access!")
 
@@ -309,6 +314,7 @@ def getExamsOfLecture(organization, course):
             return jsonify("Unauthorized access!")
         if check_lecture_permision(organization, token, course):
             rtn = jsonify(Course(db, organization, course).get_exams_of_lecture())
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         return jsonify("Unauthorized access!")
 
@@ -322,6 +328,7 @@ def getExam(organization, course, name):
             return jsonify("Unauthorized access!")
         if check_lecture_permision(organization, token, course):
             rtn = jsonify(Exam(name, organization, db).get())
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         return jsonify("Unauthorized access!")
 
@@ -338,6 +345,7 @@ def addQuestionsToExam(organization, course, name):
             info = json.loads(request.form["data"])
             rtn = Exam(name, organization, db=db).addQuestion(info["type"], info["subject"], info["text"], info["answer"], info["inputs"], info["outputs"], info["value"], info["t"
                                                                                                                                                                                 "ags"])
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return jsonify(rtn)
         return jsonify("Unauthorized access!")
 
@@ -353,6 +361,7 @@ def answerExam(organization, course, question_id, username):
         if check_lecture_permision(organization, token, course):
             user = Student(db, organization, username)
             user.add_answer(question_id, request.form["answers"])
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return jsonify("Done")
         return jsonify("Unauthorized access!")
 
@@ -373,12 +382,14 @@ def profilePicture(organization, username):
             if pic.filename == "":
                 return jsonify("No picture selected.")
             rtn = jsonify(user.upload_profile_pic(pic, pickle.loads(cont), app.config["UPLOAD_FOLDER"]))
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         else:
             path = user.get_profile_picture()
             try:
                 with open(path, "rb") as f:
                     a = f.read()
+                    log_activity(request.remote_addr, token["username"], request.endpoint)
                     return jsonify(pickle.dumps(a))
             except TypeError:
                 return jsonify(None)
@@ -395,6 +406,7 @@ def gradeQuestion(organization, course, question_id, studentUser):
             return "Unauthorized Access"
         if check_lecture_permision(organization, token, course):
             rtn = jsonify(user.grade_answer(question_id, studentUser,request.form["grade"]))
+            log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         return jsonify("Unauthorized access!")
 
@@ -409,6 +421,7 @@ def editQuestion(organization, course, exam_name, question_id):
         if role != "lecturer" and check_lecture_permision(organization, token, course):
             return jsonify("Unauthorized access!")
         rtn = jsonify(Exam(exam_name, organization, db).edit_a_question(question_id, json.loads(request.form["data"])))
+        log_activity(request.remote_addr, token["username"], request.endpoint)
         return rtn
 
 
@@ -422,6 +435,7 @@ def addTimeToExam(organization, course, exam_name):
         if role != "lecturer" and check_lecture_permision(organization, token, course):
             return jsonify("Unauthorized access!")
         rtn = jsonify(Exam(exam_name, organization, db).add_more_time(request.form["additional_time"]))
+        log_activity(request.remote_addr, token["username"], request.endpoint)
         return rtn
 
 
@@ -435,6 +449,7 @@ def changeStatusOfExam(organization, course, exam_name):
         if role != "lecturer" and check_lecture_permision(organization, token, course):
             return jsonify("Unauthorized access!")
         rtn = jsonify(Exam(exam_name, organization, db).change_status(request.form["status"]))
+        log_activity(request.remote_addr, token["username"], request.endpoint)
         return rtn
 
 
@@ -447,14 +462,42 @@ def reset_password(organization, username):
             rtn = jsonify(user.reset_password())
         else:
             rtn = jsonify(user.check_and_change_password(request.authorization["username"], new_pass=request.authorization["password"]))
+        log_activity(request.remote_addr, username, request.endpoint)
         return rtn
 
 
-@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/get_grades/<string:student_id>", endpoint="get_grades")
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/get_grades/<string:student_id>", endpoint="get_grades", methods=["GET"])
 @profile(stream=memory_log)
+@jwt_required
 def get_grades(organization, course, exam_name, student_id):
+    token = get_jwt_identity()
     with db:
-        return DecimalEncoder().encode(Exam(exam_name, organization, db).get_grades(student_id))
+        if not check_auth(token, organization, "lecturer"):
+            return jsonify("Unauthorized access!")
+        if check_lecture_permision(organization, token, course):
+            log_activity(request.remote_addr, token["username"], request.endpoint)
+            return DecimalEncoder().encode(Exam(exam_name, organization, db).get_grades(student_id))
+        return "Unauthorized access."
+
+@app.route("/organizations/<string:organization>/<string:username>/last_activities", endpoint="last_activities", methods=["GET"])
+@profile(stream=memory_log)
+@jwt_required
+def get_last_activities(organization, username):
+    token = get_jwt_identity()
+    with db:
+        user = User(db, organization, token["username"])
+        rtn = jsonify(user.get_last_activity(request.endpoint))
+        return rtn
+
+@app.route("/organizations/<string:organization>/<string:username>/last_login", endpoint="last_login", methods=["GET"])
+@profile(stream=memory_log)
+@jwt_required
+def get_last_activities(organization, username):
+    token = get_jwt_identity()
+    with db:
+        user = User(db, organization, token["username"])
+        rtn = jsonify(user.get_last_activity(request.endpoint))
+        return rtn
 
 if __name__ == "__main__":
     app.run(host="localhost", port=8888, threaded=False)
