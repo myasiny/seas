@@ -1,6 +1,5 @@
-# SEAS
-### Smart Exam Administration System
+# FRANKFURT
 
-Offers a computer-based examination system for avoiding paper usage, providing fast and reliable evaluation processes, preventing cheating issues, increasing quality of teaching by statistics and analyses as well as creating student-friendly environments during exams.
+##### Hello from other side!
 
-[![](https://image.ibb.co/jNbLUc/Ads_z.png)](https://www.wivernsoftware.com/seas-en)
+This is *frankfurt branch* for server development, not *master branch* at all...
