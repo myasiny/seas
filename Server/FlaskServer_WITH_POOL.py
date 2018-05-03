@@ -499,5 +499,21 @@ def get_last_activities(organization, username):
         rtn = jsonify(user.get_last_activity(request.endpoint))
         return rtn
 
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/data/<string:username>", methods=["GET", "PUT"])
+@profile(stream=memory_log)
+@jwt_required
+def exam_data(organization, course, username, exam):
+    token = get_jwt_identity()
+    username = token["username"]
+    with db:
+        if not check_auth(token, organization, "student") or not check_lecture_permision(organization, token, course):
+            rtn = "Unauthorized access"
+        else:
+            file_ = request.files["exam_data"]
+            Exam(exam, organization, db=db).save_exam_data(username, file_)
+            return "Done"
+    return rtn
+
 if __name__ == "__main__":
     app.run(host="localhost", port=8888, threaded=False)

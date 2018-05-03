@@ -112,3 +112,9 @@ class Exam:
         else:
             rtn = self.db.execute("select any_value(m.Username) as Username, sum(a.grade) as Grade from answers a, questions q, members m, exams e where e.Name='%s' and a.studentId = %d and q.ExamID = e.ExamID and q.QuestionID = a.questionID and m.PersonID = a.studentID GROUP BY a.studentID;" % (self.name, int(student_id)))
         return rtn
+
+    def save_exam_data(self, username, data):
+        path="uploads/exams/%s/user_data/%s.json" % (self.name, username)
+        data_ = json.load(data)
+        json.dump(data_, open(path, "w"))
+        return
