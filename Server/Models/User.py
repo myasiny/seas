@@ -84,7 +84,7 @@ class User:
         return "Wrong Temporary Password!"
 
     def get_last_activity(self, endpoint):
-        if endpoint=="sign_in":
+        if endpoint=="last_login":
             rtn = self.execute("SELECT Api_Endpoint, Time, IP FROM istanbul_sehir_university.last_activities where username = '%s' and Api_Endpoint = 'sign_in' order by Time DESC limit 5;" %self.username)
         else:
             rtn = self.execute("SELECT Api_Endpoint, Time, IP FROM istanbul_sehir_university.last_activities where username = '%s' order by Time DESC limit 5;" %self.username)

@@ -492,7 +492,7 @@ def get_last_activities(organization, username):
 @app.route("/organizations/<string:organization>/<string:username>/last_login", endpoint="last_login", methods=["GET"])
 @profile(stream=memory_log)
 @jwt_required
-def get_last_activities(organization, username):
+def get_last_login(organization, username):
     token = get_jwt_identity()
     with db:
         user = User(db, organization, token["username"])
