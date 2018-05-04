@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS `courses` (
+  `CourseID` INT(11) NOT NULL AUTO_INCREMENT,
+  `Name` VARCHAR(255) NOT NULL,
+  `Code` VARCHAR(20) NOT NULL,
+  `isActive` TINYINT(1) NULL DEFAULT '1',
+  PRIMARY KEY (`CourseID`),
+  UNIQUE INDEX `Name` (`Name` ASC, `Code` ASC, `isActive` ASC),
+  INDEX `idx_courses_Code` (`Code` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 12
+DEFAULT CHARACTER SET = utf8

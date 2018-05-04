@@ -45,10 +45,10 @@ class User:
     def allowed_file(self, filename):  # to check if file type is appropriate.
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.allowed_extensions
 
-    def upload_profile_pic(self, pic, content, path):
+    def upload_profile_pic(self, pic, content):
         if pic and self.allowed_file(pic.filename):
             extension = "." + pic.filename.rsplit('.', 1)[1].lower()
-            path = path + "media/%s/profiles/" % self.organization + str(self.user_id) + extension
+            path = "/uploads/%s/profile_pictures/" % self.organization + str(self.user_id) + extension
             if not os.path.exists(os.path.dirname(path)):
                 os.makedirs(os.path.dirname(path))
             with open(path, "wb") as f:

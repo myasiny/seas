@@ -14,7 +14,6 @@ app = Flask(__name__)
 db = PooledMySQLdb("TestDB")
 memory_log = open("memory.log", "w+")
 app.config["DEBUG"] = True
-app.config["UPLOAD_FOLDER"] = "./uploads/"
 app.config["JWT_SECRET_KEY"] = "CHANGE THIS BEFORE DEPLOYMENT ! ! !"
 app.config["JWT_BLACKLIST_ENABLED"] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
@@ -381,7 +380,7 @@ def profilePicture(organization, username):
             cont = request.form["pic"]
             if pic.filename == "":
                 return jsonify("No picture selected.")
-            rtn = jsonify(user.upload_profile_pic(pic, pickle.loads(cont), app.config["UPLOAD_FOLDER"]))
+            rtn = jsonify(user.upload_profile_pic(pic, pickle.loads(cont)))
             log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         else:
@@ -479,28 +478,31 @@ def get_grades(organization, course, exam_name, student_id):
             return DecimalEncoder().encode(Exam(exam_name, organization, db).get_grades(student_id))
         return "Unauthorized access."
 
-@app.route("/organizations/<string:organization>/<string:username>/last_activities", endpoint="last_activities", methods=["GET"])
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/get_answers/<string:student_id>", endpoint="get_answers", methods=["GET"])
+@jwt_required
+def get_answers_of_student(organization, course, exam_name, student_id):
+    token = get_jwt_identity()
+    with db:
+        if not check_auth(token, organization, "lecturer"):
+            return jsonify("Unauthorized access!")
+        if check_lecture_permision(organization, token, course):
+            log_activity(request.remote_addr, token["username"], request.endpoint)
+            return jsonify(Exam(exam_name, organization, db).get_answers(student_id))
+        return jsonify("Unauthorized access.")
+
+@app.route("/organizations/<string:organization>/<string:username>/<any(last_login, last_activities):endpoint>", endpoint="last_activities", methods=["GET"])
 @profile(stream=memory_log)
 @jwt_required
-def get_last_activities(organization, username):
+def get_last_activities(organization, username, endpoint):
     token = get_jwt_identity()
     with db:
         user = User(db, organization, token["username"])
-        rtn = jsonify(user.get_last_activity(request.endpoint))
-        return rtn
-
-@app.route("/organizations/<string:organization>/<string:username>/last_login", endpoint="last_login", methods=["GET"])
-@profile(stream=memory_log)
-@jwt_required
-def get_last_login(organization, username):
-    token = get_jwt_identity()
-    with db:
-        user = User(db, organization, token["username"])
-        rtn = jsonify(user.get_last_activity(request.endpoint))
+        rtn = jsonify(user.get_last_activity(endpoint))
         return rtn
 
 
-@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/data/<string:username>", methods=["GET", "PUT"])
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/data/<string:username>", methods=["PUT"], endpoint="exam_data")
 @profile(stream=memory_log)
 @jwt_required
 def exam_data(organization, course, username, exam):
@@ -511,9 +513,26 @@ def exam_data(organization, course, username, exam):
             rtn = "Unauthorized access"
         else:
             file_ = request.files["exam_data"]
-            Exam(exam, organization, db=db).save_exam_data(username, file_)
-            return "Done"
-    return rtn
+            Exam(exam, organization, db=db).save_exam_data(username, course, file_)
+            rtn = "Done"
+    log_activity(request.remote_addr, token["username"], request.endpoint)
+    return jsonify(rtn)
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/materials", methods=["PUT", "GET"], endpoint="extra_materials")
+@profile(stream=memory_log)
+@jwt_required
+def upload_extra_materials(organization, course, exam):
+    token = get_jwt_identity()
+    with db:
+        if not check_auth(token, organization, "lecturer") or not check_lecture_permision(organization, token, course):
+            rtn = "Unauthorized access."
+        else:
+            rtn = Exam(exam, organization, db).upload_extra_materials(request.files["file"],
+                                                                      course, exam,
+                                                                      request.form["question_id"],
+                                                                      request.form["purpose"])
+    return jsonify(rtn)
+
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=8888, threaded=False)
+    app.run(host="localhost", port=8888)

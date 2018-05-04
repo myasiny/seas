@@ -469,11 +469,58 @@ def getGradesOfExam(token, course_code, exam_name, student_id="ALL", organizatio
     return get(url, headers={"Authorization": "Bearer " + token}).json()
 
 @server_check
-def get_last_activities(token, username, sign_in=False, organization = current_organization, URL = server_address):
+def getAnswersOfStudent(token, course, exam, student_id, organization = current_organization, URL = server_address):
+    # returns a list: [answer_id, question_id, student_id, given_answer, given_grade or None]
+    organization = __normalize(organization)
+    course = __normalize(course)
+    exam = __normalize(exam)
+    url = URL + "/organizations/%s/%s/exams/%s/get_answers/%s" % (organization, course, exam, student_id)
+    return get(url, headers={"Authorization": "Bearer " + token}).json()
+
+@server_check
+def getLastActivities(token, username, sign_in=False, organization = current_organization, URL = server_address):
     url = URL + "/organizations/%s/%s/" % (organization, username)
     if sign_in:
         url += "last_login"
     else:
         url += "last_activities"
-
     return get(url, headers={"Authorization": "Bearer " + token}).json()
+
+
+@server_check
+def postExamData(token, course, exam, username, data, organization=current_organization, URL=server_address):
+    """
+    :param token:
+    :param course: Course name
+    :param exam: Exam name
+    :param username: Username
+    :param data: File path for exam data, NEED TO BE A JSON FILE
+    :param organization: university name
+    :param URL: Server Address
+    :return:
+    """
+    organization = __normalize(organization)
+    course = __normalize(course)
+    exam = __normalize(exam)
+    if not data.endswith(".json"):
+        return "Wrong file type!"
+    with open(data) as data_f:
+        url = URL + "/organizations/%s/%s/exams/%s/data/%s" % (organization, course, exam, username)
+        return put(url, headers={"Authorization": "Bearer " + token}, files={"exam_data": data_f}).json()
+
+
+def extraMaterials(token, course, exam, question_id, file_, purpose, upload = False, organization =current_organization, URL = server_address):
+    purpose = __normalize(purpose)
+    if purpose not in ("auto_grade", "reference", "visual_question"):
+        return "Wrong purpose!"
+    organization = __normalize(organization)
+    course = __normalize(course)
+    exam = __normalize(exam)
+    url = URL + "/organizations/%s/%s/exams/%s/materials" % (organization, course, exam)
+    with open(file_) as data_f:
+        if upload:
+            rtn = put(url, files={"file": data_f}, data={"question_id": question_id, "purpose": purpose}, headers={"Authorization": "Bearer " + token}).json()
+        else:
+            rtn = None
+            pass
+    return rtn

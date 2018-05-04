@@ -1,6 +1,7 @@
 #-*-coding:utf-8-*-
 from Question import Question
-import json, threading
+import json, threading, os
+from werkzeug.utils import secure_filename
 
 class Exam:
     def __init__(self, Name, organization, db=None):
@@ -113,8 +114,28 @@ class Exam:
             rtn = self.db.execute("select any_value(m.Username) as Username, sum(a.grade) as Grade from answers a, questions q, members m, exams e where e.Name='%s' and a.studentId = %d and q.ExamID = e.ExamID and q.QuestionID = a.questionID and m.PersonID = a.studentID GROUP BY a.studentID;" % (self.name, int(student_id)))
         return rtn
 
-    def save_exam_data(self, username, data):
-        path="uploads/exams/%s/user_data/%s.json" % (self.name, username)
+    def get_answers(self, student_id):
+        rtn = self.db.execute("SELECT * FROM answers WHERE studentID = %s;" %student_id)
+        return rtn
+
+    def save_exam_data(self, username, course, data):
+        base_path = "uploads/%s/courses/%s/exams/%s/user_data/" %(self.org, course, self.name)
+        path= base_path + "%s.json" % username
         data_ = json.load(data)
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
         json.dump(data_, open(path, "w"))
         return
+
+    def upload_extra_materials(self, file_, course, exam, question_id, purpose):
+        if purpose not in ("auto_grade", "reference", "visual_question"):
+            return "Purpose invalid"
+        base_path= "uploads/%s/courses/%s/exams/%s/materials/%s/%s/" % (self.org, course, exam,question_id, purpose)
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+        path = base_path + secure_filename(file_.filename)
+        data = file_.read()
+        with open(path, "wb") as ff_:
+            ff_.write(data)
+        return "Done"
+        pass
