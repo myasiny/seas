@@ -377,10 +377,10 @@ def profilePicture(organization, username):
             return jsonify("Unauthorized access!")
         if request.method == "PUT":
             pic = request.files["pic"]
-            cont = request.form["pic"]
+            # cont = request.form["pic"]
             if pic.filename == "":
                 return jsonify("No picture selected.")
-            rtn = jsonify(user.upload_profile_pic(pic, pickle.loads(cont)))
+            rtn = jsonify(user.upload_profile_pic(pic))
             log_activity(request.remote_addr, token["username"], request.endpoint)
             return rtn
         else:
@@ -531,6 +531,27 @@ def upload_extra_materials(organization, course, exam):
                                                                       course, exam,
                                                                       request.form["question_id"],
                                                                       request.form["purpose"])
+    return jsonify(rtn)
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/keystrokes", methods=["PUT", "GET"], endpoint="keystrokes")
+@profile(stream=memory_log)
+@jwt_required
+def upload_keystroke(organization, course, exam):
+    token = get_jwt_identity()
+    student = request.form["student_id"]
+    with db:
+        if request.method == "PUT":
+            if not check_lecture_permision(organization, token, course) or not check_auth(token, organization, "student"):
+                rtn = "Unauthorized access."
+            else:
+                rtn = Exam(exam, organization, db).record_live_exam_keystrokes(course, student, request.form["stream"])
+        else:
+            if not check_lecture_permision(organization, token, course) or not check_auth(token, organization, "lecturer"):
+                rtn = "Unauthorized access."
+            else:
+                rtn = Exam(exam, organization, db).get_live_exam_keystrokes(course, student)
+
     return jsonify(rtn)
 
 

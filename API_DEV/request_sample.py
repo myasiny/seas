@@ -105,7 +105,7 @@ lecturer_token = get_token("lecturer")
 
 # print "delete exam", deleteExam(lecturer_token, "fcg test", "data_101")
 
-# print uploadProfilePic(student_token, "fatihgulmez", "picc.png")
+# print uploadProfilePic(lecturer_token, "alicakmak", "example_image.png")
 
 # print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 
@@ -146,7 +146,18 @@ lecturer_token = get_token("lecturer")
 # print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data.json")
 # print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data")
 # print getAnswersOfStudent(lecturer_token, "eecs 468", "test 3", "213962062")
-print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
+# print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
+
+# a = 0
+# while  a < 3 :
+#     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "asdasd\n")
+#     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "123456\n")
+#     a += 1
+
+b = getKeystrokeData(lecturer_token, "eecs 468", "test 1", "1")
+
+for line in b:
+    print line
 
 print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")

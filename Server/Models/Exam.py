@@ -134,8 +134,31 @@ class Exam:
         if not os.path.exists(base_path):
             os.makedirs(base_path)
         path = base_path + secure_filename(file_.filename)
-        data = file_.read()
         with open(path, "wb") as ff_:
-            ff_.write(data)
+            data = None
+            while data != "":
+                data = file_.read()
+                ff_.write(data)
         return "Done"
-        pass
+
+    def record_live_exam_keystrokes(self, course, student_id, stream):
+        base_path = "uploads/%s/courses/%s/exams/%s/keystroke/" % (self.org, course, self.name)
+        path = base_path + student_id + ".keystroke"
+        if not os.path.exists(base_path):
+            os.makedirs(base_path)
+        if os.path.exists(path):
+            open_mode = "a"
+        else:
+            open_mode = "w"
+        print open_mode
+        with open(path, open_mode) as f:
+            f.write(stream)
+
+        return "Done"
+
+    def get_live_exam_keystrokes(self, course, student_id):
+        path = "uploads/%s/courses/%s/exams/%s/keystroke/%s.keystroke" % (self.org, course, self.name, student_id)
+        if os.path.exists(path):
+            return open(path, "r").readlines()
+        else:
+            return

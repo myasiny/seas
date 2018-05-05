@@ -45,14 +45,18 @@ class User:
     def allowed_file(self, filename):  # to check if file type is appropriate.
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in self.allowed_extensions
 
-    def upload_profile_pic(self, pic, content):
+    def upload_profile_pic(self, pic):
         if pic and self.allowed_file(pic.filename):
             extension = "." + pic.filename.rsplit('.', 1)[1].lower()
-            path = "/uploads/%s/profile_pictures/" % self.organization + str(self.user_id) + extension
-            if not os.path.exists(os.path.dirname(path)):
-                os.makedirs(os.path.dirname(path))
+            base_path = "uploads/%s/profile_pictures/" % self.organization
+            path = base_path + str(self.user_id) + extension
+            if not os.path.exists(base_path):
+                os.makedirs(base_path)
             with open(path, "wb") as f:
-                f.write(content)
+                data = None
+                while data != "":
+                    data = pic.read()
+                    f.write(data)
             self.execute("update members set ProfilePic = '%s' where PersonID = '%s';" %(path, self.user_id))
             return "Done"
         return "Not allowed extension."

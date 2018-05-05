@@ -335,9 +335,7 @@ def deleteExam(token, examName, courseCode, URL=server_address, organization=cur
 def uploadProfilePic(token, username, pic, URL=server_address, organization=current_organization):
     organization = __normalize(organization)
     url = URL + "/organizations/%s/%s/pic" %(organization, username)
-    with open(pic, "rb") as f:
-        cont = f.read()
-    return put(url, headers={"Authorization": "Bearer " + token}, data = {"pic": pickle.dumps(cont)}, files = {"pic": open(pic)}).json()
+    return put(url, headers={"Authorization": "Bearer " + token}, files = {"pic": open(pic, "rb")}).json()
 
 
 @server_check
@@ -517,10 +515,40 @@ def extraMaterials(token, course, exam, question_id, file_, purpose, upload = Fa
     course = __normalize(course)
     exam = __normalize(exam)
     url = URL + "/organizations/%s/%s/exams/%s/materials" % (organization, course, exam)
-    with open(file_) as data_f:
+    with open(file_, "rb") as data_f:
         if upload:
             rtn = put(url, files={"file": data_f}, data={"question_id": question_id, "purpose": purpose}, headers={"Authorization": "Bearer " + token}).json()
         else:
             rtn = None
             pass
     return rtn
+
+
+@server_check
+def sendKeystrokeData(token, course, exam, student_id, stream, organization = current_organization, URL = server_address):
+    """
+    :param token:
+    :param course:
+    :param exam:
+    :param student_id:
+    :param stream:
+    :param organization:
+    :param URL:
+    :return:
+    """
+    organization = __normalize(organization)
+    course = __normalize(course)
+    exam = __normalize(exam)
+
+    url = URL + "/organizations/%s/%s/exams/%s/keystrokes" % (organization, course,exam)
+    return put(url, data={"student_id" : student_id, "stream" : stream}, headers={"Authorization": "Bearer " + token}).json()
+
+
+@server_check
+def getKeystrokeData(token, course, exam, student_id, organization = current_organization, URL = server_address):
+    organization = __normalize(organization)
+    course = __normalize(course)
+    exam = __normalize(exam)
+    url = URL + "/organizations/%s/%s/exams/%s/keystrokes" % (organization, course, exam)
+    return get(url, data={"student_id": student_id},
+               headers={"Authorization": "Bearer " + token}).json()
