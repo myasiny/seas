@@ -12,28 +12,29 @@ class Question:
         self.inputs = inputs
         self.outputs = outputs
         self.value = value
-        self.get ={"type": self.tip,
-                   "subject": self.subject,
-                   "text": self.text,
-                   "answer": self.answer,
-                   "inputs": self.inputs,
-                   "outputs": self.outputs,
-                   "value": self.value,
-                   "tags" : self.tags}
+        self.get = {"type": self.tip,
+                    "subject": self.subject,
+                    "text": self.text,
+                    "answer": self.answer,
+                    "inputs": self.inputs,
+                    "outputs": self.outputs,
+                    "value": self.value,
+                    "tags": self.tags}
 
-    def getString(self):
+    def get_string(self):
         return json.dumps(self.get)
 
     def save(self, db, organization, exam_name):
         org = organization.replace(" ", "_").lower()
-        command = "USE %s;" %org
+        command = "USE %s;" % org
         command += "INSERT IGNORE INTO questions(info, ExamID) VALUES " \
                    "('%s', (SELECT e.ExamID from exams e, courses c WHERE c.CourseID = e.CourseID and e.Name = '%s'));"\
-                   % (self.getString(), exam_name)
+                   % (self.get_string(), exam_name)
         db.execute(command)
         return self
 
-    def load(self, db, id_, organization):
+    @staticmethod
+    def load(db, id_, organization):
         org = organization.replace(" ", "_").lower()
         command = "SELECT * FROM %s.questions WHERE questionID = %d;" % (org, int(id_))
 
@@ -46,4 +47,4 @@ class Question:
 
     def edit(self, db, id_, organization):
         return db.execute("Update %s.questions Set info = '%s' where QuestionID = %d;"
-                          % (organization, self.getString(), int(id_)))
+                          % (organization, self.get_string(), int(id_)))

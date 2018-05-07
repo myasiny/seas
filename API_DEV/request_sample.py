@@ -2,6 +2,7 @@
 
 from database_api import *
 
+
 def get_token(role):
     if role == "student":
         username, password = "fatihgulmez", "12345"
@@ -148,16 +149,16 @@ lecturer_token = get_token("lecturer")
 # print getAnswersOfStudent(lecturer_token, "eecs 468", "test 3", "213962062")
 # print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
 
-# a = 0
-# while  a < 3 :
-#     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "asdasd\n")
-#     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "123456\n")
-#     a += 1
+a = 0
+while a < 3:
+    print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "asdasd\n")
+    print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "123456\n")
+    a += 1
 
-# b = getKeystrokeData(lecturer_token, "eecs 468", "test 1", "1")
-#
-# for line in b:
-#     print line
+b = getKeystrokeData(lecturer_token, "eecs 468", "test 1", "1")
+
+for line in b:
+    print line
 
 print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")

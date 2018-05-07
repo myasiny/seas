@@ -75,8 +75,8 @@ def test_connection():
 @app.route("/organizations",
            methods=["PUT"], endpoint="register_organization")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def sign_up_organization():
     if check_auth(get_jwt_identity(), "istanbul_sehir_university", "admin"):
         return jsonify(db.initialize_organization(request.form["data"]))
@@ -87,8 +87,8 @@ def sign_up_organization():
 @app.route("/organizations/<string:organization>",
            methods=["PUT"], endpoint="register_user")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def sign_up_user(organization):
     token = get_jwt_identity()
     if not check_auth(token, organization, "admin"):
@@ -131,8 +131,8 @@ def sign_in_user(organization, username):
 @app.route("/organizations/<string:organization>/<string:username>/out",
            methods=["PUT"], endpoint="sign_out")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def sign_out_user(organization, username):
     identity = get_jwt_identity()
     if username != identity["username"] or organization != identity["organization"]:
@@ -155,8 +155,8 @@ def is_revoked(token):
 @app.route("/organizations/<string:organization>/<string:course>",
            methods=['PUT'], endpoint="add_course")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def add_course(organization, course):
     token = get_jwt_identity()
     if not check_auth(token, organization, "admin"):
@@ -173,8 +173,8 @@ def add_course(organization, course):
 @app.route("/organizations/<string:organization>/<string:course>/get",
            methods=['GET'], endpoint="get_course")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def get_course(organization, course):
     token = get_jwt_identity()
     if not check_auth(token, organization, "student"):
@@ -189,8 +189,8 @@ def get_course(organization, course):
 @app.route("/organizations/<string:organization>/<string:course>/register/<string:liste>",
            methods=['PUT'], endpoint="register_student_list")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def register_student_list(organization, course, liste):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
@@ -210,8 +210,8 @@ def register_student_list(organization, course, liste):
 @app.route("/organizations/<string:organization>/<string:course>/register",
            methods=['GET'], endpoint="get_student_list")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def get_student_list(organization, course):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
@@ -226,8 +226,8 @@ def get_student_list(organization, course):
 @app.route("/organizations/<string:organization>/<string:username>/courses/role=lecturer",
            methods=["GET"], endpoint="get_courses")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def get_user_course_list(organization, username):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
@@ -243,8 +243,8 @@ def get_user_course_list(organization, username):
 @app.route("/organizations/<string:organization>/<string:course>/delete_user",
            methods=['DELETE'], endpoint="delete_from_course")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def delete_student_from_lecture(organization, course):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
@@ -260,8 +260,8 @@ def delete_student_from_lecture(organization, course):
 @app.route("/organizations/<string:organization>/<string:username>/edit_password",
            methods=["PUT"], endpoint="change_password")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def change_password(organization, username):
     token = get_jwt_identity()
     user = User(db, token["organization"], token["username"])
@@ -280,8 +280,8 @@ def change_password(organization, username):
 @app.route("/organizations/<string:organization>/<string:course>/exams/add",
            methods=["PUT"], endpoint="create_exam")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def add_exam(organization, course):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
@@ -301,8 +301,8 @@ def add_exam(organization, course):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/delete",
            methods=["DELETE"], endpoint="delete_exam")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def delete_exam(organization, course, exam):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
@@ -317,8 +317,8 @@ def delete_exam(organization, course, exam):
 @app.route("/organizations/<string:organization>/<string:course>/exams/",
            methods=["GET"], endpoint="get_exams_of_lecture")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 # todo: STUDENT CANNOT REACH QUESTIONS BEFORE EXAM START TIME
 def get_exams_of_lecture(organization, course):
     token = get_jwt_identity()
@@ -334,8 +334,8 @@ def get_exams_of_lecture(organization, course):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>",
            methods=["GET"], endpoint="get_exam")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def get_exam(organization, course, name):
     token = get_jwt_identity()
     if not check_auth(token, organization, "student"):
@@ -350,8 +350,8 @@ def get_exam(organization, course, name):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/add_question",
            methods=["PUT"], endpoint="add_question")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def add_questions_to_exam(organization, course, name):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
@@ -370,8 +370,8 @@ def add_questions_to_exam(organization, course, name):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<question_id>/answers/<string:username>",
            methods=["PUT"], endpoint="send_answer")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def answer_exam(organization, course, question_id, username):
     token = get_jwt_identity()
     if token["role"] != "student":
@@ -387,8 +387,8 @@ def answer_exam(organization, course, question_id, username):
 @app.route("/organizations/<string:organization>/<string:username>/pic",
            methods=["PUT", "GET"], endpoint="profile_picture")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def profile_picture(organization, username):
     token = get_jwt_identity()
     user = User(db, token["organization"], token["username"])
@@ -417,8 +417,8 @@ def profile_picture(organization, username):
            "exams/<question_id>/answers/<student_user>/grade",
            methods=["PUT"], endpoint="grade_answer")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def grade_question(organization, course, question_id, student_user):
     token = get_jwt_identity()
     user = Lecturer(db, token["organization"], token["username"])
@@ -434,8 +434,8 @@ def grade_question(organization, course, question_id, student_user):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/<string:question_id>/edit",
            methods=["PUT"], endpoint="edit_question")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def edit_question(organization, course, exam_name, question_id):
     token = get_jwt_identity()
     role = token["role"]
@@ -449,8 +449,8 @@ def edit_question(organization, course, exam_name, question_id):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/more_time",
            methods=["PUT"], endpoint="add_time_exam")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def add_time_to_exam(organization, course, exam_name):
     token = get_jwt_identity()
     role = token["role"]
@@ -464,8 +464,8 @@ def add_time_to_exam(organization, course, exam_name):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam_name>/status",
            methods=["PUT"], endpoint="change_status_exam")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def change_status_of_exam(organization, course, exam_name):
     token = get_jwt_identity()
     role = token["role"]
@@ -497,8 +497,8 @@ def reset_password(organization, username):
            "<string:exam_name>/get_grades/<string:student_id>",
            endpoint="get_grades", methods=["GET"])
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def get_grades(organization, course, exam_name, student_id):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
@@ -512,8 +512,8 @@ def get_grades(organization, course, exam_name, student_id):
 @app.route("/organizations/<string:organization>/<string:course>"
            "/exams/<string:exam_name>/get_answers/<string:student_id>",
            endpoint="get_answers", methods=["GET"])
-@db_connector
 @jwt_required
+@db_connector
 def get_answers_of_student(organization, course, exam_name, student_id):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer"):
@@ -528,8 +528,8 @@ def get_answers_of_student(organization, course, exam_name, student_id):
            "<any(last_login, last_activities):endpoint>",
            endpoint="last_activities", methods=["GET"])
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def get_last_activities(organization, username, endpoint):
     token = get_jwt_identity()
     user = User(db, organization, token["username"])
@@ -540,8 +540,8 @@ def get_last_activities(organization, username, endpoint):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/data/<string:username>",
            methods=["PUT"], endpoint="exam_data")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def exam_data(organization, course, username, exam):
     token = get_jwt_identity()
     username = token["username"]
@@ -551,15 +551,15 @@ def exam_data(organization, course, username, exam):
         file_ = request.files["exam_data"]
         Exam(exam, organization, db=db).save_exam_data(username, course, file_)
         rtn = "Done"
-    log_activity(request.remote_addr, token["username"], request.endpoint)
+    log_activity(request.access_route, token["username"], request.endpoint)
     return jsonify(rtn)
 
 
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/materials",
            methods=["PUT", "GET"], endpoint="extra_materials")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def upload_extra_materials(organization, course, exam):
     token = get_jwt_identity()
     if not check_auth(token, organization, "lecturer") or not check_lecture_permission(organization, token, course):
@@ -575,8 +575,8 @@ def upload_extra_materials(organization, course, exam):
 @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/keystrokes",
            methods=["PUT", "GET"], endpoint="keystrokes")
 @profile(stream=memory_log)
-@db_connector
 @jwt_required
+@db_connector
 def upload_keystroke(organization, course, exam):
     token = get_jwt_identity()
     student = request.form["student_id"]
@@ -594,4 +594,4 @@ def upload_keystroke(organization, course, exam):
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=8888)
+    app.run(host="localhost", port=8888, threaded=True)

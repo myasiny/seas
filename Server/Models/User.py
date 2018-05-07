@@ -21,7 +21,6 @@ class User:
         self.role = None
         self.name = None
         self.surname = None
-        self.username = None
         self.hashed_pass = None
         self.email = None
         self.department = None
@@ -35,15 +34,7 @@ class User:
         :return: List, [studentID, roleID, name, surname, username, password_hash, email, department, profile_pic_path]
         """
         try:
-            self.user_id, \
-                self.role, \
-                self.name, \
-                self.surname, \
-                self.username, \
-                self.hashed_pass, \
-                self.email, \
-                self.department, \
-                self.profile_pic_path = self.execute("SELECT * FROM members WHERE Username='%s'" % self.username)[0]
+            self.user_id, self.role, self.name, self.surname, self.username, self.hashed_pass, self.email, self.department, self.profile_pic_path = self.execute("SELECT * FROM members WHERE Username='%s'" % self.username)[0]
 
             self.role_name = self.execute("SELECT Role FROM roles WHERE roleID = %s" % self.role)[0][0]
             return [self.username, self.name, self.surname, self.user_id, self.role_name, self.email, self.department]

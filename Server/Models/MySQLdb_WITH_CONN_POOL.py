@@ -23,18 +23,17 @@ class MySQLdb:
         self.cursor = None
 
     def __enter__(self):
-        self.get_connection()
+        self.db = self.pool.get_connection()
+        self.cursor = self.db.cursor(buffered=True)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         try:
             self.db.close()
+            self.db = None
+            self.cursor = None
         except OperationalError:
             print "already disconnected"
-
-    def get_connection(self):
-        self.db = self.pool.get_connection()
-        self.cursor = self.db.cursor(buffered=True)
 
     def initialize_organization(self, organization):
         # Create Database for organization
