@@ -1,8 +1,10 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 from passlib.apps import custom_app_context as pwd_context
+
 
 class Password():
     def __init__(self):
+        self.password_hash = None
         pass
 
     def hash_password(self, password):

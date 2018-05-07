@@ -1,8 +1,11 @@
-#-*-coding:utf-8-*-
-import csv, threading
-from Password import  Password
+# -*-coding:utf-8-*-
+import csv
+import threading
+from Password import Password
 from External_Functions import passwordGenerator
 from External_Functions.sendEmail import send_mail_first_login
+from External_Functions.handleTR import handle_tr
+from External_Functions.passwordGenerator import passwordGenerator
 
 
 class Lecture:
@@ -19,25 +22,28 @@ class Lecture:
         command = ""
         if len(lecturer_users) > 0:
             for lecturer in lecturer_users:
-                lecturer_id = self.execute("select PersonID from %s.members where Username = '%s'" % (org, lecturer))[0][0]
+                lecturer_id = self.execute("select PersonID from %s.members where Username = '%s'"
+                                           % (org, lecturer))[0][0]
 
-                command += "insert into %s.lecturers (LecturerID, CourseID) VALUES ('%s', '%s');" % (org, lecturer_id, lecture_id)
+                command += "insert into %s.lecturers (LecturerID, CourseID) VALUES ('%s', '%s');" \
+                           % (org, lecturer_id, lecture_id)
             pass
         self.execute(command)
         return "Course Added!"
 
-    def delete_student_course(self, organization, course, studentID):
-        courseID = self.execute("SELECT CourseID FROM %s.courses WHERE Code = '%s'" % (organization, course))[0][0]
-        command = "DELETE FROM %s.registrations WHERE StudentID = %d AND CourseID = %d" % (organization, int(studentID), int(courseID))
+    def delete_student_course(self, organization, course, student_id):
+        course_id = self.execute("SELECT CourseID FROM %s.courses WHERE Code = '%s'" % (organization, course))[0][0]
+        command = "DELETE FROM %s.registrations WHERE StudentID = %d AND CourseID = %d" \
+                  % (organization, int(student_id), int(course_id))
         self.execute(command)
         return None
 
     def get_course(self, org, code):
-        a = self.execute("SELECT * FROM %s.courses WHERE Code = '%s'" % (org,code))[0]
-        lecturer_IDs = self.execute("SELECT LecturerID FROM %s.lecturers WHERE CourseID = '%s'"%(org, a[0]))
+        a = self.execute("SELECT * FROM %s.courses WHERE Code = '%s'" % (org, code))[0]
+        lecturer_ids = self.execute("SELECT LecturerID FROM %s.lecturers WHERE CourseID = '%s'"%(org, a[0]))
         lecturers = []
-        for id in lecturer_IDs:
-            lid = self.execute("SELECT Name, Surname FROM %s.members WHERE PersonID = '%s'" % (org, id[0]))[0]
+        for id_ in lecturer_ids:
+            lid = self.execute("SELECT Name, Surname FROM %s.members WHERE PersonID = '%s'" % (org, id_[0]))[0]
             lecturers.append(lid[0] + " " + lid[1])
         rtn = {
             "ID": a[0],
@@ -48,21 +54,22 @@ class Lecture:
         }
         return rtn
 
-    def register_student(self, studentIDList, courseCode, organization):
-        courseID = self.execute("SELECT CourseID FROM %s.courses WHERE CODE = '%s'" % (organization, courseCode))[0][0]
-        for i in studentIDList:
-            self.execute("INSERT INTO %s.registrations (StudentID, CourseID) VALUES(%s, %s)" %(organization, i, courseID))
+    def register_student(self, student_id_list, course_code, organization):
+        course_id = self.execute("SELECT CourseID FROM %s.courses WHERE CODE = '%s'"
+                                 % (organization, course_code))[0][0]
+        for i in student_id_list:
+            self.execute("INSERT INTO %s.registrations (StudentID, CourseID) VALUES(%s, %s)"
+                         % (organization, i, course_id))
         pass
 
-    def register_student_csv(self, csvDataFile, organization, course, lecturer):
-        csvReader = csv.reader(csvDataFile)
-        column_names = next(csvReader, None)
-        data = list(csvReader)
+    def register_student_csv(self, csv_data_file, organization, course, lecturer):
+        csv_reader = csv.reader(csv_data_file)
+        data = list(csv_reader)
         auth = []
         reg = []
         for i in data:
-            name = self.handle_tr(i[0]).title()
-            surname = self.handle_tr(i[1]).title()
+            name = handle_tr(i[0]).title()
+            surname = handle_tr(i[1]).title()
             student_number = str(int(float(i[2])))
             mail = i[3]
             department = "UNKNOWN"
@@ -70,7 +77,10 @@ class Lecture:
             username = name.split()[0].lower() + surname.lower()
             pas = Password()
             password = passwordGenerator(8)
-            check = self.execute("Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');" % (organization, student_number, role, name, surname, username, pas.hash_password(password), mail, department))
+            check = self.execute("Insert into %s.members(PersonID, Role, Name, Surname, Username, "
+                                 "Password, Email, Department) values(%s, '%s', '%s', '%s', '%s', '%s', '%s', '%s');"
+                                 % (organization, student_number, role, name, surname, username,
+                                    pas.hash_password(password), mail, department))
             if check is not None:
                 auth.append((name + " " + surname, mail, password, username))
             reg.append(student_number)
@@ -83,13 +93,13 @@ class Lecture:
         return self.execute("select * from %s.exams where CourseID = '%s'" %(organization, course_id))
 
     def get_course_participants(self, code, organization):
-        c = "SELECT CourseID FROM %s.courses WHERE CODE = '%s'" %(organization, code)
-        print c
-        courseID = self.execute(c)[0][0]
-        studentIDs = self.execute("SELECT StudentID FROM %s.registrations WHERE CourseID = '%s'" %(organization, courseID))
+        course_id = self.execute("SELECT CourseID FROM %s.courses WHERE CODE = '%s'" % (organization, code))[0][0]
+        student_ids = self.execute("SELECT StudentID FROM %s.registrations WHERE CourseID = '%s'"
+                                  % (organization, course_id))
         students = []
-        for student in studentIDs:
-            info = self.execute("SELECT Name, Surname, PersonID, Email FROM %s.members WHERE PersonID = '%s'" % (organization, student[0]))[0]
+        for student in student_ids:
+            info = self.execute("SELECT Name, Surname, PersonID, Email FROM %s.members WHERE PersonID = '%s'"
+                                % (organization, student[0]))[0]
             students.append(info)
 
         return students

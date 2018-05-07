@@ -347,7 +347,7 @@ def get_exam(organization, course, name):
     return jsonify("Unauthorized access!")
 
 
-@app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/addQuestion",
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:name>/add_question",
            methods=["PUT"], endpoint="add_question")
 @profile(stream=memory_log)
 @db_connector
@@ -358,7 +358,7 @@ def add_questions_to_exam(organization, course, name):
         return jsonify("Unauthorized access!")
     if check_lecture_permission(organization, token, course):
         info = json.loads(request.form["data"])
-        rtn = Exam(name, organization, db=db).addQuestion(
+        rtn = Exam(name, organization, db=db).add_question(
             info["type"], info["subject"], info["text"], info["answer"],
             info["inputs"], info["outputs"], info["value"], info["t""ags"]
         )
