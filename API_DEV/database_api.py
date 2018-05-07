@@ -578,3 +578,13 @@ def getKeystrokeData(token, course, exam, student_id, organization=current_organ
     url = base_url + "/organizations/%s/%s/exams/%s/keystrokes" % (organization, course, exam)
     return get(url, data={"student_id": student_id},
                headers={"Authorization": "Bearer " + token}).json()
+
+
+@server_check
+def giveSecondAccessExam(token, course, exam, student_username,
+                         organization=current_organization, base_url=server_address):
+    organization = __normalize(organization)
+    course = __normalize(course)
+    exam = __normalize(exam)
+    url = base_url + "/organizations/%s/%s/exams/%s/exceptional_access" % (organization, course, exam)
+    return put(url, data={"student_user": student_username}, headers={"Authorization": "Bearer " + token}).json()

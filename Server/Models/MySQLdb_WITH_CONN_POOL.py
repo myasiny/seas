@@ -197,10 +197,15 @@ class MySQLdb:
     def revoke_token(self, token):
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" % token)
 
-    def log_activity(self, username, ip, endpoint):
-        self.execute(
-            "INSERT INTO last_activities(Username, IP, Api_Endpoint) VALUES ('%s', '%s', '%s');"
-            % (username, ip, endpoint))
+    def log_activity(self, username, ip, endpoint, desc=None):
+        if desc is None:
+            self.execute(
+                "INSERT INTO last_activities(Username, IP, Api_Endpoint) VALUES ('%s', '%s', '%s');"
+                % (username, ip, endpoint))
+        else:
+            self.execute(
+                "INSERT INTO last_activities(Username, IP, Api_Endpoint, Description) VALUES ('%s', '%s', '%s', '%s');"
+                % (username, ip, endpoint, desc))
 
     def execute(self, command):
         try:

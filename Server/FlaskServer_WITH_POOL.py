@@ -55,8 +55,8 @@ def check_lecture_permission(organization, token, course):
     return True
 
 
-def log_activity(ip, username, endpoint):
-    db.log_activity(username, ip, endpoint)
+def log_activity(ip, username, endpoint, desc=None):
+    db.log_activity(username, ip, endpoint, desc)
 
 
 def db_connector(func):
@@ -341,9 +341,15 @@ def get_exam(organization, course, name):
     if not check_auth(token, organization, "student"):
         return jsonify("Unauthorized access!")
     if check_lecture_permission(organization, token, course):
-        rtn = jsonify(Exam(name, organization, db).get())
-        log_activity(request.remote_addr, token["username"], request.endpoint)
-        return rtn
+        exam = Exam(name, organization, db)
+        rtn = exam.get()
+        if token["role"] == "student":
+            if not exam.check_first_enter(token["username"]):
+                return jsonify("You already sit the exam!")
+            if rtn["Status"] != "active" or rtn["Status"] != "graded":
+                return jsonify("Cannot access to exam.")
+        log_activity(request.remote_addr, token["username"], request.endpoint, name)
+        return jsonify(rtn)
     return jsonify("Unauthorized access!")
 
 
@@ -591,6 +597,20 @@ def upload_keystroke(organization, course, exam):
         else:
             rtn = Exam(exam, organization, db).get_live_exam_keystrokes(course, student)
     return jsonify(rtn)
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/exceptional_access",
+           endpoint="second_access", methods=["PUT"])
+@profile(stream=memory_log)
+@jwt_required
+@db_connector
+def give_second_access_to_exam(organization, course, exam):
+    token = get_jwt_identity()
+    if not check_auth(token, organization, "lecturer"):
+        return jsonify("Unauthorized access!")
+    if check_lecture_permission(organization, token, course):
+        exam = Exam(exam, organization, db)
+        return jsonify(exam.give_second_access(request.form["student_user"]))
 
 
 if __name__ == "__main__":

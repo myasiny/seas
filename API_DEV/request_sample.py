@@ -15,9 +15,9 @@ def get_token(role):
     print auth
     return auth[-1]
 
-# student_token = get_token("student")
+student_token = get_token("student")
 # print student_token
-lecturer_token = get_token("lecturer")
+# lecturer_token = get_token("lecturer")
 # print lecturer_token
 # admin_token = get_token("admin")
 # print admin_token
@@ -93,9 +93,9 @@ lecturer_token = get_token("lecturer")
 
 
 ## HOW TO GET EXAM
-# print "get exam", getExam(lecturer_token,
-#                  "data 101",
-#                  "fcg test")
+print "get exam", getExam(student_token,
+                 "eecs 468",
+                 "test 3")
 
 # print getExam(student_token, "data 101", "fcg test 2")
 # print sendAnswers(student_token,"Data 101", 97, "fatihgulmez", "A")
@@ -149,17 +149,17 @@ lecturer_token = get_token("lecturer")
 # print getAnswersOfStudent(lecturer_token, "eecs 468", "test 3", "213962062")
 # print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
 
-a = 0
-while a < 3:
-    print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "asdasd\n")
-    print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "123456\n")
-    a += 1
-
-b = getKeystrokeData(lecturer_token, "eecs 468", "test 1", "1")
-
-for line in b:
-    print line
-
-print signOut(lecturer_token, "alicakmak")
-# print signOut(student_token, "fatihgulmez")
+# a = 0
+# while a < 3:
+#     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "asdasd\n")
+#     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "123456\n")
+#     a += 1
+#
+# b = getKeystrokeData(lecturer_token, "eecs 468", "test 1", "1")
+#
+# for line in b:
+#     print line
+#
+# print signOut(lecturer_token, "alicakmak")
+print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")

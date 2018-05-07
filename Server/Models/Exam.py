@@ -172,3 +172,25 @@ class Exam:
             return open(path, "r").readlines()
         else:
             return
+
+    def check_first_enter(self, username):
+        check = self.db.execute("SELECT Time FROM last_activities WHERE Username = '%s' and Description = '%s'"
+                                % (username, self.name))
+        try:
+            check = check[0]
+            check = self.db.execute("SELECT * FROM exam_exceptions WHERE username = '%s' and exam_name = '%s'"
+                                    % (username, self.name))
+            try:
+                check[0]
+                self.db.execute("DELETE FROM exam_exceptions WHERE username = '%s' and exam_name = '%s'"
+                                % (username, self.name))
+                return True
+            except IndexError:
+                return False
+        except IndexError:
+            return True
+
+    def give_second_access(self, student_username):
+        self.db.execute("INSERT INTO exam_exceptions(username, exam_name) VALUES ('%s', '%s')"
+                        % (student_username, self.name))
+        return "Done"
