@@ -37,7 +37,7 @@ lecturer_token = get_token("lecturer")
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-# print addCourse(admin_token, "Data Analytics", "data 102", ["alicakmak"])
+# print add_course(admin_token, "Data Analytics", "data 102", ["alicakmak"])
 # print "get course", getCourse(lecturer_token, "data_101")
 #
 # print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
@@ -154,10 +154,10 @@ lecturer_token = get_token("lecturer")
 #     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "123456\n")
 #     a += 1
 
-b = getKeystrokeData(lecturer_token, "eecs 468", "test 1", "1")
-
-for line in b:
-    print line
+# b = getKeystrokeData(lecturer_token, "eecs 468", "test 1", "1")
+#
+# for line in b:
+#     print line
 
 print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")

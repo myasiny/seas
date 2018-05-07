@@ -2,6 +2,7 @@
 import mysql.connector
 from DBTable import DBTable
 from mysql.connector import pooling, InterfaceError, PoolError, OperationalError
+from Password import Password
 
 class MySQLdb:
     def __init__(self, dbName, user="root", password="Dragos!2017"):
@@ -207,6 +208,25 @@ class MySQLdb:
         return self.execute("Select * from istanbul_sehir_university.members")
         pass
 
+    def sign_up_user(self, organization, request):
+        passwd = Password().hash_password(request.form["Password"])
+        username = request.form["Username"]
+        role = request.form["Role"].lower()
+        command = "Insert into %s.members(PersonID, Role, Name, Surname, Username, Password, Email, Department) " \
+                  "values(%s, '%d', '%s', '%s', '%s', '%s', '%s', '%s')" \
+                  % (organization,
+                     request.form["ID"],
+                     int(db.execute("SELECT RoleID FROM %s.roles WHERE Role = '%s'" % (
+                         organization, role))[0][0]),
+                     request.form["Name"],
+                     request.form["Surname"],
+                     username,
+                     passwd,
+                     request.form["Email"],
+                     request.form["Department"]
+                     )
+        return self.execute(command)
+
     def if_token_revoked(self, token):
         try:
             result = self.execute("select token from main.revoked_tokens where token = '%s'" %(token))
@@ -218,6 +238,10 @@ class MySQLdb:
 
     def revoke_token(self, token):
         return self.execute("INSERT INTO main.revoked_tokens (token) VALUES ('%s');" %token)
+
+    def log_activity(self, username, ip, endpoint):
+        self.execute(
+            "INSERT INTO last_activities(Username, IP, Api_Endpoint) VALUES ('%s', '%s', '%s');" % (username, ip, endpoint))
 
     def execute(self, command):
         try:
