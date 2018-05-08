@@ -324,7 +324,7 @@ def get_exams_of_lecture(organization, course):
     if not check_auth(token, organization, "student"):
         return jsonify("Unauthorized access!")
     if check_lecture_permission(organization, token, course):
-        rtn = jsonify(Course(db, organization, course).get_exams_of_lecture())
+        rtn = jsonify(Course(db, organization, course).get_exams_of_lecture(token["role"] == "student"))
         log_activity(request.remote_addr, token["username"], request.endpoint)
         return rtn
     return jsonify("Unauthorized access!")

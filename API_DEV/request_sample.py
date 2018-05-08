@@ -17,9 +17,9 @@ def get_token(role):
 
 # student_token = get_token("student")
 # print student_token
-lecturer_token = get_token("lecturer")
+# lecturer_token = get_token("lecturer")
 # print lecturer_token
-# admin_token = get_token("admin")
+admin_token = get_token("admin")
 # print admin_token
 
 ### Sample usage of API
@@ -38,7 +38,7 @@ lecturer_token = get_token("lecturer")
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-# print add_course(admin_token, "Data Analytics", "data 102", ["alicakmak"])
+print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicakmak"])
 # print "get course", getCourse(lecturer_token, "data_101")
 #
 # print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
@@ -106,9 +106,9 @@ lecturer_token = get_token("lecturer")
 
 # print "delete exam", deleteExam(lecturer_token, "fcg test", "data_101")
 
-print uploadProfilePic(lecturer_token, "alicakmak", "example_image.png")
+# print uploadProfilePic(lecturer_token, "alicakmak", "example_image.png")
 
-print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
+# print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 
 # print grade_answer(lecturer_token,"data 101", 97, "fatihgulmez", 28)
 # print grade_answer(lecturer_token,"eecs 468", 54, "alioz", 2)
@@ -155,6 +155,6 @@ print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 # for line in b:
 #     print line
 #
-print signOut(lecturer_token, "alicakmak")
+# print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")
-# print signOut(admin_token, "admin")
+print signOut(admin_token, "admin")
