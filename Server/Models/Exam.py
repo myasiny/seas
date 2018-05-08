@@ -1,7 +1,11 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 from Question import Question
-import json, threading, os
+import json
+import threading
+import os
 from werkzeug.utils import secure_filename
+from mysql.connector import DatabaseError
+
 
 class Exam:
     def __init__(self, name, organization, db=None):
@@ -82,6 +86,21 @@ class Exam:
 
     def change_status(self, new_status):
         self.db.execute("Update exams Set Status = '%s' where Name = '%s';" % (new_status, self.name))
+        if new_status == "active":
+            dur = self.get()["Duration"]
+            command = "Drop Event %s_start;" % self.name
+            try:
+                self.db.execute(command)
+            except DatabaseError:
+                pass
+            command = "Alter Event %s_stop On Schedule At date_add(now(), Interval %s Minute)" % (self.name, dur)
+
+            try:
+                self.db.execute(command)
+            except DatabaseError:
+                command = "Create Event %s_stop On Schedule At date_add(now(), Interval %s Minute) " \
+                          "Do Update exams set Status = 'not_graded' where name = %s" % (self.name, self.name, dur)
+                self.db.execute(command)
 
     def add_more_time(self, minutes):
         self.db.execute("Update exams Set Duration = Duration + %d where Name = '%s';" % (int(minutes), self.name))

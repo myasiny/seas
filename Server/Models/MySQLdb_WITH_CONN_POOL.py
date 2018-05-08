@@ -212,7 +212,6 @@ class MySQLdb:
             self.cursor.execute(command)
         except InterfaceError:
             self.cursor.execute(command, multi=True)
-            print "Interface error 1"
 
         if command.lower().startswith("select") or command.lower().startswith("(select"):
             rtn = self.cursor.fetchall()

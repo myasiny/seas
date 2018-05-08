@@ -15,9 +15,9 @@ def get_token(role):
     print auth
     return auth[-1]
 
-student_token = get_token("student")
+# student_token = get_token("student")
 # print student_token
-# lecturer_token = get_token("lecturer")
+lecturer_token = get_token("lecturer")
 # print lecturer_token
 # admin_token = get_token("admin")
 # print admin_token
@@ -93,9 +93,9 @@ student_token = get_token("student")
 
 
 ## HOW TO GET EXAM
-print "get exam", getExam(student_token,
-                 "eecs 468",
-                 "test 3")
+# print "get exam", getExam(student_token,
+#                  "eecs 468",
+#                  "test 3")
 
 # print getExam(student_token, "data 101", "fcg test 2")
 # print sendAnswers(student_token,"Data 101", 97, "fatihgulmez", "A")
@@ -130,12 +130,7 @@ print "get exam", getExam(student_token,
 #                     "value": 30,
 #                     "tags": ["mustapha","kemal"]})
 
-
-
-# print "change status of exam", change_status_of_exam(lecturer_token,
-#                             "data 101",
-#                             "fcg test 2",
-#                             "graded")
+print "change status of exam", change_status_of_exam(lecturer_token, "data 101", "fcg test", "active")
 
 # print resetPassword("alioz")
 
@@ -160,6 +155,6 @@ print "get exam", getExam(student_token,
 # for line in b:
 #     print line
 #
-# print signOut(lecturer_token, "alicakmak")
-print signOut(student_token, "fatihgulmez")
+print signOut(lecturer_token, "alicakmak")
+# print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")
