@@ -11,14 +11,14 @@ def create_text_first_login(instructorName, auth):
 <table class="email-container" style="margin: auto;" role="presentation" border="0" width="600" cellspacing="0" cellpadding="0" align="center">
 <tbody>
 <tr>
-<td style="padding: 20px 0; text-align: center;"><a href="https://www.wivernsoftware.com/seas-en"><img style="height: auto; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" src="http://pichoster.net/images/2018/03/16/ba1e2fd81ca26af117ef9357e5f21d0b.png" alt="SEAS" width="200" height="50" border="0" /></a></td>
+<td style="padding: 20px 0; text-align: center;"><a href="https://www.wivernsoftware.com/seas-en"><img style="height: auto; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" src="https://image.ibb.co/nOvxM7/img_seas.png" alt="SEAS" width="200" height="50" border="0" /></a></td>
 </tr>
 </tbody>
 </table>
 <table class="email-container" style="margin: auto;" role="presentation" border="0" width="600" cellspacing="0" cellpadding="0" align="center">
 <tbody>
 <tr>
-<td align="center" bgcolor="#ffffff"><img class="g-img" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555; margin: auto;" src="http://pichoster.net/images/2018/03/16/cf75c98bb45b7b71bd417893e173d967.png" alt="Smart Exam Administration System" width="600" height="" align="center" border="0" /></td>
+<td align="center" bgcolor="#ffffff"><img class="g-img" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555; margin: auto;" src="https://static.wixstatic.com/media/0b9720_3f314f0a0e09422aa3e7bd612179e6ac~mv2_d_1920_1280_s_2.png/v1/fill/w_966,h_644,al_c,usm_0.66_1.00_0.01/0b9720_3f314f0a0e09422aa3e7bd612179e6ac~mv2_d_1920_1280_s_2.png" alt="Smart Exam Administration System" width="600" height="" align="center" border="0" /></td>
 </tr>
 <tr>
 <td style="padding: 40px 40px 20px; text-align: center;" bgcolor="#ffffff">
@@ -28,7 +28,7 @@ def create_text_first_login(instructorName, auth):
 <tr>
 <td style="padding: 0 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555; text-align: center;" bgcolor="#ffffff">
 <p style="margin: 0;">Your account has successfully created by your instructor, """+instructorName.title()+""". <br /><br />Use the credentials stated below in order to access your account. <br /><br /><strong>Username:&nbsp;</strong>"""+auth[-1]+"""<br /><strong>Password:&nbsp;</strong>"""+auth[-2]+""" <br /><br />Have a good semester!<br/><br/></p>
-<a href="https://www.wivernsoftware.com"><img  src="http://pichoster.net/images/2018/03/16/0d92de1a3925937304d51cf872cd646b.png" alt="Wivern Software" width="200" height="50" border="0" /></a></td>
+<a href="https://www.wivernsoftware.com"><img  src="https://image.ibb.co/nOvxM7/img_seas.png" alt="Wivern Software" width="200" height="50" border="0" /></a></td>
 </tr>
 <tr>
 <td style="padding: 0 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" bgcolor="#ffffff">
@@ -56,14 +56,14 @@ def create_text_password_reset(auth):
 <table class="email-container" style="margin: auto;" role="presentation" border="0" width="600" cellspacing="0" cellpadding="0" align="center">
 <tbody>
 <tr>
-<td style="padding: 20px 0; text-align: center;"><a href="https://www.wivernsoftware.com/seas-en"><img style="height: auto; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" src="http://pichoster.net/images/2018/03/16/ba1e2fd81ca26af117ef9357e5f21d0b.png" alt="SEAS" width="200" height="50" border="0" /></a></td>
+<td style="padding: 20px 0; text-align: center;"><a href="https://www.wivernsoftware.com/seas-en"><img style="height: auto; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" src="https://image.ibb.co/nOvxM7/img_seas.png" alt="SEAS" width="200" height="50" border="0" /></a></td>
 </tr>
 </tbody>
 </table>
 <table class="email-container" style="margin: auto;" role="presentation" border="0" width="600" cellspacing="0" cellpadding="0" align="center">
 <tbody>
 <tr>
-<td align="center" bgcolor="#ffffff"><img class="g-img" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555; margin: auto;" src="http://pichoster.net/images/2018/03/16/cf75c98bb45b7b71bd417893e173d967.png" alt="Smart Exam Administration System" width="600" height="" align="center" border="0" /></td>
+<td align="center" bgcolor="#ffffff"><img class="g-img" style="width: 100%; max-width: 600px; height: auto; background: #dddddd; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555; margin: auto;" src="https://static.wixstatic.com/media/0b9720_3f314f0a0e09422aa3e7bd612179e6ac~mv2_d_1920_1280_s_2.png/v1/fill/w_966,h_644,al_c,usm_0.66_1.00_0.01/0b9720_3f314f0a0e09422aa3e7bd612179e6ac~mv2_d_1920_1280_s_2.png" alt="Smart Exam Administration System" width="600" height="" align="center" border="0" /></td>
 </tr>
 <tr>
 <td style="padding: 40px 40px 20px; text-align: center;" bgcolor="#ffffff">
@@ -73,7 +73,7 @@ def create_text_password_reset(auth):
 <tr>
 <td style="padding: 0 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555; text-align: center;" bgcolor="#ffffff">
 <p style="margin: 0;">Your password has been successfully requested to reset. <br /><br />Use the credentials stated below in order to change your password. <br /><br /><strong>Username:&nbsp;</strong>"""+auth[-1]+"""<br /><strong>Confirmation Key:&nbsp;</strong>"""+auth[-2]+""" <br /><br />Regards!<br/><br/></p>
-<a href="https://www.wivernsoftware.com"><img  src="http://pichoster.net/images/2018/03/16/0d92de1a3925937304d51cf872cd646b.png" alt="Wivern Software" width="200" height="50" border="0" /></a></td>
+<a href="https://www.wivernsoftware.com"><img  src="https://image.ibb.co/nOvxM7/img_seas.png" alt="Wivern Software" width="200" height="50" border="0" /></a></td>
 </tr>
 <tr>
 <td style="padding: 0 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" bgcolor="#ffffff">
