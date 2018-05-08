@@ -307,7 +307,7 @@ def getExam(token, course_code, name, base_url=server_address, organization=curr
 
 @server_check
 def sendAnswers(token, course_code, question_id, username, answer,
-                base_url=server_address, organization=current_organization):
+                base_url=server_address, organization=current_organization, **kwargs):
     """
     :param token: String; JWT token
     :param course_code: String; course code
@@ -316,12 +316,13 @@ def sendAnswers(token, course_code, question_id, username, answer,
     :param answer: String; user's answer
     :param base_url: String; server address
     :param organization: String; university name
+    :param kwargs: Dictionary; keys are question_time, compile_number, answer_count
     :return: [] if success, NONE otherwise
     """
     organization = __normalize(organization)
     course_code = __normalize(course_code)
     url = base_url + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, course_code, str(question_id), username)
-    return put(url, data={"answers" : json.dumps(answer)}, headers={"Authorization": "Bearer " + token}).json()
+    return put(url, data={"answers": json.dumps(answer), "question_stats": kwargs}, headers={"Authorization": "Bearer " + token}).json()
 
 
 @server_check
@@ -507,27 +508,18 @@ def getLastActivities(token, username, sign_in=False, organization=current_organ
 
 
 @server_check
-def postExamData(token, course, exam, username, data, organization=current_organization, base_url=server_address):
-    """
-    :param token:
-    :param course: Course name
-    :param exam: Exam name
-    :param username: Username
-    :param data: File path for exam data, NEED TO BE A JSON FILE
-    :param organization: university name
-    :param base_url: Server Address
-    :return:
-    """
+def postExamData(token, course, exam, user_id, key_stream, keystroke=None, memory_usage=None, network_download=None,
+                 network_upload=None, organization=current_organization, base_url=server_address):
     organization = __normalize(organization)
     course = __normalize(course)
     exam = __normalize(exam)
-    if not data.endswith(".json"):
-        return "Wrong file type!"
-    with open(data) as data_f:
-        url = base_url + "/organizations/%s/%s/exams/%s/data/%s" % (organization, course, exam, username)
-        return put(url, headers={"Authorization": "Bearer " + token}, files={"exam_data": data_f}).json()
+    data = {"keystroke": keystroke, "memory_usage": memory_usage, "network_download": network_download,
+            "network_upload": network_upload, "key_stream": key_stream}
+    url = base_url + "/organizations/%s/%s/exams/%s/data/%s" % (organization, course, exam, user_id)
+    return put(url, headers={"Authorization": "Bearer " + token}, data=data).json()
 
 
+@server_check
 def extraMaterials(token, course, exam, question_id, file_, purpose, upload=False,
                    organization=current_organization, base_url=server_address):
     purpose = __normalize(purpose)
@@ -549,29 +541,7 @@ def extraMaterials(token, course, exam, question_id, file_, purpose, upload=Fals
 
 
 @server_check
-def sendKeystrokeData(token, course, exam, student_id, stream,
-                      organization=current_organization, base_url=server_address):
-    """
-    :param token:
-    :param course:
-    :param exam:
-    :param student_id:
-    :param stream:
-    :param organization:
-    :param base_url:
-    :return:
-    """
-    organization = __normalize(organization)
-    course = __normalize(course)
-    exam = __normalize(exam)
-
-    url = base_url + "/organizations/%s/%s/exams/%s/keystrokes" % (organization, course, exam)
-    return put(url, data={"student_id" : student_id, "stream" : stream},
-               headers={"Authorization": "Bearer " + token}).json()
-
-
-@server_check
-def getKeystrokeData(token, course, exam, student_id, organization=current_organization, base_url=server_address):
+def getKeyloggerData(token, course, exam, student_id, organization=current_organization, base_url=server_address):
     organization = __normalize(organization)
     course = __normalize(course)
     exam = __normalize(exam)

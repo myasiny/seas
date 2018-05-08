@@ -6,6 +6,8 @@ import os
 from werkzeug.utils import secure_filename
 from mysql.connector import DatabaseError
 
+KEYSTREAM_DELIMITER = "<<S|E|A|S>>*!KEYSTREAM_DELIMITER!*"
+
 
 class Exam:
     def __init__(self, name, organization, db=None):
@@ -147,13 +149,32 @@ class Exam:
         rtn = self.db.execute("SELECT * FROM answers WHERE studentID = %s;" % student_id)
         return rtn
 
-    def save_exam_data(self, username, course, data):
-        base_path = "uploads/%s/courses/%s/exams/%s/user_data/" % (self.org, course, self.name)
-        path = base_path + "%s.json" % username
-        data_ = json.load(data)
+    def save_exam_data(self, student_id, course, data):
+        base_path = "uploads/%s/courses/%s/exams/%s/" % (self.org, course, self.name)
+        key_stream = data.pop("key_stream")
+
+        # Exam data save
+        path = base_path + "user_data/%s.json" % student_id
         if not os.path.exists(base_path):
             os.makedirs(base_path)
+        if os.path.exists(path):
+            data_ = json.load(open(path, "r"))
+        else:
+            data_ = {}
+        for key in data:
+            data_["exam_data"].setdefault(key, [])
+            data_["exam_data"][key].append(data[key])
         json.dump(data_, open(path, "w"))
+
+        # Key stream save
+        path = base_path + "key_streams/%s.keystream" % student_id
+        if os.path.exists(path):
+            o = "a"
+        else:
+            o = "w"
+        with open(path, o) as key_stream_file:
+            key_stream_file.write(key_stream)
+            key_stream_file.write(KEYSTREAM_DELIMITER)
         return
 
     def upload_extra_materials(self, file_, course, exam, question_id, purpose):
@@ -170,25 +191,10 @@ class Exam:
                 ff_.write(data)
         return "Done"
 
-    def record_live_exam_keystrokes(self, course, student_id, stream):
-        base_path = "uploads/%s/courses/%s/exams/%s/keystroke/" % (self.org, course, self.name)
-        path = base_path + student_id + ".keystroke"
-        if not os.path.exists(base_path):
-            os.makedirs(base_path)
-        if os.path.exists(path):
-            open_mode = "a"
-        else:
-            open_mode = "w"
-        print open_mode
-        with open(path, open_mode) as f:
-            f.write(stream)
-
-        return "Done"
-
     def get_live_exam_keystrokes(self, course, student_id):
         path = "uploads/%s/courses/%s/exams/%s/keystroke/%s.keystroke" % (self.org, course, self.name, student_id)
         if os.path.exists(path):
-            return open(path, "r").readlines()
+            return open(path, "r").read().split(KEYSTREAM_DELIMITER)
         else:
             return
 

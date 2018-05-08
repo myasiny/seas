@@ -106,9 +106,9 @@ lecturer_token = get_token("lecturer")
 
 # print "delete exam", deleteExam(lecturer_token, "fcg test", "data_101")
 
-# print uploadProfilePic(lecturer_token, "alicakmak", "example_image.png")
+print uploadProfilePic(lecturer_token, "alicakmak", "example_image.png")
 
-# print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
+print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 
 # print grade_answer(lecturer_token,"data 101", 97, "fatihgulmez", 28)
 # print grade_answer(lecturer_token,"eecs 468", 54, "alioz", 2)
@@ -130,7 +130,7 @@ lecturer_token = get_token("lecturer")
 #                     "value": 30,
 #                     "tags": ["mustapha","kemal"]})
 
-print "change status of exam", change_status_of_exam(lecturer_token, "data 101", "fcg test", "active")
+# print "change status of exam", change_status_of_exam(lecturer_token, "data 101", "fcg test", "active")
 
 # print resetPassword("alioz")
 

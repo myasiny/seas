@@ -72,8 +72,7 @@ def test_connection():
     return jsonify("I am alive!")
 
 
-@app.route("/organizations",
-           methods=["PUT"], endpoint="register_organization")
+@app.route("/organizations", methods=["PUT"], endpoint="register_organization")
 @profile(stream=memory_log)
 @jwt_required
 @db_connector
@@ -411,8 +410,12 @@ def profile_picture(organization, username):
     else:
         path = user.get_profile_picture()
         try:
+            b = None
+            a = ""
             with open(path, "rb") as f:
-                a = f.read()
+                while b != "":
+                    b = f.read()
+                    a += b
                 log_activity(request.remote_addr, token["username"], request.endpoint)
                 return jsonify(pickle.dumps(a))
         except TypeError:
@@ -554,10 +557,25 @@ def exam_data(organization, course, username, exam):
     if not check_auth(token, organization, "student") or not check_lecture_permission(organization, token, course):
         rtn = "Unauthorized access"
     else:
-        file_ = request.files["exam_data"]
-        Exam(exam, organization, db=db).save_exam_data(username, course, file_)
+        data = request.form
+        Exam(exam, organization, db=db).save_exam_data(username, course, data)
         rtn = "Done"
     log_activity(request.access_route, token["username"], request.endpoint)
+    return jsonify(rtn)
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/keystrokes",
+           methods=["GET"], endpoint="keystrokes")
+@profile(stream=memory_log)
+@jwt_required
+@db_connector
+def upload_keystroke(organization, course, exam):
+    token = get_jwt_identity()
+    student = request.form["student_id"]
+    if not check_lecture_permission(organization, token, course) or not check_auth(token, organization, "lecturer"):
+        rtn = "Unauthorized access."
+    else:
+        rtn = Exam(exam, organization, db).get_live_exam_keystrokes(course, student)
     return jsonify(rtn)
 
 
@@ -575,27 +593,6 @@ def upload_extra_materials(organization, course, exam):
                                                                   course, exam,
                                                                   request.form["question_id"],
                                                                   request.form["purpose"])
-    return jsonify(rtn)
-
-
-@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/keystrokes",
-           methods=["PUT", "GET"], endpoint="keystrokes")
-@profile(stream=memory_log)
-@jwt_required
-@db_connector
-def upload_keystroke(organization, course, exam):
-    token = get_jwt_identity()
-    student = request.form["student_id"]
-    if request.method == "PUT":
-        if not check_lecture_permission(organization, token, course) or not check_auth(token, organization, "student"):
-            rtn = "Unauthorized access."
-        else:
-            rtn = Exam(exam, organization, db).record_live_exam_keystrokes(course, student, request.form["stream"])
-    else:
-        if not check_lecture_permission(organization, token, course) or not check_auth(token, organization, "lecturer"):
-            rtn = "Unauthorized access."
-        else:
-            rtn = Exam(exam, organization, db).get_live_exam_keystrokes(course, student)
     return jsonify(rtn)
 
 
