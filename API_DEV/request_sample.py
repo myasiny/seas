@@ -7,7 +7,7 @@ def get_token(role):
     if role == "student":
         username, password = "fatihgulmez", "12345"
     elif role == "lecturer":
-        username, password = "alicakmak", "tarvennbok"
+        username, password = "alicakmak", "12345tarvennbok"
     else: #Admin
         username, password = "admin", "12345"
 
@@ -15,7 +15,7 @@ def get_token(role):
     print auth
     return auth[-1]
 
-student_token = get_token("student")
+# student_token = get_token("student")
 # print student_token
 lecturer_token = get_token("lecturer")
 # print lecturer_token
@@ -51,7 +51,7 @@ lecturer_token = get_token("lecturer")
 
 # print getUserCourses(student_token, "fatihgulmez")
 #
-# print changePassword(student_token, "fatihgulmez", "123456", "12345", False)
+print changePassword(lecturer_token, "alicakmak", "12345tarvennbok", "tarvennbok", False)
 
 # print "delete student from lecture", deleteStudentFromLecture(lecturer_token, "Data 101", "210111111")
 
@@ -156,5 +156,5 @@ lecturer_token = get_token("lecturer")
 #     print line
 #
 print signOut(lecturer_token, "alicakmak")
-print signOut(student_token, "fatihgulmez")
+# print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")
