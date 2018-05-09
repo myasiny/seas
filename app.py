@@ -203,6 +203,16 @@ class EduGrade(Screen):
     def on_pre_enter(self, *args):
         eduGrade.on_pre_enter(self)
 
+    def on_student_change(self):
+        eduGrade.on_exam_grade(self)
+
+    @staticmethod
+    def on_grade():
+        pages.append(EduGrade(name="EduGrade"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
 
 class EduLive(Screen):
     """

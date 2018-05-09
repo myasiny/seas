@@ -5,11 +5,21 @@ eduGrade
 `eduGrade` is a toolbox for main app, it contains necessary methods that EduGrade page requires.
 """
 
+import re
+from functools import partial
+from gensim.summarization import keywords, summarize
+
+from kivy.adapters.listadapter import ListAdapter
 from kivy.cache import Cache
+from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.listview import ListView, ListItemButton
+from kivy.uix.popup import Popup
 
 from func import database_api
 
 __author__ = "Muhammed Yasin Yildirim"
+__credits__ = ["Ali Emre Oz"]
 
 
 def on_pre_enter(self):
@@ -19,17 +29,250 @@ def on_pre_enter(self):
     :return:
     """
 
+    cipher = Cache.get("config", "cipher")
+
     self.ids["txt_student_name"].text = Cache.get("lect",
                                                   "std_name"
                                                   )
 
-    data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
-                                              Cache.get("lect", "code"),
-                                              Cache.get("lect", "exam")
-                                              )["Questions"]
+    questions = open("data/questions.fay", "r")
+    try:
+        self.data_exam_order = cipher.decrypt(questions.read()).split("*[SEAS-NEW-LINE]*")
+    except:
+        self.data_exam_order = questions.readlines()
+
+    if len(self.data_exam_order) < 1:
+        self.data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
+                                                       Cache.get("lect", "code"),
+                                                       Cache.get("lect", "exam")
+                                                       )["Questions"]
+
+        i = 0
+        with open("data/questions.fay", "w+") as questions:
+            for key, value in self.data_detailed_exam.iteritems():
+                if i == 0:
+                    i += 1
+                    questions.write(cipher.encrypt("*[SEAS-EXAM]*"))
+                else:
+                    questions.write(cipher.encrypt(str(value["ID"]) + "*[SEAS-NEW-LINE]*" +
+                                                   str(value["type"]) + "*[SEAS-NEW-LINE]*" +
+                                                   str(value["value"]) + "*[SEAS-NEW-LINE]*" +
+                                                   str(value["text"]) + "*[SEAS-NEW-LINE]*" +
+                                                   str(value["answer"]) + "*[SEAS-NEW-LINE]*"
+                                                   )
+                                    )
+            questions.close()
+
+        self.question_no = str(self.data_detailed_exam.values()[0]["ID"])
+        self.ids["txt_question_no"].text = "Question ID: {id}".format(id=self.question_no)
+
+        question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]
+
+        self.question_type = question_details["type"]
+
+        self.question_grade = str(question_details["value"])
+        self.ids["txt_question_grade"].text = "Out of {point}".format(point=self.question_grade)
+
+        self.question_body = question_details["text"]
+        self.ids["txt_question_body"].text = self.question_body.replace("*[SEAS-SLASH-N]*",
+                                                                        "\n"
+                                                                        )
+
+        self.answer_body = question_details["answer"]
+        self.ids["txt_answer_body"].text = self.answer_body.replace("*[SEAS-SLASH-N]*",
+                                                                    "\n"
+                                                                    )
+    else:
+        questions = open("data/questions.fay", "r")
+        self.data_exam_order = cipher.decrypt(questions.read()).split("*[SEAS-NEW-LINE]*")
+
+        if "*[SEAS-EXAM]*" in self.data_exam_order[0]:
+            return self.on_student_change()
+
+        self.question_no = self.data_exam_order[0]
+        self.ids["txt_question_no"].text = "Question ID: {id}".format(id=self.question_no)
+
+        self.question_type = self.data_exam_order[1]
+
+        self.question_grade = self.data_exam_order[2]
+        self.ids["txt_question_grade"].text = "Out of {point}".format(point=self.question_grade)
+
+        self.question_body = self.data_exam_order[3]
+        self.ids["txt_question_body"].text = self.question_body.replace("*[SEAS-SLASH-N]*",
+                                                                        "\n"
+                                                                        )
+
+        self.answer_body = self.data_exam_order[4]
+        self.ids["txt_answer_body"].text = self.answer_body.replace("*[SEAS-SLASH-N]*",
+                                                                    "\n"
+                                                                    )
+
+        try:
+            is_next = self.data_exam_order[5] + self.data_exam_order[6] + self.data_exam_order[7]
+        except:
+            is_next = None
+
+            with open("data/questions.fay", "w+") as questions:
+                questions.write(
+                    cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[is]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
+                questions.close()
+
+        if is_next is not None:
+            with open("data/questions.fay", "w+") as questions:
+                questions.write(cipher.encrypt("*[SEAS-NEW-LINE]*".join(self.data_exam_order)))
+                questions.close()
 
     data_student_answer = database_api.getAnswersOfStudent(Cache.get("info", "token"),
                                                            Cache.get("lect", "code"),
                                                            Cache.get("lect", "exam"),
                                                            Cache.get("lect", "std_id")
                                                            )
+
+    for answer in data_student_answer:
+        if str(answer[1]) == self.question_no:
+            data_summary = summarize(answer[3][1:-1].replace("*[SEAS-SLASH-N]*",
+                                                             "\n"
+                                                             ),
+                                     ratio=0.3
+                                     )
+            self.ids["txt_answer_summary"].text = data_summary
+
+            data_keywords = keywords(answer[3].replace("*[SEAS-SLASH-N]*",
+                                                       "\n"
+                                                       ),
+                                     ratio=0.3
+                                     )
+            data_keywords = list(data_keywords.encode("utf-8").split("\n"))
+            for word in data_keywords:
+                answer[3] = re.sub(r'( |^)({keyword})'.format(keyword=word),
+                                   r'\1[color=#FF4530][font=data/font/AndaleMono.ttf][b]\2[/b][/font][/color]',
+                                   answer[3],
+                                   flags=re.I
+                                   )
+            self.ids["txt_answer_student"].text = answer[3][1:-1]
+
+            self.ids["txt_auto_grade"].text = "Auto Grade: {grade}".format(grade="TODO")  # TODO
+            break
+
+
+def on_exam_grade(s):
+    """
+    This method creates pop-up that lists students and their grades.
+    :param s: It is for handling class structure.
+    :return:
+    """
+
+    def on_exam_grade_select(self, dt):
+        """
+        This method switches screen for grading selected student.
+        :param self: It is for handling class structure.
+        :param dt: It is for handling callback input.
+        :return:
+        """
+
+        self.popup.dismiss()
+
+        for x in self.data_students_joined:
+            if "{x0} {x1} ".format(x0=x[0], x1=x[1]).title() == self.list_grades.adapter.selection[0].text.split("(")[0]:
+                Cache.append("lect",
+                             "std_id",
+                             x[2]
+                             )
+                Cache.append("lect",
+                             "std_name",
+                             "{x0} {x1}".format(x0=x[0], x1=x[1]).title()
+                             )
+                break
+
+        return self.on_grade()
+
+    def on_exam_grade_complete(self, dt):
+        """
+        This method completes grading for selected exam.
+        :param self: It is for handling class structure.
+        :param dt: It is for handling callback input.
+        :return:
+        """
+
+        self.popup.dismiss()
+
+    popup_content = FloatLayout()
+    s.popup = Popup(title="Grades",
+                    content=popup_content,
+                    separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
+                    size_hint=(None, None),
+                    size=(s.width / 2, s.height / 2)
+                    )
+
+    s.data_students_joined = database_api.getCourseStudents(Cache.get("info", "token"),
+                                                            Cache.get("lect", "code")
+                                                            )
+
+    data_students_graded = database_api.getGradesOfExam(Cache.get("info", "token"),
+                                                        Cache.get("lect", "code"),
+                                                        Cache.get("lect", "exam")
+                                                        )
+    data_students_merged = {}
+
+    for std in s.data_students_joined:
+        std_name = "{name} {surname}".format(name=std[0].title(),
+                                             surname=std[1].title()
+                                             )
+
+        data_students_merged[std[4]] = [std_name, "None"]
+
+        for grade in data_students_graded:
+            if grade[0] == std[4]:
+                data_students_merged[std[4]] = [std_name, grade[1]]
+                break
+
+    s.list_grades = ListView(size_hint=(.9, .8),
+                             pos_hint={"center_x": .5, "center_y": .55}
+                             )
+    args_converter = lambda row_index, x: {"text": "{name} ({grade})".format(name=x[0],
+                                                                             grade=x[1]
+                                                                             ),
+                                           "selected_color": (.843, .82, .82, 1),
+                                           "deselected_color": (.57, .67, .68, 1),
+                                           "background_down": "data/img/widget_gray_75.png",
+                                           "font_name": "data/font/CaviarDreams_Bold.ttf",
+                                           "font_size": s.height / 50,
+                                           "size_hint_y": None,
+                                           "height": s.height / 20,
+                                           "on_release": partial(on_exam_grade_select,
+                                                                 s
+                                                                 )
+                                           }
+    s.list_grades.adapter = ListAdapter(data=[i for i in data_students_merged.itervalues()],
+                                        cls=ListItemButton,
+                                        args_converter=args_converter,
+                                        allow_empty_selection=False
+                                        )
+    popup_content.add_widget(s.list_grades)
+
+    popup_content.add_widget(Button(text="Complete",
+                                    font_name="data/font/LibelSuit.ttf",
+                                    font_size=s.height / 40,
+                                    background_normal="data/img/widget_green.png",
+                                    background_down="data/img/widget_green_select.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None,
+                                    height=s.height / 20,
+                                    pos_hint={"center_x": .25, "y": .0},
+                                    on_release=partial(on_exam_grade_complete,
+                                                       s
+                                                       )
+                                    )
+                             )
+    popup_content.add_widget(Button(text="Close",
+                                    font_name="data/font/LibelSuit.ttf",
+                                    font_size=s.height / 40,
+                                    background_normal="data/img/widget_red.png",
+                                    background_down="data/img/widget_red_select.png",
+                                    size_hint_x=.5,
+                                    size_hint_y=None,
+                                    height=s.height / 20,
+                                    pos_hint={"center_x": .75, "y": .0},
+                                    on_release=s.popup.dismiss)
+                             )
+    s.popup.open()
