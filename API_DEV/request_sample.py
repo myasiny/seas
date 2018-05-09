@@ -5,9 +5,9 @@ from database_api import *
 
 def get_token(role):
     if role == "student":
-        username, password = "fatihgulmez", "12345"
+        username, password = "fatihgulmez", "1"
     elif role == "lecturer":
-        username, password = "alicakmak", "12345tarvennbok"
+        username, password = "alicakmak", "tarvennbok"
     else: #Admin
         username, password = "admin", "12345"
 
@@ -41,7 +41,7 @@ lecturer_token = get_token("lecturer")
 # print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicakmak"])
 # print "get course", getCourse(lecturer_token, "data_101")
 #
-# print registerStudent(lecturer_token, "data 101", True, "asdasd.csv", "alicakmak")
+print registerStudent(lecturer_token, "data 101", True, "asdasd.csv", "alicakmak")
 
 # print "register student", registerStudent(lecturer_token, "data 101", False, [213860387, 212011111, 212980975, 213860387], "alicakmak")
 
@@ -51,7 +51,7 @@ lecturer_token = get_token("lecturer")
 
 # print getUserCourses(student_token, "fatihgulmez")
 #
-print changePassword(lecturer_token, "alicakmak", "12345tarvennbok", "tarvennbok", False)
+# print changePassword(lecturer_token, "alicakmak", "tarvennbok", "12345", False)
 
 # print "delete student from lecture", deleteStudentFromLecture(lecturer_token, "Data 101", "210111111")
 
@@ -132,9 +132,9 @@ print changePassword(lecturer_token, "alicakmak", "12345tarvennbok", "tarvennbok
 
 # print "change status of exam", change_status_of_exam(lecturer_token, "data 101", "fcg test", "active")
 
-# print resetPassword("alioz")
+# print resetPassword("fatihgulmez")
 
-# print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
+# print resetPassword("fatihgulmez", temp_pass="j6DAc9up", new_pass="1")
 # print getGradesOfExam(lecturer_token, "data 101", "test 3")
 
 # print getLastActivities(lecturer_token, "alicakmak", sign_in=True)
