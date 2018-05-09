@@ -135,6 +135,6 @@ def send_mail_password_reset(auth):
     mail.quit()
 
 
-auth = [["Muhammed Yasin Yildirim","alioz@std.sehir.edu.tr","msj123SaL","muhammedyildirim"]]
-instructorName = "Ali Cakmak"
-send_mail_first_login(auth, instructorName)
+# auth = [["Muhammed Yasin Yildirim","alioz@std.sehir.edu.tr","msj123SaL","muhammedyildirim"]]
+# instructorName = "Ali Cakmak"
+# send_mail_first_login(auth, instructorName)

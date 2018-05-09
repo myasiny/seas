@@ -62,7 +62,7 @@ class Exam:
                 question_info["ID"] = question[1]
                 questions[counter] = question_info
                 counter += 1
-
+            print status
             return{
                 "Name": exam_name,
                 "Course": course,
@@ -101,7 +101,7 @@ class Exam:
                 self.db.execute(command)
             except DatabaseError:
                 command = "Create Event %s_stop On Schedule At date_add(now(), Interval %s Minute) " \
-                          "Do Update exams set Status = 'not_graded' where name = %s" % (self.name, self.name, dur)
+                          "Do Update exams set Status = 'not_graded' where name = '%s'" % (self.name, self.name, dur)
                 self.db.execute(command)
 
     def add_more_time(self, minutes):

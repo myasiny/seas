@@ -209,7 +209,7 @@ def getUserCourses(token, username, base_url=server_address, organization=curren
 
 
 @server_check
-def changePassword(token, username, password, new_password, is_mail=False,
+def changePassword(token, username, password, new_password, isMail=False,
                    base_url=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -226,7 +226,7 @@ def changePassword(token, username, password, new_password, is_mail=False,
     return put(url, data={
         "Password": password,
         "newPassword": new_password,
-        "isMail": is_mail
+        "isMail": isMail
     },
         headers = {"Authorization": "Bearer %s" %token}).json()
 

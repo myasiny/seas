@@ -34,7 +34,9 @@ class User:
         :return: List, [studentID, roleID, name, surname, username, password_hash, email, department, profile_pic_path]
         """
         try:
-            self.user_id, self.role, self.name, self.surname, self.username, self.hashed_pass, self.email, self.department, self.profile_pic_path = self.execute("SELECT * FROM members WHERE Username='%s'" % self.username)[0]
+            self.user_id, self.role, self.name, self.surname, self.username, \
+                self.hashed_pass, self.email, self.department, self.profile_pic_path = \
+                self.execute("SELECT * FROM members WHERE Username='%s'" % self.username)[0]
 
             self.role_name = self.execute("SELECT Role FROM roles WHERE roleID = %s" % self.role)[0][0]
             return [self.username, self.name, self.surname, self.user_id, self.role_name, self.email, self.department]
@@ -159,12 +161,6 @@ class Student(User):
                             % self.username)
 
     def add_answer(self, question_id, answer):
-        try:
-            return self.execute("INSERT INTO answers(questionID, studentID, answer) "
-                                "select %d, %d, '%s' where "
-                                "(Select Status from exams where ExamID = "
-                                "(Select ExamId from questions Where QuestionID=%d))='active' "
-                                "ON DUPLICATE KEY UPDATE answer = '%s';"
-                                % (int(question_id), int(self.user_id), answer, int(question_id), answer))
-        except Exception:
-            return "Error occurred."
+        # command = "INSERT INTO answers(questionID, studentID, answer) values %d, %d, '%s' where (Select Status from exams where ExamID = (Select ExamId from questions Where QuestionID=%d))='active' ON DUPLICATE KEY UPDATE answer = '%s';" % (int(question_id), int(self.user_id), answer, int(question_id), answer)
+        command = "INSERT INTO answers(questionID, studentID, answer) values (%d, %d, '%s') ON DUPLICATE KEY UPDATE answer = '%s';" % (int(question_id), int(self.user_id), answer, answer)
+        return self.execute(command)

@@ -124,9 +124,9 @@ class Course:
         return self.execute(command)
 
     def get_exams_of_lecture(self, student=False):
-        if student:
-            return self.execute("select * from exams where CourseID = (select CourseID from courses where Code = '%s') "
-                                "and not Status = 'draft'" % self.code)
+        # if student:
+        #     return self.execute("select * from exams where CourseID = (select CourseID from courses where Code = '%s') "
+        #                         "and not Status = 'draft'" % self.code)
 
         return self.execute("select * from exams where CourseID = (select CourseID from courses where Code = '%s')"
                             % self.code)

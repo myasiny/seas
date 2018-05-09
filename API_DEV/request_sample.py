@@ -15,9 +15,9 @@ def get_token(role):
     print auth
     return auth[-1]
 
-# student_token = get_token("student")
+student_token = get_token("student")
 # print student_token
-lecturer_token = get_token("lecturer")
+# lecturer_token = get_token("lecturer")
 # print lecturer_token
 # admin_token = get_token("admin")
 # print admin_token
@@ -93,9 +93,7 @@ lecturer_token = get_token("lecturer")
 
 
 ## HOW TO GET EXAM
-# print "get exam", getExam(student_token,
-#                  "eecs 468",
-#                  "test 3")
+print "get exam", sendAnswers(student_token, "engr 101", 173, "fatihgulmez", "asdasdasdasdasd")
 
 # print getExam(student_token, "data 101", "fcg test 2")
 # print sendAnswers(student_token,"Data 101", 97, "fatihgulmez", "A")
@@ -108,7 +106,7 @@ lecturer_token = get_token("lecturer")
 
 # print uploadProfilePic(lecturer_token, "alicakmak", "example_image.png")
 
-print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
+# print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 
 # print grade_answer(lecturer_token,"data 101", 97, "fatihgulmez", 28)
 # print grade_answer(lecturer_token,"eecs 468", 54, "alioz", 2)
@@ -155,6 +153,6 @@ print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 # for line in b:
 #     print line
 #
-print signOut(lecturer_token, "alicakmak")
-# print signOut(student_token, "fatihgulmez")
+# print signOut(lecturer_token, "alicakmak")
+print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")

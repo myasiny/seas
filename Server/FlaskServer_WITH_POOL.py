@@ -346,7 +346,8 @@ def get_exam(organization, course, name):
         if token["role"] == "student":
             if not exam.check_first_enter(token["username"]):
                 return jsonify("You already sit the exam!")
-            if rtn["Status"] != "active" or rtn["Status"] != "graded":
+            print rtn["Status"]!="active"
+            if not (rtn["Status"] == "active" or rtn["Status"] == "graded"):
                 return jsonify("Cannot access to exam.")
         log_activity(request.remote_addr, token["username"], request.endpoint, name)
         return jsonify(rtn)
