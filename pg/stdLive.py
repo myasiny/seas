@@ -6,7 +6,6 @@ stdLive
 """
 
 import code
-import json
 import os
 import psutil
 import subprocess32
@@ -61,7 +60,7 @@ def on_pre_enter(self):
                     i += 1
                     questions.write(self.cipher.encrypt("*[SEAS-EXAM]*"))
                 else:
-                    questions.write(self.cipher.encrypt(str(key) + "*[SEAS-NEW-LINE]*" +
+                    questions.write(self.cipher.encrypt(str(value["ID"]) + "*[SEAS-NEW-LINE]*" +
                                                         str(value["type"]) + "*[SEAS-NEW-LINE]*" +
                                                         str(value["value"]) + "*[SEAS-NEW-LINE]*" +
                                                         str(value["text"]) + "*[SEAS-NEW-LINE]*"
@@ -69,7 +68,7 @@ def on_pre_enter(self):
                                     )
             questions.close()
 
-        self.question_no = str(self.data_detailed_exam.keys()[0])
+        self.question_no = str(self.data_detailed_exam.values()[0]["ID"])
         self.ids["txt_question_no"].text = "Question ID: {id}".format(id=self.question_no)
 
         question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]

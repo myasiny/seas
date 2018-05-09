@@ -200,6 +200,9 @@ class EduGrade(Screen):
 
     appLogin.load_string("edu_grade")
 
+    def on_pre_enter(self, *args):
+        eduGrade.on_pre_enter(self)
+
 
 class EduLive(Screen):
     """
@@ -377,7 +380,7 @@ class EduProfile(Screen):
 class EduLects(Screen):
     """
     @group Design: on_pre_enter, on_exams, on_participants
-    @group Functionality: on_enter, on_lect_select, on_help, on_contact, on_quit, on_leave
+    @group Functionality: on_enter, on_lect_select, on_help, on_contact, on_grade, on_quit, on_leave
     """
 
     appLogin.load_string("edu_lects")
@@ -431,6 +434,13 @@ class EduLects(Screen):
 
     def on_contact(self):
         eduLects.on_contact(self)
+
+    @staticmethod
+    def on_grade():
+        pages.append(EduGrade(name="EduGrade"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
     @staticmethod
     def on_live():
@@ -622,7 +632,7 @@ if __name__ == "__main__":
                    limit=10
                    )
     Cache.register("lect",
-                   limit=3
+                   limit=5
                    )
     Cache.register("config",
                    limit=2

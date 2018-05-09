@@ -20,9 +20,9 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.uix.listview import ListItemButton, ListView
 from kivy.uix.popup import Popup
+from kivy.uix.textinput import TextInput
 
 from func import database_api, excel_to_csv, image_button
-from kivy.uix.textinput import TextInput
 
 __author__ = "Muhammed Yasin Yildirim"
 
@@ -423,7 +423,40 @@ def on_exam_grade(s, dt):
 
     def on_exam_grade_select(self, dt):
         """
-        This method redirects to grading screen for selected student.
+        This method switches screen for grading selected student.
+        :param self: It is for handling class structure.
+        :param dt: It is for handling callback input.
+        :return:
+        """
+
+        self.popup.dismiss()
+
+        Cache.append("lect",
+                     "code",
+                     self.ids["txt_lect_code"].text
+                     )
+        Cache.append("lect",
+                     "exam",
+                     self.ids["txt_info_head"].text
+                     )
+
+        for x in self.data_students_joined:
+            if "{x0} {x1} ".format(x0=x[0], x1=x[1]).title() == self.list_grades.adapter.selection[0].text.split("(")[0]:
+                Cache.append("lect",
+                             "std_id",
+                             x[2]
+                             )
+                Cache.append("lect",
+                             "std_name",
+                             "{x0} {x1}".format(x0=x[0], x1=x[1]).title()
+                             )
+                break
+
+        return self.on_grade()
+
+    def on_exam_grade_complete(self, dt):
+        """
+        This method completes grading for selected exam.
         :param self: It is for handling class structure.
         :param dt: It is for handling callback input.
         :return:
@@ -439,9 +472,9 @@ def on_exam_grade(s, dt):
                     size=(s.width / 2, s.height / 2)
                     )
 
-    data_students_joined = database_api.getCourseStudents(Cache.get("info", "token"),
-                                                          s.ids["txt_lect_code"].text
-                                                          )
+    s.data_students_joined = database_api.getCourseStudents(Cache.get("info", "token"),
+                                                            s.ids["txt_lect_code"].text
+                                                            )
 
     data_students_graded = database_api.getGradesOfExam(Cache.get("info", "token"),
                                                         s.ids["txt_lect_code"].text,
@@ -449,7 +482,7 @@ def on_exam_grade(s, dt):
                                                         )
     data_students_merged = {}
 
-    for std in data_students_joined:
+    for std in s.data_students_joined:
         std_name = "{name} {surname}".format(name=std[0].title(),
                                              surname=std[1].title()
                                              )
@@ -461,25 +494,29 @@ def on_exam_grade(s, dt):
                 data_students_merged[std[4]] = [std_name, grade[1]]
                 break
 
-    list_grades = ListView(size_hint=(.9, .8),
-                           pos_hint={"center_x": .5, "center_y": .55}
-                           )
-    args_converter = lambda row_index, x: {"text": " ".join(x),
+    s.list_grades = ListView(size_hint=(.9, .8),
+                             pos_hint={"center_x": .5, "center_y": .55}
+                             )
+    args_converter = lambda row_index, x: {"text": "{name} ({grade})".format(name=x[0],
+                                                                             grade=x[1]
+                                                                             ),
                                            "selected_color": (.843, .82, .82, 1),
                                            "deselected_color": (.57, .67, .68, 1),
                                            "background_down": "data/img/widget_gray_75.png",
                                            "font_name": "data/font/CaviarDreams_Bold.ttf",
                                            "font_size": s.height / 50,
                                            "size_hint_y": None,
-                                           "height": s.height / 20
+                                           "height": s.height / 20,
+                                           "on_release": partial(on_exam_grade_select,
+                                                                 s
+                                                                 )
                                            }
-    list_grades.adapter = ListAdapter(data=[i for i in data_students_merged.itervalues()],
-                                      cls=ListItemButton,
-                                      args_converter=args_converter,
-                                      allow_empty_selection=False
-                                      )
-    # list_grades.adapter.bind(on_selection_change=partial( ,s)
-    popup_content.add_widget(list_grades)
+    s.list_grades.adapter = ListAdapter(data=[i for i in data_students_merged.itervalues()],
+                                        cls=ListItemButton,
+                                        args_converter=args_converter,
+                                        allow_empty_selection=False
+                                        )
+    popup_content.add_widget(s.list_grades)
 
     popup_content.add_widget(Button(text="Complete",
                                     font_name="data/font/LibelSuit.ttf",
@@ -490,7 +527,7 @@ def on_exam_grade(s, dt):
                                     size_hint_y=None,
                                     height=s.height / 20,
                                     pos_hint={"center_x": .25, "y": .0},
-                                    on_release=partial(on_exam_grade_select,
+                                    on_release=partial(on_exam_grade_complete,
                                                        s
                                                        )
                                     )
