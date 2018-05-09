@@ -1,4 +1,4 @@
-<StdProfile>:
+<EduProfile>:
     FloatLayout:
         id: layout_page
 
@@ -285,6 +285,15 @@
             size_hint: .3, .1
             pos_hint: {"center_x": .175, "center_y": .5}
 
+        Label:
+            id: txt_latest_activities
+            color: 0, 0, 0, .75
+            markup: True
+            font_name: "data/font/CaviarDreams.ttf"
+            font_size: self.height / 10.5
+            size_hint: .275, .35
+            pos_hint: {"center_x": .175, "y": .075}
+
         Image:
             id: img_right_top
             source: "data/img/widget_black_75.png"
@@ -312,3 +321,12 @@
             font_size: self.height / 3
             size_hint: .3, .1
             pos_hint: {"center_x": .825, "center_y": .5}
+
+        Label:
+            id: txt_last_logins
+            color: 0, 0, 0, .75
+            markup: True
+            font_name: "data/font/CaviarDreams.ttf"
+            font_size: self.height / 10.5
+            size_hint: .275, .35
+            pos_hint: {"center_x": .825, "y": .075}

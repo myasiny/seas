@@ -28,7 +28,9 @@ def is_active(self, dt):
 
     for exam in self.data_live_exam:
         if exam[5] == "active":
-            self.live_exam = exam[1]
+            self.live_exam = exam[1].replace("_",
+                                             " "
+                                             )
 
             self.ids["txt_info_head"].text = self.live_exam.title()
 

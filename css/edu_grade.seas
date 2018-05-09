@@ -1,0 +1,224 @@
+<EduGrade>:
+    FloatLayout:
+        id: layout_page
+
+        canvas:
+            Rectangle:
+                source: "data/img/bg_screen_light.png"
+                size: self.size
+                pos: self.pos
+
+        FloatLayout:
+            id: layout_menubar
+            size_hint_y: .075
+            pos_hint: {"x": 0, "y": .925}
+
+            canvas:
+                Rectangle:
+                    source: "data/img/bg_menubar.png"
+                    size: self.size
+                    pos: self.pos
+
+            Image:
+                source: "data/img/bg_menubar_round_light.png"
+                opacity: .25
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .25, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Image:
+                source: "data/img/ico_seas.png"
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .075, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Button:
+                id: btn_student_change
+                text: "STUDENTS"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 3
+                background_normal: "data/img/widget_yellow.png"
+                background_down: "data/img/widget_yellow_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .1, .8
+                pos_hint: {"center_x": .075, "y": .15}
+                on_release: root.on_student_change()
+
+            Label:
+                id: txt_auto_grade
+                text: "Auto Grade: -"
+                color: 1, 1, 1, 1
+                multiline: False
+                font_name: "data/font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 3
+                size_hint: .1, .8
+                pos_hint: {"center_x": .25, "y": .15}
+
+            TextInput:
+                id: input_grade
+                hint_text: "Manual Grade"
+                write_tab: False
+                multiline: False
+                input_type: "number"
+                input_filter: "float"
+                font_name: "data/font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 3
+                background_normal: "data/img/widget_gray_75.png"
+                background_active: "data/img/widget_purple_75_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                padding_x: [self.width / 9, 0]
+                padding_y: [self.height / 3, 0]
+                size_hint: .1, .8
+                pos_hint: {"center_x": .75, "y": .15}
+
+            Button:
+                id: btn_grade_submit
+                text: "SUBMIT"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 3
+                background_normal: "data/img/widget_green.png"
+                background_down: "data/img/widget_green_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .1, .8
+                pos_hint: {"center_x": .925, "y": .15}
+                on_release: root.on_grade_submit()
+
+        Image:
+            id: img_top
+            source: "data/img/widget_black_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .125
+            pos_hint: {"center_x": .5, "center_y": .8}
+
+        Image:
+            id: img_body
+            source: "data/img/widget_gray_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .825
+            pos_hint: {"center_x": .5, "center_y": .45}
+
+        Label:
+            id: txt_question_no
+            text: "Question"
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .8}
+
+        Label:
+            id: txt_student_name
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/CaviarDreams.ttf"
+            font_size: self.height / 3
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .8}
+
+        Label:
+            id: txt_question_body_head
+            text: "Question:"
+            color: 0, 0, 0, .5
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .72}
+
+        ScrollView:
+            size_hint: .4, .39
+            pos_hint: {"center_x": .25, "center_y": .5}
+
+            Label:
+                id: txt_question_body
+                color: 0, 0, 0, 1
+                halign: "left"
+                multiline: True
+                font_name: "data/font/CaviarDreams.ttf"
+                font_size: root.height / 35
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+
+        Label:
+            id: txt_answer_body_head
+            text: "Answer:"
+            color: 0, 0, 0, .5
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .275}
+
+        ScrollView:
+            size_hint: .4, .175
+            pos_hint: {"center_x": .25, "center_y": .1625}
+
+            Label:
+                id: txt_answer_body
+                color: 0, 0, 0, 1
+                halign: "left"
+                multiline: True
+                font_name: "data/font/CaviarDreams.ttf"
+                font_size: root.height / 35
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+
+        Label:
+            id: txt_answer_student_head
+            text: "Student's Answer:"
+            color: 0, 0, 0, .5
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .72}
+
+        ScrollView:
+            size_hint: .4, .39
+            pos_hint: {"center_x": .75, "center_y": .50}
+
+            Label:
+                id: txt_answer_student
+                color: 0, 0, 0, 1
+                halign: "left"
+                multiline: True
+                markup: True
+                font_name: "data/font/CaviarDreams.ttf"
+                font_size: root.height / 35
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]
+
+        Label:
+            id: txt_answer_summary_head
+            text: "Summary:"
+            color: 0, 0, 0, .5
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .275}
+
+        ScrollView:
+            size_hint: .4, .175
+            pos_hint: {"center_x": .75, "center_y": .1625}
+
+            Label:
+                id: txt_answer_summary
+                color: 0, 0, 0, 1
+                halign: "left"
+                multiline: True
+                font_name: "data/font/CaviarDreams.ttf"
+                font_size: root.height / 35
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]

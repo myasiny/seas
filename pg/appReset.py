@@ -69,7 +69,7 @@ def on_reset(s):
                                                self.input_key.text,
                                                self.input_new_password.text
                                                )
-            if is_ok == "Check your mail address for credentials.":
+            if not isinstance(is_ok, str):
                 self.popup.dismiss()
                 self.on_back()
             else:
@@ -93,9 +93,9 @@ def on_reset(s):
         self.add_widget(ico_spinner)
 
         input_username = self.ids["input_username"].text
-        input_email = self.ids["input_email"].text
+        # input_email = self.ids["input_email"].text
 
-        if not (input_username.strip() or input_email.strip()):
+        if not input_username.strip():  # or input_email.strip()
             self.remove_widget(ico_spinner)
 
             ico_status.source = "data/img/ico_status_warning.png"
