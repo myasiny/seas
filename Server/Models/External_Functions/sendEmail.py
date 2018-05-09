@@ -93,7 +93,7 @@ def create_text_password_reset(auth):
     pass
 
 
-def send_mail_base(mail, auth, instructorName = None, tip ="first"):
+def send_mail_base(mail, auth, instructorName=None, tip ="first"):
     # type = first or reset
     # auth = Name + Surname, email, password, username
     me = "Wivern Software"

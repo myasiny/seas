@@ -7,7 +7,7 @@ def get_token(role):
     if role == "student":
         username, password = "fatihgulmez", "12345"
     elif role == "lecturer":
-        username, password = "alicakmak", "1"
+        username, password = "alicakmak", "tarvennbok"
     else: #Admin
         username, password = "admin", "12345"
 
@@ -15,11 +15,11 @@ def get_token(role):
     print auth
     return auth[-1]
 
-# student_token = get_token("student")
+student_token = get_token("student")
 # print student_token
-# lecturer_token = get_token("lecturer")
+lecturer_token = get_token("lecturer")
 # print lecturer_token
-admin_token = get_token("admin")
+# admin_token = get_token("admin")
 # print admin_token
 
 ### Sample usage of API
@@ -38,10 +38,10 @@ admin_token = get_token("admin")
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicakmak"])
+# print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicakmak"])
 # print "get course", getCourse(lecturer_token, "data_101")
 #
-# print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
+# print registerStudent(lecturer_token, "data 101", True, "asdasd.csv", "alicakmak")
 
 # print "register student", registerStudent(lecturer_token, "data 101", False, [213860387, 212011111, 212980975, 213860387], "alicakmak")
 
@@ -155,6 +155,6 @@ print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicak
 # for line in b:
 #     print line
 #
-# print signOut(lecturer_token, "alicakmak")
-# print signOut(student_token, "fatihgulmez")
-print signOut(admin_token, "admin")
+print signOut(lecturer_token, "alicakmak")
+print signOut(student_token, "fatihgulmez")
+# print signOut(admin_token, "admin")
