@@ -2,6 +2,7 @@ from External_Functions.handleTR import handle_tr
 from External_Functions.sendEmail import send_mail_first_login
 from External_Functions.passwordGenerator import passwordGenerator
 from Password import Password
+from mysql.connector import IntegrityError
 import csv
 import pickle
 import threading
@@ -93,7 +94,11 @@ class Course:
         auth = []
         reg = []
         pas = Password()
+        first = True
         for i in data:
+            if first:
+                first = False
+                continue
             name = handle_tr(i[0]).title()
             surname = handle_tr(i[1]).title()
             student_number = str(int(float(i[2])))
@@ -101,11 +106,13 @@ class Course:
             role = 4
             username = name.split()[0].lower() + surname.lower()
             password = passwordGenerator(8)
-            check = self.execute("INSERT IGNORE INTO members(PersonID, Role, Name, Surname, Username, Password, Email) "
-                                 "values(%s, '%s', '%s', '%s', '%s', '%s', '%s');"
-                                 % (student_number, role, name, surname, username, pas.hash_password(password), mail))
-            if check is not None:
+            try:
+                self.execute("INSERT INTO members(PersonID, Role, Name, Surname, Username, Password, Email) "
+                                     "values(%s, '%s', '%s', '%s', '%s', '%s', '%s');"
+                                     % (student_number, role, name, surname, username, pas.hash_password(password), mail))
                 auth.append((name + " " + surname, mail, password, username))
+            except IntegrityError:
+                pass
             reg.append(student_number)
         threading.Thread(target=send_mail_first_login, args=(auth, lecturer)).start()
         self.register_student(reg)
@@ -119,6 +126,7 @@ class Course:
     def get_exams_of_lecture(self, student=False):
         if student:
             return self.execute("select * from exams where CourseID = (select CourseID from courses where Code = '%s') "
-                                "and not Status = 'draft'") % self.code
+                                "and not Status = 'draft'" % self.code)
+
         return self.execute("select * from exams where CourseID = (select CourseID from courses where Code = '%s')"
                             % self.code)

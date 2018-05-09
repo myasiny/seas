@@ -5,9 +5,9 @@ from database_api import *
 
 def get_token(role):
     if role == "student":
-        username, password = "fatihgulmez", "12345"
+        username, password = "fatihgulmez", "1"
     elif role == "lecturer":
-        username, password = "alicakmak", "1"
+        username, password = "alicakmak", "tarvennbok"
     else: #Admin
         username, password = "admin", "12345"
 
@@ -17,9 +17,9 @@ def get_token(role):
 
 # student_token = get_token("student")
 # print student_token
-# lecturer_token = get_token("lecturer")
+lecturer_token = get_token("lecturer")
 # print lecturer_token
-admin_token = get_token("admin")
+# admin_token = get_token("admin")
 # print admin_token
 
 ### Sample usage of API
@@ -38,10 +38,10 @@ admin_token = get_token("admin")
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicakmak"])
+# print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicakmak"])
 # print "get course", getCourse(lecturer_token, "data_101")
 #
-# print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
+print registerStudent(lecturer_token, "data 101", True, "asdasd.csv", "alicakmak")
 
 # print "register student", registerStudent(lecturer_token, "data 101", False, [213860387, 212011111, 212980975, 213860387], "alicakmak")
 
@@ -51,7 +51,7 @@ print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicak
 
 # print getUserCourses(student_token, "fatihgulmez")
 #
-# print changePassword(student_token, "fatihgulmez", "123456", "12345", False)
+# print changePassword(lecturer_token, "alicakmak", "tarvennbok", "12345", False)
 
 # print "delete student from lecture", deleteStudentFromLecture(lecturer_token, "Data 101", "210111111")
 
@@ -132,9 +132,9 @@ print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicak
 
 # print "change status of exam", change_status_of_exam(lecturer_token, "data 101", "fcg test", "active")
 
-# print resetPassword("alioz")
+# print resetPassword("fatihgulmez")
 
-# print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
+# print resetPassword("fatihgulmez", temp_pass="j6DAc9up", new_pass="1")
 # print getGradesOfExam(lecturer_token, "data 101", "test 3")
 
 # print getLastActivities(lecturer_token, "alicakmak", sign_in=True)
@@ -155,6 +155,6 @@ print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicak
 # for line in b:
 #     print line
 #
-# print signOut(lecturer_token, "alicakmak")
+print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")
-print signOut(admin_token, "admin")
+# print signOut(admin_token, "admin")

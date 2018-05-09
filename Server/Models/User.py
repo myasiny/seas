@@ -48,6 +48,7 @@ class User:
                     "UPDATE members SET Email='%s' WHERE Username = '%s'" % (new_val, self.username))
                 return "Mail Changed"
             else:
+                print new_val
                 password = self.pass_word.hash_password(new_val)
                 self.execute("UPDATE members SET Password='%s' WHERE Username = '%s'" % (password, self.username))
                 return "Password Changed"
@@ -98,7 +99,10 @@ class User:
         password = self.execute("SELECT Password FROM temporary_passwords WHERE UserID = %d;"
                                 % (int(self.user_id)))[0][0]
         if self.pass_word.verify_password_hash(temp_pass, password):
-            self.execute("DELETE FROM temporary_passwords WHERE UserID = %d;" % (int(self.user_id)))
+            try:
+                self.execute("DELETE FROM temporary_passwords WHERE UserID = %d;" % (int(self.user_id)))
+            except IndexError:
+                return "There is not any reset request for the user!"
             new_pass = self.pass_word.hash_password(new_pass)
             return self.execute("UPDATE members SET members.Password = '%s' WHERE PersonID = %d;"
                                 % (new_pass, int(self.user_id)))
