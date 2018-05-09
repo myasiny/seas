@@ -28,18 +28,8 @@ def on_pre_enter(self):
                                               Cache.get("lect", "exam")
                                               )["Questions"]
 
-    self.ids["txt_question_no"].text = "Question ID: " + str(data_detailed_exam.values()[0]["ID"])
-
-    self.ids["txt_question_body"].text = data_detailed_exam[data_detailed_exam.keys()[0]]["text"]
-
-    self.ids["txt_answer_body"].text = data_detailed_exam[data_detailed_exam.keys()[0]]["answer"]
-
     data_student_answer = database_api.getAnswersOfStudent(Cache.get("info", "token"),
                                                            Cache.get("lect", "code"),
                                                            Cache.get("lect", "exam"),
                                                            Cache.get("lect", "std_id")
                                                            )
-
-    self.ids["txt_answer_student"].text = data_student_answer[0][3]
-
-    self.ids["txt_answer_summary"].text = "TODO"

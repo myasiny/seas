@@ -21,7 +21,7 @@ __author__ = "Muhammed Yasin Yildirim"
 
 def on_pre_enter(self):
     """
-    This method updates identity card widget according to user information.
+    This method updates identity card and history widgets according to user account.
     :param self: It is for handling class structure.
     :return:
     """
@@ -64,6 +64,45 @@ def on_pre_enter(self):
 
     self.ids["input_new_password"].disabled = True
     self.ids["input_new_mail"].disabled = True
+
+    activites = database_api.getLastActivities(Cache.get("info", "token"),
+                                               Cache.get("info", "nick")
+                                               )[:3]
+
+    latest_activites = "[font=data/font/AndaleMono.ttf]{act1}[/font]\n{date1}\n\n" \
+                       "[font=data/font/AndaleMono.ttf]{act2}[/font]\n{date2}\n\n" \
+                       "[font=data/font/AndaleMono.ttf]{act3}[/font]\n{date3}".format(act1=activites[0][0].replace("_",
+                                                                                                                   " ").title(),
+                                                                                      date1=" ".join(activites[0][1].split(" ")[:5]),
+                                                                                      act2=activites[1][0].replace("_",
+                                                                                                                   " ").title(),
+                                                                                      date2=" ".join(activites[1][1].split(" ")[:5]),
+                                                                                      act3=activites[2][0].replace("_",
+                                                                                                                   " ").title(),
+                                                                                      date3=" ".join(activites[2][1].split(" ")[:5])
+                                                                                      )
+
+    self.ids["txt_latest_activities"].text = latest_activites
+
+    logins = database_api.getLastActivities(Cache.get("info", "token"),
+                                            Cache.get("info", "nick"),
+                                            True
+                                            )[:3]
+
+    last_logins = "[font=data/font/GetDigital.ttf]{ip1}[/font]\n{date1}\n\n" \
+                  "[font=data/font/GetDigital.ttf]{ip2}[/font]\n{date2}\n\n" \
+                  "[font=data/font/GetDigital.ttf]{ip3}[/font]\n{date3}".format(ip1=logins[0][2],
+                                                                                date1=logins[0][1][:-4].replace("_",
+                                                                                                                " ").title(),
+                                                                                ip2=logins[1][2],
+                                                                                date2=logins[1][1][:-4].replace("_",
+                                                                                                                " ").title(),
+                                                                                ip3=logins[2][2],
+                                                                                date3=logins[2][1][:-4].replace("_",
+                                                                                                                " ").title()
+                                                                                )
+
+    self.ids["txt_last_logins"].text = last_logins
 
 
 def on_pic_change(s):

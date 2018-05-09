@@ -83,30 +83,30 @@
             pos_hint: {"center_x": .55, "center_y": .55}
             on_text_validate: root.on_reset()
 
-        Label:
-            id: txt_email
-            text: "E-mail"
-            color: 0,0,0,0.5
-            multiline: False
-            font_name: "data/font/CaviarDreams.ttf"
-            font_size: self.height / 3
-            size_hint: .1, .1
-            pos_hint: {"center_x": .4, "center_y": .435}
+        # Label:
+        #     id: txt_email
+        #     text: "E-mail"
+        #     color: 0, 0, 0, .5
+        #     multiline: False
+        #     font_name: "data/font/CaviarDreams.ttf"
+        #     font_size: self.height / 3
+        #     size_hint: .1, .1
+        #     pos_hint: {"center_x": .4, "center_y": .435}
 
-        TextInput:
-            id: input_email
-            input_type: "mail"
-            write_tab: False
-            multiline: False
-            font_name: "data/font/CaviarDreams_Bold.ttf"
-            font_size: self.height / 3
-            background_normal: "data/img/widget_gray_75.png"
-            background_active: "data/img/widget_purple_75_select.png"
-            background_disabled_normal: "data/img/widget_black_75.png"
-            padding_y: [self.height / 3, 0]
-            size_hint: .2, .1
-            pos_hint: {"center_x": .55, "center_y": .44}
-            on_text_validate: root.on_reset()
+        # TextInput:
+        #     id: input_email
+        #     input_type: "mail"
+        #     write_tab: False
+        #     multiline: False
+        #     font_name: "data/font/CaviarDreams_Bold.ttf"
+        #     font_size: self.height / 3
+        #     background_normal: "data/img/widget_gray_75.png"
+        #     background_active: "data/img/widget_purple_75_select.png"
+        #     background_disabled_normal: "data/img/widget_black_75.png"
+        #     padding_y: [self.height / 3, 0]
+        #     size_hint: .2, .1
+        #     pos_hint: {"center_x": .55, "center_y": .44}
+        #     on_text_validate: root.on_reset()
 
         Button:
             id: btn_reset
