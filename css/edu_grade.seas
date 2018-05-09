@@ -62,12 +62,13 @@
                 write_tab: False
                 multiline: False
                 input_type: "number"
-                input_filter: "int"
+                input_filter: "float"
                 font_name: "data/font/CaviarDreams_Bold.ttf"
                 font_size: self.height / 3
                 background_normal: "data/img/widget_gray_75.png"
                 background_active: "data/img/widget_purple_75_select.png"
                 background_disabled_normal: "data/img/widget_black_75.png"
+                padding_x: [self.width / 9, 0]
                 padding_y: [self.height / 3, 0]
                 size_hint: .1, .8
                 pos_hint: {"center_x": .75, "y": .15}
@@ -121,9 +122,19 @@
             size_hint: .4, .1
             pos_hint: {"center_x": .75, "center_y": .8}
 
+        Label:
+            id: txt_question_body_head
+            text: "Question:"
+            color: 0, 0, 0, .5
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .72}
+
         ScrollView:
-            size_hint: .4, .44
-            pos_hint: {"center_x": .25, "center_y": .5025}
+            size_hint: .4, .39
+            pos_hint: {"center_x": .25, "center_y": .5}
 
             Label:
                 id: txt_question_body
@@ -136,9 +147,19 @@
                 size_hint_y: None
                 height: self.texture_size[1]
 
+        Label:
+            id: txt_answer_body_head
+            text: "Answer:"
+            color: 0, 0, 0, .5
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .25, "center_y": .275}
+
         ScrollView:
-            size_hint: .4, .225
-            pos_hint: {"center_x": .25, "center_y": .165}
+            size_hint: .4, .175
+            pos_hint: {"center_x": .25, "center_y": .1625}
 
             Label:
                 id: txt_answer_body
@@ -151,9 +172,19 @@
                 size_hint_y: None
                 height: self.texture_size[1]
 
+        Label:
+            id: txt_answer_student_head
+            text: "Student's Answer:"
+            color: 0, 0, 0, .5
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .72}
+
         ScrollView:
-            size_hint: .4, .44
-            pos_hint: {"center_x": .75, "center_y": .5025}
+            size_hint: .4, .39
+            pos_hint: {"center_x": .75, "center_y": .50}
 
             Label:
                 id: txt_answer_student
@@ -167,9 +198,19 @@
                 size_hint_y: None
                 height: self.texture_size[1]
 
+        Label:
+            id: txt_answer_summary_head
+            text: "Summary:"
+            color: 0, 0, 0, .5
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 5
+            size_hint: .4, .1
+            pos_hint: {"center_x": .75, "center_y": .275}
+
         ScrollView:
-            size_hint: .4, .225
-            pos_hint: {"center_x": .75, "center_y": .165}
+            size_hint: .4, .175
+            pos_hint: {"center_x": .75, "center_y": .1625}
 
             Label:
                 id: txt_answer_summary
