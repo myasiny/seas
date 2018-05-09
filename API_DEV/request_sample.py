@@ -41,7 +41,7 @@ lecturer_token = get_token("lecturer")
 # print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicakmak"])
 # print "get course", getCourse(lecturer_token, "data_101")
 #
-print registerStudent(lecturer_token, "data 101", True, "asdasd.csv", "alicakmak")
+# print registerStudent(lecturer_token, "data 101", True, "asdasd.csv", "alicakmak")
 
 # print "register student", registerStudent(lecturer_token, "data 101", False, [213860387, 212011111, 212980975, 213860387], "alicakmak")
 
@@ -108,7 +108,7 @@ print registerStudent(lecturer_token, "data 101", True, "asdasd.csv", "alicakmak
 
 # print uploadProfilePic(lecturer_token, "alicakmak", "example_image.png")
 
-# print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
+print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 
 # print grade_answer(lecturer_token,"data 101", 97, "fatihgulmez", 28)
 # print grade_answer(lecturer_token,"eecs 468", 54, "alioz", 2)

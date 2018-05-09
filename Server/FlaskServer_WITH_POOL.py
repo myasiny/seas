@@ -111,6 +111,7 @@ def sign_in_user(organization, username):
             rtn.append(create_access_token(identity=(
                 {
                     "username": user.username,
+                    "fullname": "%s %s" % (user.name, user.surname),
                     "role": user.role_name,
                     "time": str(datetime.datetime.today()),
                     "organization": user.organization,
@@ -197,7 +198,7 @@ def register_student_list(organization, course, liste):
     if check_lecture_permission(organization, token, course):
         if liste == "True":
             rtn = jsonify(
-                Course(db, organization, course).register_student_csv(request.files["liste"], request.form["username"])
+                Course(db, organization, course).register_student_csv(request.files["liste"], token["fullname"])
             )
         else:
             rtn = jsonify(Course(db, organization, course).register_student(pickle.loads(request.form["liste"])))
