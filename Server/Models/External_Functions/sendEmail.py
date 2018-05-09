@@ -11,7 +11,7 @@ def create_text_first_login(instructorName, auth):
 <table class="email-container" style="margin: auto;" role="presentation" border="0" width="600" cellspacing="0" cellpadding="0" align="center">
 <tbody>
 <tr>
-<td style="padding: 20px 0; text-align: center;"><a href="https://www.wivernsoftware.com/seas-en"><img style="height: auto; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" src="https://image.ibb.co/nOvxM7/img_seas.png" alt="SEAS" width="200" height="50" border="0" /></a></td>
+<td style="padding: 20px 0; text-align: center;"><a href="https://www.wivernsoftware.com/seas-en"><img style="height: auto; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" src="https://image.ibb.co/e3gxM7/img_seas.png" alt="SEAS" width="200" height="50" border="0" /></a></td>
 </tr>
 </tbody>
 </table>
@@ -28,7 +28,7 @@ def create_text_first_login(instructorName, auth):
 <tr>
 <td style="padding: 0 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555; text-align: center;" bgcolor="#ffffff">
 <p style="margin: 0;">Your account has successfully created by your instructor, """+instructorName.title()+""". <br /><br />Use the credentials stated below in order to access your account. <br /><br /><strong>Username:&nbsp;</strong>"""+auth[-1]+"""<br /><strong>Password:&nbsp;</strong>"""+auth[-2]+""" <br /><br />Have a good semester!<br/><br/></p>
-<a href="https://www.wivernsoftware.com"><img  src="https://image.ibb.co/nOvxM7/img_seas.png" alt="Wivern Software" width="200" height="50" border="0" /></a></td>
+</td>
 </tr>
 <tr>
 <td style="padding: 0 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" bgcolor="#ffffff">
@@ -56,7 +56,7 @@ def create_text_password_reset(auth):
 <table class="email-container" style="margin: auto;" role="presentation" border="0" width="600" cellspacing="0" cellpadding="0" align="center">
 <tbody>
 <tr>
-<td style="padding: 20px 0; text-align: center;"><a href="https://www.wivernsoftware.com/seas-en"><img style="height: auto; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" src="https://image.ibb.co/nOvxM7/img_seas.png" alt="SEAS" width="200" height="50" border="0" /></a></td>
+<td style="padding: 20px 0; text-align: center;"><a href="https://www.wivernsoftware.com/seas-en"><img style="height: auto; background: #222222; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" src="https://image.ibb.co/jBZEZS/seas.png" alt="SEAS" width="200" height="50" border="0" /></a></td>
 </tr>
 </tbody>
 </table>
@@ -73,7 +73,7 @@ def create_text_password_reset(auth):
 <tr>
 <td style="padding: 0 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555; text-align: center;" bgcolor="#ffffff">
 <p style="margin: 0;">Your password has been successfully requested to reset. <br /><br />Use the credentials stated below in order to change your password. <br /><br /><strong>Username:&nbsp;</strong>"""+auth[-1]+"""<br /><strong>Confirmation Key:&nbsp;</strong>"""+auth[-2]+""" <br /><br />Regards!<br/><br/></p>
-<a href="https://www.wivernsoftware.com"><img  src="https://image.ibb.co/nOvxM7/img_seas.png" alt="Wivern Software" width="200" height="50" border="0" /></a></td>
+<a href="https://www.wivernsoftware.com"><img  src="https://image.ibb.co/jBZEZS/seas.png" alt="Wivern Software" width="200" height="50" border="0" /></a></td>
 </tr>
 <tr>
 <td style="padding: 0 40px 40px; font-family: sans-serif; font-size: 15px; line-height: 140%; color: #555555;" bgcolor="#ffffff">
@@ -135,6 +135,6 @@ def send_mail_password_reset(auth):
     mail.quit()
 
 
-# auth = [["Muhammed Yasin Yildirim","muhammedyildirim@std.sehir.edu.tr","msj123SaL","muhammedyildirim"]]
-# instructorName = "Ali Cakmak"
-# send_mail_first_login(auth, instructorName)
+auth = [["Muhammed Yasin Yildirim","alioz@std.sehir.edu.tr","msj123SaL","muhammedyildirim"]]
+instructorName = "Ali Cakmak"
+send_mail_first_login(auth, instructorName)
