@@ -335,30 +335,35 @@ def on_exam_select(self, dt):
     self.ids["txt_options_head"].opacity = 1
 
     self.ids["btn_exam_delete"].opacity = 1
-    self.ids["btn_exam_delete"].bind(on_release=partial(on_exam_delete,
-                                                        self
-                                                        )
-                                     )
+    if len(self.ids["btn_exam_delete"].get_property_observers("on_release")) < 1:
+        self.ids["btn_exam_delete"].bind(on_release=partial(on_exam_delete,
+                                                            self
+                                                            )
+                                         )
 
     self.ids["btn_exam_edit"].opacity = 1
-    # TODO
+    if len(self.ids["btn_exam_edit"].get_property_observers("on_release")) < 1:
+        pass  # TODO
 
     self.ids["btn_exam_start_grade"].opacity = 1
     if self.ids["txt_status_body"].text == "Graded":
         self.ids["btn_exam_start_grade"].text = "DOWNLOAD"
-        # TODO
+        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) < 1:
+            pass  # TODO
     elif self.ids["txt_status_body"].text == "Finished":
         self.ids["btn_exam_start_grade"].text = "GRADE"
-        self.ids["btn_exam_start_grade"].bind(on_release=partial(on_exam_grade,
-                                                                 self
-                                                                 )
-                                              )
+        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) < 1:
+            self.ids["btn_exam_start_grade"].bind(on_release=partial(on_exam_grade,
+                                                                     self
+                                                                     )
+                                                  )
     else:
         self.ids["btn_exam_start_grade"].text = "START"
-        self.ids["btn_exam_start_grade"].bind(on_release=partial(on_exam_start,
-                                                                 self
-                                                                 )
-                                              )
+        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) < 1:
+            self.ids["btn_exam_start_grade"].bind(on_release=partial(on_exam_start,
+                                                                     self
+                                                                     )
+                                                  )
 
 
 def on_exam_delete(self, dt):
@@ -606,10 +611,11 @@ def on_participants(self):
                                                                            )
                                                )
 
-    self.ids["btn_import_list"].bind(on_release=partial(on_list_import,
-                                                        self
-                                                        )
-                                     )
+    if len(self.ids["btn_import_list"].get_property_observers("on_release")) < 1:
+        self.ids["btn_import_list"].bind(on_release=partial(on_list_import,
+                                                            self
+                                                            )
+                                         )
 
 
 def on_participant_select(self, dt):
@@ -651,10 +657,11 @@ def on_participant_select(self, dt):
     self.ids["txt_options_head_2"].opacity = 1
 
     self.ids["btn_student_delete"].opacity = 1
-    self.ids["btn_student_delete"].bind(on_release=partial(on_participant_delete,
-                                                           self
-                                                           )
-                                        )
+    if len(self.ids["btn_student_delete"].get_property_observers("on_release")) < 1:
+        self.ids["btn_student_delete"].bind(on_release=partial(on_participant_delete,
+                                                               self
+                                                               )
+                                            )
 
     self.ids["btn_stats_student"].opacity = 1
 

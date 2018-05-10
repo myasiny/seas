@@ -350,7 +350,7 @@ def uploadProfilePic(token, username, pic, base_url=server_address, organization
     return put(url, headers={"Authorization": "Bearer " + token}, files = {"pic": open(pic, "rb")}).json()
 
 
-@server_check
+# @server_check
 def getProfilePic(token, username, base_url=server_address, organization=current_organization):
     """
     :param token: String; JWT token
@@ -361,9 +361,10 @@ def getProfilePic(token, username, base_url=server_address, organization=current
     """
     organization = __normalize(organization)
     url = base_url + "/organizations/%s/%s/pic" % (organization, username)
+    response = get(url, headers={"Authorization": "Bearer " + token})
     try:
         with open("data/img/pic_user_current.png", "wb") as f:
-            f.write(pickle.loads(get(url, headers={"Authorization": "Bearer " + token}).json()))
+            f.write(response.content)
     except TypeError:
         pass
 
