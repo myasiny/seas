@@ -194,8 +194,8 @@ class EduStats(Screen):
 
 class EduGrade(Screen):
     """
-    @group Design: TODO
-    @group Functionality: TODO
+    @group Design: on_pre_enter
+    @group Functionality: on_student_change, on_grade_submit
     """
 
     appLogin.load_string("edu_grade")
@@ -206,13 +206,20 @@ class EduGrade(Screen):
     def on_student_change(self):
         eduGrade.on_exam_grade(self)
 
+    @staticmethod
+    def on_grade():
+        pages.append(EduGrade(name="EduGrade"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
     def on_grade_submit(self):
         if eduGrade.on_grade_submit(self):
             self.on_grade()
 
     @staticmethod
-    def on_grade():
-        pages.append(EduGrade(name="EduGrade"))
+    def on_lects():
+        pages.append(EduLects(name="EduLects"))
         appReset.on_back(pages,
                          screen
                          )

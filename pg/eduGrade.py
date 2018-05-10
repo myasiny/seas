@@ -68,7 +68,7 @@ def on_pre_enter(self):
 
         question_details = self.data_detailed_exam[self.data_detailed_exam.keys()[0]]
 
-        self.question_type = question_details["type"]
+        self.question_type = question_details["type"]  # TODO
 
         self.question_grade = str(question_details["value"])
         self.ids["txt_question_grade"].text = "Out of {point}".format(point=self.question_grade)
@@ -204,10 +204,12 @@ def on_exam_grade(s):
         This method completes grading for selected exam.
         :param self: It is for handling class structure.
         :param dt: It is for handling callback input.
-        :return:
+        :return: It is for changing screen to lectures page.
         """
 
-        self.popup.dismiss()  # TODO
+        self.popup.dismiss()
+
+        return self.on_lects()
 
     popup_content = FloatLayout()
     s.popup = Popup(title="Grades",
@@ -263,11 +265,11 @@ def on_exam_grade(s):
                                         )
     popup_content.add_widget(s.list_grades)
 
-    popup_content.add_widget(Button(text="Save & Leave",
+    popup_content.add_widget(Button(text="Leave",
                                     font_name="data/font/LibelSuit.ttf",
                                     font_size=s.height / 40,
-                                    background_normal="data/img/widget_green.png",
-                                    background_down="data/img/widget_green_select.png",
+                                    background_normal="data/img/widget_yellow.png",
+                                    background_down="data/img/widget_yellow_select.png",
                                     size_hint_x=.5,
                                     size_hint_y=None,
                                     height=s.height / 20,
