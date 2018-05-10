@@ -180,7 +180,8 @@ class Exam:
     def upload_extra_materials(self, file_, course, exam, question_id, purpose):
         if purpose not in ("auto_grade", "reference", "visual_question"):
             return "Purpose invalid"
-        base_path = "uploads/%s/courses/%s/exams/%s/materials/%s/%s/" % (self.org, course, exam, question_id, purpose)
+        base_path = "/var/www/SEAS/uploads/%s/courses/%s/exams/%s/materials/%s/%s/" \
+                    % (self.org, course, exam, question_id, purpose)
         if not os.path.exists(base_path):
             os.makedirs(base_path)
         path = base_path + secure_filename(file_.filename)

@@ -63,7 +63,7 @@ class User:
     def upload_profile_pic(self, pic):
         if pic and self.allowed_file(pic.filename):
             extension = "." + pic.filename.rsplit('.', 1)[1].lower()
-            base_path = "uploads/%s/profile_pictures/" % self.organization
+            base_path = "/var/www/SEAS/uploads/%s/profile_pictures/" % self.organization
             path = base_path + str(self.user_id) + extension
             if not os.path.exists(base_path):
                 os.makedirs(base_path)
