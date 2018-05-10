@@ -1,6 +1,7 @@
 # -*- coding:UTF-8 -*-
 from memory_profiler import profile
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response, Response, send_from_directory
+from werkzeug.datastructures import Headers
 from Models.MySQLdb_WITH_CONN_POOL import MySQLdb as PooledMySQLdb
 from Models.Exam import Exam
 from Models.User import *
@@ -412,14 +413,8 @@ def profile_picture(organization, username):
     else:
         path = user.get_profile_picture()
         try:
-            b = None
-            a = ""
-            with open(path, "rb") as f:
-                while b != "":
-                    b = f.read()
-                    a += b
-                log_activity(request.remote_addr, token["username"], request.endpoint)
-                return jsonify(pickle.dumps(a))
+            response = send_from_directory("", path)
+            return response
         except TypeError:
             return jsonify(None)
 
