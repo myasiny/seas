@@ -36,35 +36,45 @@ def on_pre_enter(self):
                                                     "data/img/ico_monitor_back_select.png",
                                                     (.05, True),
                                                     {"x": .93, "y": .35},
-                                                    on_monitor_backward
+                                                    partial(on_monitor_backward,
+                                                            self
+                                                            )
                                                     )
 
     self.btn_monitor_play = image_button.add_button("data/img/ico_monitor_play.png",
                                                     "data/img/ico_monitor_play_select.png",
                                                     (.05, True),
                                                     {"x": .93, "y": .275},
-                                                    on_monitor_play
+                                                    partial(on_monitor_play,
+                                                            self
+                                                            )
                                                     )
 
     self.btn_monitor_stop = image_button.add_button("data/img/ico_monitor_stop.png",
                                                     "data/img/ico_monitor_stop_select.png",
                                                     (.05, True),
                                                     {"x": .93, "y": .2},
-                                                    on_monitor_pause
+                                                    partial(on_monitor_pause,
+                                                            self
+                                                            )
                                                     )
 
     self.btn_monitor_forw = image_button.add_button("data/img/ico_monitor_forw.png",
                                                     "data/img/ico_monitor_forw_select.png",
                                                     (.05, True),
                                                     {"x": .93, "y": .125},
-                                                    on_monitor_forward
+                                                    partial(on_monitor_forward,
+                                                            self
+                                                            )
                                                     )
 
     self.btn_monitor_live = image_button.add_button("data/img/ico_monitor_live.png",
                                                     "data/img/ico_monitor_live_select.png",
                                                     (.05, True),
                                                     {"x": .93, "y": .05},
-                                                    on_monitor_play  # TODO
+                                                    partial(on_monitor_play,  # TODO
+                                                            self
+                                                            )
                                                     )
 
     watch = [self.btn_monitor_back,
@@ -231,10 +241,11 @@ def on_participant_select(s, dt):
     s.btn_monitor_stop.opacity = .25
 
 
-def on_monitor_backward(self):
+def on_monitor_backward(self, dt):
     """
     This method enables rewinding text shown on player.
     :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
     :return:
     """
 
@@ -244,10 +255,11 @@ def on_monitor_backward(self):
         self.ids["slider_monitor"].value = 0
 
 
-def on_monitor_forward(self):
+def on_monitor_forward(self, dt):
     """
     This method enables skipping forward text shown on player.
     :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
     :return:
     """
 
@@ -257,14 +269,17 @@ def on_monitor_forward(self):
         self.ids["slider_monitor"].value = 0
 
 
-def on_monitor_play(self):
+def on_monitor_play(self, dt):
     """
     This method enables streaming text on player automatically.
     :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
     :return:
     """
 
-    self.event = Clock.schedule_interval(on_monitor_forward,
+    self.event = Clock.schedule_interval(partial(on_monitor_forward,
+                                                 self
+                                                 ),
                                          0.5
                                          )
 
@@ -281,10 +296,11 @@ def on_monitor_play(self):
     self.btn_monitor_stop.opacity = 1
 
 
-def on_monitor_pause(self):
+def on_monitor_pause(self, dt):
     """
     This method enables pausing text stream on player.
     :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
     :return:
     """
 
