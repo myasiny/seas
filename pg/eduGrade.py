@@ -24,7 +24,7 @@ __credits__ = ["Ali Emre Oz"]
 
 def on_pre_enter(self):
     """
-    TODO
+    This method maintains order of questions to provide one by one.
     :param self: It is for handling class structure.
     :return:
     """
@@ -130,6 +130,12 @@ def on_pre_enter(self):
 
     for answer in data_student_answer:
         if str(answer[1]) == self.question_no:
+            widget = ["input_grade",
+                      "btn_grade_submit"
+                      ]
+            for name in widget:
+                self.ids[name].disabled = False
+
             data_summary = summarize(answer[3][1:-1].replace("*[SEAS-SLASH-N]*",
                                                              "\n"
                                                              ),
@@ -167,7 +173,7 @@ def on_exam_grade(s):
         This method switches screen for grading selected student.
         :param self: It is for handling class structure.
         :param dt: It is for handling callback input.
-        :return:
+        :return: It is for changing screen to grading page.
         """
 
         self.popup.dismiss()
@@ -179,10 +185,17 @@ def on_exam_grade(s):
                              x[2]
                              )
                 Cache.append("lect",
+                             "std_nick",
+                             x[4]
+                             )
+                Cache.append("lect",
                              "std_name",
                              "{x0} {x1}".format(x0=x[0], x1=x[1]).title()
                              )
                 break
+
+        with open("data/questions.fay", "w+") as questions:
+            questions.close()
 
         return self.on_grade()
 
@@ -194,7 +207,7 @@ def on_exam_grade(s):
         :return:
         """
 
-        self.popup.dismiss()
+        self.popup.dismiss()  # TODO
 
     popup_content = FloatLayout()
     s.popup = Popup(title="Grades",
@@ -223,7 +236,7 @@ def on_exam_grade(s):
 
         for grade in data_students_graded:
             if grade[0] == std[4]:
-                data_students_merged[std[4]] = [std_name, grade[1]]
+                data_students_merged[std[4]] = [std_name, int(grade[1])]
                 break
 
     s.list_grades = ListView(size_hint=(.9, .8),
@@ -250,7 +263,7 @@ def on_exam_grade(s):
                                         )
     popup_content.add_widget(s.list_grades)
 
-    popup_content.add_widget(Button(text="Complete",
+    popup_content.add_widget(Button(text="Save & Leave",
                                     font_name="data/font/LibelSuit.ttf",
                                     font_size=s.height / 40,
                                     background_normal="data/img/widget_green.png",
@@ -276,3 +289,32 @@ def on_exam_grade(s):
                                     on_release=s.popup.dismiss)
                              )
     s.popup.open()
+
+
+def on_grade_submit(self):
+    """
+    This method submits grade for current answer through server.
+    :param self: It is for handling class structure.
+    :return: It is boolean for grading other answers.
+    """
+
+    self.ids["ico_status"].opacity = 0
+
+    if not self.ids["input_grade"].text.strip():
+        if self.ids["txt_auto_grade"].text.strip(" ")[2].strip():
+            grade = self.ids["txt_auto_grade"].text.split(" ")[2]
+        else:
+            self.ids["ico_status"].opacity = 1
+
+            return False
+    else:
+        grade = self.ids["input_grade"].text
+
+    database_api.grade_answer(Cache.get("info", "token"),
+                              Cache.get("lect", "code"),
+                              int(self.question_no),
+                              Cache.get("lect", "std_nick"),
+                              int(grade)
+                              )
+
+    return True

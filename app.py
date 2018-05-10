@@ -206,6 +206,10 @@ class EduGrade(Screen):
     def on_student_change(self):
         eduGrade.on_exam_grade(self)
 
+    def on_grade_submit(self):
+        if eduGrade.on_grade_submit(self):
+            self.on_grade()
+
     @staticmethod
     def on_grade():
         pages.append(EduGrade(name="EduGrade"))
@@ -642,7 +646,7 @@ if __name__ == "__main__":
                    limit=10
                    )
     Cache.register("lect",
-                   limit=5
+                   limit=6
                    )
     Cache.register("config",
                    limit=2

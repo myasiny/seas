@@ -426,7 +426,7 @@ def on_exam_grade(s, dt):
         This method switches screen for grading selected student.
         :param self: It is for handling class structure.
         :param dt: It is for handling callback input.
-        :return:
+        :return: It is for changing screen to grading page.
         """
 
         self.popup.dismiss()
@@ -447,10 +447,17 @@ def on_exam_grade(s, dt):
                              x[2]
                              )
                 Cache.append("lect",
+                             "std_nick",
+                             x[4]
+                             )
+                Cache.append("lect",
                              "std_name",
                              "{x0} {x1}".format(x0=x[0], x1=x[1]).title()
                              )
                 break
+
+        with open("data/questions.fay", "w+") as questions:
+            questions.close()
 
         return self.on_grade()
 
@@ -462,7 +469,7 @@ def on_exam_grade(s, dt):
         :return:
         """
 
-        self.popup.dismiss()
+        self.popup.dismiss()  # TODO
 
     popup_content = FloatLayout()
     s.popup = Popup(title="Grades",
@@ -491,7 +498,7 @@ def on_exam_grade(s, dt):
 
         for grade in data_students_graded:
             if grade[0] == std[4]:
-                data_students_merged[std[4]] = [std_name, grade[1]]
+                data_students_merged[std[4]] = [std_name, int(grade[1])]
                 break
 
     s.list_grades = ListView(size_hint=(.9, .8),

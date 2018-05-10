@@ -316,8 +316,10 @@ def on_time_add(self):
                                   Cache.get("lect", "exam"),
                                   10
                                   )
-    self.ids["txt_info_duration"].text = "{dur} mins".format(dur=str(self.duration))
     self.ids["txt_duration_clock"].text = str(self.duration)
+
+    duration_prev = self.ids["txt_info_duration"].text
+    self.ids["txt_info_duration"].text = "{dur} mins".format(dur=str(int(duration_prev) + 10))
 
 
 def on_exam_finish(s):
