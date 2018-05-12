@@ -503,15 +503,50 @@ def on_exam_grade(s, dt):
 
         for grade in data_students_graded:
             if grade[0] == std[4]:
-                data_students_merged[std[4]] = [std_name, int(grade[1])]
+                data_students_merged[std[4]] = [std_name, "{0:0=2d}".format(int(grade[1]))]
                 break
+
+    def color_hex(x):
+        """
+        This method determines hex color code for given student according to his or her grade.
+        :param x: It is student's grade.
+        :return: It is hex code of color.
+        """
+
+        grade_hex = {"NaN": "CAC3C3",
+                     "30": "FF4530",
+                     "45": "FF7363",
+                     "60": "FCAA03",
+                     "75": "FDBF41",
+                     "90": "84C463",
+                     "100": "5CB130"
+                     }
+
+        if x == "None":
+            hex_code = grade_hex["NaN"]
+        elif int(x.strip()) <= 30:
+            hex_code = grade_hex["30"]
+        elif 30 < int(x.strip()) <= 45:
+            hex_code = grade_hex["45"]
+        elif 45 < int(x.strip()) <= 60:
+            hex_code = grade_hex["60"]
+        elif 60 < int(x.strip()) <= 75:
+            hex_code = grade_hex["75"]
+        elif 75 < int(x.strip()) <= 90:
+            hex_code = grade_hex["90"]
+        else:
+            hex_code = grade_hex["100"]
+
+        return hex_code
 
     s.list_grades = ListView(size_hint=(.9, .8),
                              pos_hint={"center_x": .5, "center_y": .55}
                              )
-    args_converter = lambda row_index, x: {"text": "{name} ({grade})".format(name=x[0],
-                                                                             grade=x[1]
-                                                                             ),
+    args_converter = lambda row_index, x: {"text": "{name} ([color=#{hex}]{grade}[/color])".format(name=x[0],
+                                                                                                   hex=color_hex(x[1]),
+                                                                                                   grade=x[1]
+                                                                                                   ),
+                                           "markup": True,
                                            "selected_color": (.843, .82, .82, 1),
                                            "deselected_color": (.57, .67, .68, 1),
                                            "background_down": "data/img/widget_gray_75.png",

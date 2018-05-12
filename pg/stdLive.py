@@ -140,9 +140,7 @@ def on_pre_enter(self):
                                           self
                                           )
                              )
-    self.correct_answer.text_autoupdate = True
     self.correct_answer.option_cls.font_name = "data/font/CaviarDreams_Bold.ttf"
-    self.correct_answer.option_cls.background_normal = "data/img/widget_black_75_crop.png"
     self.correct_answer.option_cls.background_down = "data/img/widget_purple_75_select.png"
     self.add_widget(self.correct_answer)
 
@@ -295,11 +293,16 @@ def on_submit(self):
 
         return True
     elif self.question_type == "multiple_choice":
+        try:
+            students_choice = self.multiple_choice_answer
+        except:
+            students_choice = ""
+
         database_api.sendAnswers(Cache.get("info", "token"),
                                  Cache.get("lect", "code"),
                                  self.question_no,
                                  Cache.get("info", "nick"),
-                                 self.multiple_choice_answer
+                                 students_choice
                                  )
 
         return True

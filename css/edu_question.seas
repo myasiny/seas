@@ -36,7 +36,7 @@
 
             Button:
                 id: btn_question_cancel
-                text: "CANCEL"
+                text: "LEAVE"
                 font_name: "data/font/LibelSuit.ttf"
                 font_size: self.height / 3
                 background_normal: "data/img/widget_red.png"

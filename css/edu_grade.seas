@@ -114,14 +114,6 @@
             pos_hint: {"center_x": .5, "center_y": .45}
 
         Image:
-            id: img_question_grade_out
-            source: "data/img/bg_menubar.png"
-            keep_ratio: False
-            allow_stretch: True
-            size_hint: .1, .05
-            pos_hint: {"center_x": .75, "y": .8825}
-
-        Image:
             id: img_question_grade_in
             source: "data/img/widget_purple_75_select.png"
             opacity: .75
@@ -129,6 +121,14 @@
             allow_stretch: True
             size_hint: .095, .045
             pos_hint: {"center_x": .75, "y": .8875}
+
+        Image:
+            id: img_question_grade_out
+            source: "data/img/bg_menubar.png"
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .1, .05
+            pos_hint: {"center_x": .75, "y": .8825}
 
         Label:
             id: txt_question_grade

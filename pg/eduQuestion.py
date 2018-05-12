@@ -32,9 +32,7 @@ def on_pre_enter(self):
                                   size_hint=(.4, .05),
                                   pos_hint={"center_x": .75, "center_y": .075}
                                   )
-    self.correct_answer.text_autoupdate = True
     self.correct_answer.option_cls.font_name = "data/font/CaviarDreams_Bold.ttf"
-    self.correct_answer.option_cls.background_normal = "data/img/widget_black_75_crop.png"
     self.correct_answer.option_cls.background_down = "data/img/widget_purple_75_select.png"
     self.correct_answer.bind(text=partial(on_correct_answer_select,
                                           self
@@ -269,31 +267,37 @@ def on_submit(self):
 
                 return False
             else:
-                yson = {"type": self.question_type,
-                        "subject": self.ids["input_subject"].text,
-                        "text": "{q}\n\nA) {a}\nB) {b}\nC) {c}\nD) {d}\nE) {e}".format(q=self.ids["input_question_body"].text,
-                                                                                       a=self.ids["input_answer_a"].text,
-                                                                                       b=self.ids["input_answer_b"].text,
-                                                                                       c=self.ids["input_answer_c"].text,
-                                                                                       d=self.ids["input_answer_d"].text,
-                                                                                       e=self.ids["input_answer_e"].text
-                                                                                       ).replace("\n",
-                                                                                                 "*[SEAS-SLASH-N]*"
-                                                                                                 ),
-                        "answer": self.multiple_choice_answer,
-                        "inputs": None,
-                        "outputs": None,
-                        "value": int(self.ids["input_grade"].text),
-                        "tags": self.ids["input_tags"].text.split("*[SEAS-DELIMITER]*")
-                        }
+                try:
+                    yson = {"type": self.question_type,
+                            "subject": self.ids["input_subject"].text,
+                            "text": "{q}\n\nA) {a}\nB) {b}\nC) {c}\nD) {d}\nE) {e}".format(q=self.ids["input_question_body"].text,
+                                                                                           a=self.ids["input_answer_a"].text,
+                                                                                           b=self.ids["input_answer_b"].text,
+                                                                                           c=self.ids["input_answer_c"].text,
+                                                                                           d=self.ids["input_answer_d"].text,
+                                                                                           e=self.ids["input_answer_e"].text
+                                                                                           ).replace("\n",
+                                                                                                     "*[SEAS-SLASH-N]*"
+                                                                                                     ),
+                            "answer": self.multiple_choice_answer,
+                            "inputs": None,
+                            "outputs": None,
+                            "value": int(self.ids["input_grade"].text),
+                            "tags": self.ids["input_tags"].text.split("*[SEAS-DELIMITER]*")
+                            }
 
-                database_api.addQuestionToExam(Cache.get("info", "token"),
-                                               Cache.get("lect", "code"),
-                                               Cache.get("lect", "exam"),
-                                               yson
-                                               )
+                    database_api.addQuestionToExam(Cache.get("info", "token"),
+                                                   Cache.get("lect", "code"),
+                                                   Cache.get("lect", "exam"),
+                                                   yson
+                                                   )
 
-            return True
+                    return True
+                except:
+                    ico_status.opacity = 1
+                    ico_status.pos_hint = {"x": .9375, "center_y": .075}
+
+                    return False
         else:
             ico_status.opacity = 1
             ico_status.pos_hint = {"x": .9375, "center_y": .8}
