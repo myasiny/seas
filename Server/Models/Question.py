@@ -13,8 +13,11 @@ class Question:
         self.outputs = outputs
         self.value = value
         self.test_cases = {}
-        for i in range(len(self.inputs)):
-            self.test_cases[str(self.inputs[i])] = self.outputs[i]
+        try:
+            for i in range(len(self.inputs)):
+                self.test_cases[str(self.inputs[i])] = self.outputs[i]
+        except TypeError:
+            pass
         self.get = {"type": self.tip,
                     "subject": self.subject,
                     "text": self.text,
@@ -35,11 +38,12 @@ class Question:
         org = organization.replace(" ", "_").lower()
         command = "USE %s;" % org
         command += "INSERT INTO questions(Type, Subject, Body, Answer, Test_Cases, Value, Tags, ExamID) VALUES" \
-                   " ('%s', '%s', '%s', '%s', \"%s\", '%s', '%s', (SELECT e.ExamID from exams e, courses c " \
+                   " ('%s', '%s', '%s', '%s','%s', '%s', '%s', (SELECT e.ExamID from exams e, courses c " \
                    "WHERE c.CourseID = e.CourseID and e.Name = '%s'));" % (self.tip, self.subject, self.text,
                                                                            self.answer, json.dumps(self.test_cases).
                                                                            replace("'", "STR-JSON"),
                                                                            self.value, tags, exam_name)
+        print command
         db.execute(command)
         return self
 

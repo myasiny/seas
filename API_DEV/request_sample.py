@@ -81,15 +81,15 @@ lecturer_token = get_token("lecturer")
 #                           "tags": ["mustafa","kemal"]},
 
 #
-# print "add question to exam", addQuestionToExam(lecturer_token, "data 101", "fcg test", {"type": "test",
-#                       "subject": "math",
-#                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
-#                       "answer": "c",
-#                       "inputs": "",
-#                       "outputs": "",
-#                       "value": 20,
-#                       "tags": ["integers", "math"]
-#                      })
+print "add question to exam", addQuestionToExam(lecturer_token, "engr 101", "quiz 7", {"type": "multiple_choice",
+                      "subject": "math",
+                      "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
+                      "answer": "c",
+                      "inputs": "q",
+                      "outputs": "qq",
+                      "value": 20,
+                      "tags": ["integers", "math"]
+                     })
 
 
 ## HOW TO GET EXAM
@@ -97,7 +97,7 @@ lecturer_token = get_token("lecturer")
 
 
 
-print getExam(lecturer_token, "engr 101", "quiz 7")
+# print getExam(lecturer_token, "engr 101", "quiz 7")
 
 
 

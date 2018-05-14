@@ -28,9 +28,12 @@ class MySQLdb:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.db.close()
-        self.db = None
-        self.cursor = None
+        try:
+            self.db.close()
+            self.db = None
+            self.cursor = None
+        except OperationalError:
+            pass
 
     def initialize_organization(self, organization):
         # Create Database for organization
