@@ -270,20 +270,20 @@ def on_submit(self):
                 try:
                     yson = {"type": self.question_type,
                             "subject": self.ids["input_subject"].text,
-                            "text": "{q}*[SEAS-CHOICES]*\
-[font=data/font/AndaleMono.ttf][b]A)[/b][/font] {a}\n\
-[font=data/font/AndaleMono.ttf][b]B)[/b][/font] {b}\n\
-[font=data/font/AndaleMono.ttf][b]C)[/b][/font] {c}\n\
-[font=data/font/AndaleMono.ttf][b]D)[/b][/font] {d}\n\
-[font=data/font/AndaleMono.ttf][b]E)[/b][/font] {e}".format(q=self.ids["input_question_body"].text,
-                                                            a=self.ids["input_answer_a"].text,
-                                                            b=self.ids["input_answer_b"].text,
-                                                            c=self.ids["input_answer_c"].text,
-                                                            d=self.ids["input_answer_d"].text,
-                                                            e=self.ids["input_answer_e"].text
-                                                            ).replace("\n",
-                                                                      "*[SEAS-SLASH-N]*"
-                                                                      ),
+                            "text": "{q}*[SEAS-CHOICES]*" \
+                                    "[font=data/font/AndaleMono.ttf][b]A)[/b][/font] {a}\n" \
+                                    "[font=data/font/AndaleMono.ttf][b]B)[/b][/font] {b}\n" \
+                                    "[font=data/font/AndaleMono.ttf][b]C)[/b][/font] {c}\n" \
+                                    "[font=data/font/AndaleMono.ttf][b]D)[/b][/font] {d}\n" \
+                                    "[font=data/font/AndaleMono.ttf][b]E)[/b][/font] {e}".format(q=self.ids["input_question_body"].text,
+                                                                                                 a=self.ids["input_answer_a"].text,
+                                                                                                 b=self.ids["input_answer_b"].text,
+                                                                                                 c=self.ids["input_answer_c"].text,
+                                                                                                 d=self.ids["input_answer_d"].text,
+                                                                                                 e=self.ids["input_answer_e"].text
+                                                                                                 ).replace("\n",
+                                                                                                           "*[SEAS-SLASH-N]*"
+                                                                                                           ),
                             "answer": self.multiple_choice_answer,
                             "inputs": None,
                             "outputs": None,

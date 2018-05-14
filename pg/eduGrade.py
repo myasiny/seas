@@ -185,7 +185,17 @@ def on_pre_enter(self):
                                                                         "\n"
                                                                         )
             elif self.question_type == "multiple_choice":
-                pass  # TODO
+                data_question = self.ids["txt_question_body"].text.split("*[SEAS-CHOICES]*")
+
+                self.ids["txt_question_body"].text = data_question[0]
+
+                self.ids["txt_answer_student_head"].text = "Choices:"
+                self.ids["txt_answer_student"].text = data_question[1]
+
+                self.ids["txt_answer_summary_head"].text = "Student's Answer:"
+                self.ids["txt_answer_summary"].text = answer[3].replace("*[SEAS-SLASH-N]*",
+                                                                        "\n"
+                                                                        )
 
             break
 
