@@ -56,20 +56,22 @@ def on_pre_enter(self):
                                                        Cache.get("lect", "exam")
                                                        )["Questions"]
 
-        i = 0
         with open("data/questions.fay", "w+") as questions:
-            for key, value in self.data_detailed_exam.iteritems():
-                if i == 0:
-                    i += 1
-                    # questions.write(cipher.encrypt("*[SEAS-PASS]*"))
-                else:
-                    questions.write(cipher.encrypt(str(value["ID"]) + "*[SEAS-NEW-LINE]*" +
-                                                   str(value["type"]) + "*[SEAS-NEW-LINE]*" +
-                                                   str(value["value"]) + "*[SEAS-NEW-LINE]*" +
-                                                   str(value["text"]) + "*[SEAS-NEW-LINE]*" +
-                                                   str(value["answer"]) + "*[SEAS-NEW-LINE]*"
-                                                   )
-                                    )
+            if len(self.data_detailed_exam) > 1:
+                i = 0
+                for key, value in self.data_detailed_exam.iteritems():
+                    if i == 0:
+                        i += 1
+                    else:
+                        questions.write(cipher.encrypt(str(value["ID"]) + "*[SEAS-NEW-LINE]*" +
+                                                       str(value["type"]) + "*[SEAS-NEW-LINE]*" +
+                                                       str(value["value"]) + "*[SEAS-NEW-LINE]*" +
+                                                       str(value["text"]) + "*[SEAS-NEW-LINE]*" +
+                                                       str(value["answer"]) + "*[SEAS-NEW-LINE]*"
+                                                       )
+                                        )
+            else:
+                questions.write(cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[SEAS-IS]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
             questions.close()
 
         self.question_no = str(self.data_detailed_exam.values()[0]["ID"])
@@ -148,27 +150,33 @@ def on_pre_enter(self):
             self.ids["txt_auto_grade"].text = "Auto Grade: {grade}".format(grade="TODO")  # TODO
 
             if self.question_type == "short_answer":
-                data_summary = summarize(answer[3][1:-1].replace("*[SEAS-SLASH-N]*",
-                                                                 "\n"
-                                                                 ),
-                                         ratio=0.3
-                                         )
-                self.ids["txt_answer_summary"].text = data_summary
+                try:
+                    data_summary = summarize(answer[3].replace("*[SEAS-SLASH-N]*",
+                                                               "\n"
+                                                               ),
+                                             ratio=0.3
+                                             )
+                    self.ids["txt_answer_summary"].text = data_summary
 
-                data_keywords = keywords(answer[3].replace("*[SEAS-SLASH-N]*",
-                                                           "\n"
-                                                           ),
-                                         ratio=0.3
-                                         )
-                data_keywords = data_keywords.encode("utf-8").split("\n")
-                for word in data_keywords:
-                    answer[3] = re.sub(r'( |^)({keyword})'.format(keyword=word),
-                                       r'\1[color=#FF4530][font=data/font/AndaleMono.ttf][b]\2[/b][/font][/color]',
-                                       answer[3],
-                                       flags=re.I
-                                       )
-                self.ids["txt_answer_student"].text = answer[3].replace("*[SEAS-SLASH-N]*", "\n")[1:-1]
+                    data_keywords = keywords(answer[3].replace("*[SEAS-SLASH-N]*",
+                                                               "\n"
+                                                               ),
+                                             ratio=0.3
+                                             )
+                    data_keywords = data_keywords.encode("utf-8").split("\n")
+                    for word in data_keywords:
+                        answer[3] = re.sub(r'( |^)({keyword})'.format(keyword=word),
+                                           r'\1[color=#FF4530][font=data/font/AndaleMono.ttf][b]\2[/b][/font][/color]',
+                                           answer[3],
+                                           flags=re.I
+                                           )
+                except:
+                    self.ids["txt_answer_summary"].text = "No summary found..."
+                finally:
+                    self.ids["txt_answer_student"].text = answer[3].replace("*[SEAS-SLASH-N]*", "\n")
             elif self.question_type == "programming":
+                self.run_or_pause = "run"
+
                 self.ids["txt_answer_summary_head"].text = "Output:"
 
                 self.btn_run = image_button.add_button("data/img/ico_monitor_play.png",
@@ -198,6 +206,11 @@ def on_pre_enter(self):
                                                                         )
 
             break
+
+    self.list_progs_pre = []
+    proc = psutil.Process()
+    for i in proc.open_files():
+        self.list_progs_pre.append(i.path)
 
 
 def on_exam_grade(s):

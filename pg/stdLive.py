@@ -53,19 +53,21 @@ def on_pre_enter(self):
                                                        Cache.get("lect", "exam")
                                                        )["Questions"]
 
-        i = 0
         with open("data/questions.fay", "w+") as questions:
-            for key, value in self.data_detailed_exam.iteritems():
-                if i == 0:
-                    i += 1
-                    # questions.write(self.cipher.encrypt("*[SEAS-PASS]*"))
-                else:
-                    questions.write(self.cipher.encrypt(str(value["ID"]) + "*[SEAS-NEW-LINE]*" +
-                                                        str(value["type"]) + "*[SEAS-NEW-LINE]*" +
-                                                        str(value["value"]) + "*[SEAS-NEW-LINE]*" +
-                                                        str(value["text"]) + "*[SEAS-NEW-LINE]*"
-                                                        )
-                                    )
+            if len(self.data_detailed_exam) > 1:
+                i = 0
+                for key, value in self.data_detailed_exam.iteritems():
+                    if i == 0:
+                        i += 1
+                    else:
+                        questions.write(self.cipher.encrypt(str(value["ID"]) + "*[SEAS-NEW-LINE]*" +
+                                                            str(value["type"]) + "*[SEAS-NEW-LINE]*" +
+                                                            str(value["value"]) + "*[SEAS-NEW-LINE]*" +
+                                                            str(value["text"]) + "*[SEAS-NEW-LINE]*"
+                                                            )
+                                        )
+            else:
+                questions.write(self.cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[SEAS-IS]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
             questions.close()
 
         self.question_no = str(self.data_detailed_exam.values()[0]["ID"])

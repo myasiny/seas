@@ -1,5 +1,7 @@
 # -*-coding:utf-8-*-
 import sys
+
+from kivy.network.urlrequest import UrlRequest
 from requests import put, get, delete
 from requests.exceptions import ConnectionError, Timeout
 import json
@@ -34,6 +36,7 @@ def testConnection(base_url=server_address):
     :return: Boolean; True if connection is done, false otherwise.
     """
     try:
+        # UrlRequest(base_url, timeout=5, on_success=testConnection_result, on_failure=testConnection_result, on_error=testConnection_result)
         get(base_url, timeout=5)
         return True
     except ConnectionError or Timeout:
@@ -322,7 +325,7 @@ def sendAnswers(token, course_code, question_id, username, answer,
     organization = __normalize(organization)
     course_code = __normalize(course_code)
     url = base_url + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, course_code, str(question_id), username)
-    return put(url, data={"answers": json.dumps(answer), "question_stats": kwargs}, headers={"Authorization": "Bearer " + token}).json()
+    return put(url, data={"answers": answer, "question_stats": kwargs}, headers={"Authorization": "Bearer " + token}).json()
 
 
 @server_check
