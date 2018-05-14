@@ -161,7 +161,6 @@ class Exam:
 
     def save_exam_data(self, student_id, course, data):
         base_path = "uploads/%s/courses/%s/exams/%s/" % (self.org, course, self.name)
-
         # Exam data save
         path = base_path + "user_data/%s.json" % student_id
         if not os.path.exists(base_path + "user_data"):
@@ -171,11 +170,15 @@ class Exam:
         else:
             data_ = {}
             data_.setdefault("exam_data", {})
+        key_stream = ""
         for key in data:
+            print data.getlist(key)
             if key == "key_stream":
-                key_stream = data[key]
-            data_["exam_data"].setdefault(key, [])
-            data_["exam_data"][key].extend(data[key])
+                key_stream = data.get(key)
+            else:
+                data_["exam_data"].setdefault(key, [])
+
+                data_["exam_data"][key].extend(data.getlist(key))
         json.dump(data_, open(path, "w"))
 
         # Key stream save
@@ -187,7 +190,10 @@ class Exam:
         else:
             o = "w"
         with open(path, o) as key_stream_file:
-            key_stream_file.write(key_stream)
+            try:
+                key_stream_file.write(key_stream[0])
+            except:
+                key_stream_file.write(key_stream)
             key_stream_file.write(KEYSTREAM_DELIMITER)
         return
 

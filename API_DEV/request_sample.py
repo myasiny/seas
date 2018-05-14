@@ -144,7 +144,7 @@ lecturer_token = get_token("lecturer")
 
 # print getLastActivities(lecturer_token, "alicakmak", sign_in=True)
 # print getLastActivities(lecturer_token, "alicakmak")
-print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data.json")
+print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", **json.load(open("example_data.json", "r")))
 # print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data")
 # print getAnswersOfStudent(lecturer_token, "eecs 468", "qu1", "213950785")
 # print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
