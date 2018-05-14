@@ -65,6 +65,8 @@ class Exam:
                     question_info["Test_Cases"] = json.loads(question[7].replace("STR-JSON", "'"))
                 except TypeError:
                     question_info["Test_Cases"] = None
+                except AttributeError:
+                    question_info["Test_Cases"] = None
                 questions[counter] = question_info
                 counter += 1
             return{
@@ -149,11 +151,11 @@ class Exam:
                                   "GROUP BY a.studentID;" % (self.name, int(student_id)))
         return rtn
 
-    def get_answers(self, student_id, exam_id):
+    def get_answers(self, student_id, exam_name):
         rtn = self.db.execute("SELECT a.* FROM answers a "
                               "JOIN exams e ON a.examID = e.ExamID "
-                              "where a.studentID = %s and a.examID = %d;"
-                              % (student_id, int(exam_id)))
+                              "where a.studentID = %s and e.Name = '%s';"
+                              % (student_id, exam_name))
         return rtn
 
     def save_exam_data(self, student_id, course, data):

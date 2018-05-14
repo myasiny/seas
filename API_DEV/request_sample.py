@@ -15,9 +15,9 @@ def get_token(role):
     print auth
     return auth[-1]
 
-student_token = get_token("student")
+# student_token = get_token("student")
 # print student_token
-# lecturer_token = get_token("lecturer")
+lecturer_token = get_token("lecturer")
 # print lecturer_token
 # admin_token = get_token("admin")
 # print admin_token
@@ -97,11 +97,11 @@ student_token = get_token("student")
 
 
 
-# print getExam(lecturer_token, "data 101", "fcg test")
+print getExam(lecturer_token, "engr 101", "quiz 7")
 
 
 
-print sendAnswers(student_token,"Data 101", 184, "fatihgulmez", "A")
+# print sendAnswers(student_token,"Data 101", 184, "fatihgulmez", "A")
 # print sendAnswers(student_token,"EECS 468", 54, "alioz", "A")
 # print sendAnswers(student_token,"EECS 468", 55, "alioz", "A")
 # print sendAnswers(student_token,"EECS 468", 56, "alioz", "A")
@@ -146,7 +146,7 @@ print sendAnswers(student_token,"Data 101", 184, "fatihgulmez", "A")
 # print getLastActivities(lecturer_token, "alicakmak")
 # print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data.json")
 # print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data")
-# print getAnswersOfStudent(lecturer_token, "eecs 468", "test 3", "213962062")
+print getAnswersOfStudent(lecturer_token, "engr 101", "quiz 7", "213950785")
 # print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
 
 # a = 0
@@ -160,6 +160,6 @@ print sendAnswers(student_token,"Data 101", 184, "fatihgulmez", "A")
 # for line in b:
 #     print line
 #
-# print signOut(lecturer_token, "alicakmak")
+print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")

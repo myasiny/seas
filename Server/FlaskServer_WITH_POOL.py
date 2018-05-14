@@ -526,7 +526,7 @@ def get_answers_of_student(organization, course, exam_name, student_id):
         return jsonify("Unauthorized access!")
     if check_lecture_permission(organization, token, course):
         log_activity(request.remote_addr, token["username"], request.endpoint)
-        return jsonify(Exam(exam_name, organization, db).get_answers(student_id), exam_name)
+        return jsonify(Exam(exam_name, organization, db).get_answers(student_id, exam_name))
     return jsonify("Unauthorized access.")
 
 
