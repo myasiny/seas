@@ -39,30 +39,34 @@ class Exam:
 
     def get(self):
         db = self.db
-        try:
-            command = "select q.info, q.QuestionID, c.Code, e.* from questions q JOIN (courses c, exams e) " \
-                      "ON c.CourseID = e.courseID AND e.Name = '%s' AND q.ExamID = e.ExamID;" % self.name
-            saved = db.execute(command)
-            course, exam_id, exam_name, course_id, time, duration, status, timezone = saved[0][2:]
-        except IndexError:
-            try:
-                command = "SELECT c.Code, e.* FROM exams e, courses c " \
-                          "WHERE e.Name = '%s' and e.CourseID = c.CourseID" % self.name
-                saved = db.execute(command)
-                course, exam_id, exam_name, course_id, time, duration, status, timezone = saved[0][:8]
-                saved = []
-            except IndexError:
-                return "No Exam."
+        command = "SELECT c.Code, e.* FROM exams e, courses c WHERE e.Name = '%s' and e.CourseID = c.CourseID" \
+                  % self.name
+        saved = db.execute(command)
+        course, exam_id, exam_name, course_id, time, duration, status, timezone = saved[0][:8]
+
+        command = "select QuestionID, ExamID, Subject, Tags, Type, Body, Answer, Test_Cases, Value " \
+                  "from questions where ExamID = '%s';" % exam_id
+        questions_raw = db.execute(command)
 
         try:
-            questions = {}
             counter = 1
-            for question in saved:
-                question_info = json.loads(question[0])
-                question_info["ID"] = question[1]
+            questions = dict()
+            for question in questions_raw:
+                question_info = dict()
+                question_info["ID"] = question[0]
+                question_info["ExamID"] = question[1]
+                question_info["Subject"] = question[2]
+                question_info["Tags"] = question[3]
+                question_info["Type"] = question[4]
+                question_info["Text"] = question[5]
+                question_info["Answer"] = question[6]
+                try:
+                    print type(question[7]), question[7]
+                    question_info["Test_Cases"] = json.loads(question[7].replace("STR-JSON", "'"))
+                except TypeError:
+                    question_info["Test_Cases"] = None
                 questions[counter] = question_info
                 counter += 1
-            print status
             return{
                 "Name": exam_name,
                 "Course": course,
@@ -145,8 +149,11 @@ class Exam:
                                   "GROUP BY a.studentID;" % (self.name, int(student_id)))
         return rtn
 
-    def get_answers(self, student_id):
-        rtn = self.db.execute("SELECT * FROM answers WHERE studentID = %s;" % student_id)
+    def get_answers(self, student_id, exam_id):
+        rtn = self.db.execute("SELECT a.* FROM answers a "
+                              "JOIN exams e ON a.examID = e.ExamID "
+                              "where a.studentID = %s and a.examID = %d;"
+                              % (student_id, int(exam_id)))
         return rtn
 
     def save_exam_data(self, student_id, course, data):

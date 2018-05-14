@@ -15,9 +15,9 @@ def get_token(role):
     print auth
     return auth[-1]
 
-# student_token = get_token("student")
+student_token = get_token("student")
 # print student_token
-lecturer_token = get_token("lecturer")
+# lecturer_token = get_token("lecturer")
 # print lecturer_token
 # admin_token = get_token("admin")
 # print admin_token
@@ -64,7 +64,7 @@ lecturer_token = get_token("lecturer")
 #                  5,
 #                  status="draft"
 # )
-#
+
 # print "add time to exam", add_time_to_exam(lecturer_token,
 #                        "data 101",
 #                        "fcg test",
@@ -93,10 +93,15 @@ lecturer_token = get_token("lecturer")
 
 
 ## HOW TO GET EXAM
-# print "get exam", sendAnswers(student_token, "engr 101", 173, "fatihgulmez", "asdasdasdasdasd")
+# sendAnswers(student_token, "engr 101", 173, "fatihgulmez", "asdasdasdasdasd")
 
-# print getExam(student_token, "data 101", "fcg test 2")
-# print sendAnswers(student_token,"Data 101", 97, "fatihgulmez", "A")
+
+
+# print getExam(lecturer_token, "data 101", "fcg test")
+
+
+
+print sendAnswers(student_token,"Data 101", 184, "fatihgulmez", "A")
 # print sendAnswers(student_token,"EECS 468", 54, "alioz", "A")
 # print sendAnswers(student_token,"EECS 468", 55, "alioz", "A")
 # print sendAnswers(student_token,"EECS 468", 56, "alioz", "A")
@@ -106,7 +111,7 @@ lecturer_token = get_token("lecturer")
 
 # print uploadProfilePic(lecturer_token, "alicakmak", "example_image.png")
 
-print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
+# print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 
 # print grade_answer(lecturer_token,"data 101", 97, "fatihgulmez", 28)
 # print grade_answer(lecturer_token,"eecs 468", 54, "alioz", 2)
@@ -117,16 +122,18 @@ print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 # print "get exams of lecture", getExamsOfLecture(lecturer_token, "data 101")
 
 # print edit_question(lecturer_token, "data 101",
-#                     "fcg test 2",
-#                     97,
-#                     {"type": "classic",
-#                     "subject": "ataturk",
-#                     "text": "who is the founder of Turkey?",
-#                     "answer": "Atatürk",
-#                     "inputs": [[111,222],[222,333]],
-#                     "outputs": [(3),(5)],
-#                     "value": 30,
-#                     "tags": ["mustapha","kemal"]})
+#                     "fcg test",
+#                     186,
+#                     {
+#                         "type": "short answer",
+#                         "subject": "ataturk",
+#                         "text": "who is the founder of Turkey?",
+#                         "answer": "Atatürk",
+#                         "inputs": [[111,222],[222,333]],
+#                         "outputs": [(3),(5)],
+#                         "value": 30,
+#                         "tags": ["mustapha","kemal"]
+#                     })
 
 # print "change status of exam", change_status_of_exam(lecturer_token, "data 101", "fcg test", "active")
 
@@ -153,6 +160,6 @@ print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 # for line in b:
 #     print line
 #
-print signOut(lecturer_token, "alicakmak")
+# print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")

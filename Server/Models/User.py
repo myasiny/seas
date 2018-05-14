@@ -161,6 +161,8 @@ class Student(User):
                             % self.username)
 
     def add_answer(self, question_id, answer):
-        # command = "INSERT INTO answers(questionID, studentID, answer) values %d, %d, '%s' where (Select Status from exams where ExamID = (Select ExamId from questions Where QuestionID=%d))='active' ON DUPLICATE KEY UPDATE answer = '%s';" % (int(question_id), int(self.user_id), answer, int(question_id), answer)
-        command = "INSERT INTO answers(questionID, studentID, answer) values (%d, %d, '%s') ON DUPLICATE KEY UPDATE answer = '%s';" % (int(question_id), int(self.user_id), answer, answer)
+        command = "INSERT INTO answers(examID, questionID, studentID, answer) values " \
+                  "((select examID from questions q where q.questionID = %d),%d, %d, '%s') " \
+                  "ON DUPLICATE KEY UPDATE answer = '%s';" \
+                  % (int(question_id),int(question_id), int(self.user_id), answer, answer)
         return self.execute(command)

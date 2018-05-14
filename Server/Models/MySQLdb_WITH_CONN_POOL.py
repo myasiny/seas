@@ -28,12 +28,9 @@ class MySQLdb:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        try:
-            self.db.close()
-            self.db = None
-            self.cursor = None
-        except OperationalError:
-            print "already disconnected"
+        self.db.close()
+        self.db = None
+        self.cursor = None
 
     def initialize_organization(self, organization):
         # Create Database for organization

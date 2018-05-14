@@ -7,6 +7,8 @@ import re
 import pickle
 from config import *
 
+# from kivy.network.urlrequest import UrlRequest
+
 
 def __normalize(word):
     word =  re.sub(r'[^\w\s]', '_', word).replace(" ", "_").lower()
