@@ -119,7 +119,7 @@
             opacity: .75
             keep_ratio: False
             allow_stretch: True
-            size_hint: .095, .045
+            size_hint: .095, .04525
             pos_hint: {"center_x": .75, "y": .8875}
 
         Image:
@@ -127,7 +127,7 @@
             source: "data/img/bg_menubar.png"
             keep_ratio: False
             allow_stretch: True
-            size_hint: .1, .05
+            size_hint: .1, .05025
             pos_hint: {"center_x": .75, "y": .8825}
 
         Label:
@@ -136,7 +136,7 @@
             multiline: False
             font_name: "data/font/CaviarDreams_Bold.ttf"
             font_size: self.height / 5
-            size_hint: .1, .1
+            size_hint: .1, .10025
             pos_hint: {"center_x": .75, "center_y": .9075}
 
         Label:
@@ -218,9 +218,17 @@
             size_hint: .4, .1
             pos_hint: {"center_x": .75, "center_y": .72}
 
-        ScrollView:
+        Image:
+            id: img_answer_student_bg
+            source: "data/img/widget_gray_75.png"
+            keep_ratio: False
+            allow_stretch: True
             size_hint: .4, .39
-            pos_hint: {"center_x": .75, "center_y": .50}
+            pos_hint: {"center_x": .75, "center_y": .5}
+
+        ScrollView:
+            size_hint: .39, .39
+            pos_hint: {"center_x": .75, "center_y": .5}
 
             Label:
                 id: txt_answer_student
@@ -244,13 +252,21 @@
             size_hint: .4, .1
             pos_hint: {"center_x": .75, "center_y": .275}
 
-        ScrollView:
+        Image:
+            id: img_answer_summary_bg
+            source: "data/img/widget_black_75.png"
+            keep_ratio: False
+            allow_stretch: True
             size_hint: .4, .175
+            pos_hint: {"center_x": .75, "center_y": .1625}
+
+        ScrollView:
+            size_hint: .39, .175
             pos_hint: {"center_x": .75, "center_y": .1625}
 
             Label:
                 id: txt_answer_summary
-                color: 0, 0, 0, 1
+                color: 1, 1, 1, 1
                 halign: "left"
                 multiline: True
                 font_name: "data/font/CaviarDreams.ttf"

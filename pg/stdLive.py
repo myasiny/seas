@@ -11,7 +11,6 @@ import psutil
 import subprocess32
 import sys
 from functools import partial
-
 from StringIO import StringIO
 from kivy.cache import Cache
 from kivy.clock import Clock
@@ -46,6 +45,7 @@ def on_pre_enter(self):
         self.data_exam_order = self.cipher.decrypt(questions.read()).split("*[SEAS-NEW-LINE]*")
     except:
         self.data_exam_order = questions.readlines()
+    questions.close()
 
     if len(self.data_exam_order) < 1:
         self.data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
@@ -58,7 +58,7 @@ def on_pre_enter(self):
             for key, value in self.data_detailed_exam.iteritems():
                 if i == 0:
                     i += 1
-                    questions.write(self.cipher.encrypt("*[SEAS-EXAM]*"))
+                    # questions.write(self.cipher.encrypt("*[SEAS-PASS]*"))
                 else:
                     questions.write(self.cipher.encrypt(str(value["ID"]) + "*[SEAS-NEW-LINE]*" +
                                                         str(value["type"]) + "*[SEAS-NEW-LINE]*" +
@@ -85,6 +85,7 @@ def on_pre_enter(self):
     else:
         questions = open("data/questions.fay", "r")
         self.data_exam_order = self.cipher.decrypt(questions.read()).split("*[SEAS-NEW-LINE]*")
+        questions.close()
 
         if "*[SEAS-EXAM]*" in self.data_exam_order[0]:
             return self.on_lects()
@@ -103,12 +104,12 @@ def on_pre_enter(self):
                                                                         )
 
         try:
-            is_next = self.data_exam_order[5] + self.data_exam_order[6] + self.data_exam_order[7]
+            is_next = self.data_exam_order[4] + self.data_exam_order[5] + self.data_exam_order[6]
         except:
             is_next = None
 
             with open("data/questions.fay", "w+") as questions:
-                questions.write(self.cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[is]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
+                questions.write(self.cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[SEAS-IS]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
                 questions.close()
 
         if is_next is not None:
@@ -180,6 +181,10 @@ def on_pre_enter(self):
         for name in widget:
             name.opacity = 0
             name.size_hint_y = 0
+
+        question_body = self.ids["txt_question_body"].text.split("*[SEAS-CHOICES]*")
+        self.ids["txt_question_body"].text = question_body[0]
+        self.ids["txt_multiple_choices"].text = question_body[1]
 
     self.list_progs_pre = []
     proc = psutil.Process()

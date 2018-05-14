@@ -348,22 +348,34 @@ def on_exam_select(self, dt):
     self.ids["btn_exam_start_grade"].opacity = 1
     if self.ids["txt_status_body"].text == "Graded":
         self.ids["btn_exam_start_grade"].text = "DOWNLOAD"
-        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) < 1:
-            pass  # TODO
+
+        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) > 0:
+            self.ids["btn_exam_start_grade"].unbind(on_release=self.start_grade)
+
+        self.start_grade = partial(None,  # TODO
+                                   self
+                                   )
+        self.ids["btn_exam_start_grade"].bind(on_release=self.start_grade)
     elif self.ids["txt_status_body"].text == "Finished":
         self.ids["btn_exam_start_grade"].text = "GRADE"
-        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) < 1:
-            self.ids["btn_exam_start_grade"].bind(on_release=partial(on_exam_grade,
-                                                                     self
-                                                                     )
-                                                  )
+
+        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) > 0:
+            self.ids["btn_exam_start_grade"].unbind(on_release=self.start_grade)
+
+        self.start_grade = partial(on_exam_grade,
+                                   self
+                                   )
+        self.ids["btn_exam_start_grade"].bind(on_release=self.start_grade)
     else:
         self.ids["btn_exam_start_grade"].text = "START"
-        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) < 1:
-            self.ids["btn_exam_start_grade"].bind(on_release=partial(on_exam_start,
-                                                                     self
-                                                                     )
-                                                  )
+
+        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) > 0:
+            self.ids["btn_exam_start_grade"].unbind(on_release=self.start_grade)
+
+        self.start_grade = partial(on_exam_start,
+                                   self
+                                   )
+        self.ids["btn_exam_start_grade"].bind(on_release=self.start_grade)
 
 
 def on_exam_delete(self, dt):
@@ -502,7 +514,7 @@ def on_exam_grade(s, dt):
         data_students_merged[std[4]] = [std_name, "None"]
 
         for grade in data_students_graded:
-            if grade[0] == std[4]:
+            if grade[0] == std[4] and grade[1] is not None:
                 data_students_merged[std[4]] = [std_name, "{0:0=2d}".format(int(grade[1]))]
                 break
 

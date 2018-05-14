@@ -176,6 +176,7 @@
                 color: 0, 0, 0, 1
                 halign: "left"
                 multiline: True
+                markup: True
                 font_name: "data/font/CaviarDreams.ttf"
                 font_size: root.height / 25
                 text_size: self.width, None

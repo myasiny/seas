@@ -5,8 +5,14 @@ eduGrade
 `eduGrade` is a toolbox for main app, it contains necessary methods that EduGrade page requires.
 """
 
+import code
 import re
 from functools import partial
+import os
+import psutil
+import subprocess32
+import sys
+from StringIO import StringIO
 from gensim.summarization import keywords, summarize
 
 from kivy.adapters.listadapter import ListAdapter
@@ -16,7 +22,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.listview import ListView, ListItemButton
 from kivy.uix.popup import Popup
 
-from func import database_api
+from func import database_api, image_button
 
 __author__ = "Muhammed Yasin Yildirim"
 __credits__ = ["Ali Emre Oz"]
@@ -29,7 +35,9 @@ def on_pre_enter(self):
     :return:
     """
 
-    cipher = Cache.get("config", "cipher")
+    cipher = Cache.get("config",
+                       "cipher"
+                       )
 
     self.ids["txt_student_name"].text = Cache.get("lect",
                                                   "std_name"
@@ -40,6 +48,7 @@ def on_pre_enter(self):
         self.data_exam_order = cipher.decrypt(questions.read()).split("*[SEAS-NEW-LINE]*")
     except:
         self.data_exam_order = questions.readlines()
+    questions.close()
 
     if len(self.data_exam_order) < 1:
         self.data_detailed_exam = database_api.getExam(Cache.get("info", "token"),
@@ -52,7 +61,7 @@ def on_pre_enter(self):
             for key, value in self.data_detailed_exam.iteritems():
                 if i == 0:
                     i += 1
-                    questions.write(cipher.encrypt("*[SEAS-EXAM]*"))
+                    # questions.write(cipher.encrypt("*[SEAS-PASS]*"))
                 else:
                     questions.write(cipher.encrypt(str(value["ID"]) + "*[SEAS-NEW-LINE]*" +
                                                    str(value["type"]) + "*[SEAS-NEW-LINE]*" +
@@ -85,6 +94,7 @@ def on_pre_enter(self):
     else:
         questions = open("data/questions.fay", "r")
         self.data_exam_order = cipher.decrypt(questions.read()).split("*[SEAS-NEW-LINE]*")
+        questions.close()
 
         if "*[SEAS-EXAM]*" in self.data_exam_order[0]:
             return self.on_student_change()
@@ -108,13 +118,12 @@ def on_pre_enter(self):
                                                                     )
 
         try:
-            is_next = self.data_exam_order[5] + self.data_exam_order[6] + self.data_exam_order[7]
+            is_next = self.data_exam_order[4] + self.data_exam_order[5] + self.data_exam_order[6]
         except:
             is_next = None
 
             with open("data/questions.fay", "w+") as questions:
-                questions.write(
-                    cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[is]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
+                questions.write(cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[SEAS-IS]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
                 questions.close()
 
         if is_next is not None:
@@ -136,28 +145,48 @@ def on_pre_enter(self):
             for name in widget:
                 self.ids[name].disabled = False
 
-            data_summary = summarize(answer[3][1:-1].replace("*[SEAS-SLASH-N]*",
-                                                             "\n"
-                                                             ),
-                                     ratio=0.3
-                                     )
-            self.ids["txt_answer_summary"].text = data_summary
-
-            data_keywords = keywords(answer[3].replace("*[SEAS-SLASH-N]*",
-                                                       "\n"
-                                                       ),
-                                     ratio=0.3
-                                     )
-            data_keywords = list(data_keywords.encode("utf-8").split("\n"))
-            for word in data_keywords:
-                answer[3] = re.sub(r'( |^)({keyword})'.format(keyword=word),
-                                   r'\1[color=#FF4530][font=data/font/AndaleMono.ttf][b]\2[/b][/font][/color]',
-                                   answer[3],
-                                   flags=re.I
-                                   )
-            self.ids["txt_answer_student"].text = answer[3][1:-1]
-
             self.ids["txt_auto_grade"].text = "Auto Grade: {grade}".format(grade="TODO")  # TODO
+
+            if self.question_type == "short_answer":
+                data_summary = summarize(answer[3][1:-1].replace("*[SEAS-SLASH-N]*",
+                                                                 "\n"
+                                                                 ),
+                                         ratio=0.3
+                                         )
+                self.ids["txt_answer_summary"].text = data_summary
+
+                data_keywords = keywords(answer[3].replace("*[SEAS-SLASH-N]*",
+                                                           "\n"
+                                                           ),
+                                         ratio=0.3
+                                         )
+                data_keywords = data_keywords.encode("utf-8").split("\n")
+                for word in data_keywords:
+                    answer[3] = re.sub(r'( |^)({keyword})'.format(keyword=word),
+                                       r'\1[color=#FF4530][font=data/font/AndaleMono.ttf][b]\2[/b][/font][/color]',
+                                       answer[3],
+                                       flags=re.I
+                                       )
+                self.ids["txt_answer_student"].text = answer[3].replace("*[SEAS-SLASH-N]*", "\n")[1:-1]
+            elif self.question_type == "programming":
+                self.ids["txt_answer_summary_head"].text = "Output:"
+
+                self.btn_run = image_button.add_button("data/img/ico_monitor_play.png",
+                                                       "data/img/ico_monitor_play_select.png",
+                                                       (.025, True),
+                                                       {"x": .95, "y": .675},
+                                                       partial(on_run,
+                                                               self
+                                                               )
+                                                       )
+                self.add_widget(self.btn_run)
+
+                self.ids["txt_answer_student"].text = answer[3].replace("*[SEAS-SLASH-N]*",
+                                                                        "\n"
+                                                                        )
+            elif self.question_type == "multiple_choice":
+                pass  # TODO
+
             break
 
 
@@ -237,7 +266,7 @@ def on_exam_grade(s):
         data_students_merged[std[4]] = [std_name, "None"]
 
         for grade in data_students_graded:
-            if grade[0] == std[4]:
+            if grade[0] == std[4] and grade[1] is not None:
                 data_students_merged[std[4]] = [std_name, "{0:0=2d}".format(int(grade[1]))]
                 break
 
@@ -355,3 +384,67 @@ def on_grade_submit(self):
                               )
 
     return True
+
+
+def on_run(self, dt):
+    """
+    This method runs student's answer in the background and prints its output.
+    :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
+    :return:
+    """
+
+    if self.run_or_pause == "run":
+        self.btn_run.source = "data/img/ico_monitor_stop.png"
+
+        self.run_or_pause = "pause"
+
+        to_compile = open("data/temp_student_code.py", "w+")
+        to_compile.write(self.ids["txt_answer_student"].text)
+        to_compile.close()
+
+        try:
+            try:
+                temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
+                                                        stderr=subprocess32.STDOUT,
+                                                        shell=True,
+                                                        timeout=10
+                                                        )
+                old_stdout = sys.stdout
+                sys.stdout = StringIO()
+                redirected_output = sys.stdout
+                script = self.ids["txt_answer_student"].text
+                co = code.compile_command(script,
+                                          "<stdin>",
+                                          "exec"
+                                          )
+                exec co
+                sys.stdout = old_stdout
+                temp_output = redirected_output.getvalue()
+            except subprocess32.CalledProcessError as e:
+                temp_output = "{er}\n{ror}".format(er=e.output.split("\n")[-3][:-1],
+                                                   ror=e.output.split("\n")[-2][:-1]
+                                                   )
+        except:
+            temp_output = "TimeoutError: infinite loop or something"
+        finally:
+            self.list_progs_ban = []
+            self.list_progs_post = []
+            proc = psutil.Process()
+            for i in proc.open_files():
+                self.list_progs_post.append(i.path)
+            for i in list(set(self.list_progs_post) - set(self.list_progs_pre)):
+                if os.path.splitext(i)[1] != ".ttf":
+                    self.list_progs_ban.append(os.path.splitext(i))
+            if len(self.list_progs_ban) == 0:
+                self.ids["txt_answer_summary"].text = temp_output
+
+                self.btn_run.source = "data/img/ico_monitor_play.png"
+
+                self.run_or_pause = "run"
+            else:
+                self.ids["txt_answer_summary"].text = "SuspiciousError: disallowed action or something"
+    else:
+        self.btn_run.source = "data/img/ico_monitor_play.png"
+
+        self.run_or_pause = "run"
