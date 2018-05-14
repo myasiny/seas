@@ -7,6 +7,8 @@ stdLive
 
 import code
 import os
+import threading
+
 import psutil
 import subprocess32
 import sys
@@ -17,7 +19,7 @@ from kivy.clock import Clock
 from kivy.uix.spinner import Spinner
 from pygments.lexers.python import PythonLexer
 
-from func import database_api, image_button, update_clock
+from func import database_api, image_button, update_clock, datacollect_api
 
 __author__ = "Muhammed Yasin Yildirim"
 __credits__ = ["Ali Emre Oz"]
@@ -192,6 +194,16 @@ def on_pre_enter(self):
     proc = psutil.Process()
     for i in proc.open_files():
         self.list_progs_pre.append(i.path)
+
+    listen = threading.Thread(target=datacollect_api.listen,
+                              args=(Cache.get("info", "token"),
+                                    Cache.get("lect", "code"),
+                                    Cache.get("lect", "exam"),
+                                    Cache.get("info", "id"),
+                                    )
+                              )
+    listen.daemon = True
+    listen.start()
 
 
 def on_correct_answer_select(self, spinner, text):
