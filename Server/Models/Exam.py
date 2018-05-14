@@ -54,12 +54,13 @@ class Exam:
             for question in questions_raw:
                 question_info = dict()
                 question_info["ID"] = question[0]
-                question_info["ExamID"] = question[1]
-                question_info["Subject"] = question[2]
-                question_info["Tags"] = question[3]
-                question_info["Type"] = question[4]
-                question_info["Text"] = question[5]
-                question_info["Answer"] = question[6]
+                question_info["examID"] = question[1]
+                question_info["subject"] = question[2]
+                question_info["tags"] = question[3]
+                question_info["type"] = question[4]
+                question_info["text"] = question[5]
+                question_info["answer"] = question[6]
+                question_info["value"] = question[8]
                 try:
                     print type(question[7]), question[7]
                     question_info["Test_Cases"] = json.loads(question[7].replace("STR-JSON", "'"))
@@ -107,7 +108,7 @@ class Exam:
                 self.db.execute(command)
             except DatabaseError:
                 command = "Create Event %s_stop On Schedule At date_add(now(), Interval %s Minute) " \
-                          "Do Update exams set Status = 'not_graded' where name = '%s'" % (self.name, self.name, dur)
+                          "Do Update exams set Status = 'not_graded' where name = '%s'" % (self.name, dur, self.name)
                 self.db.execute(command)
 
     def add_more_time(self, minutes):
@@ -160,22 +161,26 @@ class Exam:
 
     def save_exam_data(self, student_id, course, data):
         base_path = "uploads/%s/courses/%s/exams/%s/" % (self.org, course, self.name)
-        key_stream = data.pop("key_stream")
 
         # Exam data save
         path = base_path + "user_data/%s.json" % student_id
-        if not os.path.exists(base_path):
-            os.makedirs(base_path)
+        if not os.path.exists(base_path + "user_data"):
+            os.makedirs(base_path + "user_data")
         if os.path.exists(path):
             data_ = json.load(open(path, "r"))
         else:
             data_ = {}
+            data_.setdefault("exam_data", {})
         for key in data:
+            if key == "key_stream":
+                key_stream = data[key]
             data_["exam_data"].setdefault(key, [])
-            data_["exam_data"][key].append(data[key])
+            data_["exam_data"][key].extend(data[key])
         json.dump(data_, open(path, "w"))
 
         # Key stream save
+        if not os.path.exists(base_path + "key_streams"):
+            os.makedirs(base_path + "key_streams")
         path = base_path + "key_streams/%s.keystream" % student_id
         if os.path.exists(path):
             o = "a"

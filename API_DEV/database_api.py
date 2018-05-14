@@ -324,7 +324,7 @@ def sendAnswers(token, course_code, question_id, username, answer,
     organization = __normalize(organization)
     course_code = __normalize(course_code)
     url = base_url + "/organizations/%s/%s/exams/%s/answers/%s" % (organization, course_code, str(question_id), username)
-    return put(url, data={"answers": json.dumps(answer), "question_stats": kwargs}, headers={"Authorization": "Bearer " + token}).json()
+    return put(url, data={"answers": answer, "question_stats": kwargs}, headers={"Authorization": "Bearer " + token}).json()
 
 
 @server_check

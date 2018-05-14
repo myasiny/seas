@@ -81,15 +81,15 @@ lecturer_token = get_token("lecturer")
 #                           "tags": ["mustafa","kemal"]},
 
 #
-print "add question to exam", addQuestionToExam(lecturer_token, "engr 101", "quiz 7", {"type": "multiple_choice",
-                      "subject": "math",
-                      "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
-                      "answer": "c",
-                      "inputs": "q",
-                      "outputs": "qq",
-                      "value": 20,
-                      "tags": ["integers", "math"]
-                     })
+# print "add question to exam", addQuestionToExam(lecturer_token, "engr 101", "quiz 7", {"type": "multiple_choice",
+#                       "subject": "math",
+#                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
+#                       "answer": "c",
+#                       "inputs": "q",
+#                       "outputs": "qq",
+#                       "value": 20,
+#                       "tags": ["integers", "math"]
+#                      })
 
 
 ## HOW TO GET EXAM
@@ -97,7 +97,7 @@ print "add question to exam", addQuestionToExam(lecturer_token, "engr 101", "qui
 
 
 
-# print getExam(lecturer_token, "engr 101", "quiz 7")
+# print getExam(lecturer_token, "eecs 468", "qu1")
 
 
 
@@ -144,9 +144,9 @@ print "add question to exam", addQuestionToExam(lecturer_token, "engr 101", "qui
 
 # print getLastActivities(lecturer_token, "alicakmak", sign_in=True)
 # print getLastActivities(lecturer_token, "alicakmak")
-# print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data.json")
+print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data.json")
 # print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data")
-print getAnswersOfStudent(lecturer_token, "engr 101", "quiz 7", "213950785")
+# print getAnswersOfStudent(lecturer_token, "eecs 468", "qu1", "213950785")
 # print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
 
 # a = 0
