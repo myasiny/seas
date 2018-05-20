@@ -118,6 +118,8 @@ class User:
         else:
             rtn = self.execute("SELECT Api_Endpoint, Time, IP FROM istanbul_sehir_university.last_activities "
                                "where username = '%s' order by Time DESC limit 5;" % self.username)
+        while len(rtn) < 5:
+            rtn.append("")
         return rtn
 
 
@@ -161,6 +163,7 @@ class Student(User):
                             % self.username)
 
     def add_answer(self, question_id, answer):
+        answer = answer.replace("'", "''").replace('""', '"')
         command = "INSERT INTO answers(examID, questionID, studentID, answer) values " \
                   "((select examID from questions q where q.questionID = %d),%d, %d, '%s') " \
                   "ON DUPLICATE KEY UPDATE answer = '%s';" \

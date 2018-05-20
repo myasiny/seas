@@ -41,7 +41,7 @@ class Question:
                    " ('%s', '%s', '%s', '%s','%s', '%s', '%s', (SELECT e.ExamID from exams e, courses c " \
                    "WHERE c.CourseID = e.CourseID and e.Name = '%s'));" % (self.tip, self.subject, self.text,
                                                                            self.answer, json.dumps(self.test_cases).
-                                                                           replace("'", "STR-JSON"),
+                                                                           replace("'", "''"),
                                                                            self.value, tags, exam_name)
         print command
         db.execute(command)
@@ -80,6 +80,6 @@ class Question:
         command = "Update %s.questions Set type = '%s', subject = '%s', Body = '%s', Answer = '%s', " \
                   "Test_Cases = '%s', Value = %s, Tags = '%s' where QuestionID = %d;"\
                   % (organization, self.tip, self.subject, self.text, self.answer,
-                     json.dumps(self.test_cases).replace("'", "STR-JSON"), self.value, tags, int(id_))
+                     json.dumps(self.test_cases).replace("'", "''"), self.value, tags, int(id_))
         print command
         return db.execute(command)

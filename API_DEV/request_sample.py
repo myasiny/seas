@@ -93,11 +93,12 @@ lecturer_token = get_token("lecturer")
 
 
 ## HOW TO GET EXAM
-# sendAnswers(student_token, "engr 101", 173, "fatihgulmez", "asdasdasdasdasd")
+# with open("example_answer.py", "r") as answer:
+#     print sendAnswers(student_token, "seas 101", 229, "fatihgulmez", answer.read())
 
 
 
-# print getExam(lecturer_token, "eecs 468", "qu1")
+# print getExam(lecturer_token, "seas 101", "test 3")
 
 
 
@@ -142,11 +143,14 @@ lecturer_token = get_token("lecturer")
 # print resetPassword("fatihgulmez", temp_pass="j6DAc9up", new_pass="1")
 # print getGradesOfExam(lecturer_token, "data 101", "test 3")
 
-# print getLastActivities(lecturer_token, "alicakmak", sign_in=True)
-# print getLastActivities(lecturer_token, "alicakmak")
-print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", **json.load(open("example_data.json", "r")))
+print getLastActivities(lecturer_token, "alicakmak", sign_in=True)
+print getLastActivities(lecturer_token, "alicakmak")
+# print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", **json.load(open("example_data.json", "r")))
 # print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data")
-# print getAnswersOfStudent(lecturer_token, "eecs 468", "qu1", "213950785")
+# answers = getAnswersOfStudent(lecturer_token, "seas 101", "test 3", "213962062")
+# with open("get_answers_example.txt", "w") as record:
+#     for answer in answers:
+#         record.write(answer[3])
 # print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
 
 # a = 0

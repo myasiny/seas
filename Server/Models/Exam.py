@@ -63,7 +63,7 @@ class Exam:
                 question_info["value"] = question[8]
                 try:
                     print type(question[7]), question[7]
-                    question_info["Test_Cases"] = json.loads(question[7].replace("STR-JSON", "'"))
+                    question_info["Test_Cases"] = json.loads(question[7].replace("''", "'").replace('""', '"'))
                 except TypeError:
                     question_info["Test_Cases"] = None
                 except AttributeError:
