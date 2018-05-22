@@ -69,6 +69,10 @@ def on_pre_enter(self):
                                                Cache.get("info", "nick")
                                                )[:3]
 
+    if len(activites) < 3:
+        for i in range(3 - len(activites)):
+            activites.append(["", "", ""])
+
     latest_activites = "[font=data/font/AndaleMono.ttf]{act1}[/font]\n{date1}\n\n" \
                        "[font=data/font/AndaleMono.ttf]{act2}[/font]\n{date2}\n\n" \
                        "[font=data/font/AndaleMono.ttf]{act3}[/font]\n{date3}".format(act1=activites[0][0].replace("_",
@@ -88,6 +92,10 @@ def on_pre_enter(self):
                                             Cache.get("info", "nick"),
                                             True
                                             )[:3]
+
+    if len(logins) < 3:
+        for i in range(3 - len(logins)):
+            logins.append(["", "", ""])
 
     last_logins = "[font=data/font/GetDigital.ttf]{ip1}[/font]\n{date1}\n\n" \
                   "[font=data/font/GetDigital.ttf]{ip2}[/font]\n{date2}\n\n" \

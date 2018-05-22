@@ -51,5 +51,7 @@ def update_image():
             render_image()
 
             return True
+        else:
+            return False
     except:
         return False

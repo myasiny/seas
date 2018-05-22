@@ -13,8 +13,8 @@ in order to increase lecture efficiencies.
 import os
 import platform
 import sys
-
 from cryptography.fernet import Fernet
+
 from kivy.animation import Animation
 from kivy.app import App
 from kivy.cache import Cache
@@ -642,7 +642,7 @@ def on_keyboard_event(event):
     :return: It is boolean depending on that key is banned or not.
     """
 
-    if event.Key.lower() in []:  # "lmenu", "lwin", "rwin", "apps"
+    if event.Key.lower() in []:  # "lmenu", "lwin", "rwin", "apps", "esc"
         return False
     else:
         return True
