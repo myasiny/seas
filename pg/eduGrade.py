@@ -57,21 +57,18 @@ def on_pre_enter(self):
                                                        )["Questions"]
 
         with open("data/questions.fay", "w+") as questions:
-            if len(self.data_detailed_exam) > 1:
-                i = 0
-                for key, value in self.data_detailed_exam.iteritems():
-                    if i == 0:
-                        i += 1
-                    else:
-                        questions.write(cipher.encrypt(str(value["ID"]) + "*[SEAS-NEW-LINE]*" +
-                                                       str(value["type"]) + "*[SEAS-NEW-LINE]*" +
-                                                       str(value["value"]) + "*[SEAS-NEW-LINE]*" +
-                                                       str(value["text"]) + "*[SEAS-NEW-LINE]*" +
-                                                       str(value["answer"]) + "*[SEAS-NEW-LINE]*"
-                                                       )
-                                        )
-            else:
-                questions.write(cipher.encrypt("*[SEAS-EXAM]**[SEAS-NEW-LINE]**[SEAS-IS]**[SEAS-NEW-LINE]**[SEAS-OVER]*"))
+            i = 0
+            q = ""
+            for key, value in self.data_detailed_exam.iteritems():
+                if i == 0:
+                    i += 1
+                else:
+                    q = str(value["ID"]) + "*[SEAS-NEW-LINE]*" + \
+                        str(value["type"]) + "*[SEAS-NEW-LINE]*" + \
+                        str(value["value"]) + "*[SEAS-NEW-LINE]*" + \
+                        str(value["text"]) + "*[SEAS-NEW-LINE]*" + \
+                        str(value["answer"]) + "*[SEAS-NEW-LINE]*"
+            questions.write(cipher.encrypt(q))
             questions.close()
 
         self.question_no = str(self.data_detailed_exam.values()[0]["ID"])
@@ -126,7 +123,7 @@ def on_pre_enter(self):
 
         if is_next is not None:
             with open("data/questions.fay", "w+") as questions:
-                questions.write(cipher.encrypt("*[SEAS-NEW-LINE]*".join(self.data_exam_order)))
+                questions.write(cipher.encrypt("*[SEAS-NEW-LINE]*".join(self.data_exam_order[5:])))
                 questions.close()
 
     data_student_answer = database_api.getAnswersOfStudent(Cache.get("info", "token"),
