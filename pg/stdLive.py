@@ -8,16 +8,16 @@ stdLive
 import code
 import os
 import threading
-
 import psutil
 import subprocess32
 import sys
 from functools import partial
 from StringIO import StringIO
+from pygments.lexers.python import PythonLexer
+
 from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.uix.spinner import Spinner
-from pygments.lexers.python import PythonLexer
 
 from func import database_api, image_button, update_clock, datacollect_api
 
@@ -87,10 +87,6 @@ def on_pre_enter(self):
                                                                         "\n"
                                                                         )
     else:
-        questions = open("data/questions.fay", "r")
-        self.data_exam_order = self.cipher.decrypt(questions.read()).split("*[SEAS-NEW-LINE]*")
-        questions.close()
-
         if "*[SEAS-EXAM]*" in self.data_exam_order[0]:
             return self.on_lects()
 

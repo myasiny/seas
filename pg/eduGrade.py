@@ -94,10 +94,6 @@ def on_pre_enter(self):
                                                                     "\n"
                                                                     )
     else:
-        questions = open("data/questions.fay", "r")
-        self.data_exam_order = cipher.decrypt(questions.read()).split("*[SEAS-NEW-LINE]*")
-        questions.close()
-
         if "*[SEAS-EXAM]*" in self.data_exam_order[0]:
             return self.on_student_change()
 
@@ -120,7 +116,7 @@ def on_pre_enter(self):
                                                                     )
 
         try:
-            is_next = self.data_exam_order[4] + self.data_exam_order[5] + self.data_exam_order[6]
+            is_next = self.data_exam_order[5] + self.data_exam_order[6] + self.data_exam_order[7]
         except:
             is_next = None
 
