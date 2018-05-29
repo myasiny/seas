@@ -37,6 +37,18 @@ class Exam:
                 db.execute(com+";")
         return "Done"
 
+    @staticmethod
+    def parse_outputs(question):
+        parsed_outputs = {}
+        for key, value in question.items():
+            a = tuple(eval(key))
+            try:
+                b = tuple(value)
+            except TypeError:
+                b = value
+            parsed_outputs[str(a)] = b
+        return parsed_outputs
+
     def get(self):
         db = self.db
         command = "SELECT c.Code, e.* FROM exams e, courses c WHERE e.Name = '%s' and e.CourseID = c.CourseID" \
@@ -63,7 +75,7 @@ class Exam:
                 question_info["value"] = question[8]
                 try:
                     print type(question[7]), question[7]
-                    question_info["Test_Cases"] = json.loads(question[7].replace("''", "'").replace('""', '"'))
+                    question_info["Test_Cases"] = self.parse_outputs(json.loads(question[7].replace("''", "'")))
                 except TypeError:
                     question_info["Test_Cases"] = None
                 except AttributeError:

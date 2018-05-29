@@ -304,7 +304,14 @@ def getExam(token, course_code, name, base_url=server_address, organization=curr
     course_code = __normalize(course_code)
     name = __normalize(name)
     url = base_url + "/organizations/%s/%s/exams/%s" % (organization, course_code, name)
-    return get(url, headers = {"Authorization": "Bearer " + token}).json()
+    exam_info = get(url, headers = {"Authorization": "Bearer " + token}).json()
+    for question in exam_info["Questions"].values():
+        new_dict = {}
+        for key, value in question["Test_Cases"].items():
+            new_dict[eval(key)] = value
+        question["Test_Cases"] = new_dict
+
+    return exam_info
 
 
 @server_check

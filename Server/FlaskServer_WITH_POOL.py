@@ -296,6 +296,7 @@ def add_exam(organization, course):
         rtn = jsonify(exam.save(course, time, duration, status))
         log_activity(request.remote_addr, token["username"], request.endpoint)
         return rtn
+    print "that"
     return jsonify("Unauthorized access!")
 
 

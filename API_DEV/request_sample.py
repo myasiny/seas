@@ -1,7 +1,7 @@
 # -*- coding:UTF-8 -*-
 
 from database_api import *
-
+import json
 
 def get_token(role):
     if role == "student":
@@ -58,7 +58,7 @@ lecturer_token = get_token("lecturer")
 #### HOW TO CREATE EXAM
 #
 # print "create exam", createExam(lecturer_token,
-#                  "data 101",
+#                  "dnm 101",
 #                  "FCG TEST",
 #                  "2018-12-31 22:30:00",
 #                  5,
@@ -80,15 +80,15 @@ lecturer_token = get_token("lecturer")
 #                           "value": 50,
 #                           "tags": ["mustafa","kemal"]},
 
-#
-# print "add question to exam", addQuestionToExam(lecturer_token, "engr 101", "quiz 7", {"type": "multiple_choice",
-#                       "subject": "math",
-#                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
-#                       "answer": "c",
-#                       "inputs": "q",
-#                       "outputs": "qq",
+# #
+# print "add question to exam", addQuestionToExam(lecturer_token, "dnm 101", "fcg test", {"type": "programming",
+#                       "subject": "python",
+#                       "text": "write a code to print out all even numbers between two decided numbers?",
+#                       "answer": "",
+#                       "inputs": [(3,5), (1,10)],
+#                       "outputs": [(4), (2,4,6,8,10)],
 #                       "value": 20,
-#                       "tags": ["integers", "math"]
+#                       "tags": ["integers", "loops", "functions"]
 #                      })
 
 
@@ -98,6 +98,12 @@ lecturer_token = get_token("lecturer")
 
 
 
+# print getExam(lecturer_token, "dnm 101", "fcg test")
+
+
+# print getExam(lecturer_token, "seas 101", "debug test")
+# print getExam(lecturer_token, "seas 101", "test 1")
+# print getExam(lecturer_token, "seas 101", "test 2")
 # print getExam(lecturer_token, "seas 101", "test 3")
 
 
@@ -143,14 +149,14 @@ lecturer_token = get_token("lecturer")
 # print resetPassword("fatihgulmez", temp_pass="j6DAc9up", new_pass="1")
 # print getGradesOfExam(lecturer_token, "data 101", "test 3")
 
-print getLastActivities(lecturer_token, "alicakmak", sign_in=True)
-print getLastActivities(lecturer_token, "alicakmak")
+# print getLastActivities(lecturer_token, "alicakmak", sign_in=True)
+# print getLastActivities(lecturer_token, "alicakmak")
 # print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", **json.load(open("example_data.json", "r")))
 # print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data")
-# answers = getAnswersOfStudent(lecturer_token, "seas 101", "test 3", "213962062")
+# answers = getAnswersOfStudent(lecturer_token, "seas 101", "test 3", "216602337")
 # with open("get_answers_example.txt", "w") as record:
 #     for answer in answers:
-#         record.write(answer[3])
+#         record.write(answer[3] + "\n\n\n")
 # print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
 
 # a = 0
@@ -164,6 +170,9 @@ print getLastActivities(lecturer_token, "alicakmak")
 # for line in b:
 #     print line
 #
+print getExam(lecturer_token, "dnm 101", "fcg test")
 print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")
+
+
