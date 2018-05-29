@@ -63,11 +63,11 @@ def on_pre_enter(self):
                 if i == 0:
                     i += 1
                 else:
-                    q = str(value["ID"]) + "*[SEAS-NEW-LINE]*" + \
-                        str(value["type"]) + "*[SEAS-NEW-LINE]*" + \
-                        str(value["value"]) + "*[SEAS-NEW-LINE]*" + \
-                        str(value["text"]) + "*[SEAS-NEW-LINE]*" + \
-                        str(value["answer"]) + "*[SEAS-NEW-LINE]*"
+                    q += str(value["ID"]) + "*[SEAS-NEW-LINE]*" + \
+                         str(value["type"]) + "*[SEAS-NEW-LINE]*" + \
+                         str(value["value"]) + "*[SEAS-NEW-LINE]*" + \
+                         str(value["text"]) + "*[SEAS-NEW-LINE]*" + \
+                         str(value["answer"]) + "*[SEAS-NEW-LINE]*"
             questions.write(cipher.encrypt(q))
             questions.close()
 
