@@ -69,6 +69,10 @@ def on_pre_enter(self):
                                                Cache.get("info", "nick")
                                                )[:3]
 
+    for a in activites[:]:
+        if not isinstance(a, (list,)):
+            activites.remove(a)
+
     if len(activites) < 3:
         for i in range(3 - len(activites)):
             activites.append(["", "", ""])
@@ -92,6 +96,10 @@ def on_pre_enter(self):
                                             Cache.get("info", "nick"),
                                             True
                                             )[:3]
+
+    for l in logins[:]:
+        if not isinstance(l, (list,)):
+            logins.remove(l)
 
     if len(logins) < 3:
         for i in range(3 - len(logins)):

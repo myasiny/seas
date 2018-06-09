@@ -35,7 +35,7 @@ def generate_qr(i):
         try:
             pil = Image.open("data/img/img_qr.png")
             rot = pil.rotate(90)
-            res = rot.resize((128, 512),
+            res = rot.resize((512, 512),
                              Image.LANCZOS
                              )
             res.save("data/img/img_qr.png")

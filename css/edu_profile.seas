@@ -84,7 +84,7 @@
             pos_hint: {"x": .315, "center_y": .725}
 
         Image:
-            id: img_qr_bg
+            id: img_barcode_bg
             source: "data/img/widget_black_75.png"
             keep_ratio: False
             allow_stretch: True
@@ -92,20 +92,44 @@
             pos_hint: {"x": .314, "center_y": .725}
 
         Image:
-            id: img_qr_1
-            source: "data/img/img_qr.png"
+            id: img_barcode
+            source: "data/img/img_barcode.png"
             keep_ratio: False
             allow_stretch: True
-            size_hint: .025, .1
-            pos_hint: {"x": .315, "center_y": .775}
+            size_hint: .025, .2
+            pos_hint: {"x": .315, "center_y": .725}
+
+        Image:
+            id: img_qr_1_bg
+            source: "data/img/widget_card.png"
+            keep_ratio: True
+            allow_stretch: True
+            size_hint: .11, .11
+            pos_hint: {"center_x": .175, "center_y": .725}
+
+        Image:
+            id: img_qr_1
+            source: "data/img/img_qr.png"
+            keep_ratio: True
+            allow_stretch: True
+            size_hint: .1, .1
+            pos_hint: {"center_x": .175, "center_y": .725}
+
+        Image:
+            id: img_qr_2_bg
+            source: "data/img/widget_card.png"
+            keep_ratio: True
+            allow_stretch: True
+            size_hint: .11, .11
+            pos_hint: {"center_x": .825, "center_y": .725}
 
         Image:
             id: img_qr_2
             source: "data/img/img_qr.png"
-            keep_ratio: False
+            keep_ratio: True
             allow_stretch: True
-            size_hint: .025, .1
-            pos_hint: {"x": .315, "center_y": .675}
+            size_hint: .1, .1
+            pos_hint: {"center_x": .825, "center_y": .725}
 
         Image:
             id: img_user_bg

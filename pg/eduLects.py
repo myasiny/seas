@@ -198,7 +198,10 @@ def on_exams(self):
         self.add_widget(self.ids["layout_exams"])
 
     self.ids["layout_exams"].opacity = 1
-    self.remove_widget(self.ids["layout_participants"])
+    try:
+        self.remove_widget(self.ids["layout_participants"])
+    except ReferenceError:
+        pass
 
     self.data_exam_details = database_api.getExamsOfLecture(Cache.get("info", "token"),
                                                             self.ids["txt_lect_code"].text
