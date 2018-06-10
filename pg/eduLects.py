@@ -345,8 +345,13 @@ def on_exam_select(self, dt):
                                          )
 
     self.ids["btn_exam_edit"].opacity = 1
-    if len(self.ids["btn_exam_edit"].get_property_observers("on_release")) < 1:
-        pass  # TODO
+    if len(self.ids["btn_exam_edit"].get_property_observers("on_release")) > 0:
+        self.ids["btn_exam_edit"].unbind(on_release=self.on_start_edit)
+
+    self.on_start_edit = partial(on_exam_edit,
+                                 self
+                                 )
+    self.ids["btn_exam_edit"].bind(on_release=self.on_start_edit)
 
     self.ids["btn_exam_start_grade"].opacity = 1
     if self.ids["txt_status_body"].text == "Graded":
@@ -579,7 +584,6 @@ def on_exam_grade(s, dt):
                                         allow_empty_selection=False
                                         )
     popup_content.add_widget(s.list_grades)
-
     popup_content.add_widget(Button(text="Complete",
                                     font_name="data/font/LibelSuit.ttf",
                                     font_size=s.height / 40,
@@ -606,6 +610,59 @@ def on_exam_grade(s, dt):
                                     on_release=s.popup.dismiss)
                              )
     s.popup.open()
+
+
+def on_exam_edit(self, dt):
+    """
+    TODO
+    :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
+    :return:
+    """
+
+    popup_content = FloatLayout()
+    self.popup = Popup(title=self.ids["txt_info_head"].text,
+                       content=popup_content,
+                       separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
+                       size_hint=(None, None),
+                       size=(self.width / 2, self.height / 2)
+                       )
+    data_exam_questions = database_api.getExam(Cache.get("info", "token"),
+                                               self.ids["txt_lect_code"].text,
+                                               self.ids["txt_info_head"].text
+                                               )["Questions"]
+    self.list_edit = ListView(size_hint=(.9, .8),
+                              pos_hint={"center_x": .5, "center_y": .55}
+                              )
+    args_converter = lambda row_index, x: {"text": "Question {:02}".format(int(x)),
+                                           "markup": True,
+                                           "selected_color": (.843, .82, .82, 1),
+                                           "deselected_color": (.57, .67, .68, 1),
+                                           "background_down": "data/img/widget_gray_75.png",
+                                           "font_name": "data/font/CaviarDreams_Bold.ttf",
+                                           "font_size": self.height / 50,
+                                           "size_hint_y": None,
+                                           "height": self.height / 20,
+                                           "on_release": self.on_edit
+                                           }
+    self.list_edit.adapter = ListAdapter(data=sorted([i for i in data_exam_questions.keys()]),
+                                         cls=ListItemButton,
+                                         args_converter=args_converter,
+                                         allow_empty_selection=False
+                                         )
+    popup_content.add_widget(self.list_edit)
+    popup_content.add_widget(Button(text="Close",
+                                    font_name="data/font/LibelSuit.ttf",
+                                    font_size=self.height / 40,
+                                    background_normal="data/img/widget_red.png",
+                                    background_down="data/img/widget_red_select.png",
+                                    size_hint_x=1,
+                                    size_hint_y=None,
+                                    height=self.height / 20,
+                                    pos_hint={"center_x": .5, "y": .0},
+                                    on_release=self.popup.dismiss)
+                             )
+    self.popup.open()
 
 
 def on_participants(self):

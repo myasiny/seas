@@ -464,6 +464,10 @@ class EduLects(Screen):
                          )
 
     @staticmethod
+    def on_edit(dt):
+        pass
+
+    @staticmethod
     def on_live():
         pages.append(EduLive(name="EduLive"))
         appReset.on_back(pages,

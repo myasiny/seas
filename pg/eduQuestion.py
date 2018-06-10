@@ -115,6 +115,7 @@ def on_type_select(self, name, checkbox, value):
 
     if name == "programming":
         self.question_type = name
+        self.ids["input_tags"].hint_text = "Method"
 
         widget = [self.correct_answer,
                   self.ids["input_answer_a"],
@@ -136,6 +137,7 @@ def on_type_select(self, name, checkbox, value):
             ids.size_hint_y = 0.3
     elif name == "short_answer":
         self.question_type = name
+        self.ids["input_tags"].hint_text = "Tags"
 
         widget = [self.correct_answer,
                   self.ids["input_input"],
@@ -154,6 +156,7 @@ def on_type_select(self, name, checkbox, value):
         self.ids["input_short_answer"].size_hint_y = 0.675
     elif name == "multiple_choice":
         self.question_type = name
+        self.ids["input_tags"].hint_text = "Tags"
 
         widget = [self.ids["input_input"],
                   self.ids["input_output"],
