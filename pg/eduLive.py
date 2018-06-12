@@ -72,7 +72,7 @@ def on_pre_enter(self):
                                                     "data/img/ico_monitor_live_select.png",
                                                     (.05, True),
                                                     {"x": .93, "y": .05},
-                                                    partial(on_monitor_play,  # TODO
+                                                    partial(on_participant_select,  # TODO
                                                             self
                                                             )
                                                     )
@@ -177,9 +177,9 @@ def on_participant_select(s, dt):
         :return: It is keystroke graph.
         """
 
-        x_time = None  # TODO
-        y_rate = None  # TODO
-        z_tend = None  # TODO
+        x_time = [0]  # TODO
+        y_rate = [0]  # TODO
+        z_tend = [0]  # TODO
 
         for y in range(1, len(y_rate)):
             z_tend.append((y_rate[y] - y_rate[y - 1]) / 5.0)
@@ -204,7 +204,12 @@ def on_participant_select(s, dt):
         s.graph_widget = FigureCanvasKivyAgg(keystroke_graph().gcf())
         s.ids["layout_rate"].add_widget(s.graph_widget)
 
-    answer_dict = None  # TODO
+    answer_dict = {0: database_api.getKeyloggerData(Cache.get("info", "token"),
+                                                    Cache.get("lect", "code"),
+                                                    Cache.get("lect", "exam"),
+                                                    s.ids["list_participants"].adapter.selection[0].text.split(" - ")[1]
+                                                    )
+                   }
 
     for i, j in answer_dict.items():
         ordered_answer_dict = OrderedDict(sorted(j.items()))
@@ -280,7 +285,7 @@ def on_monitor_play(self, dt):
     self.event = Clock.schedule_interval(partial(on_monitor_forward,
                                                  self
                                                  ),
-                                         0.5
+                                         1
                                          )
 
     watch = [self.btn_monitor_back,

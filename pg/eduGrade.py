@@ -5,9 +5,6 @@ eduGrade
 `eduGrade` is a toolbox for main app, it contains necessary methods that EduGrade page requires.
 """
 
-import warnings
-warnings.filterwarnings(action="ignore", category=UserWarning, module="gensim")
-
 import code
 import re
 from functools import partial
