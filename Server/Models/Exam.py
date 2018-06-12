@@ -225,7 +225,7 @@ class Exam:
 
     def get_live_exam_keystrokes(self, course, student_id):
         student = self.db.execute("SELECT Username FROM members where PersonID = %s" %student_id)[0][0]
-        path = "uploads/%s/courses/%s/exams/%s/keystroke/%s.keystroke" % (self.org, course, self.name, student)
+        path = "uploads/%s/courses/%s/exams/%s/key_streams/%s.keystream" % (self.org, course, self.name, student)
         print path
         if os.path.exists(path):
             a = open(path, "r").read().split(KEYSTREAM_DELIMITER)
