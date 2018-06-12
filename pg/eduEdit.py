@@ -99,13 +99,16 @@ def on_pre_enter(self):
     self.ids["input_tags"].text = self.data_selected_question["tags"][:-1]
     self.ids["input_grade"].text = str(self.data_selected_question["value"])
     if self.question_type == "programming":
+        check_1.active = True
         self.ids["input_question_body"].text = self.data_selected_question["text"]
         self.ids["input_input"].text = [",".join(key) for key in self.data_selected_question["Test_Cases"].keys()][0]
         self.ids["input_output"].text = [",".join(value) for value in self.data_selected_question["Test_Cases"].values()][0]
     elif self.question_type == "short_answer":
+        check_2.active = True
         self.ids["input_question_body"].text = self.data_selected_question["text"]
         self.ids["input_short_answer"].text = self.data_selected_question["answer"]
     elif self.question_type == "multiple_choice":
+        check_3.active = True
         question_text = self.data_selected_question["text"].split("*[SEAS-CHOICES]*")
         question_choices = question_text[1].split("*[SEAS-SLASH-N]*")
         self.ids["input_question_body"].text = question_text[0]

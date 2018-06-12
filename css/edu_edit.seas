@@ -44,7 +44,7 @@
                 background_disabled_normal: "data/img/widget_black_75.png"
                 size_hint: .1, .8
                 pos_hint: {"center_x": .25, "y": .15}
-                on_release: root.on_question_cancel()
+                on_release: root.on_lects()
 
             Button:
                 id: btn_question_complete
@@ -56,7 +56,7 @@
                 background_disabled_normal: "data/img/widget_black_75.png"
                 size_hint: .1, .8
                 pos_hint: {"center_x": .75,"y": .15}
-                on_release: root.on_question_add("complete")
+                on_release: root.on_submit()
 
         Image:
             id: img_top

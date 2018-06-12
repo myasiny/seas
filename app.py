@@ -201,7 +201,7 @@ class EduEdit(Screen):
 
     appLogin.load_string("edu_edit")
 
-    def on_enter(self, *args):
+    def on_pre_enter(self, *args):
         eduEdit.on_pre_enter(self)
 
     def on_submit(self):
