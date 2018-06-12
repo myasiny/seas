@@ -139,6 +139,7 @@
             padding_y: [self.height / 20.25, 0]
             size_hint: .4, .5
             pos_hint: {"center_x": .75, "center_y": .475}
+            on_text: root.on_answer_change(self.text)
 
         Image:
             id: img_code_output_bg
@@ -174,6 +175,7 @@
             padding_y: [self.height / 20.25, 0]
             size_hint: .4, .675
             pos_hint: {"center_x": .75, "center_y": .3875}
+            on_text: root.on_answer_change(self.text)
 
         ScrollView:
             id: txt_multiple_choices_scroll

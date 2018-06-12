@@ -191,20 +191,13 @@ def on_pre_enter(self):
     for i in proc.open_files():
         self.list_progs_pre.append(i.path)
 
-    Clock.schedule_once(partial(datacollect_api.get_data,
-                                Cache.get("info", "token"),
-                                Cache.get("lect", "code"),
-                                Cache.get("lect", "exam"),
-                                Cache.get("info", "id"),
-                                Cache.get("data", "counter")
-                                )
-                        )
-    self.listen = Clock.schedule_interval(partial(datacollect_api.get_data,
+    self.listen = Clock.schedule_interval(partial(datacollect_api.post_data,
                                                   Cache.get("info", "token"),
                                                   Cache.get("lect", "code"),
                                                   Cache.get("lect", "exam"),
                                                   Cache.get("info", "id"),
-                                                  Cache.get("data", "counter")
+                                                  Cache.get("data", "counter"),
+                                                  self
                                                   ),
                                           5
                                           )
@@ -219,6 +212,7 @@ def on_correct_answer_select(self, spinner, text):
     :return:
     """
 
+    self.answer = text
     self.multiple_choice_answer = text
 
 

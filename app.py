@@ -49,7 +49,7 @@ class StdStats(Screen):
 class StdLive(Screen):
     """
     @group Design: on_pre_enter
-    @group Functionality: on_submit, on_leave
+    @group Functionality: on_answer_change, on_submit, on_leave
     """
 
     appLogin.load_string("std_live")
@@ -94,6 +94,10 @@ class StdLive(Screen):
     #
     #     return True
 
+    def __init__(self, **kw):
+        super(StdLive, self).__init__(**kw)
+        self.answer = ""
+
     def on_pre_enter(self, *args):
         Cache.append("data",
                      "counter",
@@ -101,6 +105,9 @@ class StdLive(Screen):
                      )  # TODO
 
         stdLive.on_pre_enter(self)
+
+    def on_answer_change(self, txt):
+        self.answer = txt
 
     @staticmethod
     def on_lects():
