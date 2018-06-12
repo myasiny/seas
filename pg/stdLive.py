@@ -7,7 +7,6 @@ stdLive
 
 import code
 import os
-import threading
 import psutil
 import subprocess32
 import sys
@@ -41,6 +40,10 @@ def on_pre_enter(self):
     self.cipher = Cache.get("config",
                             "cipher"
                             )
+
+    self.ids["txt_exam_name"].text = Cache.get("lect",
+                                               "code"
+                                               )
 
     questions = open("data/questions.fay", "r")
     try:
@@ -188,15 +191,23 @@ def on_pre_enter(self):
     for i in proc.open_files():
         self.list_progs_pre.append(i.path)
 
-    listen = threading.Thread(target=datacollect_api.listen,
-                              args=(Cache.get("info", "token"),
-                                    Cache.get("lect", "code"),
-                                    Cache.get("lect", "exam"),
-                                    Cache.get("info", "id"),
-                                    )
-                              )
-    listen.daemon = True
-    listen.start()
+    Clock.schedule_once(partial(datacollect_api.get_data,
+                                Cache.get("info", "token"),
+                                Cache.get("lect", "code"),
+                                Cache.get("lect", "exam"),
+                                Cache.get("info", "id"),
+                                Cache.get("data", "counter")
+                                )
+                        )
+    self.listen = Clock.schedule_interval(partial(datacollect_api.get_data,
+                                                  Cache.get("info", "token"),
+                                                  Cache.get("lect", "code"),
+                                                  Cache.get("lect", "exam"),
+                                                  Cache.get("info", "id"),
+                                                  Cache.get("data", "counter")
+                                                  ),
+                                          5
+                                          )
 
 
 def on_correct_answer_select(self, spinner, text):
@@ -330,3 +341,4 @@ def on_leave(self):
     """
 
     self.date_time.cancel()
+    self.listen.cancel()

@@ -51,8 +51,8 @@
                 background_normal: "data/img/widget_green.png"
                 background_down: "data/img/widget_green_select.png"
                 background_disabled_normal: "data/img/widget_black_black.png"
-                size_hint: .1, .9
-                pos_hint: {"center_x": .1, "y": .1}
+                size_hint: .1, .8
+                pos_hint: {"center_x": .1, "y": .15}
                 on_release: root.on_time_add()
 
             Label:
@@ -72,8 +72,8 @@
                 background_normal: "data/img/widget_red.png"
                 background_down: "data/img/widget_red_select.png"
                 background_disabled_normal: "data/img/widget_black_75.png"
-                size_hint: .1, .9
-                pos_hint: {"center_x": .9, "y": .1}
+                size_hint: .1, .8
+                pos_hint: {"center_x": .9, "y": .15}
                 on_release: root.on_exam_finish()
 
         Image:
