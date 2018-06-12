@@ -83,6 +83,9 @@ def on_pre_enter(self):
     :return:
     """
 
+    self.layout_exams = self.ids["layout_exams"]
+    self.layout_participants = self.ids["layout_participants"]
+
     self.cipher = Cache.get("config", "cipher")
 
     self.data = []
@@ -194,14 +197,11 @@ def on_exams(self):
     :return:
     """
 
-    if self.ids["layout_exams"] not in list(self.children):
-        self.add_widget(self.ids["layout_exams"])
+    if self.layout_exams not in list(self.children):
+        self.add_widget(self.layout_exams)
 
-    self.ids["layout_exams"].opacity = 1
-    try:
-        self.remove_widget(self.ids["layout_participants"])
-    except ReferenceError:
-        pass
+    self.layout_exams.opacity = 1
+    self.remove_widget(self.layout_participants)
 
     self.data_exam_details = database_api.getExamsOfLecture(Cache.get("info", "token"),
                                                             self.ids["txt_lect_code"].text
@@ -275,7 +275,7 @@ def on_exams(self):
             self.ids["img_filter"].source = "data/img/widget_gray_75.png"
 
     try:
-        if self.btn_filter_all in list(self.ids["layout_exams"].children):
+        if self.btn_filter_all in list(self.layout_exams.children):
             pass
     except:
         for key in self.data_exam_filter.iterkeys():
@@ -286,15 +286,15 @@ def on_exams(self):
             else:
                 pos_y = .3725
 
-            self.ids["layout_exams"].add_widget(image_button.add_button("data/img/widget_{x5}.png".format(x5=key),
-                                                                        "data/img/widget_{x5}_select.png".format(x5=key),
-                                                                        (.025, True),
-                                                                        {"x": .225, "y": pos_y},
-                                                                        partial(on_filter,
-                                                                                key
-                                                                                )
-                                                                        )
-                                                )
+            self.layout_exams.add_widget(image_button.add_button("data/img/widget_{x5}.png".format(x5=key),
+                                                                 "data/img/widget_{x5}_select.png".format(x5=key),
+                                                                 (.025, True),
+                                                                 {"x": .225, "y": pos_y},
+                                                                 partial(on_filter,
+                                                                         key
+                                                                         )
+                                                                 )
+                                         )
 
         self.btn_filter_all = image_button.add_button("data/img/widget_gray_75.png",
                                                       "data/img/widget_gray_75_select.png",
@@ -304,7 +304,7 @@ def on_exams(self):
                                                               "all"
                                                               )
                                                       )
-        self.ids["layout_exams"].add_widget(self.btn_filter_all)
+        self.layout_exams.add_widget(self.btn_filter_all)
 
 
 def on_exam_select(self, dt):
@@ -632,11 +632,27 @@ def on_exam_grade(s, dt):
 
 def on_exam_edit(self, dt):
     """
-    TODO
+    This method switches page to question editing page.
     :param self: It is for handling class structure.
     :param dt: It is for handling callback input.
     :return:
     """
+
+    def color(x):
+        """
+        This method determines color name for given question according to its type.
+        :param x: It is type of question.
+        :return: It is name of color.
+        """
+
+        if x == "programming":
+            name = "green"
+        elif x == "short_answer":
+            name = "yellow"
+        else:
+            name = "red"
+
+        return name
 
     popup_content = FloatLayout()
     self.popup = Popup(title=self.ids["txt_info_head"].text,
@@ -652,11 +668,12 @@ def on_exam_edit(self, dt):
     self.list_edit = ListView(size_hint=(.9, .8),
                               pos_hint={"center_x": .5, "center_y": .55}
                               )
-    args_converter = lambda row_index, x: {"text": "Question {:02}".format(int(x)),
+    args_converter = lambda row_index, x: {"text": "Question {:02}".format(int(x)) + " ({type}...)".format(type=data_exam_questions[x]["type"][:5].title()),
                                            "markup": True,
                                            "selected_color": (.843, .82, .82, 1),
                                            "deselected_color": (.57, .67, .68, 1),
                                            "background_down": "data/img/widget_gray_75.png",
+                                           "background_normal": "data/img/widget_list_{t}.png".format(t=color(data_exam_questions[x]["type"])),
                                            "font_name": "data/font/CaviarDreams_Bold.ttf",
                                            "font_size": self.height / 50,
                                            "size_hint_y": None,
@@ -690,14 +707,11 @@ def on_participants(self):
     :return:
     """
 
-    try:
-        if self.ids["layout_participants"] not in list(self.children):
-            self.add_widget(self.ids["layout_participants"])
+    if self.layout_participants not in list(self.children):
+        self.add_widget(self.layout_participants)
 
-        self.ids["layout_participants"].opacity = 1
-        self.remove_widget(self.ids["layout_exams"])
-    except ReferenceError:
-        pass
+    self.layout_participants.opacity = 1
+    self.remove_widget(self.layout_exams)
 
     data = database_api.getCourseStudents(Cache.get("info", "token"),
                                           self.ids["txt_lect_code"].text
