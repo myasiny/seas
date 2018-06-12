@@ -1,6 +1,11 @@
 # -*-coding:utf-8-*-
+import json
 import os
 import threading
+import subprocess32 as subprocess
+
+import sys
+
 from Password import Password
 from External_Functions.passwordGenerator import passwordGenerator
 from External_Functions.sendEmail import send_mail_password_reset
@@ -164,8 +169,88 @@ class Student(User):
 
     def add_answer(self, question_id, answer):
         answer = answer.replace("'", "''").replace('""', '"')
-        command = "INSERT INTO answers(examID, questionID, studentID, answer) values " \
-                  "((select examID from questions q where q.questionID = %d),%d, %d, '%s') " \
-                  "ON DUPLICATE KEY UPDATE answer = '%s';" \
-                  % (int(question_id),int(question_id), int(self.user_id), answer, answer)
+        grade = self.check_answer(question_id, answer)
+        if grade is None:
+            command = "INSERT INTO answers(examID, questionID, studentID, answer) values " \
+                      "((select examID from questions q where q.questionID = %d),%d, %d, '%s') " \
+                      "ON DUPLICATE KEY UPDATE answer = '%s';" \
+                      % (int(question_id),int(question_id), int(self.user_id), answer, answer)
+        else:
+            command = "INSERT INTO answers(examID, questionID, studentID, answer, grade) values " \
+                      "((select examID from questions q where q.questionID = %d),%d, %d, '%s', '%f') " \
+                      "ON DUPLICATE KEY UPDATE answer = '%s', grade='%f';" \
+                      % (int(question_id), int(question_id), int(self.user_id), answer, grade, answer, grade)
         return self.execute(command)
+
+    def check_answer(self, question_id, answer):
+        question_type, true_answer, value, tags, test_cases = self.execute("SELECT Type, Answer, Value, Tags, Test_Cases"
+                                                                           " FROM questions WHERE QuestionID = %d"
+                                                                           %int(question_id))[0]
+        with open("temp.py", "w") as script:
+            script.write(answer)
+        if question_type == "multiple_choice":
+            if true_answer.lower() == answer.lower():
+                return value
+            else:
+                return 0
+            pass
+        elif question_type == "programming":
+            try:
+                test_cases = self.parse_outputs(json.loads(test_cases.replace("''", "'").replace("u'", "u''"), strict=False))
+            except SyntaxError:
+                test_cases = self.parse_outputs(json.loads(test_cases.replace("''", "'"), strict=False))
+            python_path = sys.executable
+            if "(u'',)" in test_cases:
+                try:
+                    output = subprocess.check_output(("%s temp.py" %python_path), stderr=subprocess.STDOUT, timeout=5)[:-1]
+                except subprocess.TimeoutExpired:
+                    output = "TimeoutError"
+                except subprocess.CalledProcessError:
+                    output = "CodeIntegrityError"
+                return value if output == test_cases["(u'',)"][0].decode("utf-8") else 0
+
+            test_case_dict = dict()
+            for i, j in test_cases.items():
+                in_ = eval("(%s)" % eval(i)[0].decode("utf-8"))
+                out_ = eval("(%s)" % j[0].decode("utf-8"))
+                test_case_dict = dict(zip(in_, out_))
+                break
+
+            test_score = 0
+
+            for test_input, test_output in test_case_dict.items():
+                command = """%s -c "from temp import *; print %s%s" """ % (python_path, tags[:-1],repr(test_input))
+                try:
+                    output = subprocess.check_output(command, timeout=5)[:-1]
+
+                    if len(output.split("\n"))>1:
+                        output = output.replace("\nNone", "")
+                    if len(test_output) == 1:
+                        check = test_output[0] == eval(output)
+                    else:
+                        check = test_output == eval(output)
+                    if check:
+                        test_score += 1
+                except subprocess.CalledProcessError:
+                    output="CodeIntegrityError"
+                except subprocess.TimeoutExpired:
+                    output="TimeoutError"
+
+            grade = value*(float(test_score)/len(test_case_dict))
+            print grade
+            return grade
+            pass
+        else:
+            return None
+
+    @staticmethod
+    def parse_outputs(question):
+        parsed_outputs = {}
+        for key, value in question.items():
+            a = tuple(eval(key))
+            try:
+                b = tuple(value)
+            except TypeError:
+                b = value
+            parsed_outputs[str(a)] = b
+        return parsed_outputs

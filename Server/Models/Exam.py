@@ -74,8 +74,11 @@ class Exam:
                 question_info["answer"] = question[6]
                 question_info["value"] = question[8]
                 try:
-                    print type(question[7]), question[7]
-                    question_info["Test_Cases"] = self.parse_outputs(json.loads(question[7].replace("''", "'")))
+                    print type(question[7]), question[7], "***",question[7].replace("''","'",)[12]
+                    try:
+                        question_info["Test_Cases"] = self.parse_outputs(json.loads(question[7].replace("''", "'").replace("u'", "u''"), strict=False))
+                    except SyntaxError:
+                        question_info["Test_Cases"] = self.parse_outputs(json.loads(question[7].replace("''", "'"), strict=False))
                 except TypeError:
                     question_info["Test_Cases"] = None
                 except AttributeError:
