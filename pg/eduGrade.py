@@ -143,7 +143,10 @@ def on_pre_enter(self):
             for name in widget:
                 self.ids[name].disabled = False
 
-            self.ids["txt_auto_grade"].text = "Auto Grade: {grade}".format(grade="TODO")  # TODO
+            if answer[4] is not None:
+                self.ids["txt_auto_grade"].text = "Auto Grade: {grade}".format(grade=answer[4])
+            else:
+                self.ids["txt_auto_grade"].text = "Auto Grade: {grade}".format(grade="...")
 
             if self.question_type == "short_answer":
                 try:
