@@ -520,6 +520,20 @@ def getLastActivities(token, username, sign_in=False, organization=current_organ
 @server_check
 def postExamData(token, course, exam, user_id, key_stream, keystroke=None, memory_usage=None, network_download=None,
                  network_upload=None, organization=current_organization, base_url=server_address):
+    """
+    :param token:
+    :param course:
+    :param exam:
+    :param user_id:
+    :param key_stream: tuple
+    :param keystroke:
+    :param memory_usage:
+    :param network_download:
+    :param network_upload:
+    :param organization:
+    :param base_url:
+    :return:
+    """
     organization = __normalize(organization)
     course = __normalize(course)
     exam = __normalize(exam)

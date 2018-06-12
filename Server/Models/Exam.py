@@ -230,7 +230,8 @@ class Exam:
     def get_live_exam_keystrokes(self, course, student_id):
         path = "uploads/%s/courses/%s/exams/%s/keystroke/%s.keystroke" % (self.org, course, self.name, student_id)
         if os.path.exists(path):
-            return open(path, "r").read().split(KEYSTREAM_DELIMITER)
+            a = open(path, "r").read().split(KEYSTREAM_DELIMITER)
+            return dict(zip([i for i in range(len(a))], a))
         else:
             return
 
