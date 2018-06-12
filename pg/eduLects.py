@@ -494,7 +494,25 @@ def on_exam_grade(s, dt):
         :return:
         """
 
-        self.popup.dismiss()  # TODO
+        database_api.change_status_of_exam(Cache.get("info", "token"),
+                                           self.ids["txt_lect_code"].text,
+                                           self.ids["txt_info_head"].text,
+                                           "graded"
+                                           )
+
+        self.ids["txt_status_body"].text = "Graded"
+
+        self.ids["btn_exam_start_grade"].text = "DOWNLOAD"
+
+        if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) > 0:
+            self.ids["btn_exam_start_grade"].unbind(on_release=self.start_grade)
+
+        self.start_grade = partial(None,  # TODO
+                                   self
+                                   )
+        self.ids["btn_exam_start_grade"].bind(on_release=self.start_grade)
+
+        self.popup.dismiss()
 
     popup_content = FloatLayout()
     s.popup = Popup(title="Grades",
@@ -643,7 +661,7 @@ def on_exam_edit(self, dt):
                                            "font_size": self.height / 50,
                                            "size_hint_y": None,
                                            "height": self.height / 20,
-                                           "on_release": self.on_edit
+                                           "on_release": partial(self.on_edit, x)
                                            }
     self.list_edit.adapter = ListAdapter(data=sorted([i for i in data_exam_questions.keys()]),
                                          cls=ListItemButton,

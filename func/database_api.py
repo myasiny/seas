@@ -1,13 +1,13 @@
 # -*-coding:utf-8-*-
 import sys
-
-from kivy.network.urlrequest import UrlRequest
 from requests import put, get, delete
 from requests.exceptions import ConnectionError, Timeout
 import json
 import re
 import pickle
 from config import *
+
+# from kivy.network.urlrequest import UrlRequest
 
 
 def __normalize(word):
@@ -36,7 +36,6 @@ def testConnection(base_url=server_address):
     :return: Boolean; True if connection is done, false otherwise.
     """
     try:
-        # UrlRequest(base_url, timeout=5, on_success=testConnection_result, on_failure=testConnection_result, on_error=testConnection_result)
         get(base_url, timeout=5)
         return True
     except ConnectionError or Timeout:
@@ -305,7 +304,14 @@ def getExam(token, course_code, name, base_url=server_address, organization=curr
     course_code = __normalize(course_code)
     name = __normalize(name)
     url = base_url + "/organizations/%s/%s/exams/%s" % (organization, course_code, name)
-    return get(url, headers = {"Authorization": "Bearer " + token}).json()
+    exam_info = get(url, headers = {"Authorization": "Bearer " + token}).json()
+    for question in exam_info["Questions"].values():
+        new_dict = {}
+        for key, value in question["Test_Cases"].items():
+            new_dict[eval(key)] = value
+        question["Test_Cases"] = new_dict
+
+    return exam_info
 
 
 @server_check

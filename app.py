@@ -24,7 +24,8 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 from func import database_api
-from pg import appLogin, appReset, eduLects, eduProfile, eduExam, eduQuestion, eduLive, eduGrade, stdLects, stdLive
+from pg import appLogin, appReset, eduLects, eduProfile, eduExam, eduQuestion, eduLive, eduGrade, stdLects, stdLive, \
+    eduEdit
 
 __authors__ = ["Muhammed Yasin Yildirim", "Fatih Cagatay Gulmez", "Ali Emre Oz"]
 __credits__ = ["Ali Cakmak"]
@@ -190,6 +191,29 @@ class StdLects(Screen):
 
 class EduStats(Screen):
     pass
+
+
+class EduEdit(Screen):
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_submit
+    """
+
+    appLogin.load_string("edu_edit")
+
+    def on_enter(self, *args):
+        eduEdit.on_pre_enter(self)
+
+    def on_submit(self):
+        if eduEdit.on_submit(self):
+            self.on_lects()
+
+    @staticmethod
+    def on_lects():
+        pages.append(EduLects(name="EduLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
 
 class EduGrade(Screen):
@@ -401,7 +425,7 @@ class EduProfile(Screen):
 class EduLects(Screen):
     """
     @group Design: on_pre_enter, on_exams, on_participants
-    @group Functionality: on_enter, on_lect_select, on_help, on_contact, on_grade, on_quit, on_leave
+    @group Functionality: on_enter, on_lect_select, on_help, on_contact, on_edit, on_grade, on_quit, on_leave
     """
 
     appLogin.load_string("edu_lects")
@@ -456,16 +480,29 @@ class EduLects(Screen):
     def on_contact(self):
         eduLects.on_contact(self)
 
+    def on_edit(self, no, dt):
+        self.popup.dismiss()
+
+        Cache.append("lect",
+                     "exam",
+                     self.ids["txt_info_head"].text
+                     )
+        Cache.append("lect",
+                     "question",
+                     no
+                     )
+
+        pages.append(EduEdit(name="EduEdit"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
     @staticmethod
     def on_grade():
         pages.append(EduGrade(name="EduGrade"))
         appReset.on_back(pages,
                          screen
                          )
-
-    @staticmethod
-    def on_edit(dt):
-        pass
 
     @staticmethod
     def on_live():
@@ -657,7 +694,7 @@ if __name__ == "__main__":
                    limit=10
                    )
     Cache.register("lect",
-                   limit=6
+                   limit=7
                    )
     Cache.register("config",
                    limit=2
