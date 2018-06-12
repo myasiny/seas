@@ -335,4 +335,7 @@ def on_leave(self):
     """
 
     self.date_time.cancel()
-    self.listen.cancel()
+    try:
+        self.listen.cancel()
+    except:
+        pass
