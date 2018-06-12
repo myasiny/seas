@@ -83,8 +83,11 @@ def on_pre_enter(self):
     :return:
     """
 
-    self.layout_exams = self.ids["layout_exams"]
-    self.layout_participants = self.ids["layout_participants"]
+    try:
+        self.layout_exams = self.ids["layout_exams"]
+        self.layout_participants = self.ids["layout_participants"]
+    except KeyError:
+        pass
 
     self.cipher = Cache.get("config", "cipher")
 

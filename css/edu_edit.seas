@@ -43,7 +43,7 @@
                 background_down: "data/img/widget_red_select.png"
                 background_disabled_normal: "data/img/widget_black_75.png"
                 size_hint: .1, .8
-                pos_hint: {"center_x": .25, "y": .15}
+                pos_hint: {"center_x": .075, "y": .15}
                 on_release: root.on_lects()
 
             Button:
@@ -55,8 +55,26 @@
                 background_down: "data/img/widget_green_select.png"
                 background_disabled_normal: "data/img/widget_black_75.png"
                 size_hint: .1, .8
-                pos_hint: {"center_x": .75,"y": .15}
+                pos_hint: {"center_x": .925,"y": .15}
                 on_release: root.on_submit()
+
+            Label:
+                id: txt_lect_name
+                color: 1, 1, 1, 1
+                multiline: False
+                font_name: "data/font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 3
+                size_hint: .1, .8
+                pos_hint: {"center_x": .25, "y": .15}
+
+            Label:
+                id: txt_exam_name
+                color: 1, 1, 1, 1
+                multiline: False
+                font_name: "data/font/CaviarDreams_Bold.ttf"
+                font_size: self.height / 3
+                size_hint: .1, .8
+                pos_hint: {"center_x": .75, "y": .15}
 
         Image:
             id: img_top

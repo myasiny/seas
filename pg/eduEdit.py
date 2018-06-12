@@ -91,27 +91,42 @@ def on_pre_enter(self):
 
     self.question_type = self.data_selected_question["type"]
 
-    self.ids["txt_question_no"].text = "{exam} - Question {number}".format(exam=Cache.get("lect", "exam"),
-                                                                           number=Cache.get("lect", "question")
-                                                                           )
+    self.ids["txt_lect_name"].text = Cache.get("lect",
+                                               "name"
+                                               )
+    self.ids["txt_exam_name"].text = Cache.get("lect",
+                                               "exam"
+                                               )
+    self.ids["txt_question_no"].text = "Question {number}".format(number=Cache.get("lect",
+                                                                                   "question"
+                                                                                   )
+                                                                  )
 
     self.ids["input_subject"].text = self.data_selected_question["subject"]
     self.ids["input_tags"].text = self.data_selected_question["tags"][:-1]
     self.ids["input_grade"].text = str(self.data_selected_question["value"])
     if self.question_type == "programming":
         check_1.active = True
-        self.ids["input_question_body"].text = self.data_selected_question["text"]
+        self.ids["input_question_body"].text = self.data_selected_question["text"].replace("*[SEAS-SLASH-N]*",
+                                                                                           "\n"
+                                                                                           )
         self.ids["input_input"].text = [",".join(key) for key in self.data_selected_question["Test_Cases"].keys()][0]
         self.ids["input_output"].text = [",".join(value) for value in self.data_selected_question["Test_Cases"].values()][0]
     elif self.question_type == "short_answer":
         check_2.active = True
-        self.ids["input_question_body"].text = self.data_selected_question["text"]
-        self.ids["input_short_answer"].text = self.data_selected_question["answer"]
+        self.ids["input_question_body"].text = self.data_selected_question["text"].replace("*[SEAS-SLASH-N]*",
+                                                                                           "\n"
+                                                                                           )
+        self.ids["input_short_answer"].text = self.data_selected_question["answer"].replace("*[SEAS-SLASH-N]*",
+                                                                                            "\n"
+                                                                                            )
     elif self.question_type == "multiple_choice":
         check_3.active = True
         question_text = self.data_selected_question["text"].split("*[SEAS-CHOICES]*")
         question_choices = question_text[1].split("*[SEAS-SLASH-N]*")
-        self.ids["input_question_body"].text = question_text[0]
+        self.ids["input_question_body"].text = question_text[0].replace("*[SEAS-SLASH-N]*",
+                                                                        "\n"
+                                                                        )
         self.ids["input_answer_a"].text = question_choices[0].replace("[font=data/font/AndaleMono.ttf][b]A)[/b][/font] ",
                                                                       ""
                                                                       )
