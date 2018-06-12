@@ -205,10 +205,7 @@ class Exam:
         else:
             o = "w"
         with open(path, o) as key_stream_file:
-            try:
-                key_stream_file.write(key_stream[0])
-            except:
-                key_stream_file.write(key_stream)
+            key_stream_file.write(key_stream)
             key_stream_file.write(KEYSTREAM_DELIMITER)
         return
 
