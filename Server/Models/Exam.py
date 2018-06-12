@@ -74,7 +74,6 @@ class Exam:
                 question_info["answer"] = question[6]
                 question_info["value"] = question[8]
                 try:
-                    print type(question[7]), question[7], "***",question[7].replace("''","'",)[12]
                     try:
                         question_info["Test_Cases"] = self.parse_outputs(json.loads(question[7].replace("''", "'").replace("u'", "u''"), strict=False))
                     except SyntaxError:
@@ -94,7 +93,7 @@ class Exam:
                 "ID": exam_id,
                 "Status": status,
                 "Timezone": timezone}
-        except IndexError:
+        except KeyError:
             return "No Exam Named as " + self.name
 
     def get_string(self):
@@ -225,11 +224,15 @@ class Exam:
         return "Done"
 
     def get_live_exam_keystrokes(self, course, student_id):
-        path = "uploads/%s/courses/%s/exams/%s/keystroke/%s.keystroke" % (self.org, course, self.name, student_id)
+        student = self.db.execute("SELECT Username FROM members where PersonID = %s" %student_id)[0][0]
+        path = "uploads/%s/courses/%s/exams/%s/keystroke/%s.keystroke" % (self.org, course, self.name, student)
+        print path
         if os.path.exists(path):
             a = open(path, "r").read().split(KEYSTREAM_DELIMITER)
             return dict(zip([i for i in range(len(a))], a))
         else:
+            a = open(path, "r").read().split(KEYSTREAM_DELIMITER)
+            return dict(zip([i for i in range(len(a))], a))
             return
 
     def check_first_enter(self, username):

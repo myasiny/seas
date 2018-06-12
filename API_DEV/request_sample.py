@@ -15,9 +15,9 @@ def get_token(role):
     print auth
     return auth[-1]
 
-student_token = get_token("student")
+# student_token = get_token("student")
 # print student_token
-# lecturer_token = get_token("lecturer")
+lecturer_token = get_token("lecturer")
 # print lecturer_token
 # admin_token = get_token("admin")
 # print admin_token
@@ -93,8 +93,8 @@ student_token = get_token("student")
 
 
 ## HOW TO GET EXAM
-with open("example_answer.py", "r") as answer:
-    print sendAnswers(student_token, "seas 101", 259, "fatihgulmez", answer.read())
+# with open("example_answer.py", "r") as answer:
+#     print sendAnswers(student_token, "seas 101", 259, "fatihgulmez", answer.read())
 
 # print sendAnswers(student_token, "dnm 101", 254, "fatihgulmez", "E")
 # print sendAnswers(student_token, "dnm 101", 255, "fatihgulmez", "C")
@@ -108,7 +108,7 @@ with open("example_answer.py", "r") as answer:
 # print getExam(lecturer_token, "seas 101", "debug test")
 # print getExam(lecturer_token, "seas 101", "test 1")
 # print getExam(lecturer_token, "seas 101", "test 2")
-# print getExam(lecturer_token, "dnm 101", "sadsad")
+# print getExam(lecturer_token, "dnm 101", "live2")
 
 
 
@@ -169,14 +169,14 @@ with open("example_answer.py", "r") as answer:
 #     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "123456\n")
 #     a += 1
 #
-# b = getKeystrokeData(lecturer_token, "eecs 468", "test 1", "1")
+print getKeyloggerData(lecturer_token, "dnm 101", "live 2", "213950785")
 #
 # for line in b:
 #     print line
 #
 # print getExam(lecturer_token, "dnm 101", "sadsad")
-# print signOut(lecturer_token, "alicakmak")
-print signOut(student_token, "fatihgulmez")
+print signOut(lecturer_token, "alicakmak")
+# print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")
 
 

@@ -352,7 +352,6 @@ def get_exam(organization, course, name):
             if not (rtn["Status"] == "active" or rtn["Status"] == "graded"):
                 return jsonify("Cannot access to exam.")
         log_activity(request.remote_addr, token["username"], request.endpoint, name)
-        print rtn
         return jsonify(rtn)
     return jsonify("Unauthorized access!")
 
