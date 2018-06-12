@@ -256,11 +256,12 @@ def on_submit(self):
                     "tags": self.ids["input_tags"].text.split("*[SEAS-DELIMITER]*")
                     }
 
-            database_api.addQuestionToExam(Cache.get("info", "token"),
-                                           Cache.get("lect", "code"),
-                                           Cache.get("lect", "exam"),
-                                           yson
-                                           )
+            database_api.edit_question(Cache.get("info", "token"),
+                                       Cache.get("lect", "code"),
+                                       Cache.get("lect", "exam"),
+                                       self.data_selected_question["ID"],
+                                       yson
+                                       )
 
             return True
         elif self.question_type == "short_answer":
@@ -278,11 +279,12 @@ def on_submit(self):
                     "tags": self.ids["input_tags"].text.split("*[SEAS-DELIMITER]*")
                     }
 
-            database_api.addQuestionToExam(Cache.get("info", "token"),
-                                           Cache.get("lect", "code"),
-                                           Cache.get("lect", "exam"),
-                                           yson
-                                           )
+            database_api.edit_question(Cache.get("info", "token"),
+                                       Cache.get("lect", "code"),
+                                       Cache.get("lect", "exam"),
+                                       self.data_selected_question["ID"],
+                                       yson
+                                       )
 
             return True
         elif self.question_type == "multiple_choice":
@@ -336,11 +338,12 @@ def on_submit(self):
                             "tags": self.ids["input_tags"].text.split("*[SEAS-DELIMITER]*")
                             }
 
-                    database_api.addQuestionToExam(Cache.get("info", "token"),
-                                                   Cache.get("lect", "code"),
-                                                   Cache.get("lect", "exam"),
-                                                   yson
-                                                   )
+                    database_api.edit_question(Cache.get("info", "token"),
+                                               Cache.get("lect", "code"),
+                                               Cache.get("lect", "exam"),
+                                               self.data_selected_question["ID"],
+                                               yson
+                                               )
 
                     return True
                 except:

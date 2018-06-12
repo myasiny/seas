@@ -690,11 +690,14 @@ def on_participants(self):
     :return:
     """
 
-    if self.ids["layout_participants"] not in list(self.children):
-        self.add_widget(self.ids["layout_participants"])
+    try:
+        if self.ids["layout_participants"] not in list(self.children):
+            self.add_widget(self.ids["layout_participants"])
 
-    self.ids["layout_participants"].opacity = 1
-    self.remove_widget(self.ids["layout_exams"])
+        self.ids["layout_participants"].opacity = 1
+        self.remove_widget(self.ids["layout_exams"])
+    except ReferenceError:
+        pass
 
     data = database_api.getCourseStudents(Cache.get("info", "token"),
                                           self.ids["txt_lect_code"].text
