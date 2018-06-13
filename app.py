@@ -54,56 +54,12 @@ class StdLive(Screen):
 
     appLogin.load_string("std_live")
 
-    # def __init__(self, **kwargs):
-    #     super(StdLive, self).__init__(**kwargs)
-    #     self._keyboard = Window.request_keyboard(self._keyboard_closed, self)
-    #     self._keyboard.bind(on_key_down=self._on_keyboard_down)
-    #     Cache.append("data",
-    #                  "counter",
-    #                  0
-    #                  )
-    #     self.unnecessary_list = ["Key.ctrl",
-    #                              "Key.ctrl_l",
-    #                              "Key.ctrl_r",
-    #                              "Key.alt",
-    #                              "Key.alt_gr",
-    #                              "Key.alt_l",
-    #                              "Key.alt_r",
-    #                              "Key.menu",
-    #                              "Key.cmd_l",
-    #                              "Key.cmd_r",
-    #                              "Key.shift",
-    #                              "Key.shift_l",
-    #                              "Key.shift_r",
-    #                              ]
-    #
-    # def _keyboard_closed(self):
-    #     self._keyboard.unbind(on_key_down=self._on_keyboard_down)
-    #     self._keyboard = None
-    #
-    # def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
-    #     if keycode not in self.unnecessary_list:
-    #         pre = Cache.get("data",
-    #                         "counter"
-    #                         )
-    #         Cache.append("data",
-    #                      "counter",
-    #                      pre+1
-    #                      )
-    #     print keycode
-    #
-    #     return True
-
     def __init__(self, **kw):
         super(StdLive, self).__init__(**kw)
         self.answer = ""
+        self.counter = 0
 
     def on_pre_enter(self, *args):
-        Cache.append("data",
-                     "counter",
-                     0
-                     )  # TODO
-
         stdLive.on_pre_enter(self)
 
     def on_answer_change(self, txt):
@@ -750,9 +706,6 @@ if __name__ == "__main__":
                    )
     Cache.register("config",
                    limit=2
-                   )
-    Cache.register("data",
-                   limit=1
                    )
 
     Cache.append("config",

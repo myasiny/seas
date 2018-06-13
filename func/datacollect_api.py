@@ -2,18 +2,18 @@ import psutil
 from func import database_api
 
 __author__ = "Ali Emre Oz"
+__credits__ = ["Muhammed Yasin Yildirim"]
 
 
-def post_data(token, course, exam, userid, counter, self, dt):
+def post_data(token, course, exam, userid, self, dt):
     """
-    collecting data
-    :param token: user's token
-    :param course: course's code
-    :param exam: exam's name
-    :param userid: user's id
-    :param counter: keystroke count
-    :param self: for accessing to student's answer
-    :param dt: clock callback input
+    Collecting data.
+    :param token: User's token.
+    :param course: Course's code.
+    :param exam: Exam's name.
+    :param userid: User's id.
+    :param self: For accessing to student's answer and counter.
+    :param dt: Clock callback input.
     :return:
     """
 
@@ -21,8 +21,11 @@ def post_data(token, course, exam, userid, counter, self, dt):
     net_sent = float(psutil.net_io_counters().bytes_sent) / 1024
     net_recv = float(psutil.net_io_counters().bytes_recv) / 1024
 
-    exam_data = {"keystroke": [counter], "memory_usage": [cur_mem_usage],
-                 "network_download": [net_recv], "network_upload": [net_sent],
-                 "key_stream": "Question ID: {id}\n---\n{ans}".format(id=self.question_no, ans=self.answer)}
+    exam_data = {"keystroke": [self.counter],
+                 "memory_usage": [cur_mem_usage],
+                 "network_download": [net_recv],
+                 "network_upload": [net_sent],
+                 "key_stream": "Question ID: {id}\n---\n{ans}".format(id=self.question_no, ans=self.answer)
+                 }
 
     database_api.postExamData(token, course, exam, userid, **exam_data)

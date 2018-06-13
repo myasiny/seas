@@ -18,7 +18,7 @@ from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.uix.spinner import Spinner
 
-from func import database_api, image_button, update_clock, datacollect_api
+from func import database_api, image_button, update_clock, datacollect_api, keyboard_listener
 
 __author__ = "Muhammed Yasin Yildirim"
 __credits__ = ["Ali Emre Oz"]
@@ -30,6 +30,8 @@ def on_pre_enter(self):
     :param self: It is for handling class structure.
     :return:
     """
+
+    self.add_widget(keyboard_listener.KeyboardListener(self))
 
     self.date_time = Clock.schedule_interval(partial(update_clock.date_time,
                                                      self.ids["txt_clock"]
@@ -196,7 +198,6 @@ def on_pre_enter(self):
                                                   Cache.get("lect", "code"),
                                                   Cache.get("lect", "exam"),
                                                   Cache.get("info", "id"),
-                                                  Cache.get("data", "counter"),
                                                   self
                                                   ),
                                           5
