@@ -204,7 +204,11 @@ def on_exams(self):
         self.add_widget(self.layout_exams)
 
     self.layout_exams.opacity = 1
-    self.remove_widget(self.layout_participants)
+
+    try:
+        self.remove_widget(self.layout_participants)
+    except ReferenceError:
+        pass
 
     self.data_exam_details = database_api.getExamsOfLecture(Cache.get("info", "token"),
                                                             self.ids["txt_lect_code"].text
@@ -363,7 +367,7 @@ def on_exam_select(self, dt):
         if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) > 0:
             self.ids["btn_exam_start_grade"].unbind(on_release=self.start_grade)
 
-        self.start_grade = partial(None,  # TODO
+        self.start_grade = partial(on_exam_grade,  # TODO: Change it to on_exam_download
                                    self
                                    )
         self.ids["btn_exam_start_grade"].bind(on_release=self.start_grade)
