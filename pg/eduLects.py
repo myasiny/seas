@@ -371,7 +371,9 @@ def on_exam_select(self, dt):
                                    self
                                    )
         self.ids["btn_exam_start_grade"].bind(on_release=self.start_grade)
-    elif self.ids["txt_status_body"].text == "Finished":
+    elif self.ids["txt_status_body"].text == "Finished" or "not" in self.ids["txt_status_body"].text.lower():
+        self.ids["txt_status_body"].text = "Finished"
+
         self.ids["btn_exam_start_grade"].text = "GRADE"
 
         if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) > 0:

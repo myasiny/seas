@@ -141,7 +141,7 @@ def on_pre_enter(self):
                 self.ids[name].disabled = False
 
             if answer[4] is not None:
-                self.ids["txt_auto_grade"].text = "Auto Grade: {grade}".format(grade=answer[4])
+                self.ids["txt_auto_grade"].text = "Auto Grade: {grade}".format(grade=int(answer[4]))
             else:
                 self.ids["txt_auto_grade"].text = "Auto Grade: {grade}".format(grade="...")
 

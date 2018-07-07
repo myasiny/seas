@@ -7,12 +7,11 @@ appLogin
 
 import os
 import platform
-import threading
 from functools import partial
 
 from kivy.app import App
 from kivy.cache import Cache
-from kivy.clock import Clock, mainthread
+from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
@@ -78,109 +77,118 @@ def on_enter(self):
                                                     )
 
 
-def on_login(s, pg, sc, edu, std):
+# def authorization(name, pasw, dt):
+#     """
+#     This method checks if user credentials are valid through server.
+#     :param name: It is username.
+#     :param pasw: It is password.
+#     :param dt: It is for handling callback input.
+#     :return: It is list of information of user logged in.
+#     """
+#
+#     data = database_api.signIn(name,
+#                                pasw
+#                                )
+#
+#     return data
+
+
+def on_login(self, pages, screen, edu_lects, std_lects):
     """
-    This method creates threading to handle login process in background.
-    :param s: It is for handling class structure.
-    :param pg: It is list of pages.
-    :param sc: It is screen manager.
-    :param edu: It is class of lectures page for educators.
-    :param std: It is class of lectures page for students.
+    This method creates threading for logging in and updates GUI accordingly.
+    :param self: It is for handling class structure.
+    :param pages: It is list of pages.
+    :param screen: It is screen manager.
+    :param edu_lects: It is class of lectures page for educators.
+    :param std_lects: It is class of lectures page for students.
     :return:
     """
 
-    @mainthread
-    def authorize(self=s, pages=pg, screen=sc, edu_lects=edu, std_lects=std):
-        """
-        This method checks if user credentials are valid through server and updates GUI accordingly.
-        :return: It is for terminating thread.
-        """
+    btn_login = self.ids["btn_login"]
+    btn_login.disabled = True
 
-        btn_login = self.ids["btn_login"]
-        btn_login.disabled = True
+    ico_status = self.ids["ico_status"]
 
-        ico_status = self.ids["ico_status"]
+    ico_spinner = ProgressSpinner(size_hint=(.05, .05),
+                                  pos_hint={"center_x": .65, "center_y": .8}
+                                  )
+    self.add_widget(ico_spinner)
 
-        ico_spinner = ProgressSpinner(size_hint=(.05, .05),
-                                      pos_hint={"center_x": .65, "center_y": .8}
-                                      )
-        self.add_widget(ico_spinner)
+    input_username = self.ids["input_username"].text
+    input_password = self.ids["input_password"].text
 
-        input_username = self.ids["input_username"].text
-        input_password = self.ids["input_password"].text
+    if not (input_username.strip() or input_password.strip()):
+        self.remove_widget(ico_spinner)
 
-        if not (input_username.strip() or input_password.strip()):
+        ico_status.source = "data/img/ico_status_warning.png"
+        ico_status.opacity = 1
+        ico_status.reload()
+
+        btn_login.disabled = False
+    else:
+        try:
+            # data = Clock.schedule_once(partial(authorization,
+            #                                    input_username,
+            #                                    input_password
+            #                                    )
+            #                            )
+
+            data = database_api.signIn(input_username,
+                                       input_password
+                                       )
+        except:
+            data = None
+
+        if isinstance(data, list):
             self.remove_widget(ico_spinner)
 
-            ico_status.source = "data/img/ico_status_warning.png"
+            ico_status.source = "data/img/ico_status_success.png"
             ico_status.opacity = 1
             ico_status.reload()
 
             btn_login.disabled = False
-        else:
-            try:
-                data = database_api.signIn(input_username,
-                                           input_password
-                                           )
-            except:
-                data = None
 
-            if isinstance(data, list):
-                self.remove_widget(ico_spinner)
+            slot = ["nick",
+                    "name",
+                    "surname",
+                    "id",
+                    "role",
+                    "mail",
+                    "dept",
+                    "uni",
+                    "token"
+                    ]
 
-                ico_status.source = "data/img/ico_status_success.png"
-                ico_status.opacity = 1
-                ico_status.reload()
-
-                btn_login.disabled = False
-
-                slot = ["nick",
-                        "name",
-                        "surname",
-                        "id",
-                        "role",
-                        "mail",
-                        "dept",
-                        "uni",
-                        "token"
-                        ]
-
-                for i in range(9):
-                    Cache.append("info",
-                                 slot[i],
-                                 data[i]
-                                 )
-
+            for i in range(9):
                 Cache.append("info",
-                             "pict",
-                             round_image.update_image()
+                             slot[i],
+                             data[i]
                              )
 
-                if data[4] != "student":
-                    pages.append(edu_lects(name="EduLects"))
-                else:
-                    pages.append(std_lects(name="StdLects"))
+            Cache.append("info",
+                         "pict",
+                         round_image.update_image()
+                         )
 
-                try:
-                    screen.switch_to(pages[2])
-                except:
-                    screen.current = pages[2].name
-                finally:
-                    del pages[1]
+            if data[4] != "student":
+                pages.append(edu_lects(name="EduLects"))
             else:
-                self.remove_widget(ico_spinner)
+                pages.append(std_lects(name="StdLects"))
 
-                ico_status.source = "data/img/ico_status_fail.png"
-                ico_status.opacity = 1
-                ico_status.reload()
+            try:
+                screen.switch_to(pages[2])
+            except:
+                screen.current = pages[2].name
+            finally:
+                del pages[1]
+        else:
+            self.remove_widget(ico_spinner)
 
-                btn_login.disabled = False
+            ico_status.source = "data/img/ico_status_fail.png"
+            ico_status.opacity = 1
+            ico_status.reload()
 
-            return
-
-    authorization = threading.Thread(target=authorize)
-    authorization.daemon = True
-    authorization.start()
+            btn_login.disabled = False
 
 
 def on_quit(self):

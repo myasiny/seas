@@ -688,10 +688,10 @@ def on_keyboard_event(event):
     """
     This method checks if pressed key is banned or not.
     :param event: It is information held for activated keyboard event.
-    :return: It is boolean depending on that key is banned or not.
+    :return: It is boolean depending on whether key is banned or not.
     """
 
-    if event.Key.lower() in ["lmenu", "lwin", "rwin", "apps", "esc"]:  # God Mode: "lmenu", "lwin", "rwin", "apps", "esc"
+    if event.Key.lower() in []:  # God Mode: "lmenu", "lwin", "rwin", "apps", "esc"
         return False
     else:
         return True
