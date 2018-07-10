@@ -5,6 +5,7 @@ eduLects
 `eduLects` is a toolbox for main app, it contains necessary methods that EduLects page requires.
 """
 
+import os
 import imghdr
 import smtplib
 from datetime import datetime
@@ -18,6 +19,7 @@ from kivy.uix.dropdown import DropDown
 from kivy.uix.filechooser import FileChooserListView
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
+from kivy.uix.label import Label
 from kivy.uix.listview import ListItemButton, ListView
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
@@ -367,7 +369,7 @@ def on_exam_select(self, dt):
         if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) > 0:
             self.ids["btn_exam_start_grade"].unbind(on_release=self.start_grade)
 
-        self.start_grade = partial(on_exam_grade,  # TODO: Change it to on_exam_download
+        self.start_grade = partial(on_exam_download,
                                    self
                                    )
         self.ids["btn_exam_start_grade"].bind(on_release=self.start_grade)
@@ -516,7 +518,7 @@ def on_exam_grade(s, dt):
         if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) > 0:
             self.ids["btn_exam_start_grade"].unbind(on_release=self.start_grade)
 
-        self.start_grade = partial(None,  # TODO
+        self.start_grade = partial(on_exam_download,  # TODO
                                    self
                                    )
         self.ids["btn_exam_start_grade"].bind(on_release=self.start_grade)
@@ -637,6 +639,132 @@ def on_exam_grade(s, dt):
                                     on_release=s.popup.dismiss)
                              )
     s.popup.open()
+
+
+def on_exam_download(self, dt):
+    """
+    This method exports selected exam into a word file.
+    :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
+    :return:
+    """
+
+    data_exam = database_api.getExam(Cache.get("info", "token"),
+                                     self.ids["txt_lect_code"].text,
+                                     self.ids["txt_info_head"].text
+                                     )
+
+    exam_name = data_exam["Name"].replace("_", " ").upper()
+    exam_lect = data_exam["Course"].replace("_", " ").upper()
+    exam_time = data_exam["Time"]
+    exam_long = str(data_exam["Duration"])
+
+    txt_header = "S|E|A|S\n--------\n\n{lect} - {name}\n{time} - {long} mins\n\nQUESTIONS:\n\n".format(lect=exam_lect,
+                                                                                                       name=exam_name,
+                                                                                                       time=exam_time,
+                                                                                                       long=exam_long
+                                                                                                       )
+
+    for k, v in data_exam["Questions"].iteritems():
+        quest_numb = "*\tID: " + str(v["ID"])
+        quest_text = v["text"].replace("*[SEAS-SLASH-N]*",
+                                       "\n"
+                                       ).replace("*[SEAS-CHOICES]*",
+                                                 "\n\n"
+                                                 ).replace("[font=data/font/AndaleMono.ttf][b]",
+                                                           "\t"
+                                                           ).replace("[/b][/font]",
+                                                                     "\t"
+                                                                     )
+
+        txt_header += "{numb} -\n{text}\n\n".format(numb=quest_numb,
+                                                    text=quest_text
+                                                    )
+
+    data_grades = database_api.getGradesOfExam(Cache.get("info", "token"),
+                                               self.ids["txt_lect_code"].text,
+                                               self.ids["list_exams"].adapter.selection[0].text
+                                               )
+
+    data_students = database_api.getCourseStudents(Cache.get("info", "token"),
+                                                   self.ids["txt_lect_code"].text
+                                                   )
+
+    exam_path = "{path}\{lect}-{exam}".format(path=Cache.get("config", "path"),
+                                              lect=exam_lect.replace(" ", "_"),
+                                              exam=exam_name.replace(" ", "_")
+                                              )
+    if not os.path.exists(exam_path):
+        os.makedirs(exam_path)
+
+    for i in data_students:
+        std_name = i[0] + " " + i[1]
+        std_numb = str(i[2])
+        std_mail = i[3]
+        std_nick = i[4]
+
+        data_answer = database_api.getAnswersOfStudent(Cache.get("info", "token"),
+                                                       self.ids["txt_lect_code"].text,
+                                                       self.ids["txt_info_head"].text,
+                                                       i[2]
+                                                       )
+
+        std_grde = "Unknown"
+        for g in data_grades:
+            if g[0] == std_nick and g[1] is not None:
+                std_grde = str(g[1])
+                break
+
+        txt_body = "--------\n\n{name}\n{numb}\n{mail}\nGrade:\t{grde}\n\nANSWERS:\n\n".format(name=std_name,
+                                                                                               numb=std_numb,
+                                                                                               mail=std_mail,
+                                                                                               grde=std_grde
+                                                                                               )
+
+        for a in data_answer:
+            txt_body += "*\tID: {id} -\n{answ}\n\n".format(id=str(a[1]),
+                                                           answ=a[3]
+                                                           )
+
+        txt_body += "--------\nThis document has been created by S|E|A|S upon the request of the instructor. " \
+                    "Therefore, it is under the instructor's responsibility. " \
+                    "S|E|A|S can't be held responsible for anything."
+
+        with open("{path}\{stud}.txt".format(path=exam_path,
+                                             stud=std_nick
+                                             ),
+                  "w+"
+                  ) as exam_docx:
+            exam_docx.write(txt_header + txt_body)
+            exam_docx.close()
+
+    popup_content = FloatLayout()
+    popup = Popup(title="Download",
+                  content=popup_content,
+                  separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
+                  size_hint=(None, None),
+                  size=(self.width / 5, self.height / 5)
+                  )
+    popup_content.add_widget(Label(text="Documents have been successfully created!\n({path})".format(path=exam_path),
+                                   color=(1, 1, 1, 1),
+                                   font_name="data/font/CaviarDreams.ttf",
+                                   font_size=self.width / 125,
+                                   pos_hint={"center_x": .5, "center_y": .625}
+                                   )
+                             )
+    popup_content.add_widget(Button(text="Close",
+                                    font_name="data/font/LibelSuit.ttf",
+                                    font_size=self.height / 40,
+                                    background_normal="data/img/widget_red.png",
+                                    background_down="data/img/widget_red_select.png",
+                                    size_hint_x=1,
+                                    size_hint_y=None,
+                                    height=self.height / 25,
+                                    pos_hint={"center_x": .5, "y": 0},
+                                    on_release=popup.dismiss
+                                    )
+                             )
+    popup.open()
 
 
 def on_exam_edit(self, dt):

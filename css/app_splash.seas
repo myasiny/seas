@@ -1,8 +1,8 @@
 <AppSplash>:
     Image:
         id: ico_wivern_round
-        source: "data/img/ico_wivern_round.png"
+        source: "data/img/ico_seas.png"
         opacity: 0
         allow_stretch: True
-        size_hint_y: .2
+        size_hint_y: .15
         pos_hint: {"center_x": .5, "center_y": .5}
