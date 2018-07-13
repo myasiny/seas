@@ -148,6 +148,13 @@ def on_pre_enter(self):
     self.add_widget(self.correct_answer)
 
     if self.question_type == "programming":
+        self.temp_output = ""
+        self.check_output = Clock.schedule_interval(partial(read_stdout,
+                                                            self
+                                                            ),
+                                                    2
+                                                    )
+
         self.run_or_pause = "run"
         self.ids["input_code_answer"].lexer = PythonLexer()
 
@@ -217,6 +224,17 @@ def on_correct_answer_select(self, spinner, text):
     self.multiple_choice_answer = text
 
 
+def read_stdout(self, dt):
+    """
+    This method updates output widget periodically.
+    :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
+    :return:
+    """
+
+    self.ids["txt_code_output"].text = self.temp_output
+
+
 def on_run(self, dt):
     """
     This method runs student's answer in the background and prints its output.
@@ -227,6 +245,7 @@ def on_run(self, dt):
 
     if self.run_or_pause == "run":
         self.btn_run.source = "data/img/ico_monitor_stop.png"
+        self.btn_run.reload()
 
         self.run_or_pause = "pause"
 
@@ -236,28 +255,36 @@ def on_run(self, dt):
 
         try:
             try:
-                temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
-                                                        stderr=subprocess32.STDOUT,
-                                                        shell=True,
-                                                        timeout=10
-                                                        )
-                old_stdout = sys.stdout
-                sys.stdout = StringIO()
-                redirected_output = sys.stdout
-                script = self.ids["input_code_answer"].text
-                co = code.compile_command(script,
-                                          "<stdin>",
-                                          "exec"
-                                          )
-                exec co
-                sys.stdout = old_stdout
-                temp_output = redirected_output.getvalue()
+                self.temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
+                                                             stderr=subprocess32.STDOUT,
+                                                             # shell=True,
+                                                             timeout=5
+                                                             )
+                # old_stdout = sys.stdout
+                # sys.stdout = StringIO()
+                # redirected_output = sys.stdout
+                # script = self.ids["input_code_answer"].text
+                # co = code.compile_command(script,
+                #                           "<stdin>",
+                #                           "exec"
+                #                           )
+                # try:
+                #     exec co
+                # except:
+                #     execfile("data/temp_student_code.py")
+                # sys.stdout = old_stdout
+                # self.temp_output = redirected_output.getvalue()
             except subprocess32.CalledProcessError as e:
-                temp_output = "{er}\n{ror}".format(er=e.output.split("\n")[-3][:-1],
-                                                   ror=e.output.split("\n")[-2][:-1]
-                                                   )
+                self.temp_output = "{er}\n{ror}".format(er=e.output.split("\n")[-3][:-1],
+                                                        ror=e.output.split("\n")[-2][:-1]
+                                                        )
+                self.ids["txt_code_output"].text = self.temp_output
+            except subprocess32.TimeoutExpired:
+                self.temp_output = "TimeoutError: infinite loop or something"
+                self.ids["txt_code_output"].text = self.temp_output
         except:
-            temp_output = "TimeoutError: infinite loop or something"
+            self.temp_output = "CompileError: broken compiler or something"
+            self.ids["txt_code_output"].text = self.temp_output
         finally:
             self.list_progs_ban = []
             self.list_progs_post = []
@@ -268,15 +295,18 @@ def on_run(self, dt):
                 if os.path.splitext(i)[1] != ".ttf":
                     self.list_progs_ban.append(os.path.splitext(i))
             if len(self.list_progs_ban) == 0:
-                self.ids["txt_code_output"].text = temp_output
+                self.ids["txt_code_output"].text = self.temp_output
 
                 self.btn_run.source = "data/img/ico_monitor_play.png"
+                self.btn_run.reload()
 
                 self.run_or_pause = "run"
             else:
-                self.ids["txt_code_output"].text = "SuspiciousError: disallowed action or something"
+                self.temp_output = "SuspiciousError: disallowed action or something"
+                self.ids["txt_code_output"].text = self.temp_output
     else:
         self.btn_run.source = "data/img/ico_monitor_play.png"
+        self.btn_run.reload()
 
         self.run_or_pause = "run"
 
@@ -330,13 +360,17 @@ def on_submit(self):
 
 def on_leave(self):
     """
-    This method cancels scheduled method to update time widget when user leaves page.
+    This method cancels scheduled methods to update time widget etc. when user leaves page.
     :param self: It is for handling class structure.
     :return:
     """
 
     self.date_time.cancel()
+
     try:
         self.listen.cancel()
     except:
         pass
+
+    if self.question_type == "programming":
+        self.check_output.cancel()

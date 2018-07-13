@@ -518,7 +518,7 @@ def on_exam_grade(s, dt):
         if len(self.ids["btn_exam_start_grade"].get_property_observers("on_release")) > 0:
             self.ids["btn_exam_start_grade"].unbind(on_release=self.start_grade)
 
-        self.start_grade = partial(on_exam_download,  # TODO
+        self.start_grade = partial(on_exam_download,
                                    self
                                    )
         self.ids["btn_exam_start_grade"].bind(on_release=self.start_grade)
@@ -743,12 +743,12 @@ def on_exam_download(self, dt):
                   content=popup_content,
                   separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
                   size_hint=(None, None),
-                  size=(self.width / 5, self.height / 5)
+                  size=(self.width / 3, self.height / 3)
                   )
     popup_content.add_widget(Label(text="Documents have been successfully created!\n({path})".format(path=exam_path),
                                    color=(1, 1, 1, 1),
                                    font_name="data/font/CaviarDreams.ttf",
-                                   font_size=self.width / 125,
+                                   font_size=self.width / 75,
                                    pos_hint={"center_x": .5, "center_y": .625}
                                    )
                              )
