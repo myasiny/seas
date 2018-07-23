@@ -82,8 +82,8 @@
             opacity: .5
             keep_ratio: False
             allow_stretch: True
-            size_hint: .95, .125
-            pos_hint: {"center_x": .5, "center_y": .8}
+            size_hint: .95, .0675
+            pos_hint: {"center_x": .5, "y": .85}
 
         Image:
             id: img_body
@@ -91,8 +91,8 @@
             opacity: .5
             keep_ratio: False
             allow_stretch: True
-            size_hint: .95, .825
-            pos_hint: {"center_x": .5, "center_y": .45}
+            size_hint: .95, .9
+            pos_hint: {"center_x": .5, "center_y": .46}
 
         Label:
             id: txt_question_no
@@ -101,8 +101,8 @@
             multiline: False
             font_name: "data/font/CaviarDreams_Bold.ttf"
             font_size: self.height / 3
-            size_hint: .4, .1
-            pos_hint: {"center_x": .25, "center_y": .8}
+            size_hint: .4, .0675
+            pos_hint: {"center_x": .2, "y": .85}
 
         Label:
             id: txt_question_grade
@@ -110,12 +110,21 @@
             multiline: False
             font_name: "data/font/CaviarDreams.ttf"
             font_size: self.height / 3
-            size_hint: .4, .1
-            pos_hint: {"center_x": .75, "center_y": .8}
+            size_hint: .4, .0675
+            pos_hint: {"center_x": .75, "y": .85}
+
+        Image:
+            id: img_right_side_bg
+            source: "data/img/widget_purple_75_select.png"
+            opacity: .15
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .51, .84
+            pos_hint: {"center_x": .71, "y": .01}
 
         ScrollView:
-            size_hint: .4, .675
-            pos_hint: {"center_x": .25, "center_y": .3875}
+            size_hint: .4, .825
+            pos_hint: {"center_x": .25, "center_y": .425}
 
             Label:
                 id: txt_question_body
@@ -137,8 +146,8 @@
             background_active: "data/img/widget_gray_75_select.png"
             background_disabled_normal: "data/img/widget_black_75.png"
             padding_y: [self.height / 20.25, 0]
-            size_hint: .4, .5
-            pos_hint: {"center_x": .75, "center_y": .475}
+            size_hint: .5, .5
+            pos_hint: {"center_x": .71, "y": .345}
             on_text: root.on_answer_change(self.text)
 
         Image:
@@ -146,13 +155,13 @@
             source: "data/img/widget_black_75.png"
             keep_ratio: False
             allow_stretch: True
-            size_hint: .4, .16
-            pos_hint: {"center_x": .75, "center_y": .125}
+            size_hint: .5, .325
+            pos_hint: {"center_x": .71, "y": .015}
 
         ScrollView:
             id: txt_code_output_scroll
-            size_hint: .39, .15
-            pos_hint: {"center_x": .75, "center_y": .125}
+            size_hint: .49, .32
+            pos_hint: {"center_x": .71, "y": .0175}
 
             Label:
                 id: txt_code_output
@@ -168,19 +177,19 @@
             id: input_short_answer
             hint_text: "Answer"
             font_name: "data/font/CaviarDreams_Bold.ttf"
-            font_size: self.height / 20.25
+            font_size: self.height / 27.5
             background_normal: "data/img/widget_gray_75.png"
             background_active: "data/img/widget_gray_75_select.png"
             background_disabled_normal: "data/img/widget_black_75.png"
-            padding_y: [self.height / 20.25, 0]
-            size_hint: .4, .675
-            pos_hint: {"center_x": .75, "center_y": .3875}
+            padding_y: [self.height / 27.5, 0]
+            size_hint: .5, .825
+            pos_hint: {"center_x": .71, "center_y": .425}
             on_text: root.on_answer_change(self.text)
 
         ScrollView:
             id: txt_multiple_choices_scroll
-            size_hint: .4, .5
-            pos_hint: {"center_x": .75, "center_y": .475}
+            size_hint: .5, .71
+            pos_hint: {"center_x": .71, "y": .125}
 
             Label:
                 id: txt_multiple_choices
@@ -189,7 +198,7 @@
                 multiline: True
                 markup: True
                 font_name: "data/font/CaviarDreams.ttf"
-                font_size: root.height / 25
+                font_size: root.height / 35
                 text_size: self.width, None
                 size_hint_y: None
                 height: self.texture_size[1]

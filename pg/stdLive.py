@@ -119,7 +119,7 @@ def on_pre_enter(self):
     self.btn_run = image_button.add_button("data/img/ico_monitor_play.png",
                                            "data/img/ico_monitor_play_select.png",
                                            (.025, True),
-                                           {"x": .95, "y": .7},
+                                           {"x": .955, "y": .81},
                                            partial(on_run,
                                                    self
                                                    )
@@ -133,8 +133,8 @@ def on_pre_enter(self):
                                   font_size=self.height / 40,
                                   background_normal="data/img/widget_purple_75.png",
                                   background_down="data/img/widget_purple_75_select.png",
-                                  size_hint=(.4, .05),
-                                  pos_hint={"center_x": .75, "center_y": .075}
+                                  size_hint=(.5, .05),
+                                  pos_hint={"center_x": .71, "y": .025}
                                   )
     self.correct_answer.bind(text=partial(on_correct_answer_select,
                                           self
@@ -145,6 +145,9 @@ def on_pre_enter(self):
     self.add_widget(self.correct_answer)
 
     if self.question_type == "programming":
+        self.ids["img_right_side_bg"].source = "data/img/widget_green_select.png"
+        self.ids["img_right_side_bg"].reload()
+
         self.temp_stdout = ""
         self.temp_output = ""
 
@@ -159,6 +162,9 @@ def on_pre_enter(self):
             name.opacity = 0
             name.size_hint_y = 0
     elif self.question_type == "short_answer":
+        self.ids["img_right_side_bg"].source = "data/img/widget_yellow_select.png"
+        self.ids["img_right_side_bg"].reload()
+
         self.btn_run.disabled = True
 
         widget = [self.correct_answer,
@@ -172,6 +178,9 @@ def on_pre_enter(self):
             name.opacity = 0
             name.size_hint_y = 0
     elif self.question_type == "multiple_choice":
+        self.ids["img_right_side_bg"].source = "data/img/widget_red_select.png"
+        self.ids["img_right_side_bg"].reload()
+
         self.btn_run.disabled = True
 
         widget = [self.btn_run,
@@ -358,6 +367,3 @@ def on_leave(self):
         self.listen.cancel()
     except:
         pass
-
-    if self.question_type == "programming":
-        self.check_output.cancel()

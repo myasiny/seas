@@ -124,6 +124,7 @@ def on_login(self, pages, screen, edu_lects, std_lects):
     self.btn_login.disabled = True
 
     self.ico_status = self.ids["ico_status"]
+    self.ico_status.opacity = 0
 
     self.ico_spinner = ProgressSpinner(size_hint=(.05, .05),
                                        pos_hint={"center_x": .65, "center_y": .8}
