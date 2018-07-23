@@ -5,13 +5,10 @@ stdLive
 `stdLive` is a toolbox for main app, it contains necessary methods that StdLive page requires.
 """
 
-import code
 import os
 import psutil
 import subprocess32
-import sys
 from functools import partial
-from StringIO import StringIO
 from pygments.lexers.python import PythonLexer
 
 from kivy.cache import Cache
@@ -148,12 +145,8 @@ def on_pre_enter(self):
     self.add_widget(self.correct_answer)
 
     if self.question_type == "programming":
+        self.temp_stdout = ""
         self.temp_output = ""
-        self.check_output = Clock.schedule_interval(partial(read_stdout,
-                                                            self
-                                                            ),
-                                                    2
-                                                    )
 
         self.run_or_pause = "run"
         self.ids["input_code_answer"].lexer = PythonLexer()
@@ -232,6 +225,7 @@ def read_stdout(self, dt):
     :return:
     """
 
+    self.temp_stdout += self.temp_output
     self.ids["txt_code_output"].text = self.temp_output
 
 
@@ -249,39 +243,32 @@ def on_run(self, dt):
 
         self.run_or_pause = "pause"
 
+        self.temp_output = ""
+
         to_compile = open("data/temp_student_code.py", "w+")
         to_compile.write(self.ids["input_code_answer"].text)
         to_compile.close()
 
         try:
             try:
+                self.reader = Clock.schedule_interval(partial(read_stdout,
+                                                              self),
+                                                      0.2)
+
                 self.temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
                                                              stderr=subprocess32.STDOUT,
-                                                             # shell=True,
                                                              timeout=5
                                                              )
-                # old_stdout = sys.stdout
-                # sys.stdout = StringIO()
-                # redirected_output = sys.stdout
-                # script = self.ids["input_code_answer"].text
-                # co = code.compile_command(script,
-                #                           "<stdin>",
-                #                           "exec"
-                #                           )
-                # try:
-                #     exec co
-                # except:
-                #     execfile("data/temp_student_code.py")
-                # sys.stdout = old_stdout
-                # self.temp_output = redirected_output.getvalue()
             except subprocess32.CalledProcessError as e:
                 self.temp_output = "{er}\n{ror}".format(er=e.output.split("\n")[-3][:-1],
                                                         ror=e.output.split("\n")[-2][:-1]
                                                         )
                 self.ids["txt_code_output"].text = self.temp_output
             except subprocess32.TimeoutExpired:
-                self.temp_output = "TimeoutError: infinite loop or something"
+                self.temp_output = "TimeoutError: infinite loop or something"  # + "\n------------\n" + self.temp_stdout
                 self.ids["txt_code_output"].text = self.temp_output
+            finally:
+                self.reader.cancel()
         except:
             self.temp_output = "CompileError: broken compiler or something"
             self.ids["txt_code_output"].text = self.temp_output

@@ -17,6 +17,7 @@ from gensim.summarization import keywords, summarize
 
 from kivy.adapters.listadapter import ListAdapter
 from kivy.cache import Cache
+from kivy.clock import Clock
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.listview import ListView, ListItemButton
@@ -171,6 +172,9 @@ def on_pre_enter(self):
                 finally:
                     self.ids["txt_answer_student"].text = answer[3].replace("*[SEAS-SLASH-N]*", "\n")
             elif self.question_type == "programming":
+                self.temp_stdout = ""
+                self.temp_output = ""
+
                 self.run_or_pause = "run"
 
                 self.ids["txt_answer_summary_head"].text = "Output:"
@@ -405,6 +409,18 @@ def on_grade_submit(self):
     return True
 
 
+def read_stdout(self, dt):
+    """
+    This method updates output widget periodically.
+    :param self: It is for handling class structure.
+    :param dt: It is for handling callback input.
+    :return:
+    """
+
+    self.temp_stdout += self.temp_output
+    self.ids["txt_answer_summary"].text = self.temp_output
+
+
 def on_run(self, dt):
     """
     This method runs student's answer in the background and prints its output.
@@ -415,8 +431,11 @@ def on_run(self, dt):
 
     if self.run_or_pause == "run":
         self.btn_run.source = "data/img/ico_monitor_stop.png"
+        self.btn_run.reload()
 
         self.run_or_pause = "pause"
+
+        self.temp_output = ""
 
         to_compile = open("data/temp_student_code.py", "w+")
         to_compile.write(self.ids["txt_answer_student"].text)
@@ -424,28 +443,27 @@ def on_run(self, dt):
 
         try:
             try:
-                temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
-                                                        stderr=subprocess32.STDOUT,
-                                                        shell=True,
-                                                        timeout=10
-                                                        )
-                old_stdout = sys.stdout
-                sys.stdout = StringIO()
-                redirected_output = sys.stdout
-                script = self.ids["txt_answer_student"].text
-                co = code.compile_command(script,
-                                          "<stdin>",
-                                          "exec"
-                                          )
-                exec co
-                sys.stdout = old_stdout
-                temp_output = redirected_output.getvalue()
+                self.reader = Clock.schedule_interval(partial(read_stdout,
+                                                              self),
+                                                      0.2)
+
+                self.temp_output = subprocess32.check_output(["python", "data/temp_student_code.py"],
+                                                             stderr=subprocess32.STDOUT,
+                                                             timeout=5
+                                                             )
             except subprocess32.CalledProcessError as e:
-                temp_output = "{er}\n{ror}".format(er=e.output.split("\n")[-3][:-1],
-                                                   ror=e.output.split("\n")[-2][:-1]
-                                                   )
+                self.temp_output = "{er}\n{ror}".format(er=e.output.split("\n")[-3][:-1],
+                                                        ror=e.output.split("\n")[-2][:-1]
+                                                        )
+                self.ids["txt_answer_summary"].text = self.temp_output
+            except subprocess32.TimeoutExpired:
+                self.temp_output = "TimeoutError: infinite loop or something"  # + "\n------------\n" + self.temp_stdout
+                self.ids["txt_answer_summary"].text = self.temp_output
+            finally:
+                self.reader.cancel()
         except:
-            temp_output = "TimeoutError: infinite loop or something"
+            self.temp_output = "CompileError: broken compiler or something"
+            self.ids["txt_answer_summary"].text = self.temp_output
         finally:
             self.list_progs_ban = []
             self.list_progs_post = []
@@ -456,14 +474,17 @@ def on_run(self, dt):
                 if os.path.splitext(i)[1] != ".ttf":
                     self.list_progs_ban.append(os.path.splitext(i))
             if len(self.list_progs_ban) == 0:
-                self.ids["txt_answer_summary"].text = temp_output
+                self.ids["txt_answer_summary"].text = self.temp_output
 
                 self.btn_run.source = "data/img/ico_monitor_play.png"
+                self.btn_run.reload()
 
                 self.run_or_pause = "run"
             else:
-                self.ids["txt_answer_summary"].text = "SuspiciousError: disallowed action or something"
+                self.temp_output = "SuspiciousError: disallowed action or something"
+                self.ids["txt_answer_summary"].text = self.temp_output
     else:
         self.btn_run.source = "data/img/ico_monitor_play.png"
+        self.btn_run.reload()
 
         self.run_or_pause = "run"
