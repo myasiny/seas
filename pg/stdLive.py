@@ -11,6 +11,11 @@ import subprocess32
 from functools import partial
 from pygments.lexers.python import PythonLexer
 
+from kivy.adapters.listadapter import ListAdapter
+from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.listview import ListView, ListItemButton
+from kivy.uix.popup import Popup
 from kivy.cache import Cache
 from kivy.clock import Clock
 from kivy.uix.spinner import Spinner
@@ -116,6 +121,16 @@ def on_pre_enter(self):
                 questions.write(self.cipher.encrypt("*[SEAS-NEW-LINE]*".join(self.data_exam_order[4:])))
                 questions.close()
 
+    self.btn_question_change = image_button.add_button("data/img/ico_menu.png",
+                                                       "data/img/ico_menu_select.png",
+                                                       (.025, True),
+                                                       {"x": .045, "y": .8725},
+                                                       partial(on_question_change,
+                                                               self
+                                                               )
+                                                       )
+    self.add_widget(self.btn_question_change)
+
     self.btn_run = image_button.add_button("data/img/ico_monitor_play.png",
                                            "data/img/ico_monitor_play_select.png",
                                            (.025, True),
@@ -211,6 +226,127 @@ def on_pre_enter(self):
                                                   ),
                                           5
                                           )
+
+
+def on_question_change(s, dt):
+    """
+    This method allows jumping to selected question through popup.
+    :param s: It is for handling class structure.
+    :param dt: It is for handling callback input.
+    :return:
+    """
+
+    def on_question_select(self, dt):
+        """
+        This method switches screen for answering selected question.
+        :param self: It is for handling class structure.
+        :param dt: It is for handling callback input.
+        :return: It is for changing screen to selected question's page.
+        """
+
+        self.popup.dismiss()
+
+        questions = open("data/questions.fay", "w+")
+        questions_all = ""
+
+        question_id = self.list_quests.adapter.selection[0].text.split(" ")[1]
+        for key in self.data_all_ids.iterkeys():
+            if question_id == key.split("*[SEAS-LIST-VIEW]*")[0]:
+                questions_all += self.data_all_ids[key]
+                break
+
+        for key, value in self.data_all_ids.iteritems():
+            if not question_id == key.split("*[SEAS-LIST-VIEW]*")[0]:
+                questions_all += value
+
+        questions.write(self.cipher.encrypt(bytes(questions_all)))
+        questions.close()
+
+        return self.on_question_skip()
+
+    def color_hex(x):
+        """
+        This method determines hex color code for given question according to its type.
+        :param x: It is type of question.
+        :return: It is hex code of color.
+        """
+
+        quest_hex = {"choice": "FF4530",
+                     "short": "FCAA03",
+                     "code": "5CB130"
+                     }
+
+        if x == "programming":
+            hex_code = quest_hex["code"]
+        elif x == "short_answer":
+            hex_code = quest_hex["short"]
+        else:
+            hex_code = quest_hex["choice"]
+
+        return hex_code
+
+    s.data_all_questions = database_api.getExam(Cache.get("info", "token"),
+                                                Cache.get("lect", "code"),
+                                                Cache.get("lect", "exam")
+                                                )["Questions"]
+    s.data_all_ids = {}
+    for q in s.data_all_questions.itervalues():
+        data_question = str(q["ID"]) + "*[SEAS-NEW-LINE]*" + \
+                        q["type"] + "*[SEAS-NEW-LINE]*" + \
+                        str(q["value"]) + "*[SEAS-NEW-LINE]*" + \
+                        q["text"] + "*[SEAS-NEW-LINE]*"
+        s.data_all_ids[str(q["ID"]) + "*[SEAS-LIST-VIEW]*" + q["type"]] = data_question
+
+    popup_content = FloatLayout()
+    s.popup = Popup(title="Questions",
+                    content=popup_content,
+                    separator_color=[140 / 255., 55 / 255., 95 / 255., 1.],
+                    size_hint=(None, None),
+                    size=(s.width / 2, s.height / 2)
+                    )
+
+    s.list_quests = ListView(size_hint=(.9, .8),
+                             pos_hint={"center_x": .5, "center_y": .55}
+                             )
+
+    args_converter = lambda row_index, x: {"text": "ID: {id} - Type: [color=#{hex}]{qtype}[/color]".format(id=x[0],
+                                                                                                           hex=color_hex(x[1]),
+                                                                                                           qtype=x[1].replace("_",
+                                                                                                                              " "
+                                                                                                                              ).title()
+                                                                                                           ),
+                                           "markup": True,
+                                           "selected_color": (.843, .82, .82, 1),
+                                           "deselected_color": (.57, .67, .68, 1),
+                                           "background_down": "data/img/widget_gray_75.png",
+                                           "font_name": "data/font/CaviarDreams_Bold.ttf",
+                                           "font_size": s.height / 50,
+                                           "size_hint_y": None,
+                                           "height": s.height / 20,
+                                           "on_release": partial(on_question_select,
+                                                                 s
+                                                                 )
+                                           }
+    s.list_quests.adapter = ListAdapter(data=[i.split("*[SEAS-LIST-VIEW]*") for i in s.data_all_ids.iterkeys()],
+                                        cls=ListItemButton,
+                                        args_converter=args_converter,
+                                        allow_empty_selection=False
+                                        )
+    popup_content.add_widget(s.list_quests)
+
+    popup_content.add_widget(Button(text="Close",
+                                    font_name="data/font/LibelSuit.ttf",
+                                    font_size=s.height / 40,
+                                    background_normal="data/img/widget_red.png",
+                                    background_down="data/img/widget_red_select.png",
+                                    size_hint_x=1,
+                                    size_hint_y=None,
+                                    height=s.height / 20,
+                                    pos_hint={"center_x": .5, "y": .0},
+                                    on_release=s.popup.dismiss)
+                             )
+
+    s.popup.open()
 
 
 def on_correct_answer_select(self, spinner, text):

@@ -72,6 +72,13 @@ class StdLive(Screen):
                          screen
                          )
 
+    @staticmethod
+    def on_question_skip():
+        pages.append(StdLive(name="StdLive"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
     def on_submit(self):
         if stdLive.on_submit(self):
             pages.append(StdLive(name="StdLive"))
