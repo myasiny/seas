@@ -1,10 +1,10 @@
 # -*-coding:utf-8-*-
+
 from Question import Question
-import json
-import threading
-import os
 from werkzeug.utils import secure_filename
 from mysql.connector import DatabaseError
+import json
+import os
 
 KEYSTREAM_DELIMITER = "<<S|E|A|S>>*!KEYSTREAM_DELIMITER!*"
 
@@ -256,3 +256,22 @@ class Exam:
         self.db.execute("INSERT INTO exam_exceptions(username, exam_name) VALUES ('%s', '%s')"
                         % (student_username, self.name))
         return "Done"
+
+    ##########
+    # def get_live_exam_stats(self, course, student_id):
+    #     """
+    #     This method is TODO
+    #     :param course: It's course code
+    #     :param student_id: It's ID of student
+    #     :return:
+    #     """
+    #
+    #     student = self.db.execute("SELECT Username FROM members where PersonID = %s" % student_id)[0][0]
+    #     path = "uploads/%s/courses/%s/exams/%s/all_stats/%s.stats" % (self.org, course, self.name, student)
+    #
+    #     if os.path.exists(path):
+    #         a = open(path, "r").read().split(KEYSTREAM_DELIMITER)
+    #         return dict(zip([i for i in range(len(a))], a))
+    #     else:
+    #         return "Something went wrong..."
+    ##########

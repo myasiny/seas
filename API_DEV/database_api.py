@@ -1,14 +1,11 @@
 # -*-coding:utf-8-*-
-import sys
+
+from config import *
 from requests import put, get, delete
 from requests.exceptions import ConnectionError, Timeout
 import json
 import re
 import pickle
-from config import *
-
-# from kivy.network.urlrequest import UrlRequest
-
 
 def __normalize(word):
     word =  re.sub(r'[^\w\s]', '_', word).replace(" ", "_").lower()
@@ -582,3 +579,26 @@ def giveSecondAccessExam(token, course, exam, student_username,
     exam = __normalize(exam)
     url = base_url + "/organizations/%s/%s/exams/%s/exceptional_access" % (organization, course, exam)
     return put(url, data={"student_user": student_username}, headers={"Authorization": "Bearer " + token}).json()
+
+
+##########
+# @server_check
+# def postStats(token, course, exam, user_id, stats_dict=None, organization=current_organization, base_url=server_address):
+#     """
+#     This method is to post statistics data to server.
+#     :param token: It's user's token
+#     :param course: It's course of current exam
+#     :param exam: It's current exam
+#     :param user_id: It's user to get data from
+#     :param stats_dict: It's dictionary containing all statistics
+#     :param organization: It's user's organization
+#     :param base_url: It's address of server
+#     :return:
+#     """
+#
+#     organization = __normalize(organization)
+#     course = __normalize(course)
+#     exam = __normalize(exam)
+#     url = base_url + "/organizations/%s/%s/exams/%s/data/%s" % (organization, course, exam, user_id)
+#     return put(url, headers={"Authorization": "Bearer " + token}, data=stats_dict).json()
+##########
