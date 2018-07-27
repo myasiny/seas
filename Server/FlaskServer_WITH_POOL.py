@@ -607,19 +607,19 @@ def give_second_access_to_exam(organization, course, exam):
 
 
 ##########
-# @app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/stats",
-#            methods=["GET"], endpoint="stats")
-# @profile(stream=memory_log)
-# @jwt_required
-# @db_connector
-# def upload_stats(organization, course, exam):
-#     token = get_jwt_identity()
-#     student = request.form["student_id"]
-#     if not check_lecture_permission(organization, token, course) or not check_auth(token, organization, "lecturer"):
-#         rtn = "Unauthorized access."
-#     else:
-#         rtn = Exam(exam, organization, db).get_live_exam_stats(course, student)
-#     return jsonify(rtn)
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/stats",
+           methods=["GET"], endpoint="stats")
+@profile(stream=memory_log)
+@jwt_required
+@db_connector
+def upload_stats(organization, course, exam):
+    token = get_jwt_identity()
+    student = request.form["student_id"]
+    if not check_lecture_permission(organization, token, course) or not check_auth(token, organization, "lecturer"):
+        rtn = "Unauthorized access."
+    else:
+        rtn = Exam(exam, organization, db).get_live_exam_stats(course, student)
+    return jsonify(rtn)
 ##########
 
 
