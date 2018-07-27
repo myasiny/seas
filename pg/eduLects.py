@@ -8,12 +8,14 @@ eduLects
 import os
 import imghdr
 import smtplib
+import webbrowser
 from datetime import datetime
 from email.mime.text import MIMEText
 from functools import partial
 
 from kivy.adapters.listadapter import ListAdapter
 from kivy.cache import Cache
+from kivy.core.window import Window
 from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.filechooser import FileChooserListView
@@ -1078,8 +1080,17 @@ def on_list_import(s, dt):
     s.popup.open()
 
 
-def on_help(s):
-    pass  # TODO
+def on_help():
+    """
+    This method redirects user to web browser.
+    :return:
+    """
+
+    Window.hide()
+
+    webbrowser.open("https://wivernsoft.wixsite.com/wivernsoft",
+                    new=2
+                    )
 
 
 def on_contact(s):
@@ -1136,8 +1147,8 @@ def on_contact(s):
         except smtplib.SMTPException:
             self.ico_status_contact.source = "data/img/ico_status_fail.png"
             self.ico_status_contact.opacity = 1
-        finally:
-            self.popup.dismiss()
+        # finally:
+        #     self.popup.dismiss()
 
     popup_content = FloatLayout()
     s.popup = Popup(title="Contact Us",

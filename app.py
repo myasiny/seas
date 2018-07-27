@@ -149,7 +149,7 @@ class StdProfile(Screen):
 class StdLects(Screen):
     """
     @group Design: on_pre_enter
-    @group Functionality: on_enter, on_lect_select, on_exam_join, on_quit, on_leave
+    @group Functionality: on_enter, on_contact, on_lect_select, on_exam_join, on_quit, on_leave
     """
 
     appLogin.load_string("std_lects")
@@ -181,6 +181,13 @@ class StdLects(Screen):
         appReset.on_back(pages,
                          screen
                          )
+
+    @staticmethod
+    def on_help():
+        eduLects.on_help()
+
+    def on_contact(self):
+        eduLects.on_contact(self)
 
     def on_lect_select(self, dt, dropdown, txt):
         stdLects.on_lect_select(self, dropdown, txt)
@@ -440,7 +447,7 @@ class EduProfile(Screen):
 class EduLects(Screen):
     """
     @group Design: on_pre_enter, on_exams, on_participants
-    @group Functionality: on_enter, on_lect_select, on_help, on_contact, on_edit, on_grade, on_quit, on_leave
+    @group Functionality: on_enter, on_lect_select, on_contact, on_edit, on_grade, on_quit, on_leave
     """
 
     appLogin.load_string("edu_lects")
@@ -489,8 +496,9 @@ class EduLects(Screen):
     def on_participants(self):
         eduLects.on_participants(self)
 
-    def on_help(self):
-        eduLects.on_help(self)
+    @staticmethod
+    def on_help():
+        eduLects.on_help()
 
     def on_contact(self):
         eduLects.on_contact(self)
