@@ -1,0 +1,114 @@
+<EduStats>:
+    FloatLayout:
+        id: layout_page
+
+        canvas:
+            Rectangle:
+                source: "data/img/bg_screen_light.png"
+                size: self.size
+                pos: self.pos
+
+        FloatLayout:
+            id: layout_menubar
+            size_hint_y: .075
+            pos_hint: {"x": 0, "y": .925}
+
+            canvas:
+                Rectangle:
+                    source: "data/img/bg_menubar.png"
+                    size: self.size
+                    pos: self.pos
+
+            Image:
+                id: ico_connection
+                source: "data/img/ico_connection_wait.png"
+                keep_ratio: False
+                allow_stretch: True
+                size_hint_x: .075
+                pos_hint: {"x": .85, "y": 0}
+
+            Image:
+                source: "data/img/bg_menubar_round_light.png"
+                opacity: .25
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .25, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Image:
+                source: "data/img/ico_seas.png"
+                keep_ratio: False
+                allow_stretch: True
+                size_hint: .075, .9
+                pos_hint: {"center_x": .5, "y": .1}
+
+            Button:
+                id: btn_lects
+                text: "Lectures"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 2.5
+                background_normal: "data/img/widget_purple_75.png"
+                background_down: "data/img/widget_purple_75_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .15, .9
+                pos_hint: {"center_x": .25, "y": .1}
+                on_release: root.on_lects()
+
+            Button:
+                id: btn_stats
+                text: "Statistics"
+                font_name: "data/font/LibelSuit.ttf"
+                font_size: self.height / 2.5
+                background_normal: "data/img/widget_purple_75.png"
+                background_down: "data/img/widget_purple_75_select.png"
+                background_disabled_normal: "data/img/widget_black_75.png"
+                size_hint: .15, .9
+                pos_hint: {"center_x": .75, "y": .1}
+                on_release: root.on_stats()
+
+        Image:
+            id: img_popup
+            source: "data/img/widget_popup.png"
+            opacity: 0
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .1
+            pos_hint: {"center_x": .75, "center_y": .87}
+
+        Image:
+            id: img_top
+            source: "data/img/widget_black_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .0675
+            pos_hint: {"center_x": .5, "y": .85}
+
+        Image:
+            id: img_body
+            source: "data/img/widget_gray_75.png"
+            opacity: .5
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .95, .9
+            pos_hint: {"center_x": .5, "center_y": .46}
+
+        Label:
+            id: txt_question_no
+            text: "TODO 1"
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/CaviarDreams_Bold.ttf"
+            font_size: self.height / 3
+            size_hint: .4, .0675
+            pos_hint: {"center_x": .2, "y": .85}
+
+        Label:
+            id: txt_question_grade
+            text: "TODO 2"
+            color: 0, 0, 0, .75
+            multiline: False
+            font_name: "data/font/CaviarDreams.ttf"
+            font_size: self.height / 3
+            size_hint: .4, .0675
+            pos_hint: {"center_x": .75, "y": .85}

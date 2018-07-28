@@ -212,3 +212,12 @@
             size_hint: .1, .075
             pos_hint: {"center_x": .9, "center_y": .1}
             on_release: root.on_exam_create()
+
+        Image:
+            id: img_popup
+            source: "data/img/widget_popup.png"
+            opacity: 0
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .1
+            pos_hint: {"center_x": .75, "center_y": .87}

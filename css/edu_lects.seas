@@ -110,7 +110,7 @@
             background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .2, .1
             pos_hint: {"x": 0, "center_y": .3525}
-            on_release: root.on_stats()
+            on_release: root.on_stats_class()
 
         Label:
             id: txt_hint
@@ -173,6 +173,15 @@
             allow_stretch: True
             size_hint: .0025, .05
             pos_hint: {"center_x": .1, "center_y": .0375}
+
+        Image:
+            id: img_popup
+            source: "data/img/widget_popup.png"
+            opacity: 0
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .1
+            pos_hint: {"center_x": .75, "center_y": .87}
 
     FloatLayout:
         id: layout_exams
@@ -442,4 +451,4 @@
             background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .15, .045
             pos_hint: {"center_x": .875, "y": .075}
-            on_release: root.on_stats()
+            on_release: root.on_stats_student()

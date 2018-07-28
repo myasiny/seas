@@ -354,3 +354,12 @@
             font_size: self.height / 10.5
             size_hint: .275, .35
             pos_hint: {"center_x": .825, "y": .075}
+
+        Image:
+            id: img_popup
+            source: "data/img/widget_popup.png"
+            opacity: 0
+            keep_ratio: False
+            allow_stretch: True
+            size_hint: .2, .1
+            pos_hint: {"center_x": .75, "center_y": .87}

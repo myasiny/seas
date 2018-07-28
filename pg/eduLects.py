@@ -14,6 +14,7 @@ from email.mime.text import MIMEText
 from functools import partial
 
 from kivy.adapters.listadapter import ListAdapter
+from kivy.animation import Animation
 from kivy.cache import Cache
 from kivy.core.window import Window
 from kivy.uix.button import Button
@@ -48,13 +49,13 @@ def load_buttons(self):
                                                       )
                               )
 
-    layout_menubar.add_widget(image_button.add_button("data/img/ico_logout.png",
-                                                      "data/img/ico_logout_select.png",
-                                                      .075,
-                                                      {"x": 0, "y": 0},
-                                                      self.on_logout
-                                                      )
-                              )
+    self.btn_logout = image_button.add_button("data/img/ico_logout.png",
+                                              "data/img/ico_logout_select.png",
+                                              .075,
+                                              {"x": 0, "y": 0},
+                                              self.on_logout
+                                              )
+    layout_menubar.add_widget(self.btn_logout)
 
     layout_menubar.add_widget(image_button.add_button("data/img/ico_picture.png",
                                                       "data/img/ico_picture_select.png",
@@ -1214,3 +1215,14 @@ def on_contact(s):
                                     on_release=s.popup.dismiss)
                              )
     s.popup.open()
+
+
+def on_statistics(self):
+    """
+    This method shows information pop-up when statistics button is clicked.
+    :param self: It is for handling class structure.
+    :return:
+    """
+
+    anim_fade = Animation(opacity=1, duration=.5) + Animation(opacity=0, duration=4.5)
+    anim_fade.start(self.ids["img_popup"])

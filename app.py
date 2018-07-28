@@ -24,8 +24,8 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import Screen, ScreenManager, FadeTransition
 
 from func import database_api
-from pg import appLogin, appReset, eduLects, eduProfile, eduExam, eduQuestion, eduLive, eduGrade, stdLects, stdLive, \
-    eduEdit
+from pg import appLogin, appReset, eduLects, eduProfile, eduExam, eduQuestion, eduLive, eduGrade, eduEdit, eduStats, \
+    stdLects, stdLive
 
 __authors__ = ["Muhammed Yasin Yildirim", "Fatih Cagatay Gulmez", "Ali Emre Oz"]
 __credits__ = ["Ali Cakmak"]
@@ -212,7 +212,47 @@ class StdLects(Screen):
 
 
 class EduStats(Screen):
-    pass
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_stats, on_quit, on_leave
+    """
+
+    appLogin.load_string("edu_stats")
+
+    def on_pre_enter(self, *args):
+        eduLects.load_buttons(self)
+        eduStats.on_pre_enter(self)
+
+    @staticmethod
+    def on_profile(dt):
+        pages.append(EduProfile(name="EduProfile"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    @staticmethod
+    def on_lects():
+        pages.append(EduLects(name="EduLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    def on_stats(self):
+        eduLects.on_statistics(self)
+
+    @staticmethod
+    def on_back(dt):
+        pass
+
+    @staticmethod
+    def on_logout(dt):
+        EduLects.on_logout(dt)
+
+    def on_quit(self, dt):
+        appLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        appLogin.on_leave(self)
 
 
 class EduEdit(Screen):
@@ -334,7 +374,7 @@ class EduQuestion(Screen):
 class EduExam(Screen):
     """
     @group Design: on_pre_enter
-    @group Functionality: on_enter, on_exam_create, on_quit, on_leave
+    @group Functionality: on_enter, on_stats, on_exam_create, on_quit, on_leave
     """
 
     appLogin.load_string("edu_exam")
@@ -360,12 +400,8 @@ class EduExam(Screen):
                          screen
                          )
 
-    @staticmethod
-    def on_stats():
-        pages.append(EduStats(name="EduStats"))
-        appReset.on_back(pages,
-                         screen
-                         )
+    def on_stats(self):
+        eduLects.on_statistics(self)
 
     def on_exam_create(self):
         eduExam.on_exam_create(self)
@@ -391,7 +427,7 @@ class EduExam(Screen):
 class EduProfile(Screen):
     """
     @group Design: on_pre_enter
-    @group Functionality: on_enter, on_pic_change, on_text_change, on_submit, on_quit, on_leave
+    @group Functionality: on_enter, on_stats, on_pic_change, on_text_change, on_submit, on_quit, on_leave
     """
 
     appLogin.load_string("edu_profile")
@@ -417,12 +453,8 @@ class EduProfile(Screen):
                          screen
                          )
 
-    @staticmethod
-    def on_stats():
-        pages.append(EduStats(name="EduStats"))
-        appReset.on_back(pages,
-                         screen
-                         )
+    def on_stats(self):
+        eduLects.on_statistics(self)
 
     def on_pic_change(self, dt):
         eduProfile.on_pic_change(self)
@@ -447,7 +479,7 @@ class EduProfile(Screen):
 class EduLects(Screen):
     """
     @group Design: on_pre_enter, on_exams, on_participants
-    @group Functionality: on_enter, on_lect_select, on_contact, on_edit, on_grade, on_quit, on_leave
+    @group Functionality: on_enter, on_stats, on_lect_select, on_contact, on_edit, on_grade, on_quit, on_leave
     """
 
     appLogin.load_string("edu_lects")
@@ -473,12 +505,16 @@ class EduLects(Screen):
                          screen
                          )
 
+    def on_stats(self):
+        eduLects.on_statistics(self)
+
     @staticmethod
-    def on_stats():
-        pages.append(EduStats(name="EduStats"))
-        appReset.on_back(pages,
-                         screen
-                         )
+    def on_stats_class():
+        pass
+
+    @staticmethod
+    def on_stats_student():
+        pass
 
     def on_lect_select(self, dt, dropdown, txt):
         eduLects.on_lect_select(self, dropdown, txt)
