@@ -6,11 +6,13 @@ eduStats
 """
 
 from functools import partial
+from matplotlib import pyplot
 
 from kivy.cache import Cache
 from kivy.clock import Clock
 
 from func import check_connection
+from func.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 __author__ = "Muhammed Yasin Yildirim"
 
@@ -54,3 +56,39 @@ def on_pre_enter(self):
                             "select"
                             )
     self.ids["txt_select"].text = info_select
+
+    pyplot.figure(1)
+    pyplot.bar([5, 10, 15],
+               [3, 6, 9],
+               color="blue"
+               )
+    pyplot.xlabel("Y")
+    pyplot.ylabel("X")
+    pyplot.grid(True)
+    pyplot.axes().set_aspect("equal")
+    pyplot.tight_layout()
+    self.ids["layout_graph_top_right"].add_widget(FigureCanvasKivyAgg(pyplot.gcf()))
+
+    pyplot.figure(2)
+    pyplot.plot([5, 10, 15],
+                [3, 6, 9],
+                color="green"
+                )
+    pyplot.xlabel("Y")
+    pyplot.ylabel("X")
+    pyplot.grid(True)
+    pyplot.axes().set_aspect("equal")
+    pyplot.tight_layout()
+    self.ids["layout_graph_bottom_right"].add_widget(FigureCanvasKivyAgg(pyplot.gcf()))
+
+    pyplot.figure(3)
+    pyplot.pie([5, 10, 15],
+               labels=["good", "none", "bad"],
+               explode=(0.1, 0, 0)
+               )
+    pyplot.grid(True)
+    pyplot.axes().set_aspect("equal")
+    pyplot.tight_layout()
+    self.ids["layout_graph_bottom_left"].add_widget(FigureCanvasKivyAgg(pyplot.gcf()))
+
+    self.ids["txt_analysis"].text = "TODO"

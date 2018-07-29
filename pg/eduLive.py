@@ -7,6 +7,7 @@ eduLive
 
 from collections import OrderedDict
 from functools import partial
+from matplotlib import pyplot
 
 from kivy.adapters.listadapter import ListAdapter
 from kivy.cache import Cache
@@ -16,7 +17,6 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.listview import ListItemButton
 from kivy.uix.popup import Popup
-from matplotlib import pyplot
 
 from func import database_api, update_clock, image_button
 from func.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg

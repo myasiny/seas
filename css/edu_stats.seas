@@ -110,3 +110,33 @@
             font_size: self.height / 3
             size_hint: .4, .0675
             pos_hint: {"center_x": .75, "y": .85}
+
+        BoxLayout:
+            id: layout_graph_top_right
+            size_hint: .4675, .4075
+            pos_hint: {"center_x": .735, "center_y": .635}
+
+        BoxLayout:
+            id: layout_graph_bottom_right
+            size_hint: .4675, .4075
+            pos_hint: {"center_x": .735, "center_y": .225}
+
+        BoxLayout:
+            id: layout_graph_bottom_left
+            size_hint: .4675, .4075
+            pos_hint: {"center_x": .265, "center_y": .225}
+
+        ScrollView:
+            size_hint: .4675, .4075
+            pos_hint: {"center_x": .265, "center_y": .635}
+
+            Label:
+                id: txt_analysis
+                color: 0, 0, 0, 1
+                halign: "left"
+                multiline: True
+                font_name: "data/font/CaviarDreams.ttf"
+                font_size: root.height / 35
+                text_size: self.width, None
+                size_hint_y: None
+                height: self.texture_size[1]

@@ -5,14 +5,11 @@ eduGrade
 `eduGrade` is a toolbox for main app, it contains necessary methods that EduGrade page requires.
 """
 
-import code
 import re
-from functools import partial
 import os
 import psutil
 import subprocess32
-import sys
-from StringIO import StringIO
+from functools import partial
 from gensim.summarization import keywords, summarize
 
 from kivy.adapters.listadapter import ListAdapter
