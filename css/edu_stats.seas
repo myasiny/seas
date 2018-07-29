@@ -94,8 +94,7 @@
             pos_hint: {"center_x": .5, "center_y": .46}
 
         Label:
-            id: txt_question_no
-            text: "TODO 1"
+            id: txt_type
             color: 0, 0, 0, .75
             multiline: False
             font_name: "data/font/CaviarDreams_Bold.ttf"
@@ -104,8 +103,7 @@
             pos_hint: {"center_x": .2, "y": .85}
 
         Label:
-            id: txt_question_grade
-            text: "TODO 2"
+            id: txt_select
             color: 0, 0, 0, .75
             multiline: False
             font_name: "data/font/CaviarDreams.ttf"

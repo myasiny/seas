@@ -241,10 +241,6 @@ class EduStats(Screen):
         eduLects.on_statistics(self)
 
     @staticmethod
-    def on_back(dt):
-        pass
-
-    @staticmethod
     def on_logout(dt):
         EduLects.on_logout(dt)
 
@@ -479,7 +475,7 @@ class EduProfile(Screen):
 class EduLects(Screen):
     """
     @group Design: on_pre_enter, on_exams, on_participants
-    @group Functionality: on_enter, on_stats, on_lect_select, on_contact, on_edit, on_grade, on_quit, on_leave
+    @group Functionality: on_enter, on_stats, on_stats_target, on_lect_select, on_contact, on_edit, on_grade, on_quit, on_leave
     """
 
     appLogin.load_string("edu_lects")
@@ -508,13 +504,25 @@ class EduLects(Screen):
     def on_stats(self):
         eduLects.on_statistics(self)
 
-    @staticmethod
-    def on_stats_class():
-        pass
+    def on_stats_target(self, target):
+        if target == "student":
+            select = self.ids["txt_id_body"].text
+        else:
+            select = self.ids["txt_lect_code"].text
 
-    @staticmethod
-    def on_stats_student():
-        pass
+        Cache.append("data",
+                     "type",
+                     target
+                     )
+        Cache.append("data",
+                     "select",
+                     select
+                     )
+
+        pages.append(EduStats(name="EduStats"))
+        appReset.on_back(pages,
+                         screen
+                         )
 
     def on_lect_select(self, dt, dropdown, txt):
         eduLects.on_lect_select(self, dropdown, txt)
@@ -756,6 +764,9 @@ if __name__ == "__main__":
                    limit=7
                    )
     Cache.register("config",
+                   limit=2
+                   )
+    Cache.register("data",
                    limit=2
                    )
 

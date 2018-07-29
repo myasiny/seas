@@ -110,7 +110,7 @@
             background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .2, .1
             pos_hint: {"x": 0, "center_y": .3525}
-            on_release: root.on_stats_class()
+            on_release: root.on_stats_target("class")
 
         Label:
             id: txt_hint
@@ -451,4 +451,4 @@
             background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .15, .045
             pos_hint: {"center_x": .875, "y": .075}
-            on_release: root.on_stats_student()
+            on_release: root.on_stats_target("student")
