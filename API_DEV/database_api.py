@@ -583,11 +583,10 @@ def giveSecondAccessExam(token, course, exam, student_username,
 
 ##########
 @server_check
-def postStats(course, exam, user_id, stats_dict=None, organization=current_organization, base_url=server_address):
+def postStats(course, user_id, stats_dict=None, organization=current_organization, base_url=server_address):
     """
     This method is to post statistics data to server.
     :param course: It's course of current exam
-    :param exam: It's current exam
     :param user_id: It's user to get data from
     :param stats_dict: It's dictionary containing all statistics
     :param organization: It's user's organization
@@ -597,17 +596,15 @@ def postStats(course, exam, user_id, stats_dict=None, organization=current_organ
 
     organization = __normalize(organization)
     course = __normalize(course)
-    exam = __normalize(exam)
-    url = base_url + "/organizations/%s/%s/exams/%s/stats" % (organization, course, exam)
+    url = base_url + "/organizations/%s/%s/stats" % (organization, course)
     return put(url, data={"student": user_id, "data": stats_dict}).json()
 
 
 @server_check
-def getStats(course, exam, user_id, organization=current_organization, base_url=server_address):
+def getStats(course, user_id, organization=current_organization, base_url=server_address):
     """
     This method is to get statistics data from server.
     :param course: It's course of current exam
-    :param exam: It's current exam
     :param user_id: It's user to get data from
     :param organization: It's user's organization
     :param base_url: It's address of server
@@ -616,8 +613,7 @@ def getStats(course, exam, user_id, organization=current_organization, base_url=
 
     organization = __normalize(organization)
     course = __normalize(course)
-    exam = __normalize(exam)
-    url = base_url + "/organizations/%s/%s/exams/%s/stats" % (organization, course, exam)
+    url = base_url + "/organizations/%s/%s/stats" % (organization, course)
     return get(url, data={"student": user_id}).json()
 
 
@@ -633,6 +629,8 @@ def postScreenshots(course, exam, user_id, ss_dict=None, organization=current_or
     :param base_url: It's address of server
     :return:
     """
+
+    # TODO
 
     organization = __normalize(organization)
     course = __normalize(course)

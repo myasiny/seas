@@ -607,37 +607,38 @@ def give_second_access_to_exam(organization, course, exam):
 
 
 ##########
-@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/stats", methods=['PUT'])
-def upload_stats(organization, course, exam, student, data):
+@app.route("/organizations/<string:organization>/<string:course>/stats", methods=['PUT'])
+def upload_stats(organization, course, student, data):
     """
     This method is to store statistics in server side.
     :param organization: It's organization name.
     :param course: It's course code.
-    :param exam: It's exam name.
     :param student: It's student id.
     :param data: It's statistics data.
     :return:
     """
 
-    with open("stats\{org}-{crs}-{ex}-{std}.txt".format(org=organization, crs=course, ex=exam, std=student), "w+") as f:
+    with open("stats\{org}-{crs}-{std}.txt".format(org=organization, crs=course, std=student), "w+") as f:
         for key, value in data.iteritems():
             f.write(key + "*[SEAS-EQUAL]*" + value + "\n")
         f.close()
     return jsonify("Ok")
 
 
-@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/stats", methods=['GET'])
-def get_stats(organization, course, exam, student):
+@app.route("/organizations/<string:organization>/<string:course>/stats", methods=['GET'])
+def get_stats(organization, course, student):
     """
     This method is to get statistics to client side.
     :param organization: It's organization name.
     :param course: It's course code.
-    :param exam: It's exam name.
     :param student: It's student id.
     :return:
     """
 
-    with open("stats\{org}-{crs}-{ex}-{std}.txt".format(org=organization, crs=course, ex=exam, std=student), "r") as f:
+    if student is None:
+        return jsonify({"TODO": 0})
+
+    with open("stats\{org}-{crs}-{std}.txt".format(org=organization, crs=course, std=student), "r") as f:
         lines = f.readlines()
         data = {}
         for i in lines:
