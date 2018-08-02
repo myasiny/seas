@@ -96,7 +96,7 @@
             background_disabled_normal: "data/img/widget_black_75.png"
             size_hint: .2, .1
             pos_hint: {"x": 0, "center_y": .4625}
-            on_release: root.on_stats()
+            on_release: root.on_stats_target("student")
 
         Label:
             id: txt_hint

@@ -43,7 +43,43 @@ Config.set("input", "mouse", "mouse, multitouch_on_demand")
 
 
 class StdStats(Screen):
-    pass
+    """
+    @group Design: on_pre_enter
+    @group Functionality: on_stats, on_quit, on_leave
+    """
+
+    appLogin.load_string("std_stats")
+
+    def on_pre_enter(self, *args):
+        eduLects.load_buttons(self)
+        eduStats.on_pre_enter(self)
+
+    @staticmethod
+    def on_profile(dt):
+        pages.append(StdProfile(name="StdProfile"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    @staticmethod
+    def on_lects():
+        pages.append(StdLects(name="StdLects"))
+        appReset.on_back(pages,
+                         screen
+                         )
+
+    def on_stats(self):
+        eduLects.on_statistics(self)
+
+    @staticmethod
+    def on_logout(dt):
+        EduLects.on_logout(dt)
+
+    def on_quit(self, dt):
+        appLogin.on_quit(self)
+
+    def on_leave(self, *args):
+        appLogin.on_leave(self)
 
 
 class StdLive(Screen):
@@ -93,7 +129,7 @@ class StdLive(Screen):
 class StdProfile(Screen):
     """
     @group Design: on_pre_enter
-    @group Functionality: on_enter, on_pic_change, on_text_change, on_submit, on_quit, on_leave
+    @group Functionality: on_enter, on_stats, on_pic_change, on_text_change, on_submit, on_quit, on_leave
     """
 
     appLogin.load_string("std_profile")
@@ -119,12 +155,8 @@ class StdProfile(Screen):
                          screen
                          )
 
-    @staticmethod
-    def on_stats():
-        pages.append(StdStats(name="StdStats"))
-        appReset.on_back(pages,
-                         screen
-                         )
+    def on_stats(self):
+        eduLects.on_statistics(self)
 
     def on_pic_change(self, dt):
         eduProfile.on_pic_change(self)
@@ -149,7 +181,7 @@ class StdProfile(Screen):
 class StdLects(Screen):
     """
     @group Design: on_pre_enter
-    @group Functionality: on_enter, on_contact, on_lect_select, on_exam_join, on_quit, on_leave
+    @group Functionality: on_enter, on_stats, on_contact, on_lect_select, on_exam_join, on_quit, on_leave
     """
 
     appLogin.load_string("std_lects")
@@ -175,8 +207,24 @@ class StdLects(Screen):
                          screen
                          )
 
+    def on_stats(self):
+        eduLects.on_statistics(self)
+
     @staticmethod
-    def on_stats():
+    def on_stats_target(target):
+        select = Cache.get("info",
+                           "id"
+                           )
+
+        Cache.append("data",
+                     "type",
+                     target
+                     )
+        Cache.append("data",
+                     "select",
+                     select
+                     )
+
         pages.append(StdStats(name="StdStats"))
         appReset.on_back(pages,
                          screen
