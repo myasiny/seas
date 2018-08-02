@@ -607,19 +607,60 @@ def give_second_access_to_exam(organization, course, exam):
 
 
 ##########
-@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/stats",
-           methods=["GET"], endpoint="stats")
-@profile(stream=memory_log)
-@jwt_required
-@db_connector
-def upload_stats(organization, course, exam):
-    token = get_jwt_identity()
-    student = request.form["student_id"]
-    if not check_lecture_permission(organization, token, course) or not check_auth(token, organization, "lecturer"):
-        rtn = "Unauthorized access."
-    else:
-        rtn = Exam(exam, organization, db).get_live_exam_stats(course, student)
-    return jsonify(rtn)
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/stats", methods=['PUT'])
+def upload_stats(organization, course, exam, student, data):
+    """
+    This method is to store statistics in server side.
+    :param organization: It's organization name.
+    :param course: It's course code.
+    :param exam: It's exam name.
+    :param student: It's student id.
+    :param data: It's statistics data.
+    :return:
+    """
+
+    with open("stats\{org}-{crs}-{ex}-{std}.txt".format(org=organization, crs=course, ex=exam, std=student), "w+") as f:
+        for key, value in data.iteritems():
+            f.write(key + "*[SEAS-EQUAL]*" + value + "\n")
+        f.close()
+    return jsonify("Ok")
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/stats", methods=['GET'])
+def get_stats(organization, course, exam, student):
+    """
+    This method is to get statistics to client side.
+    :param organization: It's organization name.
+    :param course: It's course code.
+    :param exam: It's exam name.
+    :param student: It's student id.
+    :return:
+    """
+
+    with open("stats\{org}-{crs}-{ex}-{std}.txt".format(org=organization, crs=course, ex=exam, std=student), "r") as f:
+        lines = f.readlines()
+        data = {}
+        for i in lines:
+            pair = i.split("*[SEAS-EQUAL]*")
+            data[pair[0]] = pair[1]
+        f.close()
+    return jsonify(data)
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/screenshots", methods=['PUT'])
+def upload_ss(organization, course, exam, student, data):
+    """
+    This method is to analyze screenshots in server side.
+    :param organization: It's organization name.
+    :param course: It's course code.
+    :param exam: It's exam name.
+    :param student: It's student id.
+    :param data: It's statistics data.
+    :return:
+    """
+
+    result = Exam(exam, organization, db).screenshots_analyzer(data, course, exam, student)
+    return jsonify(result)
 ##########
 
 

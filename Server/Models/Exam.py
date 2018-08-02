@@ -258,58 +258,18 @@ class Exam:
         return "Done"
 
     ##########
-    def save_live_exam_stats(self, student_id, course, data):
+    @staticmethod
+    def screenshots_analyzer(data, course, exam, student_id):
         """
         This method is TODO
-        :param student_id: It's ID of student
+        :param data: It's data of screenshots analyses
         :param course: It's course code
-        :param data: It's dictionary of statistics data
+        :param exam: It's exam name
+        :param student_id: It's student ID
         :return:
         """
 
-        base_path = "uploads/%s/courses/%s/exams/%s/" % (self.org, course, self.name)
-        path = base_path + "user_stats/%s.json" % student_id
-        if not os.path.exists(base_path + "user_stats"):
-            os.makedirs(base_path + "user_stats")
-        if os.path.exists(path):
-            data_ = json.load(open(path, "r"))
-        else:
-            data_ = {}
-            data_.setdefault("exam_stats", {})
-        stats = ""
-        for key in data:
-            if key == "stats":
-                stats = data.get(key)
-            else:
-                data_["exam_stats"].setdefault(key, [])
-                data_["exam_stats"][key].extend(data.getlist(key))
-        json.dump(data_, open(path, "w"))
-        if not os.path.exists(base_path + "all_stats"):
-            os.makedirs(base_path + "all_stats")
-        path = base_path + "all_stats/%s.stats" % student_id
-        if os.path.exists(path):
-            o = "a"
-        else:
-            o = "w"
-        with open(path, o) as stats_file:
-            stats_file.write(stats)
-            stats_file.write(KEYSTREAM_DELIMITER)
-        return
+        # TODO
 
-    def get_live_exam_stats(self, course, student_id):
-        """
-        This method is TODO
-        :param course: It's course code
-        :param student_id: It's ID of student
-        :return:
-        """
-
-        student = self.db.execute("SELECT Username FROM members where PersonID = %s" % student_id)[0][0]
-        path = "uploads/%s/courses/%s/exams/%s/all_stats/%s.stats" % (self.org, course, self.name, student)
-
-        if os.path.exists(path):
-            a = open(path, "r").read().split(KEYSTREAM_DELIMITER)
-            return dict(zip([i for i in range(len(a))], a))
-        else:
-            return "Something went wrong..."
+        return "TODO"
     ##########

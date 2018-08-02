@@ -583,10 +583,9 @@ def giveSecondAccessExam(token, course, exam, student_username,
 
 ##########
 @server_check
-def postStats(token, course, exam, user_id, stats_dict=None, organization=current_organization, base_url=server_address):
+def postStats(course, exam, user_id, stats_dict=None, organization=current_organization, base_url=server_address):
     """
     This method is to post statistics data to server.
-    :param token: It's user's token
     :param course: It's course of current exam
     :param exam: It's current exam
     :param user_id: It's user to get data from
@@ -599,6 +598,45 @@ def postStats(token, course, exam, user_id, stats_dict=None, organization=curren
     organization = __normalize(organization)
     course = __normalize(course)
     exam = __normalize(exam)
-    url = base_url + "/organizations/%s/%s/exams/%s/data/%s" % (organization, course, exam, user_id)
-    return put(url, headers={"Authorization": "Bearer " + token}, data=stats_dict).json()
+    url = base_url + "/organizations/%s/%s/exams/%s/stats" % (organization, course, exam)
+    return put(url, data={"student": user_id, "data": stats_dict}).json()
+
+
+@server_check
+def getStats(course, exam, user_id, organization=current_organization, base_url=server_address):
+    """
+    This method is to get statistics data from server.
+    :param course: It's course of current exam
+    :param exam: It's current exam
+    :param user_id: It's user to get data from
+    :param organization: It's user's organization
+    :param base_url: It's address of server
+    :return:
+    """
+
+    organization = __normalize(organization)
+    course = __normalize(course)
+    exam = __normalize(exam)
+    url = base_url + "/organizations/%s/%s/exams/%s/stats" % (organization, course, exam)
+    return get(url, data={"student": user_id}).json()
+
+
+@server_check
+def postScreenshots(course, exam, user_id, ss_dict=None, organization=current_organization, base_url=server_address):
+    """
+    This method is to post screenshots data to server.
+    :param course: It's course of current exam
+    :param exam: It's current exam
+    :param user_id: It's user to get data from
+    :param ss_dict: It's dictionary containing all screenshots analyses
+    :param organization: It's user's organization
+    :param base_url: It's address of server
+    :return:
+    """
+
+    organization = __normalize(organization)
+    course = __normalize(course)
+    exam = __normalize(exam)
+    url = base_url + "/organizations/%s/%s/exams/%s/screenshots" % (organization, course, exam)
+    return put(url, data={"student": user_id, "data": ss_dict}).json()
 ##########
