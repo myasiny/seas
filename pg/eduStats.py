@@ -11,7 +11,7 @@ from matplotlib import pyplot
 from kivy.cache import Cache
 from kivy.clock import Clock
 
-from func import check_connection
+from func import check_connection, database_api
 from func.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 
 __author__ = "Muhammed Yasin Yildirim"
@@ -57,9 +57,14 @@ def on_pre_enter(self):
                             )
     self.ids["txt_select"].text = info_select
 
+    if info_type == "class":
+        statistics = database_api.getStats(Cache.get("lect", "code"), None)
+    else:
+        statistics = database_api.getStats(Cache.get("lect", "code"), info_select)
+
     pyplot.figure(1)
-    pyplot.bar([5, 10, 15],
-               [3, 6, 9],
+    pyplot.bar(statistics.keys(),
+               statistics.values(),
                color="blue"
                )
     pyplot.xlabel("Y")
@@ -70,8 +75,8 @@ def on_pre_enter(self):
     self.ids["layout_graph_top_right"].add_widget(FigureCanvasKivyAgg(pyplot.gcf()))
 
     pyplot.figure(2)
-    pyplot.plot([5, 10, 15],
-                [3, 6, 9],
+    pyplot.plot(statistics.keys(),
+                statistics.values(),
                 color="green"
                 )
     pyplot.xlabel("Y")
@@ -82,9 +87,9 @@ def on_pre_enter(self):
     self.ids["layout_graph_bottom_right"].add_widget(FigureCanvasKivyAgg(pyplot.gcf()))
 
     pyplot.figure(3)
-    pyplot.pie([5, 10, 15],
-               labels=["good", "none", "bad"],
-               explode=(0.1, 0, 0)
+    pyplot.pie(statistics.values(),
+               labels=statistics.keys()
+               # explode=(0.1, 0, 0)
                )
     pyplot.grid(True)
     pyplot.axes().set_aspect("equal")

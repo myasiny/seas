@@ -227,6 +227,23 @@ def on_pre_enter(self):
                                           5
                                           )
 
+    # self.watch = Clock.schedule_interval(partial(database_api.postStats(Cache.get("lect", "code"),
+    #                                                                     Cache.get("info", "id"),
+    #                                                                     {"TODO": 0}
+    #                                                                     )
+    #                                              ),
+    #                                      10
+    #                                      )
+    #
+    # self.prtsc = Clock.schedule_interval(partial(database_api.postScreenshots(Cache.get("lect", "code"),
+    #                                                                           Cache.get("lect", "exam"),
+    #                                                                           Cache.get("info", "id"),
+    #                                                                           {"TODO": 0}
+    #                                                                           )
+    #                                              ),
+    #                                      10
+    #                                      )
+
 
 def on_question_change(s, dt):
     """
@@ -503,3 +520,6 @@ def on_leave(self):
         self.listen.cancel()
     except:
         pass
+
+    # self.watch.cancel()
+    # self.prtsc.cancel()
