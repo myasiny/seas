@@ -798,7 +798,7 @@ def on_keyboard_event(event):
     :return: It is boolean depending on whether key is banned or not.
     """
 
-    if event.Key.lower() in []:  # God Mode: "lmenu", "lwin", "rwin", "apps", "esc"
+    if event.Key.lower() in ["lmenu", "lwin", "rwin", "apps", "esc"]:
         return False
     else:
         return True
