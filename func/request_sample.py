@@ -1,10 +1,11 @@
 # -*- coding:UTF-8 -*-
 
 from database_api import *
+import json
 
 def get_token(role):
     if role == "student":
-        username, password = "fatihgulmez", "12345"
+        username, password = "fatihgulmez", "1"
     elif role == "lecturer":
         username, password = "alicakmak", "1"
     else: #Admin
@@ -37,10 +38,10 @@ lecturer_token = get_token("lecturer")
 # print addUser(admin_token, "1", "Ali", "Cakmak", "alicakmak", "12345", "joe@doe.com", "Computer Science", role="Lecturer")
 # print addUser(admin_token, "215000000", "Ozkan", "Çaglar", "ozkancaglar", "12345","ozkancaglar@std.sehir.edu.tr", "Computer Science", role="student")
 
-# print addCourse(admin_token, "Data Analytics", "data 102", ["alicakmak"])
+# print addCourse(admin_token, "Introduction to Programming", "Engr 101", ["alicakmak"])
 # print "get course", getCourse(lecturer_token, "data_101")
 #
-# print registerStudent(lecturer_token, "data 101", True, "ornek.csv", "alicakmak")
+# print registerStudent(lecturer_token, "data 101", True, "asdasd.csv", "alicakmak")
 
 # print "register student", registerStudent(lecturer_token, "data 101", False, [213860387, 212011111, 212980975, 213860387], "alicakmak")
 
@@ -50,20 +51,20 @@ lecturer_token = get_token("lecturer")
 
 # print getUserCourses(student_token, "fatihgulmez")
 #
-# print changePassword(student_token, "fatihgulmez", "123456", "12345", False)
+# print changePassword(lecturer_token, "alicakmak", "tarvennbok", "12345", False)
 
 # print "delete student from lecture", deleteStudentFromLecture(lecturer_token, "Data 101", "210111111")
 
 #### HOW TO CREATE EXAM
 #
 # print "create exam", createExam(lecturer_token,
-#                  "data 101",
+#                  "dnm 101",
 #                  "FCG TEST",
 #                  "2018-12-31 22:30:00",
 #                  5,
 #                  status="draft"
 # )
-#
+
 # print "add time to exam", add_time_to_exam(lecturer_token,
 #                        "data 101",
 #                        "fcg test",
@@ -79,25 +80,39 @@ lecturer_token = get_token("lecturer")
 #                           "value": 50,
 #                           "tags": ["mustafa","kemal"]},
 
-#
-# print "add question to exam", addQuestionToExam(lecturer_token, "data 101", "fcg test", {"type": "test",
-#                       "subject": "math",
-#                       "text": "which is an integer? -a)1,2 -b)3/7 -c)5 -d)pi",
-#                       "answer": "c",
-#                       "inputs": "",
-#                       "outputs": "",
+# #
+# print "add question to exam", addQuestionToExam(lecturer_token, "dnm 101", "fcg test", {"type": "programming",
+#                       "subject": "python",
+#                       "text": "write a code to print out all even numbers between two decided numbers?",
+#                       "answer": "",
+#                       "inputs": [(3,5), (1,10)],
+#                       "outputs": [(4), (2,4,6,8,10)],
 #                       "value": 20,
-#                       "tags": ["integers", "math"]
+#                       "tags": ["integers", "loops", "functions"]
 #                      })
 
 
 ## HOW TO GET EXAM
-# print "get exam", getExam(lecturer_token,
-#                  "data 101",
-#                  "fcg test")
+# with open("example_answer.py", "r") as answer:
+#     print sendAnswers(student_token, "seas 101", 259, "fatihgulmez", answer.read())
 
-# print getExam(student_token, "data 101", "fcg test 2")
-# print sendAnswers(student_token,"Data 101", 97, "fatihgulmez", "A")
+# print sendAnswers(student_token, "dnm 101", 254, "fatihgulmez", "E")
+# print sendAnswers(student_token, "dnm 101", 255, "fatihgulmez", "C")
+# print sendAnswers(student_token, "dnm 101", 257, "fatihgulmez", "")
+
+
+
+# print getExam(lecturer_token, "dnm 101", "fcg test")
+
+
+# print getExam(lecturer_token, "seas 101", "debug test")
+# print getExam(lecturer_token, "seas 101", "test 1")
+# print getExam(lecturer_token, "seas 101", "test 2")
+# print getExam(lecturer_token, "dnm 101", "live2")
+
+
+
+# print sendAnswers(student_token,"Data 101", 184, "fatihgulmez", "A")
 # print sendAnswers(student_token,"EECS 468", 54, "alioz", "A")
 # print sendAnswers(student_token,"EECS 468", 55, "alioz", "A")
 # print sendAnswers(student_token,"EECS 468", 56, "alioz", "A")
@@ -105,7 +120,7 @@ lecturer_token = get_token("lecturer")
 
 # print "delete exam", deleteExam(lecturer_token, "fcg test", "data_101")
 
-# print uploadProfilePic(student_token, "fatihgulmez", "picc.png")
+# print uploadProfilePic(lecturer_token, "alicakmak", "example_image.png")
 
 # print "profile pic get", getProfilePic(lecturer_token, "alicakmak")
 
@@ -118,31 +133,50 @@ lecturer_token = get_token("lecturer")
 # print "get exams of lecture", getExamsOfLecture(lecturer_token, "data 101")
 
 # print edit_question(lecturer_token, "data 101",
-#                     "fcg test 2",
-#                     97,
-#                     {"type": "classic",
-#                     "subject": "ataturk",
-#                     "text": "who is the founder of Turkey?",
-#                     "answer": "Atatürk",
-#                     "inputs": [[111,222],[222,333]],
-#                     "outputs": [(3),(5)],
-#                     "value": 30,
-#                     "tags": ["mustapha","kemal"]})
+#                     "fcg test",
+#                     186,
+#                     {
+#                         "type": "short answer",
+#                         "subject": "ataturk",
+#                         "text": "who is the founder of Turkey?",
+#                         "answer": "Atatürk",
+#                         "inputs": [[111,222],[222,333]],
+#                         "outputs": [(3),(5)],
+#                         "value": 30,
+#                         "tags": ["mustapha","kemal"]
+#                     })
 
+# print "change status of exam", change_status_of_exam(lecturer_token, "data 101", "fcg test", "active")
 
+# print resetPassword("fatihgulmez")
 
-# print "change status of exam", change_status_of_exam(lecturer_token,
-#                             "data 101",
-#                             "fcg test 2",
-#                             "graded")
-
-# print resetPassword("alioz")
-
-# print resetPassword("alioz", temp_pass="zD7ric2V", new_pass="1")
+# print resetPassword("fatihgulmez", temp_pass="j6DAc9up", new_pass="1")
 # print getGradesOfExam(lecturer_token, "data 101", "test 3")
 
-print get_last_activities(lecturer_token, "alicakmak", sign_in=True)
-print get_last_activities(lecturer_token, "alicakmak")
+# print getLastActivities(lecturer_token, "alicakmak", sign_in=True)
+# print getLastActivities(lecturer_token, "alicakmak")
+# print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", **json.load(open("example_data.json", "r")))
+# print postExamData(lecturer_token, "eecs 468", "test 1", "alicakmak", "example_data")
+# answers = getAnswersOfStudent(lecturer_token, "seas 101", "test 3", "216602337")
+# with open("get_answers_example.txt", "w") as record:
+#     for answer in answers:
+#         record.write(answer[3] + "\n\n\n")
+# print extraMaterials(lecturer_token, "eecs 468", "test 1", 149, "example_image.png", "reference", upload=True)
+
+# a = 0
+# while a < 3:
+#     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "asdasd\n")
+#     print sendKeystrokeData(lecturer_token, "eecs 468", "test 1", "1", "123456\n")
+#     a += 1
+#
+print getKeyloggerData(lecturer_token, "dnm 101", "live 2", "213950785")
+#
+# for line in b:
+#     print line
+#
+# print getExam(lecturer_token, "dnm 101", "sadsad")
 print signOut(lecturer_token, "alicakmak")
 # print signOut(student_token, "fatihgulmez")
 # print signOut(admin_token, "admin")
+
+
