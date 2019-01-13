@@ -1,12 +1,11 @@
 # -*- coding:UTF-8 -*-
+
 from memory_profiler import profile
 from flask import Flask, request, jsonify, make_response, Response, send_from_directory
-from werkzeug.datastructures import Headers
 from Models.MySQLdb_WITH_CONN_POOL import MySQLdb as PooledMySQLdb
 from Models.Exam import Exam
 from Models.User import *
 from Models.Course import Course
-from Models.Lecture import *
 from Models.External_Functions.decimalEncoder import DecimalEncoder
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_raw_jwt
 import json
@@ -605,6 +604,65 @@ def give_second_access_to_exam(organization, course, exam):
     if check_lecture_permission(organization, token, course):
         exam = Exam(exam, organization, db)
         return jsonify(exam.give_second_access(request.form["student_user"]))
+
+
+##########
+@app.route("/organizations/<string:organization>/<string:course>/stats", methods=['PUT'])
+def upload_stats(organization, course, student, data):
+    """
+    This method is to store statistics in server side.
+    :param organization: It's organization name.
+    :param course: It's course code.
+    :param student: It's student id.
+    :param data: It's statistics data.
+    :return:
+    """
+
+    with open("stats\{org}-{crs}-{std}.txt".format(org=organization, crs=course, std=student), "w+") as f:
+        for key, value in data.iteritems():
+            f.write(key + "*[SEAS-EQUAL]*" + value + "\n")
+        f.close()
+    return jsonify("Ok")
+
+
+@app.route("/organizations/<string:organization>/<string:course>/stats", methods=['GET'])
+def get_stats(organization, course, student):
+    """
+    This method is to get statistics to client side.
+    :param organization: It's organization name.
+    :param course: It's course code.
+    :param student: It's student id.
+    :return:
+    """
+
+    if student is None:
+        return jsonify({"TODO": 0})
+
+    with open("stats\{org}-{crs}-{std}.txt".format(org=organization, crs=course, std=student), "r") as f:
+        lines = f.readlines()
+        data = {}
+        for i in lines:
+            pair = i.split("*[SEAS-EQUAL]*")
+            data[pair[0]] = pair[1]
+        f.close()
+    return jsonify(data)
+
+
+@app.route("/organizations/<string:organization>/<string:course>/exams/<string:exam>/screenshots", methods=['PUT'])
+def upload_ss(organization, course, exam, student, data):
+    """
+    This method is to analyze screenshots in server side.
+    :param organization: It's organization name.
+    :param course: It's course code.
+    :param exam: It's exam name.
+    :param student: It's student id.
+    :param data: It's statistics data.
+    :return:
+    """
+
+    result = Exam(exam, organization, db).screenshots_analyzer(data, course, exam, student)
+    return jsonify(result)
+##########
 
 
 if __name__ == "__main__":

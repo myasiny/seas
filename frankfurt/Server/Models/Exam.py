@@ -1,10 +1,10 @@
 # -*-coding:utf-8-*-
+
 from Question import Question
-import json
-import threading
-import os
 from werkzeug.utils import secure_filename
 from mysql.connector import DatabaseError
+import json
+import os
 
 KEYSTREAM_DELIMITER = "<<S|E|A|S>>*!KEYSTREAM_DELIMITER!*"
 
@@ -256,3 +256,20 @@ class Exam:
         self.db.execute("INSERT INTO exam_exceptions(username, exam_name) VALUES ('%s', '%s')"
                         % (student_username, self.name))
         return "Done"
+
+    ##########
+    @staticmethod
+    def screenshots_analyzer(data, course, exam, student_id):
+        """
+        This method is TODO
+        :param data: It's data of screenshots analyses
+        :param course: It's course code
+        :param exam: It's exam name
+        :param student_id: It's student ID
+        :return:
+        """
+
+        # TODO
+
+        return "TODO"
+    ##########
